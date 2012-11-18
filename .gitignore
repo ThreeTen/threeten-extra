@@ -1,6 +1,12 @@
+/build/
+/bin/
+/lib/
+/dist/
+/test-output/
+/temp*
+/.settings/
+/nbproject/private/
 *.class
-
-# Package Files #
 *.jar
 *.war
 *.ear
