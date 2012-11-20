@@ -38,8 +38,8 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.HijrahChrono;
-import javax.time.chrono.MinguoChrono;
+import javax.time.chrono.global.HijrahChrono;
+import javax.time.chrono.global.MinguoChrono;
 
 /**
  * Adjusters that allow dates to be adjusted in terms of a calendar system.
