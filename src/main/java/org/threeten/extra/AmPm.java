@@ -200,17 +200,6 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
         return field.doGet(this);
     }
 
-    @Override
-    public AmPm with(DateTimeField field, long newValue) {
-        if (field == AMPM_OF_DAY) {
-            ((ChronoField) field).checkValidValue(newValue);
-            return AmPm.of((int) newValue);
-        } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public <R> R query(Query<R> query) {

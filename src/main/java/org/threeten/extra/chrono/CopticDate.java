@@ -37,9 +37,7 @@ import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 
 import java.io.Serializable;
@@ -192,8 +190,8 @@ final class CopticDate
     @Override
     public boolean isSupported(DateTimeField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateField() && field != WEEK_OF_MONTH &&
-                    field != WEEK_OF_YEAR && field != WEEK_OF_WEEK_BASED_YEAR && field != WEEK_BASED_YEAR;
+            return ((ChronoField) field).isDateField() &&
+                    field != WEEK_OF_MONTH && field != WEEK_OF_YEAR;
         }
         return field != null && field.doIsSupported(this);
     }
@@ -267,7 +265,7 @@ final class CopticDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -295,7 +293,7 @@ final class CopticDate
             }
             throw new DateTimeException(unit.getName() + " not valid for CopticDate");
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------

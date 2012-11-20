@@ -42,6 +42,7 @@ import static javax.time.calendrical.ChronoUnit.YEARS;
 
 import javax.time.DateTimeException;
 import javax.time.Month;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
@@ -97,8 +98,9 @@ public enum QuarterYearField implements DateTimeField {
             long year = dateTime.getLong(YEAR);
             return doy - QUARTER_DAYS[((moy - 1) / 3) + (ISOChrono.INSTANCE.isLeapYear(year) ? 4 : 0)];
         }
+        @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+        public <R extends DateTime> R doWith(R dateTime, long newValue) {
             long curValue = doGet(dateTime);
             doRange(dateTime).checkValidValue(newValue, this);
             return (R) dateTime.with(DAY_OF_YEAR, dateTime.getLong(DAY_OF_YEAR) + (newValue - curValue));
@@ -125,8 +127,9 @@ public enum QuarterYearField implements DateTimeField {
             return ((dateTime.getLong(MONTH_OF_YEAR) - 1) % 3) + 1;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+        public <R extends DateTime> R doWith(R dateTime, long newValue) {
             long curValue = doGet(dateTime);
             range().checkValidValue(newValue, this);
             return (R) dateTime.with(MONTH_OF_YEAR, dateTime.getLong(MONTH_OF_YEAR) + (newValue - curValue));
@@ -153,8 +156,9 @@ public enum QuarterYearField implements DateTimeField {
         public long doGet(DateTimeAccessor dateTime) {
             return ((dateTime.getLong(MONTH_OF_YEAR) - 1) / 3) + 1;
         }
+        @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+        public <R extends DateTime> R doWith(R dateTime, long newValue) {
             long curValue = doGet(dateTime);
             range().checkValidValue(newValue, this);
             return (R) dateTime.with(MONTH_OF_YEAR, dateTime.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 3);

@@ -218,18 +218,6 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
         return field.doGet(this);
     }
 
-    @Override
-    public QuarterOfYear with(DateTimeField field, long newValue) {
-        if (field == QUARTER_OF_YEAR) {
-            int val = QUARTER_OF_YEAR.range().checkValidIntValue(newValue, QUARTER_OF_YEAR);
-            return QuarterOfYear.of(val);
-        }
-        if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns the quarter that is the specified number of quarters after this one.
