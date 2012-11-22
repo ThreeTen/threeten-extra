@@ -186,11 +186,11 @@ public class TestCopticChrono {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {CopticChrono.INSTANCE.date(1, 1, 1), "Coptic AM1-01-01"},
-            {CopticChrono.INSTANCE.date(1728, 10, 28), "Coptic AM1728-10-28"},
-            {CopticChrono.INSTANCE.date(1728, 10, 29), "Coptic AM1728-10-29"},
-            {CopticChrono.INSTANCE.date(1727, 13, 5), "Coptic AM1727-13-05"},
-            {CopticChrono.INSTANCE.date(1727, 13, 6), "Coptic AM1727-13-06"},
+            {CopticChrono.INSTANCE.date(1, 1, 1), "Coptic AM 1-01-01"},
+            {CopticChrono.INSTANCE.date(1728, 10, 28), "Coptic AM 1728-10-28"},
+            {CopticChrono.INSTANCE.date(1728, 10, 29), "Coptic AM 1728-10-29"},
+            {CopticChrono.INSTANCE.date(1727, 13, 5), "Coptic AM 1727-13-05"},
+            {CopticChrono.INSTANCE.date(1727, 13, 6), "Coptic AM 1727-13-06"},
         };
     }
 
