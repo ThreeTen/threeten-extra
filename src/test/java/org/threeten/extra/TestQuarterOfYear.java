@@ -31,23 +31,22 @@
  */
 package org.threeten.extra;
 
+import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.util.Locale;
-
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.Month;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.MockFieldNoValue;
-import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -126,29 +125,29 @@ public class TestQuarterOfYear {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_from_CalendricalObject_null() {
-        QuarterOfYear.from((DateTimeAccessor) null);
+        QuarterOfYear.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
-    // getText()
+    // getDisplayName()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_getText() {
-        assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "1");
+    public void test_getDisplayName() {
+        assertEquals(QuarterOfYear.Q1.getDisplayName(TextStyle.SHORT, Locale.US), "Q1");
     }
 
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullStyle() {
-        QuarterOfYear.Q1.getText(null, Locale.US);
+    public void test_getDisplayName_nullStyle() {
+        QuarterOfYear.Q1.getDisplayName(null, Locale.US);
     }
 
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullLocale() {
-        QuarterOfYear.Q1.getText(TextStyle.FULL, null);
+    public void test_getDisplayName_nullLocale() {
+        QuarterOfYear.Q1.getDisplayName(TextStyle.FULL, null);
     }
 
     //-----------------------------------------------------------------------
-    // get(DateTimeField)
+    // get(TemporalField)
     //-----------------------------------------------------------------------
     @DataProvider(name="invalidFields")
     Object[][] data_invalidFields() {
@@ -158,26 +157,26 @@ public class TestQuarterOfYear {
             {ChronoField.DAY_OF_MONTH},
             {ChronoField.MONTH_OF_YEAR},
             {ChronoField.INSTANT_SECONDS},
-            {MockFieldNoValue.INSTANCE},
+//            {MockFieldNoValue.INSTANCE},
         };
     }
 
     @Test(groups={"tck"})
-    public void test_get_DateTimeField() {
-        assertEquals(QuarterOfYear.Q1.getLong(QuarterYearField.QUARTER_OF_YEAR), 1);
-        assertEquals(QuarterOfYear.Q2.getLong(QuarterYearField.QUARTER_OF_YEAR), 2);
-        assertEquals(QuarterOfYear.Q3.getLong(QuarterYearField.QUARTER_OF_YEAR), 3);
-        assertEquals(QuarterOfYear.Q4.getLong(QuarterYearField.QUARTER_OF_YEAR), 4);
+    public void test_get_TemporalField() {
+        assertEquals(QuarterOfYear.Q1.getLong(QUARTER_OF_YEAR), 1);
+        assertEquals(QuarterOfYear.Q2.getLong(QUARTER_OF_YEAR), 2);
+        assertEquals(QuarterOfYear.Q3.getLong(QUARTER_OF_YEAR), 3);
+        assertEquals(QuarterOfYear.Q4.getLong(QUARTER_OF_YEAR), 4);
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_get_DateTimeField_invalidField(DateTimeField field) {
+    public void test_get_TemporalField_invalidField(TemporalField field) {
         QuarterOfYear.Q1.getLong(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_get_DateTimeField_null() {
-        QuarterOfYear.Q1.getLong((DateTimeField) null);
+    public void test_get_TemporalField_null() {
+        QuarterOfYear.Q1.getLong((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------

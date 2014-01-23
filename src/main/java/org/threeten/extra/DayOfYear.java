@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,21 +31,20 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
-import static javax.time.calendrical.ChronoField.YEAR;
+import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.YEAR;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.Year;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
 
 /**
  * A representation of a day-of-year in the ISO-8601 calendar system.
@@ -60,7 +59,7 @@ import javax.time.calendrical.DateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class DayOfYear
-        implements Comparable<DayOfYear>, WithAdjuster, Serializable {
+        implements Comparable<DayOfYear>, TemporalAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -102,14 +101,14 @@ public final class DayOfYear
     /**
      * Obtains an instance of {@code DayOfYear} from a date-time object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code DayOfYear}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the day-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfYear}
      */
-    public static DayOfYear from(DateTimeAccessor dateTime) {
+    public static DayOfYear from(TemporalAccessor dateTime) {
         LocalDate date = LocalDate.from(dateTime);
         return DayOfYear.of(date.getDayOfYear());
     }
@@ -142,7 +141,7 @@ public final class DayOfYear
      *
      * @return the day-of-year field, never null
      */
-    public DateTimeField getField() {
+    public TemporalField getField() {
         return ChronoField.DAY_OF_YEAR;
     }
 
@@ -164,13 +163,13 @@ public final class DayOfYear
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dateTime  the date to be adjusted, not null
+     * @param temporal  the temporal to be adjusted, not null
      * @return the adjusted date, never null
      * @throws DateTimeException if the day-of-year is invalid for the input year
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(DAY_OF_YEAR, dayOfYear);
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal.with(DAY_OF_YEAR, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

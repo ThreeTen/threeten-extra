@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,21 +31,25 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.AMPM_OF_DAY;
-import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.AMPM_OF_DAY;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoUnit.HALF_DAYS;
 
+import java.time.DateTimeException;
+import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
+import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 import java.util.Calendar;
 import java.util.Locale;
-
-import javax.time.DateTimeException;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.format.DateTimeFormatterBuilder;
-import javax.time.format.TextStyle;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
@@ -68,7 +72,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum AmPm implements DateTimeAccessor, WithAdjuster {
+public enum AmPm implements TemporalAccessor, TemporalAdjuster {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -91,13 +95,16 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
      *
      * @param amPmValue  the AM/PM value to represent, from 0 (AM) to 1 (PM)
      * @return the AM/PM, not null
-     * @throws DateTimeException if the value is invalid
+     * @throws DateTimeException if the am-pm is invalid
      */
     public static AmPm of(int amPmValue) {
         switch (amPmValue) {
-            case 0: return AM;
-            case 1: return PM;
-            default: throw new DateTimeException("Invalid value for AM/PM: " + amPmValue);
+            case 0:
+                return AM;
+            case 1:
+                return PM;
+            default:
+                throw new DateTimeException("Invalid value for AM/PM: " + amPmValue);
         }
     }
 
@@ -118,20 +125,31 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code AmPm} from a date-time object.
+     * Obtains an instance of {@code AmPm} from a temporal object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code AmPm}.
+     * This obtains an am-pm based on the specified temporal.
+     * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
+     * which this factory converts to an instance of {@code AmPm}.
+     * <p>
+     * The conversion extracts the {@link ChronoField#AMPM_OF_DAY AMPM_OF_DAY} field.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used as a query via method reference, {@code AmPm::from}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the AM/PM, not null
      * @throws DateTimeException if unable to convert to a {@code AmPm}
      */
-    public static AmPm from(DateTimeAccessor dateTime) {
-        if (dateTime instanceof AmPm) {
-            return (AmPm) dateTime;
+    public static AmPm from(TemporalAccessor temporal) {
+        if (temporal instanceof AmPm) {
+            return (AmPm) temporal;
         }
-        return of(dateTime.get(AMPM_OF_DAY));
+        try {
+            return of(temporal.get(AMPM_OF_DAY));
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to obtain AmPm from TemporalAccessor: " +
+                    temporal + " of type " + temporal.getClass().getName(), ex);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -150,68 +168,204 @@ public enum AmPm implements DateTimeAccessor, WithAdjuster {
     /**
      * Gets the textual representation, such as 'AM' or 'PM'.
      * <p>
-     * This returns the textual name used to identify the am-pm.
-     * The parameters control the length of the returned text and the locale.
+     * This returns the textual name used to identify the am-pm,
+     * suitable for presentation to the user.
+     * The parameters control the style of the returned text and the locale.
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
      * @param style  the length of the text required, not null
      * @param locale  the locale to use, not null
-     * @return the text value of the AM/PM, not null
+     * @return the text value of the am-pm, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendText(AMPM_OF_DAY, style).toFormatter(locale).print(this);
+    public String getDisplayName(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendText(AMPM_OF_DAY, style).toFormatter(locale).format(this);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified field is supported.
+     * <p>
+     * This checks if this am-pm can be queried for the specified field.
+     * If false, then calling the {@link #range(TemporalField) range} and
+     * {@link #get(TemporalField) get} methods will throw an exception.
+     * <p>
+     * If the field is {@link ChronoField#AMPM_OF_DAY AMPM_OF_DAY} then
+     * this method returns true.
+     * All other {@code ChronoField} instances will return false.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the field is supported is determined by the field.
+     *
+     * @param field  the field to check, null returns false
+     * @return true if the field is supported on this am-pm, false if not
+     */
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == AMPM_OF_DAY;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
+    /**
+     * Gets the range of valid values for the specified field.
+     * <p>
+     * The range object expresses the minimum and maximum valid values for a field.
+     * This am-pm is used to enhance the accuracy of the returned range.
+     * If it is not possible to return the range, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link ChronoField#AMPM_OF_DAY AMPM_OF_DAY} then the
+     * range of the am-pm, from 0 to 1, will be returned.
+     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the range can be obtained is determined by the field.
+     *
+     * @param field  the field to query the range for, not null
+     * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException if the field is not supported
+     */
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field == AMPM_OF_DAY) {
             return field.range();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field);
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified field from this am-pm as an {@code int}.
+     * <p>
+     * This queries this am-pm for the value for the specified field.
+     * The returned value will always be within the valid range of values for the field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link ChronoField#AMPM_OF_DAY AMPM_OF_DAY} then the
+     * value of the am-pm, from 0 (AM) to 1 (PM), will be returned.
+     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field, within the valid range of values
+     * @throws DateTimeException if a value for the field cannot be obtained or
+     *         the value is outside the range of valid values for the field
+     * @throws UnsupportedTemporalTypeException if the field is not supported or
+     *         the range of values exceeds an {@code int}
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field == AMPM_OF_DAY) {
             return getValue();
         }
         return range(field).checkValidIntValue(getLong(field), field);
     }
 
+    /**
+     * Gets the value of the specified field from this am-pm as a {@code long}.
+     * <p>
+     * This queries this am-pm for the value for the specified field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link ChronoField#AMPM_OF_DAY AMPM_OF_DAY} then the
+     * value of the am-pm, from 0 (AM) to 1 (PM), will be returned.
+     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException if the field is not supported
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field == AMPM_OF_DAY) {
             return getValue();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Queries this am-pm using the specified query.
+     * <p>
+     * This queries this am-pm using the specified query strategy object.
+     * The {@code TemporalQuery} object defines the logic to be used to
+     * obtain the result. Read the documentation of the query to understand
+     * what the result of this method will be.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
+     * specified query passing {@code this} as the argument.
+     *
+     * @param <R> the type of the result
+     * @param query  the query to invoke, not null
+     * @return the query result, null may be returned (defined by the query)
+     * @throws DateTimeException if unable to query (defined by the query)
+     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID || query == Query.CHRONO) {
-            return null;
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology()) {
+            return (R) IsoChronology.INSTANCE;
+        } else if (query == TemporalQueries.precision()) {
+            return (R) HALF_DAYS;
         }
-        return query.doQuery(this);
+        return query.queryFrom(this);
     }
 
+    /**
+     * Adjusts the specified temporal object to have this am-pm value.
+     * <p>
+     * This returns a temporal object of the same observable type as the input
+     * with the am-pm changed to be the same as this.
+     * <p>
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
+     * passing {@link ChronoField#AMPM_OF_DAY} as the field.
+     * Note that this adjusts forwards or backwards within a day.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#with(TemporalAdjuster)}:
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisAmPm.adjustInto(temporal);
+     *   temporal = temporal.with(thisAmPm);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param temporal  the target object to be adjusted, not null
+     * @return the adjusted object, not null
+     * @throws DateTimeException if unable to make the adjustment
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(AMPM_OF_DAY, getValue());
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal.with(AMPM_OF_DAY, getValue());
     }
 
 }

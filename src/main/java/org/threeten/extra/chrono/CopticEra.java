@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,19 +31,8 @@
  */
 package org.threeten.extra.chrono;
 
-import static javax.time.calendrical.ChronoField.ERA;
-
-import java.util.Locale;
-
-import javax.time.DateTimeException;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.Era;
-import javax.time.format.DateTimeFormatterBuilder;
-import javax.time.format.TextStyle;
+import java.time.DateTimeException;
+import java.time.chrono.Era;
 
 /**
  * An era in the Coptic calendar system.
@@ -57,7 +46,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum CopticEra implements Era<CopticChrono> {
+public enum CopticEra implements Era {
 
     /**
      * The singleton instance for the era BEFORE_AM, 'Before Era of the Martyrs'.
@@ -102,83 +91,6 @@ enum CopticEra implements Era<CopticChrono> {
      */
     public int getValue() {
         return ordinal();
-    }
-
-    @Override
-    public CopticChrono getChrono() {
-        return CopticChrono.INSTANCE;
-    }
-
-    // JDK8 default methods:
-    //-----------------------------------------------------------------------
-    @Override
-    public ChronoLocalDate<CopticChrono> date(int year, int month, int day) {
-        return getChrono().date(this, year, month, day);
-    }
-
-    @Override
-    public ChronoLocalDate<CopticChrono> dateFromYearDay(int year, int dayOfYear) {
-        return getChrono().dateFromYearDay(this, year, dayOfYear);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public boolean isSupported(DateTimeField field) {
-        if (field instanceof ChronoField) {
-            return field == ERA;
-        }
-        return field != null && field.doIsSupported(this);
-    }
-
-    @Override
-    public DateTimeValueRange range(DateTimeField field) {
-        if (field == ERA) {
-            return field.range();
-        } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doRange(this);
-    }
-
-    @Override
-    public int get(DateTimeField field) {
-        if (field == ERA) {
-            return getValue();
-        }
-        return range(field).checkValidIntValue(getLong(field), field);
-    }
-
-    @Override
-    public long getLong(DateTimeField field) {
-        if (field == ERA) {
-            return getValue();
-        } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doGet(this);
-    }
-
-    //-------------------------------------------------------------------------
-    @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(ERA, getValue());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID) {
-            return null;
-        } else if (query == Query.CHRONO) {
-            return (R) getChrono();
-        }
-        return query.doQuery(this);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public String getText(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
     }
 
 }

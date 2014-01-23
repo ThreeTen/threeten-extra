@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,21 +31,19 @@
  */
 package org.threeten.extra.chrono;
 
-import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
+import java.time.chrono.AbstractChronology;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.Era;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
-import javax.time.DateTimeException;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.chrono.Chrono;
-import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.Era;
-import javax.time.jdk8.Jdk8Methods;
 
 /**
  * The Coptic calendar system.
@@ -72,7 +70,7 @@ import javax.time.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class CopticChrono extends Chrono<CopticChrono> implements Serializable {
+public final class CopticChrono extends AbstractChronology implements Serializable {
 
     /**
      * Singleton instance of the Coptic chronology.
@@ -82,12 +80,12 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
      * The singleton instance for the era BEFORE_AM.
      * This has the numeric value of {@code 0}.
      */
-    public static final Era<CopticChrono> ERA_BEFORE_AM = CopticEra.BEFORE_AM;
+    public static final Era ERA_BEFORE_AM = CopticEra.BEFORE_AM;
     /**
      * The singleton instance for the era AM - 'Era of the Martyrs'.
      * This has the numeric value of {@code 1}.
      */
-    public static final Era<CopticChrono> ERA_AM = CopticEra.AM;
+    public static final Era ERA_AM = CopticEra.AM;
 
     /**
      * Serialization version.
@@ -96,19 +94,19 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
     /**
      * Range of months.
      */
-    static final DateTimeValueRange MOY_RANGE = DateTimeValueRange.of(1, 13);
+    static final ValueRange MOY_RANGE = ValueRange.of(1, 13);
     /**
      * Range of days.
      */
-    static final DateTimeValueRange DOM_RANGE = DateTimeValueRange.of(1, 5, 30);
+    static final ValueRange DOM_RANGE = ValueRange.of(1, 5, 30);
     /**
      * Range of days.
      */
-    static final DateTimeValueRange DOM_RANGE_NONLEAP = DateTimeValueRange.of(1, 5);
+    static final ValueRange DOM_RANGE_NONLEAP = ValueRange.of(1, 5);
     /**
      * Range of days.
      */
-    static final DateTimeValueRange DOM_RANGE_LEAP = DateTimeValueRange.of(1, 6);
+    static final ValueRange DOM_RANGE_LEAP = ValueRange.of(1, 6);
 
     /**
      * Restricted constructor.
@@ -159,22 +157,22 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<CopticChrono> date(int prolepticYear, int month, int dayOfMonth) {
+    public CopticDate date(int prolepticYear, int month, int dayOfMonth) {
         return new CopticDate(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoLocalDate<CopticChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public CopticDate dateYearDay(int prolepticYear, int dayOfYear) {
         return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);
     }
 
     @Override
-    public ChronoLocalDate<CopticChrono> dateFromYearDay(Era<CopticChrono> era, int yearOfEra, int dayOfYear) {
+    public CopticDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ChronoLocalDate<CopticChrono> date(DateTimeAccessor dateTime) {
+    public CopticDate date(TemporalAccessor dateTime) {
         if (dateTime instanceof CopticDate) {
             return (CopticDate) dateTime;
         }
@@ -194,11 +192,11 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return Jdk8Methods.floorMod(prolepticYear, 4) == 3;
+        return Math.floorMod(prolepticYear, 4) == 3;
     }
 
     @Override
-    public int prolepticYear(Era<CopticChrono> era, int yearOfEra) {
+    public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof CopticEra == false) {
             throw new DateTimeException("Era must be CopticEra");
         }
@@ -206,25 +204,25 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
     }
 
     @Override
-    public Era<CopticChrono> eraOf(int eraValue) {
+    public Era eraOf(int eraValue) {
         return CopticEra.of(eraValue);
     }
 
     @Override
-    public List<Era<CopticChrono>> eras() {
-        return Arrays.<Era<CopticChrono>>asList(CopticEra.values());
+    public List<Era> eras() {
+        return Arrays.<Era>asList(CopticEra.values());
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(ChronoField field) {
+    public ValueRange range(ChronoField field) {
         switch (field) {
-            case DAY_OF_MONTH: return DateTimeValueRange.of(1, 5, 30);
-            case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 1, 5);
-            case MONTH_OF_YEAR: return DateTimeValueRange.of(1, 13);
-            case EPOCH_MONTH: return DateTimeValueRange.of(-1000, 1000);  // TODO
-            case YEAR_OF_ERA: return DateTimeValueRange.of(1, 999, 1000);  // TODO
-            case YEAR: return DateTimeValueRange.of(-1000, 1000);  // TODO
+            case DAY_OF_MONTH: return ValueRange.of(1, 5, 30);
+            case ALIGNED_WEEK_OF_MONTH: return ValueRange.of(1, 1, 5);
+            case MONTH_OF_YEAR: return ValueRange.of(1, 13);
+            case PROLEPTIC_MONTH: return ValueRange.of(-1000, 1000);  // TODO
+            case YEAR_OF_ERA: return ValueRange.of(1, 999, 1000);  // TODO
+            case YEAR: return ValueRange.of(-1000, 1000);  // TODO
         }
         return field.range();
     }

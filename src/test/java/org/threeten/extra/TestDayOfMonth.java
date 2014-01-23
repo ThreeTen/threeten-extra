@@ -31,7 +31,7 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -44,13 +44,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalTime;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -71,7 +70,7 @@ public class TestDayOfMonth {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfMonth.class));
-        assertTrue(WithAdjuster.class.isAssignableFrom(DayOfMonth.class));
+        assertTrue(TemporalAdjuster.class.isAssignableFrom(DayOfMonth.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -191,12 +190,12 @@ public class TestDayOfMonth {
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_CalendricalObject_noDerive() {
-        DayOfMonth.from(LocalTime.MIDDAY);
+        DayOfMonth.from(LocalTime.NOON);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        DayOfMonth.from((DateTimeAccessor) null);
+        DayOfMonth.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -211,7 +210,7 @@ public class TestDayOfMonth {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
-            DateTime result = DayOfMonth.of(i).doWithAdjustment(base);
+            Temporal result = DayOfMonth.of(i).adjustInto(base);
             assertEquals(result, expected);
             expected = expected.plusDays(1);
         }
@@ -221,21 +220,21 @@ public class TestDayOfMonth {
     public void test_adjustDate_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.of(31);
-        test.doWithAdjustment(base);
+        test.adjustInto(base);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_adjustDate_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);
-        test.doWithAdjustment(base);
+        test.adjustInto(base);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_nullLocalDate() {
         LocalDate date = null;
         DayOfMonth test = DayOfMonth.of(1);
-        test.doWithAdjustment(date);
+        test.adjustInto(date);
     }
 
     //-----------------------------------------------------------------------

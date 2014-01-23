@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,17 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-
-import javax.time.DateTimeException;
-import javax.time.LocalTime;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
 
 /**
  * A representation of a second-of-minute in the ISO-8601 calendar system.
@@ -57,7 +56,7 @@ import javax.time.calendrical.DateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class SecondOfMinute
-        implements Comparable<SecondOfMinute>, WithAdjuster, Serializable {
+        implements Comparable<SecondOfMinute>, TemporalAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -99,14 +98,14 @@ public final class SecondOfMinute
     /**
      * Obtains an instance of {@code SecondOfMinute} from a date-time object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code SecondOfMinute}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the year, not null
      * @throws DateTimeException if unable to convert to a {@code SecondOfMinute}
      */
-    public static SecondOfMinute from(DateTimeAccessor dateTime) {
+    public static SecondOfMinute from(TemporalAccessor dateTime) {
         LocalTime time = LocalTime.from(dateTime);
         return SecondOfMinute.of(time.getSecond());
     }
@@ -139,7 +138,7 @@ public final class SecondOfMinute
      *
      * @return the second-of-minute field, never null
      */
-    public DateTimeField getField() {
+    public TemporalField getField() {
         return ChronoField.SECOND_OF_MINUTE;
     }
 
@@ -162,12 +161,12 @@ public final class SecondOfMinute
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dateTime  the time to be adjusted, not null
+     * @param temporal  the temporal to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(SECOND_OF_MINUTE, secondOfMinute);
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal.with(SECOND_OF_MINUTE, secondOfMinute);
     }
 
     //-----------------------------------------------------------------------

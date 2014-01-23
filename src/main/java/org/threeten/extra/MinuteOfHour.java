@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,17 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-
-import javax.time.DateTimeException;
-import javax.time.LocalTime;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
 
 /**
  * A representation of a minute-of-hour in the ISO-8601 calendar system.
@@ -57,7 +56,7 @@ import javax.time.calendrical.DateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class MinuteOfHour
-        implements Comparable<MinuteOfHour>, WithAdjuster, Serializable {
+        implements Comparable<MinuteOfHour>, TemporalAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -99,14 +98,14 @@ public final class MinuteOfHour
     /**
      * Obtains an instance of {@code MinuteOfHour} from a date-time object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code MinuteOfHour}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the minute-of-hour, not null
      * @throws DateTimeException if unable to convert to a {@code MinuteOfHour}
      */
-    public static MinuteOfHour from(DateTimeAccessor dateTime) {
+    public static MinuteOfHour from(TemporalAccessor dateTime) {
         LocalTime time = LocalTime.from(dateTime);
         return MinuteOfHour.of(time.getMinute());
     }
@@ -139,7 +138,7 @@ public final class MinuteOfHour
      *
      * @return the minute-of-hour field, never null
      */
-    public DateTimeField getField() {
+    public TemporalField getField() {
         return ChronoField.MINUTE_OF_HOUR;
     }
 
@@ -162,12 +161,12 @@ public final class MinuteOfHour
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dateTime  the time to be adjusted, not null
+     * @param temporal  the temporal to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(MINUTE_OF_HOUR, minuteOfHour);
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal.with(MINUTE_OF_HOUR, minuteOfHour);
     }
 
     //-----------------------------------------------------------------------

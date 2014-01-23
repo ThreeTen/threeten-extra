@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,9 @@
  */
 package org.threeten.extra;
 
-import static javax.time.DayOfWeek.MONDAY;
-import static javax.time.DayOfWeek.SATURDAY;
-import static javax.time.DayOfWeek.SUNDAY;
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -46,11 +46,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import javax.time.LocalDate;
-import javax.time.Month;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 
 import org.testng.annotations.Test;
 
@@ -64,7 +63,7 @@ public class TestWeekendRules {
     // nextNonWeekendDay()
     //-----------------------------------------------------------------------
     public void test_nextNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        WithAdjuster nextNonWeekendDay = WeekendRules.nextNonWeekendDay();
+        TemporalAdjuster nextNonWeekendDay = WeekendRules.nextNonWeekendDay();
         assertTrue(nextNonWeekendDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -85,7 +84,7 @@ public class TestWeekendRules {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
-                LocalDate test = (LocalDate) WeekendRules.nextNonWeekendDay().doWithAdjustment(date);
+                LocalDate test = (LocalDate) WeekendRules.nextNonWeekendDay().adjustInto(date);
                 assertTrue(test.isAfter(date));
                 assertFalse(test.getDayOfWeek().equals(SATURDAY));
                 assertFalse(test.getDayOfWeek().equals(SUNDAY));
@@ -123,11 +122,11 @@ public class TestWeekendRules {
 
     public void test_nextNonWeekendDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, Month.DECEMBER, 31);
-        DateTime test = WeekendRules.nextNonWeekendDay().doWithAdjustment(friday);
+        Temporal test = WeekendRules.nextNonWeekendDay().adjustInto(friday);
         assertEquals(LocalDate.of(2011, Month.JANUARY, 3), test);
 
         LocalDate saturday = LocalDate.of(2011, Month.DECEMBER, 31);
-        test = WeekendRules.nextNonWeekendDay().doWithAdjustment(saturday);
+        test = WeekendRules.nextNonWeekendDay().adjustInto(saturday);
         assertEquals(LocalDate.of(2012, Month.JANUARY, 2), test);
     }
 

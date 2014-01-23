@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,13 +36,12 @@ import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
-
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalTime;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -107,25 +106,25 @@ public class TestAmPm {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        AmPm.from((DateTimeAccessor) null);
+        AmPm.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
-    // getText()
+    // getDisplayName()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_getText() {
-        assertEquals(AmPm.AM.getText(TextStyle.SHORT, Locale.US), "AM");
+    public void test_getDisplayName() {
+        assertEquals(AmPm.AM.getDisplayName(TextStyle.SHORT, Locale.US), "AM");
     }
 
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullStyle() {
-        AmPm.AM.getText(null, Locale.US);
+    public void test_getDisplayName_nullStyle() {
+        AmPm.AM.getDisplayName(null, Locale.US);
     }
 
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_getText_nullLocale() {
-        AmPm.AM.getText(TextStyle.FULL, null);
+    public void test_getDisplayName_nullLocale() {
+        AmPm.AM.getDisplayName(TextStyle.FULL, null);
     }
 
     //-----------------------------------------------------------------------

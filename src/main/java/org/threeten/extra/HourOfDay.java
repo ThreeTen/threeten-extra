@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,17 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-
-import javax.time.DateTimeException;
-import javax.time.LocalTime;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
 
 /**
  * A representation of a hour-of-day in the ISO-8601 calendar system.
@@ -57,7 +56,7 @@ import javax.time.calendrical.DateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class HourOfDay
-        implements Comparable<HourOfDay>, WithAdjuster, Serializable {
+        implements Comparable<HourOfDay>, TemporalAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -113,14 +112,14 @@ public final class HourOfDay
     /**
      * Obtains an instance of {@code HourOfDay} from a date-time object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code HourOfDay}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the hour-of-day, not null
      * @throws DateTimeException if unable to convert to a {@code HourOfDay}
      */
-    public static HourOfDay from(DateTimeAccessor dateTime) {
+    public static HourOfDay from(TemporalAccessor dateTime) {
         LocalTime time = LocalTime.from(dateTime);
         return HourOfDay.of(time.getHour());
     }
@@ -153,7 +152,7 @@ public final class HourOfDay
      *
      * @return the hour-of-day field, never null
      */
-    public DateTimeField getField() {
+    public TemporalField getField() {
         return ChronoField.HOUR_OF_DAY;
     }
 
@@ -176,12 +175,12 @@ public final class HourOfDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dateTime  the time to be adjusted, not null
+     * @param temporal  the temporal to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(HOUR_OF_DAY, hour);
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal.with(HOUR_OF_DAY, hour);
     }
 
     //-----------------------------------------------------------------------

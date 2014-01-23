@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,15 +31,15 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.MONTHS;
 
-import javax.time.LocalDate;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.global.HijrahChrono;
-import javax.time.chrono.global.MinguoChrono;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.HijrahChronology;
+import java.time.chrono.MinguoChronology;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 
 /**
  * Adjusters that allow dates to be adjusted in terms of a calendar system.
@@ -53,24 +53,24 @@ public final class ChronoAdjusters {
     }
 
     //-----------------------------------------------------------------------
-    public static WithAdjuster minguo(final WithAdjuster adjuster) {
-        return new WithAdjuster() {
+    public static TemporalAdjuster minguo(final TemporalAdjuster adjuster) {
+        return new TemporalAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime dateTime) {
-                ChronoLocalDate baseDate = MinguoChrono.INSTANCE.date(dateTime);
-                ChronoLocalDate adjustedDate = (ChronoLocalDate) adjuster.doWithAdjustment(baseDate);
-                return dateTime.with(adjustedDate);
+            public Temporal adjustInto(Temporal temporal) {
+                ChronoLocalDate baseDate = MinguoChronology.INSTANCE.date(temporal);
+                ChronoLocalDate adjustedDate = (ChronoLocalDate) adjuster.adjustInto(baseDate);
+                return temporal.with(adjustedDate);
             }
         };
     }
 
-    public static WithAdjuster hijrah(final WithAdjuster adjuster) {
-        return new WithAdjuster() {
+    public static TemporalAdjuster hijrah(final TemporalAdjuster adjuster) {
+        return new TemporalAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime dateTime) {
-                ChronoLocalDate baseDate = HijrahChrono.INSTANCE.date(dateTime);
-                ChronoLocalDate adjustedDate = (ChronoLocalDate) adjuster.doWithAdjustment(baseDate);
-                return dateTime.with(adjustedDate);
+            public Temporal adjustInto(Temporal temporal) {
+                ChronoLocalDate baseDate = HijrahChronology.INSTANCE.date(temporal);
+                ChronoLocalDate adjustedDate = (ChronoLocalDate) adjuster.adjustInto(baseDate);
+                return temporal.with(adjustedDate);
             }
         };
     }
@@ -84,26 +84,26 @@ public final class ChronoAdjusters {
 //        date = date.with(minguo(firstDayOfNextMonth()));
 //        date = date.with(hijrah(firstDayOfNextMonth()));
 
-        date = date.with(hijrah(new WithAdjuster() {
+        date = date.with(hijrah(new TemporalAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime dateTime) {
-                return dateTime.plus(1, MONTHS);
+            public Temporal adjustInto(Temporal temporal) {
+                return temporal.plus(1, MONTHS);
             }
         }));
         System.out.println(date);
 
-        date = date.with(minguo(new WithAdjuster() {
+        date = date.with(minguo(new TemporalAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime dateTime) {
-                return dateTime.plus(1, MONTHS);
+            public Temporal adjustInto(Temporal temporal) {
+                return temporal.plus(1, MONTHS);
             }
         }));
         System.out.println(date);
 
-        date = date.with(minguo(DateTimeAdjusters.firstDayOfNextMonth()));
+        date = date.with(minguo(TemporalAdjusters.firstDayOfNextMonth()));
         System.out.println(date);
 
-        date = date.with(hijrah(DateTimeAdjusters.firstDayOfNextMonth()));
+        date = date.with(hijrah(TemporalAdjusters.firstDayOfNextMonth()));
         System.out.println(date);
     }
 

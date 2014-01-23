@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,17 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
 
 /**
  * A representation of a day-of-month in the ISO-8601 calendar system.
@@ -57,7 +56,7 @@ import javax.time.calendrical.DateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class DayOfMonth
-        implements Comparable<DayOfMonth>, WithAdjuster, Serializable {
+        implements Comparable<DayOfMonth>, TemporalAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -102,15 +101,15 @@ public final class DayOfMonth
     /**
      * Obtains an instance of {@code DayOfMonth} from a date-time object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * A {@code TemporalAccessor} represents some form of date and time information.
+     * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code DayOfMonth}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the day-of-month, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfMonth}
      */
-    public static DayOfMonth from(DateTimeAccessor dateTime) {
+    public static DayOfMonth from(TemporalAccessor dateTime) {
         LocalDate date = LocalDate.from(dateTime);
         return DayOfMonth.of(date.getDayOfMonth());
     }
@@ -143,7 +142,7 @@ public final class DayOfMonth
      *
      * @return the day-of-month field, never null
      */
-    public DateTimeField getField() {
+    public TemporalField getField() {
         return ChronoField.DAY_OF_MONTH;
     }
 
@@ -165,12 +164,12 @@ public final class DayOfMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dateTime  the date to be adjusted, not null
+     * @param temporal  the temporal to be adjusted, not null
      * @return the adjusted date, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(DAY_OF_MONTH, dayOfMonth);
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal.with(DAY_OF_MONTH, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

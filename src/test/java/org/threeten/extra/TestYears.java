@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoUnit.YEARS;
+import static java.time.temporal.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -42,8 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import javax.time.calendrical.PeriodUnit;
+import java.time.temporal.ChronoUnit;
 
 import org.testng.annotations.Test;
 
@@ -162,7 +161,7 @@ public class TestYears {
 
     //-----------------------------------------------------------------------
     public void test_getUnit() {
-        PeriodUnit unit = Years.of(5).getUnit();
+        ChronoUnit unit = Years.of(5).getUnit();
         assertNotNull(unit);
         assertEquals(unit, YEARS);
     }

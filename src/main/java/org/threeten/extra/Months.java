@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,10 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.MONTHS;
 
 import java.io.Serializable;
-
-import javax.time.calendrical.PeriodUnit;
+import java.time.temporal.ChronoUnit;
 
 /**
  * A period representing a number of months.
@@ -130,7 +129,7 @@ public final class Months extends AbstractPeriodField implements Comparable<Mont
      * @return the months unit, never null
      */
     @Override
-    public PeriodUnit getUnit() {
+    public ChronoUnit getUnit() {
         return MONTHS;
     }
 

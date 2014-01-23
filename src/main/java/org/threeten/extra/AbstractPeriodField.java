@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,8 +31,7 @@
  */
 package org.threeten.extra;
 
-import javax.time.calendrical.PeriodUnit;
-import javax.time.jdk8.Jdk8Methods;
+import java.time.temporal.ChronoUnit;
 
 /**
  * An abstract period measured in terms of a single field, such as days or seconds.
@@ -82,7 +81,7 @@ public abstract class AbstractPeriodField {
      *
      * @return the period unit, never null
      */
-    public abstract PeriodUnit getUnit();
+    public abstract ChronoUnit getUnit();
 
     //-----------------------------------------------------------------------
     /**
@@ -98,7 +97,7 @@ public abstract class AbstractPeriodField {
         if (amount == 0) {
             return this;
         }
-        return withAmount(Jdk8Methods.safeAdd(getAmount(), amount));
+        return withAmount(Math.addExact(getAmount(), amount));
     }
 
     //-----------------------------------------------------------------------
@@ -112,7 +111,7 @@ public abstract class AbstractPeriodField {
      * @throws ArithmeticException if the result overflows an int
      */
     public AbstractPeriodField minus(int amount) {
-        return withAmount(Jdk8Methods.safeSubtract(getAmount(), amount));
+        return withAmount(Math.subtractExact(getAmount(), amount));
     }
 
     //-----------------------------------------------------------------------
@@ -126,7 +125,7 @@ public abstract class AbstractPeriodField {
      * @throws ArithmeticException if the result overflows an int
      */
     public AbstractPeriodField multipliedBy(int scalar) {
-        return withAmount(Jdk8Methods.safeMultiply(getAmount(), scalar));
+        return withAmount(Math.multiplyExact(getAmount(), scalar));
     }
 
     /**
@@ -184,10 +183,10 @@ public abstract class AbstractPeriodField {
 //     * @throws ArithmeticException if the result overflows an int
 //     */
 //    public <T extends PeriodField> T convertTo(Class<T> periodType) {
-//        PeriodUnit unit = null;
+//        ChronoUnit unit = null;
 //        try {
 //            Field field = periodType.getField("UNIT");
-//            unit = (PeriodUnit) field.get(null);
+//            unit = (ChronoUnit) field.get(null);
 //        } catch (NoSuchFieldException ex) {
 //            throw new IllegalArgumentException("UNIT field missing on " + periodType, ex);
 //        } catch (SecurityException ex) {
@@ -199,7 +198,7 @@ public abstract class AbstractPeriodField {
 //        } catch (NullPointerException ex) {
 //            throw new IllegalArgumentException("UNIT field not static on " + periodType, ex);
 //        } catch (ClassCastException ex) {
-//            throw new IllegalArgumentException("UNIT field not a PeriodUnit on " + periodType, ex);
+//            throw new IllegalArgumentException("UNIT field not a ChronoUnit on " + periodType, ex);
 //        }
 //        return null; //getUnit().convert(this);
 //    }
@@ -214,7 +213,7 @@ public abstract class AbstractPeriodField {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
-           return true;
+            return true;
         }
         if (obj instanceof AbstractPeriodField && getClass() == obj.getClass()) {
             AbstractPeriodField other = (AbstractPeriodField) obj;

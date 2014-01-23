@@ -31,7 +31,7 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -44,12 +44,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -71,7 +70,7 @@ public class TestNanoOfSecond {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(Comparable.class.isAssignableFrom(NanoOfSecond.class));
-        assertTrue(WithAdjuster.class.isAssignableFrom(NanoOfSecond.class));
+        assertTrue(TemporalAdjuster.class.isAssignableFrom(NanoOfSecond.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -143,7 +142,7 @@ public class TestNanoOfSecond {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        NanoOfSecond.from((DateTimeAccessor) null);
+        NanoOfSecond.from((TemporalAccessor) null);
     }
 
 //    //-----------------------------------------------------------------------
@@ -173,7 +172,7 @@ public class TestNanoOfSecond {
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
             NanoOfSecond test = NanoOfSecond.of(i);
-            assertEquals(test.doWithAdjustment(base), expected);
+            assertEquals(test.adjustInto(base), expected);
             expected = expected.plusNanos(SKIP);
         }
     }
@@ -181,7 +180,7 @@ public class TestNanoOfSecond {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
         NanoOfSecond test = NanoOfSecond.of(1);
-        test.doWithAdjustment((LocalTime) null);
+        test.adjustInto((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------

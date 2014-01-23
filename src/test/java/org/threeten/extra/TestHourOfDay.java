@@ -31,7 +31,7 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -44,12 +44,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -70,7 +69,7 @@ public class TestHourOfDay {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(HourOfDay.class));
-        assertTrue(WithAdjuster.class.isAssignableFrom(HourOfDay.class));
+        assertTrue(TemporalAdjuster.class.isAssignableFrom(HourOfDay.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -160,7 +159,7 @@ public class TestHourOfDay {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        HourOfDay.from((DateTimeAccessor) null);
+        HourOfDay.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -176,7 +175,7 @@ public class TestHourOfDay {
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
             HourOfDay test = HourOfDay.of(i);
-            assertEquals(test.doWithAdjustment(base), expected);
+            assertEquals(test.adjustInto(base), expected);
             expected = expected.plusHours(1);
         }
     }
@@ -184,7 +183,7 @@ public class TestHourOfDay {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_nullLocalTime() {
         HourOfDay test = HourOfDay.of(1);
-        test.doWithAdjustment((LocalTime) null);
+        test.adjustInto((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------

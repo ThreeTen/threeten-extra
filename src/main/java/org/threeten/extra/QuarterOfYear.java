@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,23 +31,25 @@
  */
 package org.threeten.extra;
 
-import static org.threeten.extra.QuarterYearField.QUARTER_OF_YEAR;
+import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 
+import java.time.DateTimeException;
+import java.time.Month;
+import java.time.chrono.Chronology;
+import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoField;
+import java.time.temporal.IsoFields;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
+import java.time.temporal.ValueRange;
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.time.DateTimeException;
-import javax.time.Month;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.chrono.Chrono;
-import javax.time.chrono.ISOChrono;
-import javax.time.format.DateTimeFormatterBuilder;
-import javax.time.format.TextStyle;
 
 /**
  * A quarter-of-year, such as 'Q2'.
@@ -70,7 +72,7 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
+public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -107,11 +109,16 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
      */
     public static QuarterOfYear of(int quarterOfYear) {
         switch (quarterOfYear) {
-            case 1: return Q1;
-            case 2: return Q2;
-            case 3: return Q3;
-            case 4: return Q4;
-            default: throw new DateTimeException("Invalid value for QuarterOfYear: " + quarterOfYear);
+            case 1:
+                return Q1;
+            case 2:
+                return Q2;
+            case 3:
+                return Q3;
+            case 4:
+                return Q4;
+            default:
+                throw new DateTimeException("Invalid value for QuarterOfYear: " + quarterOfYear);
         }
     }
 
@@ -136,14 +143,14 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
     /**
      * Obtains an instance of {@code QuarterOfYear} from a date-time object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code QuarterOfYear}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the quarter-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code QuarterOfYear}
      */
-    public static QuarterOfYear from(DateTimeAccessor dateTime) {
+    public static QuarterOfYear from(TemporalAccessor dateTime) {
         if (dateTime instanceof QuarterOfYear) {
             return (QuarterOfYear) dateTime;
         }
@@ -176,31 +183,31 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
      * @param locale  the locale to use, not null
      * @return the text value of the quarter-of-year, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendText(QUARTER_OF_YEAR, style).toFormatter(locale).print(this);
+    public String getDisplayName(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendText(QUARTER_OF_YEAR, style).toFormatter(locale).format(this);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == QUARTER_OF_YEAR;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field == QUARTER_OF_YEAR) {
             return field.range();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field);
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field == QUARTER_OF_YEAR) {
             return getValue();
         }
@@ -208,14 +215,14 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field == QUARTER_OF_YEAR) {
             return getValue();
         }
         if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -266,31 +273,38 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
      */
     public Month firstMonth() {
         switch (this) {
-            case Q1: return Month.JANUARY;
-            case Q2: return Month.APRIL;
-            case Q3: return Month.JULY;
-            case Q4: return Month.OCTOBER;
-            default: throw new IllegalStateException("Unreachable");
+            case Q1:
+                return Month.JANUARY;
+            case Q2:
+                return Month.APRIL;
+            case Q3:
+                return Month.JULY;
+            case Q4:
+                return Month.OCTOBER;
+            default:
+                throw new IllegalStateException("Unreachable");
         }
     }
 
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID) {
+    public <R extends Object> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.zoneId()) {
             return null;
-        } else if (query == Query.CHRONO) {
-            return (R) ISOChrono.INSTANCE;
+        } else if (query == TemporalQueries.chronology()) {
+            return (R) IsoChronology.INSTANCE;
+        } else if (query == TemporalQueries.precision()) {
+            return (R) IsoFields.QUARTER_YEARS;
         }
-        return query.doQuery(this);
+        return query.queryFrom(this);
     }
 
     /**
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(WithAdjuster)} method on the
+     * Applications should use the {@code with(TemporalAdjuster)} method on the
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -298,18 +312,18 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this quarter.
      * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link DateTime#with(DateTimeField, long)}
+     * The adjustment is equivalent to using {@link DateTime#with(TemporalField, long)}
      * passing {@code QUARTER_OF_YEAR} as the field.
      *
-     * @param dateTime  the target object to be adjusted, not null
+     * @param temporal  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        if (Chrono.from(dateTime).equals(ISOChrono.INSTANCE) == false) {
+    public Temporal adjustInto(Temporal temporal) {
+        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        return dateTime.with(QUARTER_OF_YEAR, getValue());
+        return temporal.with(QUARTER_OF_YEAR, getValue());
     }
 
 }

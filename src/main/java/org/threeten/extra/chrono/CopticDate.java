@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,31 +31,28 @@
  */
 package org.threeten.extra.chrono;
 
-import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
-import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
-
-import javax.time.DateTimeConstants;
-import javax.time.DateTimeException;
-import javax.time.DayOfWeek;
-import javax.time.LocalDate;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.Era;
-import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
-import javax.time.jdk8.Jdk8Methods;
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoPeriod;
+import java.time.chrono.Era;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
+import java.time.temporal.ValueRange;
 
 /**
  * A date in the Coptic calendar system.
@@ -66,8 +63,7 @@ import javax.time.jdk8.Jdk8Methods;
  * This class is immutable and thread-safe.
  */
 final class CopticDate
-        extends DefaultInterfaceChronoLocalDate<CopticChrono>
-        implements ChronoLocalDate<CopticChrono>, Serializable {
+        implements ChronoLocalDate, Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
 
@@ -147,7 +143,7 @@ final class CopticDate
      */
     CopticDate(int prolepticYear, int month, int dayOfMonth) {
         CopticChrono.MOY_RANGE.checkValidValue(month, MONTH_OF_YEAR);
-        DateTimeValueRange range;
+        ValueRange range;
         if (month == 13) {
             range = CopticChrono.INSTANCE.isLeapYear(prolepticYear) ? CopticChrono.DOM_RANGE_LEAP : CopticChrono.DOM_RANGE_NONLEAP;
         } else {
@@ -172,7 +168,7 @@ final class CopticDate
 
     //-----------------------------------------------------------------------
     @Override
-    public CopticChrono getChrono() {
+    public CopticChrono getChronology() {
         return CopticChrono.INSTANCE;
     }
 
@@ -188,39 +184,38 @@ final class CopticDate
     }
 
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateField() &&
-                    field != WEEK_OF_MONTH && field != WEEK_OF_YEAR;
+            return field.isDateBased();
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 ChronoField f = (ChronoField) field;
                 switch (f) {
-                    case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
-                    case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
-                    case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonthValue() == 13 ? 1 : 5);
+                    case DAY_OF_MONTH: return ValueRange.of(1, lengthOfMonth());
+                    case DAY_OF_YEAR: return ValueRange.of(1, lengthOfYear());
+                    case ALIGNED_WEEK_OF_MONTH: return ValueRange.of(1, getMonthValue() == 13 ? 1 : 5);
                     case YEAR:
                     case YEAR_OF_ERA: return (prolepticYear <= 0 ?
-                            DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR));  // TODO
+                            ValueRange.of(1, Year.MAX_VALUE + 1) : ValueRange.of(1, Year.MAX_VALUE));  // TODO
                 }
-                return getChrono().range(f);
+                return getChronology().range(f);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field);
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case DAY_OF_WEEK: return Jdk8Methods.floorMod(toEpochDay() + 3, 7) + 1;
+                case DAY_OF_WEEK: return Math.floorMod(toEpochDay() + 3, 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((day - 1) % 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
                 case DAY_OF_MONTH: return day;
@@ -233,18 +228,18 @@ final class CopticDate
                 case YEAR: return prolepticYear;
                 case ERA: return (prolepticYear >= 1 ? 1 : 0);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     @Override
-    public CopticDate with(WithAdjuster adjuster) {
-        return (CopticDate) adjuster.doWithAdjustment(this);
+    public CopticDate with(TemporalAdjuster adjuster) {
+        return (CopticDate) adjuster.adjustInto(this);
     }
 
     @Override
-    public CopticDate with(DateTimeField field, long newValue) {
+    public CopticDate with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);        // TODO: validate value
@@ -263,75 +258,75 @@ final class CopticDate
                 case YEAR: return resolvePreviousValid(nvalue, month, day);
                 case ERA: return resolvePreviousValid(1 - prolepticYear, month, day);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new DateTimeException("Unsupported field: " + field);
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
-    //-----------------------------------------------------------------------
-    @Override
-    public CopticDate plus(PlusAdjuster adjuster) {
-        return (CopticDate) super.plus(adjuster);
-    }
-
-    @Override
-    public CopticDate plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof ChronoUnit) {
-            ChronoUnit f = (ChronoUnit) unit;
-            switch (f) {
-                case DAYS: return plusDays(amountToAdd);
-                case WEEKS: return plusDays(Jdk8Methods.safeMultiply(amountToAdd, 7));
-                case MONTHS: return plusMonths(amountToAdd);
-                case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
-                case YEARS: return plusYears(amountToAdd);
-                case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
-                case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
-                case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
-//                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
-//                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
-            }
-            throw new DateTimeException(unit.getName() + " not valid for CopticDate");
-        }
-        return unit.doPlus(this, amountToAdd);
-    }
-
-    //-----------------------------------------------------------------------
-    public CopticDate plusYears(long years) {
-        return plusMonths(Jdk8Methods.safeMultiply(years, 13));
-    }
-
-    public CopticDate plusMonths(long months) {
-        if (months == 0) {
-            return this;
-        }
-        long curEm = prolepticYear * 13L + (month - 1);
-        long calcEm = Jdk8Methods.safeAdd(curEm, months);
-        int newYear = Jdk8Methods.safeToInt(Jdk8Methods.floorDiv(calcEm, 13));
-        int newMonth = Jdk8Methods.floorMod(calcEm, 13) + 1;
-        return resolvePreviousValid(newYear, newMonth, day);
-    }
-
-    public CopticDate plusWeeks(long weeksToAdd) {
-        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
-    }
-
+//    //-----------------------------------------------------------------------
+//    @Override
+//    public CopticDate plus(PlusAdjuster adjuster) {
+//        return (CopticDate) super.plus(adjuster);
+//    }
+//
+//    @Override
+//    public CopticDate plus(long amountToAdd, ChronoUnit unit) {
+//        if (unit instanceof ChronoUnit) {
+//            ChronoUnit f = (ChronoUnit) unit;
+//            switch (f) {
+//                case DAYS: return plusDays(amountToAdd);
+//                case WEEKS: return plusDays(Jdk8Methods.safeMultiply(amountToAdd, 7));
+//                case MONTHS: return plusMonths(amountToAdd);
+//                case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
+//                case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
+//                case YEARS: return plusYears(amountToAdd);
+//                case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
+//                case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
+//                case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
+////                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
+////                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
+//            }
+//            throw new DateTimeException(unit.getName() + " not valid for CopticDate");
+//        }
+//        return unit.doPlus(this, amountToAdd);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public CopticDate plusYears(long years) {
+//        return plusMonths(Jdk8Methods.safeMultiply(years, 13));
+//    }
+//
+//    public CopticDate plusMonths(long months) {
+//        if (months == 0) {
+//            return this;
+//        }
+//        long curEm = prolepticYear * 13L + (month - 1);
+//        long calcEm = Jdk8Methods.safeAdd(curEm, months);
+//        int newYear = Jdk8Methods.safeToInt(Jdk8Methods.floorDiv(calcEm, 13));
+//        int newMonth = Jdk8Methods.floorMod(calcEm, 13) + 1;
+//        return resolvePreviousValid(newYear, newMonth, day);
+//    }
+//
+//    public CopticDate plusWeeks(long weeksToAdd) {
+//        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
+//    }
+//
     public CopticDate plusDays(long days) {
         if (days == 0) {
             return this;
         }
-        return CopticDate.ofEpochDay(Jdk8Methods.safeAdd(toEpochDay(), days));
+        return CopticDate.ofEpochDay(Math.addExact(toEpochDay(), days));
     }
 
-    @Override
-    public CopticDate minus(MinusAdjuster adjuster) {
-        return (CopticDate) super.minus(adjuster);
-    }
-
-    @Override
-    public CopticDate minus(long amountToSubtract, PeriodUnit unit) {
-        return (CopticDate) super.minus(amountToSubtract, unit);
-    }
+//    @Override
+//    public CopticDate minus(MinusAdjuster adjuster) {
+//        return (CopticDate) super.minus(adjuster);
+//    }
+//
+//    @Override
+//    public CopticDate minus(long amountToSubtract, ChronoUnit unit) {
+//        return (CopticDate) super.minus(amountToSubtract, unit);
+//    }
 
     public int getYear() {
         return get(ChronoField.YEAR_OF_ERA);
@@ -353,7 +348,7 @@ final class CopticDate
         return DayOfWeek.of(get(ChronoField.DAY_OF_WEEK));
     }
 
-    public CopticDate withEra(Era<CopticChrono> era) {
+    public CopticDate withEra(Era era) {
         return with(ChronoField.ERA, era.getValue());
     }
 
@@ -373,42 +368,42 @@ final class CopticDate
         return with(ChronoField.DAY_OF_YEAR, month);
     }
 
-    public CopticDate minusYears(long yearsToSubtract) {
-        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
-    }
-
-    public CopticDate minusMonths(long monthsToSubtract) {
-        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
-    }
-
-    public CopticDate minusWeeks(long weeksToSubtract) {
-        return  (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
-    }
-
-    public CopticDate minusDays(long daysToSubtract) {
-        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
-    }
+//    public CopticDate minusYears(long yearsToSubtract) {
+//        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
+//    }
+//
+//    public CopticDate minusMonths(long monthsToSubtract) {
+//        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
+//    }
+//
+//    public CopticDate minusWeeks(long weeksToSubtract) {
+//        return  (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
+//    }
+//
+//    public CopticDate minusDays(long daysToSubtract) {
+//        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
+//    }
 
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
-        if (endDateTime instanceof ChronoLocalDate == false) {
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        if (endExclusive instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        ChronoLocalDate<?> end = (ChronoLocalDate<?>) endDateTime;
-        if (getChrono().equals(end.getChrono()) == false) {
+        ChronoLocalDate end = (ChronoLocalDate) endExclusive;
+        if (getChronology().equals(end.getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof ChronoUnit) {
-            return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
+            return LocalDate.from(this).until(end, unit);  // TODO: this is wrong
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endExclusive);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
         long year = (long) prolepticYear;
-        long copticEpochDay = ((year - 1) * 365) + Jdk8Methods.floorDiv(year, 4) + (getDayOfYear() - 1);
+        long copticEpochDay = ((year - 1) * 365) + Math.floorDiv(year, 4) + (getDayOfYear() - 1);
         return copticEpochDay - EPOCH_DAY_DIFFERENCE;
     }
 

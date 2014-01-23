@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,17 +31,16 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 
 import java.io.Serializable;
-
-import javax.time.DateTimeException;
-import javax.time.LocalTime;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
+import java.time.DateTimeException;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 
 /**
  * A representation of a nano-of-second in the ISO-8601 calendar system.
@@ -56,7 +55,7 @@ import javax.time.calendrical.DateTimeField;
  * This class is immutable and thread-safe.
  */
 public final class NanoOfSecond
-        implements Comparable<NanoOfSecond>, WithAdjuster, Serializable {
+        implements Comparable<NanoOfSecond>, TemporalAdjuster, Serializable {
 
     /**
      * A singleton instance for zero nanoseconds.
@@ -93,14 +92,14 @@ public final class NanoOfSecond
     /**
      * Obtains an instance of {@code NanoOfSecond} from a date-time object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
+     * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code NanoOfSecond}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the nano-of-second, not null
      * @throws DateTimeException if unable to convert to a {@code NanoOfSecond}
      */
-    public static NanoOfSecond from(DateTimeAccessor dateTime) {
+    public static NanoOfSecond from(TemporalAccessor dateTime) {
         LocalTime time = LocalTime.from(dateTime);
         return NanoOfSecond.of(time.getNano());
     }
@@ -124,7 +123,7 @@ public final class NanoOfSecond
      *
      * @return the nano-of-second field, never null
      */
-    public DateTimeField getField() {
+    public TemporalField getField() {
         return ChronoField.NANO_OF_SECOND;
     }
 
@@ -159,12 +158,12 @@ public final class NanoOfSecond
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dateTime  the time to be adjusted, not null
+     * @param temporal  the temporal to be adjusted, not null
      * @return the adjusted time, never null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime.with(NANO_OF_SECOND, nanoOfSecond);
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal.with(NANO_OF_SECOND, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,11 @@
  */
 package org.threeten.extra;
 
-import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
-import static javax.time.calendrical.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static java.time.temporal.ChronoUnit.DAYS;
 
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 
 /**
  * A helper class for rules around weekends.
@@ -62,7 +62,7 @@ public final class WeekendRules {
      *
      * @return the next working day adjuster, not null
      */
-    public static WithAdjuster nextNonWeekendDay() {
+    public static TemporalAdjuster nextNonWeekendDay() {
         return Adjuster.NEXT_NON_WEEKEND;
     }
 
@@ -70,19 +70,19 @@ public final class WeekendRules {
     /**
      * Enum implementing the adjusters.
      */
-    private static enum Adjuster implements WithAdjuster {
+    private static enum Adjuster implements TemporalAdjuster {
         /** Next non weekend day adjuster. */
         NEXT_NON_WEEKEND {
             @Override
-            public DateTime doWithAdjustment(DateTime dateTime) {
-                int dow = dateTime.get(DAY_OF_WEEK);
+            public Temporal adjustInto(Temporal temporal) {
+                int dow = temporal.get(DAY_OF_WEEK);
                 switch (dow) {
                     case 6:  // Saturday
-                        return dateTime.plus(2, DAYS);
+                        return temporal.plus(2, DAYS);
                     case 5:  // Friday
-                        return dateTime.plus(3, DAYS);
+                        return temporal.plus(3, DAYS);
                     default:
-                        return dateTime.plus(1, DAYS);
+                        return temporal.plus(1, DAYS);
                 }
             }
         },

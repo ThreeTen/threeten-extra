@@ -33,12 +33,11 @@ package org.threeten.extra.chrono;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.chrono.Chrono;
-import javax.time.chrono.ChronoLocalDate;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.Chronology;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -55,7 +54,7 @@ public class TestCopticChrono {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_chrono_byName() {
-        Chrono<?> Coptic = Chrono.of("Coptic");
+        Chronology Coptic = Chronology.of("Coptic");
         Assert.assertNotNull(Coptic, "The Coptic calendar could not be found byName");
         Assert.assertEquals(Coptic.getId(), "Coptic", "Name mismatch");
     }
@@ -84,12 +83,12 @@ public class TestCopticChrono {
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_toLocalDate(ChronoLocalDate<?> coptic, LocalDate iso) {
+    public void test_toLocalDate(ChronoLocalDate coptic, LocalDate iso) {
         assertEquals(LocalDate.from(coptic), iso);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_fromCalendrical(ChronoLocalDate<?> coptic, LocalDate iso) {
+    public void test_fromCalendrical(ChronoLocalDate coptic, LocalDate iso) {
         assertEquals(CopticChrono.INSTANCE.date(iso), coptic);
     }
 
@@ -131,7 +130,7 @@ public class TestCopticChrono {
     }
 
     //-----------------------------------------------------------------------
-    // with(WithAdjuster)
+    // with(TemporalAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_adjust1() {
