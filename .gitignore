@@ -6,6 +6,10 @@
 /temp*
 /.settings/
 /nbproject/private/
+/target/
+.classpath
+.project
+.checkstyle
 *.class
 *.jar
 *.war

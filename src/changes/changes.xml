@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+    <title>ThreeTen-Extra - Changes</title>
+    <author>Stephen Colebourne</author>
+  </properties>
+
+  <body>
+    <!-- types are add, fix, remove, update -->
+    <release version="0.5" date="xxx" description="v0.5">
+      <action dev="scolebourne" type="add" >
+        Initial creation
+      </action>
+    </release>
+  </body>
+</document>
