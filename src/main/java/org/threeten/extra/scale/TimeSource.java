@@ -31,8 +31,8 @@
  */
 package org.threeten.extra.scale;
 
-import javax.time.Clock;
-import javax.time.Instant;
+import java.time.Clock;
+import java.time.Instant;
 
 /**
  * A clock that provides the current UTC or TAI instant.
