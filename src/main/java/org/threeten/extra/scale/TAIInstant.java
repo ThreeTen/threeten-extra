@@ -36,11 +36,10 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.time.DateTimeException;
-import javax.time.Duration;
-import javax.time.Instant;
-import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.Jdk8Methods;
+import java.time.DateTimeException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.
@@ -131,9 +130,9 @@ public final class TAIInstant
      * @return the TAI instant, not null
      */
     public static TAIInstant ofTAISeconds(long taiSeconds, long nanoAdjustment) {
-        long secs = Jdk8Methods.safeAdd(taiSeconds, Jdk8Methods.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-        int nos = Jdk8Methods.floorMod(nanoAdjustment, NANOS_PER_SECOND);
-        return new TAIInstant(secs, nos);
+        long secs = Math.addExact(taiSeconds, Math.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        long nos = Math.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+        return new TAIInstant(secs, Long.valueOf(nos).intValue());
     }
 
     /**
@@ -302,7 +301,7 @@ public final class TAIInstant
         if ((secsToAdd | nanosToAdd) == 0) {
             return this;
         }
-        long secs = Jdk8Methods.safeAdd(seconds, secsToAdd);
+        long secs = Math.addExact(seconds, secsToAdd);
         long nanoAdjustment = ((long) nanos) + nanosToAdd;  // safe int+int
         return ofTAISeconds(secs, nanoAdjustment);
     }
@@ -328,7 +327,7 @@ public final class TAIInstant
         if ((secsToSubtract | nanosToSubtract) == 0) {
             return this;
         }
-        long secs = Jdk8Methods.safeSubtract(seconds, secsToSubtract);
+        long secs = Math.subtractExact(seconds, secsToSubtract);
         long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
         return ofTAISeconds(secs, nanoAdjustment);
     }
@@ -346,7 +345,7 @@ public final class TAIInstant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration durationUntil(TAIInstant taiInstant) {
-        long durSecs = Jdk8Methods.safeSubtract(taiInstant.seconds, seconds);
+        long durSecs = Math.subtractExact(taiInstant.seconds, seconds);
         long durNanos = taiInstant.nanos - nanos;
         return Duration.ofSeconds(durSecs, durNanos);
     }
