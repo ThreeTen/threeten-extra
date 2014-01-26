@@ -131,8 +131,8 @@ public final class TAIInstant
      */
     public static TAIInstant ofTAISeconds(long taiSeconds, long nanoAdjustment) {
         long secs = Math.addExact(taiSeconds, Math.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-        long nos = Math.floorMod(nanoAdjustment, NANOS_PER_SECOND);
-        return new TAIInstant(secs, Long.valueOf(nos).intValue());
+        int nos = (int) Math.floorMod(nanoAdjustment, NANOS_PER_SECOND);  // safe cast
+        return new TAIInstant(secs, nos);
     }
 
     /**
