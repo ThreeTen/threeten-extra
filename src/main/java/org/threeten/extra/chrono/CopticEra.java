@@ -37,25 +37,29 @@ import java.time.chrono.Era;
 /**
  * An era in the Coptic calendar system.
  * <p>
- * The Coptic calendar system uses the 'Era of the Martyrs'.
+ * The Coptic calendar system has two eras.
+ * The current era, for years from 1 onwards, is known as the 'Era of the Martyrs'.
+ * All previous years, zero or earlier in the proleptic count or one and greater
+ * in the year-of-era count, are part of the 'Before Era of the Martyrs' era.
+ * <p>
  * The start of the Coptic epoch {@code 0001-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code CopticEra}.
  * Use {@code getValue()} instead.</b>
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This is an immutable and thread-safe enum.
  */
 public enum CopticEra implements Era {
 
     /**
-     * The singleton instance for the era BEFORE_AM, 'Before Era of the Martyrs'.
-     * This has the numeric value of {@code 0}.
+     * The singleton instance for the era before the current one, 'Before Era of the Martyrs',
+     * which has the numeric value 0.
      */
     BEFORE_AM,
     /**
-     * The singleton instance for the era AM, 'Era of the Martyrs'.
-     * This has the numeric value of {@code 1}.
+     * The singleton instance for the current era, 'Era of the Martyrs',
+     * which has the numeric value 1.
      */
     AM;
 

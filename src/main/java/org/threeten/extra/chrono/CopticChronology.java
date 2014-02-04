@@ -31,30 +31,36 @@
  */
 package org.threeten.extra.chrono;
 
-import static java.time.temporal.ChronoField.EPOCH_DAY;
-
 import java.io.Serializable;
+import java.time.Clock;
 import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
-import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Era;
+import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * The Coptic calendar system.
  * <p>
  * This chronology defines the rules of the Coptic calendar system.
  * This calendar system is primarily used in Christian Egypt.
- * Dates are aligned such that {@code 0001AM-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
+ * Dates are aligned such that {@code 0001-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
  * <p>
  * The fields are defined as follows:
- * <p><ul>
- * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (ERA_ERA_BEFORE_AM).
+ * <ul>
+ * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (BEFORE_AM).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
@@ -65,36 +71,42 @@ import java.util.Locale;
  * <li>day-of-year - There are 365 days in a standard Coptic year and 366 in a leap year.
  *  The days are numbered from 1 to 365 or 1 to 366.
  * <li>leap-year - Leap years occur every 4 years.
- * </ul><p>
+ * </ul>
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This class is immutable and thread-safe.
  */
-public final class CopticChrono extends AbstractChronology implements Serializable {
+public final class CopticChronology extends AbstractChronology implements Serializable {
 
     /**
-     * Singleton instance of the Coptic chronology.
+     * Singleton instance for the Coptic chronology.
      */
-    public static final CopticChrono INSTANCE = new CopticChrono();
-    /**
-     * The singleton instance for the era BEFORE_AM.
-     * This has the numeric value of {@code 0}.
-     */
-    public static final Era ERA_BEFORE_AM = CopticEra.BEFORE_AM;
-    /**
-     * The singleton instance for the era AM - 'Era of the Martyrs'.
-     * This has the numeric value of {@code 1}.
-     */
-    public static final Era ERA_AM = CopticEra.AM;
+    public static final CopticChronology INSTANCE = new CopticChronology();
 
     /**
      * Serialization version.
      */
     private static final long serialVersionUID = 7291205177830286973L;
     /**
+     * Range of proleptic-year.
+     */
+    static final ValueRange YEAR_RANGE = ValueRange.of(-999_998, 999_999);
+    /**
+     * Range of year.
+     */
+    static final ValueRange YOE_RANGE = ValueRange.of(1, 999_999);
+    /**
+     * Range of proleptic month.
+     */
+    static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(-999_998 * 13L, 999_999 * 13L + 12);
+    /**
      * Range of months.
      */
     static final ValueRange MOY_RANGE = ValueRange.of(1, 13);
+    /**
+     * Range of weeks.
+     */
+    static final ValueRange ALIGNED_WOM_RANGE = ValueRange.of(1,  1, 5);
     /**
      * Range of days.
      */
@@ -111,7 +123,7 @@ public final class CopticChrono extends AbstractChronology implements Serializab
     /**
      * Restricted constructor.
      */
-    private CopticChrono() {
+    private CopticChronology() {
     }
 
     /**
@@ -127,8 +139,8 @@ public final class CopticChrono extends AbstractChronology implements Serializab
     /**
      * Gets the ID of the chronology - 'Coptic'.
      * <p>
-     * The ID uniquely identifies the {@code Chrono}.
-     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      *
      * @return the chronology ID - 'Coptic'
      * @see #getCalendarType()
@@ -143,7 +155,7 @@ public final class CopticChrono extends AbstractChronology implements Serializab
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      *
@@ -156,27 +168,116 @@ public final class CopticChrono extends AbstractChronology implements Serializab
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Obtains a local date in Coptic calendar system from the
+     * era, year-of-era, month-of-year and day-of-month fields.
+     *
+     * @param era  the Coptic era, not null
+     * @param yearOfEra  the year-of-era
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
+     * @return the Coptic local date, not null
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code CopticEra}
+     */
+    @Override
+    public CopticDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+        return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
+    }
+
+    /**
+     * Obtains a local date in Coptic calendar system from the
+     * proleptic-year, month-of-year and day-of-month fields.
+     *
+     * @param prolepticYear  the proleptic-year
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
+     * @return the Coptic local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
     public CopticDate date(int prolepticYear, int month, int dayOfMonth) {
-        return new CopticDate(prolepticYear, month, dayOfMonth);
+        return CopticDate.of(prolepticYear, month, dayOfMonth);
     }
 
-    @Override
-    public CopticDate dateYearDay(int prolepticYear, int dayOfYear) {
-        return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);
-    }
-
+    /**
+     * Obtains a local date in Coptic calendar system from the
+     * era, year-of-era and day-of-year fields.
+     *
+     * @param era  the Coptic era, not null
+     * @param yearOfEra  the year-of-era
+     * @param dayOfYear  the day-of-year
+     * @return the Coptic local date, not null
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code CopticEra}
+     */
     @Override
     public CopticDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
+    }
+
+    /**
+     * Obtains a local date in Coptic calendar system from the
+     * proleptic-year and day-of-year fields.
+     *
+     * @param prolepticYear  the proleptic-year
+     * @param dayOfYear  the day-of-year
+     * @return the Coptic local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override
+    public CopticDate dateYearDay(int prolepticYear, int dayOfYear) {
+        return CopticDate.ofYearDay(prolepticYear, dayOfYear);  // TODO
+    }
+
+    /**
+     * Obtains a local date in the Coptic calendar system from the epoch-day.
+     *
+     * @param epochDay  the epoch day
+     * @return the Coptic local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public CopticDate dateEpochDay(long epochDay) {
+        return CopticDate.ofEpochDay(epochDay);
     }
 
     @Override
-    public CopticDate date(TemporalAccessor dateTime) {
-        if (dateTime instanceof CopticDate) {
-            return (CopticDate) dateTime;
-        }
-        return CopticDate.ofEpochDay(dateTime.getLong(EPOCH_DAY));
+    public CopticDate dateNow() {
+        return dateNow(Clock.systemDefaultZone());
+    }
+
+    @Override
+    public CopticDate dateNow(ZoneId zone) {
+        return dateNow(Clock.system(zone));
+    }
+
+    @Override
+    public CopticDate dateNow(Clock clock) {
+        return date(LocalDate.now(clock));
+    }
+
+    @Override
+    public CopticDate date(TemporalAccessor temporal) {
+        return CopticDate.from(temporal);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<CopticDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<CopticDate>) super.localDateTime(temporal);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<CopticDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<CopticDate>) super.zonedDateTime(temporal);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<CopticDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<CopticDate>) super.zonedDateTime(instant, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -198,13 +299,13 @@ public final class CopticChrono extends AbstractChronology implements Serializab
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof CopticEra == false) {
-            throw new DateTimeException("Era must be CopticEra");
+            throw new ClassCastException("Era must be CopticEra");
         }
         return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
-    public Era eraOf(int eraValue) {
+    public CopticEra eraOf(int eraValue) {
         return CopticEra.of(eraValue);
     }
 
@@ -217,14 +318,28 @@ public final class CopticChrono extends AbstractChronology implements Serializab
     @Override
     public ValueRange range(ChronoField field) {
         switch (field) {
-            case DAY_OF_MONTH: return ValueRange.of(1, 5, 30);
-            case ALIGNED_WEEK_OF_MONTH: return ValueRange.of(1, 1, 5);
-            case MONTH_OF_YEAR: return ValueRange.of(1, 13);
-            case PROLEPTIC_MONTH: return ValueRange.of(-1000, 1000);  // TODO
-            case YEAR_OF_ERA: return ValueRange.of(1, 999, 1000);  // TODO
-            case YEAR: return ValueRange.of(-1000, 1000);  // TODO
+            case DAY_OF_MONTH:
+                return DOM_RANGE;
+            case ALIGNED_WEEK_OF_MONTH:
+                return ALIGNED_WOM_RANGE;
+            case MONTH_OF_YEAR:
+                return MOY_RANGE;
+            case PROLEPTIC_MONTH:
+                return PROLEPTIC_MONTH_RANGE;
+            case YEAR_OF_ERA:
+                return YOE_RANGE;
+            case YEAR:
+                return YEAR_RANGE;
+            default:
+                break;
         }
         return field.range();
+    }
+
+    //-----------------------------------------------------------------------
+    @Override  // override for return type
+    public CopticDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+        return (CopticDate) super.resolveDate(fieldValues, resolverStyle);
     }
 
 }
