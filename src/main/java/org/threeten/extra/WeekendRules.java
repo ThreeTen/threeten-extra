@@ -38,7 +38,9 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 
 /**
- * A helper class for rules around weekends.
+ * Utilities to assist with handling weekends.
+ * <p>
+ * This class currently only works with Saturday/Sunday weekends.
  *
  * @implSpec
  * This is a thread-safe utility class.
@@ -52,6 +54,7 @@ public final class WeekendRules {
     private WeekendRules() {
     }
 
+    //-------------------------------------------------------------------------
     /**
      * Returns the next non weekend day adjuster, which adjusts the date one day
      * forward skipping Saturday and Sunday.
@@ -64,6 +67,20 @@ public final class WeekendRules {
      */
     public static TemporalAdjuster nextNonWeekendDay() {
         return Adjuster.NEXT_NON_WEEKEND;
+    }
+
+    /**
+     * Returns the previous non weekend day adjuster, which adjusts the date one day
+     * backward skipping Saturday and Sunday.
+     * <p>
+     * Some territories have weekends that do not consist of Saturday and Sunday.
+     * No implementation is supplied to support this, however an adjuster
+     * can be easily written to do so.
+     *
+     * @return the next working day adjuster, not null
+     */
+    public static TemporalAdjuster previousNonWeekendDay() {
+        return Adjuster.PREVIOUS_NON_WEEKEND;
     }
 
     //-----------------------------------------------------------------------
@@ -83,6 +100,21 @@ public final class WeekendRules {
                         return temporal.plus(3, DAYS);
                     default:
                         return temporal.plus(1, DAYS);
+                }
+            }
+        },
+        /** Previous non weekend day adjuster. */
+        PREVIOUS_NON_WEEKEND {
+            @Override
+            public Temporal adjustInto(Temporal temporal) {
+                int dow = temporal.get(DAY_OF_WEEK);
+                switch (dow) {
+                    case 1:  // Monday
+                        return temporal.minus(3, DAYS);
+                    case 7:  // Sunday
+                        return temporal.minus(2, DAYS);
+                    default:
+                        return temporal.minus(1, DAYS);
                 }
             }
         },

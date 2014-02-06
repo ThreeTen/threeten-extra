@@ -31,9 +31,12 @@
  */
 package org.threeten.extra;
 
+import static java.time.DayOfWeek.FRIDAY;
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
+import static java.time.Month.DECEMBER;
+import static java.time.Month.JANUARY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -100,7 +103,6 @@ public class TestWeekendRules {
 
                 if (test.getYear() == 2007) {
                     int dayDiff = test.getDayOfYear() - date.getDayOfYear();
-
                     switch (date.getDayOfWeek()) {
                         case FRIDAY:
                             assertEquals(dayDiff, 3);
@@ -113,7 +115,7 @@ public class TestWeekendRules {
                     }
                 } else {
                     assertEquals(test.getYear(), 2008);
-                    assertEquals(test.getMonth(), Month.JANUARY);
+                    assertEquals(test.getMonth(), JANUARY);
                     assertEquals(test.getDayOfMonth(), 1);
                 }
             }
@@ -121,13 +123,83 @@ public class TestWeekendRules {
     }
 
     public void test_nextNonWeekendDay_yearChange() {
-        LocalDate friday = LocalDate.of(2010, Month.DECEMBER, 31);
+        LocalDate friday = LocalDate.of(2010, DECEMBER, 31);
         Temporal test = WeekendRules.nextNonWeekendDay().adjustInto(friday);
-        assertEquals(LocalDate.of(2011, Month.JANUARY, 3), test);
+        assertEquals(LocalDate.of(2011, JANUARY, 3), test);
 
-        LocalDate saturday = LocalDate.of(2011, Month.DECEMBER, 31);
+        LocalDate saturday = LocalDate.of(2011, DECEMBER, 31);
         test = WeekendRules.nextNonWeekendDay().adjustInto(saturday);
-        assertEquals(LocalDate.of(2012, Month.JANUARY, 2), test);
+        assertEquals(LocalDate.of(2012, JANUARY, 2), test);
+    }
+
+    //-----------------------------------------------------------------------
+    // previousNonWeekendDay()
+    //-----------------------------------------------------------------------
+    public void test_previousNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
+        TemporalAdjuster previousNonWeekendDay = WeekendRules.previousNonWeekendDay();
+        assertTrue(previousNonWeekendDay instanceof Serializable);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(previousNonWeekendDay);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        assertSame(ois.readObject(), previousNonWeekendDay);
+    }
+
+    public void factory_previousNonWeekendDay() {
+        assertNotNull(WeekendRules.previousNonWeekendDay());
+        assertSame(WeekendRules.previousNonWeekendDay(), WeekendRules.previousNonWeekendDay());
+    }
+
+    public void test_previousNonWeekendDay() {
+        for (Month month : Month.values()) {
+            for (int i = 1; i <= month.length(false); i++) {
+                LocalDate date = LocalDate.of(2007, month, i);
+                LocalDate test = (LocalDate) WeekendRules.previousNonWeekendDay().adjustInto(date);
+                assertTrue(test.isBefore(date));
+                assertFalse(test.getDayOfWeek().equals(SATURDAY));
+                assertFalse(test.getDayOfWeek().equals(SUNDAY));
+
+                switch (date.getDayOfWeek()) {
+                    case MONDAY:
+                    case SUNDAY:
+                        assertEquals(test.getDayOfWeek(), FRIDAY);
+                        break;
+                    default:
+                        assertEquals(date.getDayOfWeek().minus(1), test.getDayOfWeek());
+                }
+
+                if (test.getYear() == 2007) {
+                    int dayDiff = test.getDayOfYear() - date.getDayOfYear();
+                    switch (date.getDayOfWeek()) {
+                        case MONDAY:
+                            assertEquals(dayDiff, -3);
+                            break;
+                        case SUNDAY:
+                            assertEquals(dayDiff, -2);
+                            break;
+                        default:
+                            assertEquals(dayDiff, -1);
+                    }
+                } else {
+                    assertEquals(test.getYear(), 2006);
+                    assertEquals(test.getMonth(), DECEMBER);
+                    assertEquals(test.getDayOfMonth(), 29);
+                }
+            }
+        }
+    }
+
+    public void test_previousNonWeekendDay_yearChange() {
+        LocalDate monday = LocalDate.of(2011, JANUARY, 3);
+        Temporal test = WeekendRules.previousNonWeekendDay().adjustInto(monday);
+        assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
+
+        LocalDate sunday = LocalDate.of(2011, JANUARY, 2);
+        test = WeekendRules.previousNonWeekendDay().adjustInto(sunday);
+        assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
     }
 
 }
