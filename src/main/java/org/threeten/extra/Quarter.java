@@ -31,6 +31,7 @@
  */
 package org.threeten.extra;
 
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 
@@ -106,7 +107,7 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
      *
      * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
-     * @return the Quarter singleton, not null
+     * @return the quarter-of-year, not null
      * @throws DateTimeException if the quarter-of-year is invalid
      */
     public static Quarter of(int quarterOfYear) {
@@ -122,6 +123,24 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
             default:
                 throw new DateTimeException("Invalid value for Quarter: " + quarterOfYear);
         }
+    }
+
+    /**
+     * Obtains an instance of {@code Quarter} from a month-of-year.
+     * <p>
+     * {@code Quarter} is an enum representing the 4 quarters of the year.
+     * This factory allows the enum to be obtained from the {@code Month} value.
+     * <p>
+     * January to March are Q1, April to June are Q2, July to September are Q3
+     * and October to December are Q4.
+     *
+     * @param monthOfYear  the month-of-year to convert from, from 1 to 12
+     * @return the quarter-of-year, not null
+     * @throws DateTimeException if the month-of-year is invalid
+     */
+    public static Quarter ofMonth(int monthOfYear) {
+        MONTH_OF_YEAR.range().checkValidValue(monthOfYear, MONTH_OF_YEAR);
+        return of((monthOfYear - 1) / 3 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -178,8 +197,9 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
     /**
      * Gets the textual representation, such as 'Q1' or '4th quarter'.
      * <p>
-     * This returns the textual name used to identify the quarter-of-year.
-     * The parameters control the length of the returned text and the locale.
+     * This returns the textual name used to identify the quarter-of-year,
+     * suitable for presentation to the user.
+     * The parameters control the style of the returned text and the locale.
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *

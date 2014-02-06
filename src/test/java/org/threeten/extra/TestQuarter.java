@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
+import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -42,10 +43,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.chrono.IsoChronology;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
 import java.util.Locale;
 
 import org.testng.annotations.BeforeMethod;
@@ -90,6 +93,35 @@ public class TestQuarter {
     @Test(expectedExceptions=DateTimeException.class)
     public void test_of_int_valueTooHigh() {
         Quarter.of(5);
+    }
+
+    //-----------------------------------------------------------------------
+    // ofMonth(int)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_ofMonth_int_singleton() {
+        assertEquals(Quarter.ofMonth(1), Quarter.Q1);
+        assertEquals(Quarter.ofMonth(2), Quarter.Q1);
+        assertEquals(Quarter.ofMonth(3), Quarter.Q1);
+        assertEquals(Quarter.ofMonth(4), Quarter.Q2);
+        assertEquals(Quarter.ofMonth(5), Quarter.Q2);
+        assertEquals(Quarter.ofMonth(6), Quarter.Q2);
+        assertEquals(Quarter.ofMonth(7), Quarter.Q3);
+        assertEquals(Quarter.ofMonth(8), Quarter.Q3);
+        assertEquals(Quarter.ofMonth(9), Quarter.Q3);
+        assertEquals(Quarter.ofMonth(10), Quarter.Q4);
+        assertEquals(Quarter.ofMonth(11), Quarter.Q4);
+        assertEquals(Quarter.ofMonth(12), Quarter.Q4);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_ofMonth_int_valueTooLow() {
+        Quarter.ofMonth(0);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_ofMonth_int_valueTooHigh() {
+        Quarter.ofMonth(13);
     }
 
     //-----------------------------------------------------------------------
@@ -245,6 +277,20 @@ public class TestQuarter {
         assertEquals(Quarter.Q2.firstMonth(), Month.APRIL);
         assertEquals(Quarter.Q3.firstMonth(), Month.JULY);
         assertEquals(Quarter.Q4.firstMonth(), Month.OCTOBER);
+    }
+
+    //-----------------------------------------------------------------------
+    // query()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_query() {
+        assertEquals(Quarter.Q1.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
+        assertEquals(Quarter.Q1.query(TemporalQueries.localDate()), null);
+        assertEquals(Quarter.Q1.query(TemporalQueries.localTime()), null);
+        assertEquals(Quarter.Q1.query(TemporalQueries.offset()), null);
+        assertEquals(Quarter.Q1.query(TemporalQueries.precision()), QUARTER_YEARS);
+        assertEquals(Quarter.Q1.query(TemporalQueries.zone()), null);
+        assertEquals(Quarter.Q1.query(TemporalQueries.zoneId()), null);
     }
 
     //-----------------------------------------------------------------------
