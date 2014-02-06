@@ -36,7 +36,6 @@ import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoUnit.HALF_DAYS;
 
 import java.time.DateTimeException;
-import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
@@ -242,7 +241,6 @@ public enum AmPm implements TemporalAccessor, TemporalAdjuster {
         return field.rangeRefinedBy(this);
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified field from this am-pm as an {@code int}.
      * <p>
@@ -330,12 +328,10 @@ public enum AmPm implements TemporalAccessor, TemporalAdjuster {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology()) {
-            return (R) IsoChronology.INSTANCE;
-        } else if (query == TemporalQueries.precision()) {
+        if (query == TemporalQueries.precision()) {
             return (R) HALF_DAYS;
         }
-        return query.queryFrom(this);
+        return TemporalAccessor.super.query(query);
     }
 
     /**

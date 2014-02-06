@@ -31,6 +31,7 @@
  */
 package org.threeten.extra;
 
+import static java.time.temporal.ChronoUnit.HALF_DAYS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -41,6 +42,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
 import java.util.Locale;
 
 import org.testng.annotations.BeforeMethod;
@@ -125,6 +127,20 @@ public class TestAmPm {
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getDisplayName_nullLocale() {
         AmPm.AM.getDisplayName(TextStyle.FULL, null);
+    }
+
+    //-----------------------------------------------------------------------
+    // query()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_query() {
+        assertEquals(AmPm.AM.query(TemporalQueries.chronology()), null);
+        assertEquals(AmPm.AM.query(TemporalQueries.localDate()), null);
+        assertEquals(AmPm.AM.query(TemporalQueries.localTime()), null);
+        assertEquals(AmPm.AM.query(TemporalQueries.offset()), null);
+        assertEquals(AmPm.AM.query(TemporalQueries.precision()), HALF_DAYS);
+        assertEquals(AmPm.AM.query(TemporalQueries.zone()), null);
+        assertEquals(AmPm.AM.query(TemporalQueries.zoneId()), null);
     }
 
     //-----------------------------------------------------------------------
