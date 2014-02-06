@@ -121,9 +121,12 @@ public final class CopticChronology extends AbstractChronology implements Serial
     static final ValueRange DOM_RANGE_LEAP = ValueRange.of(1, 6);
 
     /**
-     * Restricted constructor.
+     * Creates an instance.
+     * <p>
+     * This is only public to satisfy the ServiceLoader.
+     * Use the singleton {@link #INSTANCE} instead.
      */
-    private CopticChronology() {
+    public CopticChronology() {
     }
 
     /**

@@ -222,16 +222,20 @@ public final class CopticDate
      * @return the date in Coptic calendar system, not null
      * @throws DateTimeException if the epoch-day is out of range
      */
-    static CopticDate ofEpochDay(long epochDay) {
+    static CopticDate ofEpochDay(final long epochDay) {
         EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
-        epochDay += EPOCH_DAY_DIFFERENCE;
-        int prolepticYear = (int) (((epochDay * 4) + 1463) / 1461);
-        CopticChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);  // real validation
+        long copticED = epochDay + EPOCH_DAY_DIFFERENCE;
+        int adjustment = 0;
+        if (copticED < 0) {
+            copticED = copticED + (1461L * (1_000_000L / 4));
+            adjustment = -1_000_000;
+        }
+        int prolepticYear = (int) (((copticED * 4) + 1463) / 1461);
         int startYearEpochDay = (prolepticYear - 1) * 365 + (prolepticYear / 4);
-        int doy0 = (int) (epochDay - startYearEpochDay);
+        int doy0 = (int) (copticED - startYearEpochDay);
         int month = doy0 / 30 + 1;
         int dom = doy0 % 30 + 1;
-        return new CopticDate(prolepticYear, month, dom);
+        return new CopticDate(prolepticYear + adjustment, month, dom);
     }
 
     private static CopticDate resolvePreviousValid(int prolepticYear, int month, int day) {
