@@ -188,7 +188,7 @@ public final class CopticDate
         if (temporal instanceof CopticDate) {
             return (CopticDate) temporal;
         }
-        return CopticDate.ofEpochDay(temporal.get(EPOCH_DAY));
+        return CopticDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------
