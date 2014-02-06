@@ -32,8 +32,10 @@
 package org.threeten.extra;
 
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
+import static java.time.temporal.IsoFields.QUARTER_YEARS;
 
 import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.chrono.Chronology;
 import java.time.chrono.IsoChronology;
@@ -47,9 +49,9 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * A quarter-of-year, such as 'Q2'.
@@ -122,39 +124,41 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
         }
     }
 
-    /**
-     * Obtains an instance of {@code QuarterOfYear} from a month-of-year.
-     * <p>
-     * {@code QuarterOfYear} is an enum representing the 4 quarters of the year.
-     * This factory allows the enum to be obtained from the {@code Month} value.
-     * <p>
-     * January to March are Q1, April to June are Q2, July to September are Q3
-     * and October to December are Q4.
-     *
-     * @param month  the month-of-year to convert from, from 1 to 12
-     * @return the QuarterOfYear singleton, not null
-     */
-    public static QuarterOfYear ofMonth(Month month) {
-        Objects.requireNonNull(month, "month");
-        return of(month.ordinal() / 3 + 1);
-    }
-
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code QuarterOfYear} from a date-time object.
+     * Obtains an instance of {@code QuarterOfYear} from a temporal object.
      * <p>
-     * A {@code TemporalAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code QuarterOfYear}.
+     * This obtains a quarter based on the specified temporal.
+     * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
+     * which this factory converts to an instance of {@code QuarterOfYear}.
+     * <p>
+     * The conversion extracts the {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} field.
+     * The extraction is only permitted if the temporal object has an ISO
+     * chronology, or can be converted to a {@code LocalDate}.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used in queries via method reference, {@code QuarterOfYear::from}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the temporal-time object to convert, not null
      * @return the quarter-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code QuarterOfYear}
      */
-    public static QuarterOfYear from(TemporalAccessor dateTime) {
-        if (dateTime instanceof QuarterOfYear) {
-            return (QuarterOfYear) dateTime;
+    public static QuarterOfYear from(TemporalAccessor temporal) {
+        if (temporal instanceof QuarterOfYear) {
+            return (QuarterOfYear) temporal;
+        } else if (temporal instanceof Month) {
+            Month month = (Month) temporal;
+            return of(month.ordinal() / 3 + 1);
         }
-        return of(dateTime.get(QUARTER_OF_YEAR));
+        try {
+            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
+                temporal = LocalDate.from(temporal);
+            }
+            return of(temporal.get(QUARTER_OF_YEAR));
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to obtain QuarterOfYear from TemporalAccessor: " +
+                    temporal + " of type " + temporal.getClass().getName(), ex);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -188,39 +192,130 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified field is supported.
+     * <p>
+     * This checks if this quarter-of-year can be queried for the specified field.
+     * If false, then calling the {@link #range(TemporalField) range} and
+     * {@link #get(TemporalField) get} methods will throw an exception.
+     * <p>
+     * If the field is {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} then
+     * this method returns true.
+     * All {@code ChronoField} instances will return false.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the field is supported is determined by the field.
+     *
+     * @param field  the field to check, null returns false
+     * @return true if the field is supported on this quarter-of-year, false if not
+     */
     @Override
     public boolean isSupported(TemporalField field) {
-        if (field instanceof ChronoField) {
-            return field == QUARTER_OF_YEAR;
+        if (field == QUARTER_OF_YEAR) {
+            return true;
+        } else if (field instanceof ChronoField) {
+            return false;
         }
         return field != null && field.isSupportedBy(this);
     }
 
+    /**
+     * Gets the range of valid values for the specified field.
+     * <p>
+     * The range object expresses the minimum and maximum valid values for a field.
+     * This quarter is used to enhance the accuracy of the returned range.
+     * If it is not possible to return the range, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} then the
+     * range of the quarter-of-year, from 1 to 4, will be returned.
+     * All {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the range can be obtained is determined by the field.
+     *
+     * @param field  the field to query the range for, not null
+     * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException if the field is not supported
+     */
     @Override
     public ValueRange range(TemporalField field) {
         if (field == QUARTER_OF_YEAR) {
             return field.range();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field);
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
-        return field.rangeRefinedBy(this);
+        return TemporalAccessor.super.range(field);
     }
 
+    /**
+     * Gets the value of the specified field from this quarter-of-year as an {@code int}.
+     * <p>
+     * This queries this quarter for the value for the specified field.
+     * The returned value will always be within the valid range of values for the field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} then the
+     * value of the quarter-of-year, from 1 to 4, will be returned.
+     * All {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field, within the valid range of values
+     * @throws DateTimeException if a value for the field cannot be obtained or
+     *         the value is outside the range of valid values for the field
+     * @throws UnsupportedTemporalTypeException if the field is not supported or
+     *         the range of values exceeds an {@code int}
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public int get(TemporalField field) {
         if (field == QUARTER_OF_YEAR) {
             return getValue();
+        } else if (field instanceof ChronoField) {
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
-        return range(field).checkValidIntValue(getLong(field), field);
+        return TemporalAccessor.super.get(field);
     }
 
+    /**
+     * Gets the value of the specified field from this quarter-of-year as a {@code long}.
+     * <p>
+     * This queries this quarter for the value for the specified field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} then the
+     * value of the quarter-of-year, from 1 to 4, will be returned.
+     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException if the field is not supported
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public long getLong(TemporalField field) {
         if (field == QUARTER_OF_YEAR) {
             return getValue();
-        }
-        if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field);
+        } else if (field instanceof ChronoField) {
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.getFrom(this);
     }
@@ -287,36 +382,68 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Queries this quarter-of-year using the specified query.
+     * <p>
+     * This queries this quarter-of-year using the specified query strategy object.
+     * The {@code TemporalQuery} object defines the logic to be used to
+     * obtain the result. Read the documentation of the query to understand
+     * what the result of this method will be.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
+     * specified query passing {@code this} as the argument.
+     *
+     * @param <R> the type of the result
+     * @param query  the query to invoke, not null
+     * @return the query result, null may be returned (defined by the query)
+     * @throws DateTimeException if unable to query (defined by the query)
+     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     */
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends Object> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.zoneId()) {
-            return null;
-        } else if (query == TemporalQueries.chronology()) {
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
-            return (R) IsoFields.QUARTER_YEARS;
+            return (R) QUARTER_YEARS;
         }
-        return query.queryFrom(this);
+        return TemporalAccessor.super.query(query);
     }
 
     /**
-     * Implementation of the strategy to make an adjustment to the specified date-time object.
+     * Adjusts the specified temporal object to have this quarter-of-year.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(TemporalAdjuster)} method on the
-     * date-time object to make the adjustment passing this as the argument.
+     * This returns a temporal object of the same observable type as the input
+     * with the quarter-of-year changed to be the same as this.
+     * <p>
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
+     * passing {@link IsoFields#QUARTER_OF_YEAR} as the field.
+     * If the specified temporal object does not use the ISO calendar system then
+     * a {@code DateTimeException} is thrown.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#with(TemporalAdjuster)}:
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisQuarter.adjustInto(temporal);
+     *   temporal = temporal.with(thisQuarter);
+     * </pre>
+     * <p>
+     * For example, given a date in May, the following are output:
+     * <pre>
+     *   dateInMay.with(Q1);    // three months earlier
+     *   dateInMay.with(Q2);    // no change
+     *   dateInMay.with(Q3);    // three months later
+     *   dateInMay.with(Q4);    // six months later
+     * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @implSpec
-     * Adjusts the specified date-time to have the value of this quarter.
-     * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link DateTime#with(TemporalField, long)}
-     * passing {@code QUARTER_OF_YEAR} as the field.
-     *
      * @param temporal  the target object to be adjusted, not null
      * @return the adjusted object, not null
+     * @throws DateTimeException if unable to make the adjustment
+     * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
