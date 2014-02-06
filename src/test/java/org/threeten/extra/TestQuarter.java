@@ -53,10 +53,10 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Test QuarterOfYear.
+ * Test Quarter.
  */
 @Test
-public class TestQuarterOfYear {
+public class TestQuarter {
 
     @BeforeMethod
     public void setUp() {
@@ -65,9 +65,9 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_interfaces() {
-        assertTrue(Enum.class.isAssignableFrom(QuarterOfYear.class));
-        assertTrue(Serializable.class.isAssignableFrom(QuarterOfYear.class));
-        assertTrue(Comparable.class.isAssignableFrom(QuarterOfYear.class));
+        assertTrue(Enum.class.isAssignableFrom(Quarter.class));
+        assertTrue(Serializable.class.isAssignableFrom(Quarter.class));
+        assertTrue(Comparable.class.isAssignableFrom(Quarter.class));
     }
 
     //-----------------------------------------------------------------------
@@ -76,20 +76,20 @@ public class TestQuarterOfYear {
     @Test
     public void test_of_int_singleton() {
         for (int i = 1; i <= 4; i++) {
-            QuarterOfYear test = QuarterOfYear.of(i);
+            Quarter test = Quarter.of(i);
             assertEquals(test.getValue(), i);
-            assertSame(QuarterOfYear.of(i), test);
+            assertSame(Quarter.of(i), test);
         }
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_of_int_valueTooLow() {
-        QuarterOfYear.of(0);
+        Quarter.of(0);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_of_int_valueTooHigh() {
-        QuarterOfYear.of(5);
+        Quarter.of(5);
     }
 
     //-----------------------------------------------------------------------
@@ -97,34 +97,34 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test
     public void test_from_Temporal_Month() {
-        assertEquals(QuarterOfYear.from(Month.JANUARY), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.from(Month.FEBRUARY), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.from(Month.MARCH), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.from(Month.APRIL), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.from(Month.MAY), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.from(Month.JUNE), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.from(Month.JULY), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.from(Month.AUGUST), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.from(Month.SEPTEMBER), QuarterOfYear.Q3);
-        assertEquals(QuarterOfYear.from(Month.OCTOBER), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.from(Month.NOVEMBER), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.from(Month.DECEMBER), QuarterOfYear.Q4);
+        assertEquals(Quarter.from(Month.JANUARY), Quarter.Q1);
+        assertEquals(Quarter.from(Month.FEBRUARY), Quarter.Q1);
+        assertEquals(Quarter.from(Month.MARCH), Quarter.Q1);
+        assertEquals(Quarter.from(Month.APRIL), Quarter.Q2);
+        assertEquals(Quarter.from(Month.MAY), Quarter.Q2);
+        assertEquals(Quarter.from(Month.JUNE), Quarter.Q2);
+        assertEquals(Quarter.from(Month.JULY), Quarter.Q3);
+        assertEquals(Quarter.from(Month.AUGUST), Quarter.Q3);
+        assertEquals(Quarter.from(Month.SEPTEMBER), Quarter.Q3);
+        assertEquals(Quarter.from(Month.OCTOBER), Quarter.Q4);
+        assertEquals(Quarter.from(Month.NOVEMBER), Quarter.Q4);
+        assertEquals(Quarter.from(Month.DECEMBER), Quarter.Q4);
     }
 
     @Test
     public void test_from_Temporal() {
-        assertEquals(QuarterOfYear.from(LocalDate.of(2011, 6, 6)), QuarterOfYear.Q2);
-        assertEquals(QuarterOfYear.from(LocalDateTime.of(2012, 2, 3, 12, 30)), QuarterOfYear.Q1);
+        assertEquals(Quarter.from(LocalDate.of(2011, 6, 6)), Quarter.Q2);
+        assertEquals(Quarter.from(LocalDateTime.of(2012, 2, 3, 12, 30)), Quarter.Q1);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_from_Temporal_invalid_noDerive() {
-        QuarterOfYear.from(LocalTime.of(12, 30));
+        Quarter.from(LocalTime.of(12, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_from_Temporal_null() {
-        QuarterOfYear.from((TemporalAccessor) null);
+        Quarter.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -132,17 +132,17 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test
     public void test_getDisplayName() {
-        assertEquals(QuarterOfYear.Q1.getDisplayName(TextStyle.SHORT, Locale.US), "Q1");
+        assertEquals(Quarter.Q1.getDisplayName(TextStyle.SHORT, Locale.US), "Q1");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_getDisplayName_nullStyle() {
-        QuarterOfYear.Q1.getDisplayName(null, Locale.US);
+        Quarter.Q1.getDisplayName(null, Locale.US);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_getDisplayName_nullLocale() {
-        QuarterOfYear.Q1.getDisplayName(TextStyle.FULL, null);
+        Quarter.Q1.getDisplayName(TextStyle.FULL, null);
     }
 
     //-----------------------------------------------------------------------
@@ -162,28 +162,28 @@ public class TestQuarterOfYear {
 
     @Test
     public void test_get_TemporalField() {
-        assertEquals(QuarterOfYear.Q1.get(QUARTER_OF_YEAR), 1);
-        assertEquals(QuarterOfYear.Q2.get(QUARTER_OF_YEAR), 2);
-        assertEquals(QuarterOfYear.Q3.get(QUARTER_OF_YEAR), 3);
-        assertEquals(QuarterOfYear.Q4.get(QUARTER_OF_YEAR), 4);
+        assertEquals(Quarter.Q1.get(QUARTER_OF_YEAR), 1);
+        assertEquals(Quarter.Q2.get(QUARTER_OF_YEAR), 2);
+        assertEquals(Quarter.Q3.get(QUARTER_OF_YEAR), 3);
+        assertEquals(Quarter.Q4.get(QUARTER_OF_YEAR), 4);
     }
 
     @Test
     public void test_getLong_TemporalField() {
-        assertEquals(QuarterOfYear.Q1.getLong(QUARTER_OF_YEAR), 1);
-        assertEquals(QuarterOfYear.Q2.getLong(QUARTER_OF_YEAR), 2);
-        assertEquals(QuarterOfYear.Q3.getLong(QUARTER_OF_YEAR), 3);
-        assertEquals(QuarterOfYear.Q4.getLong(QUARTER_OF_YEAR), 4);
+        assertEquals(Quarter.Q1.getLong(QUARTER_OF_YEAR), 1);
+        assertEquals(Quarter.Q2.getLong(QUARTER_OF_YEAR), 2);
+        assertEquals(Quarter.Q3.getLong(QUARTER_OF_YEAR), 3);
+        assertEquals(Quarter.Q4.getLong(QUARTER_OF_YEAR), 4);
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class )
     public void test_get_TemporalField_invalidField(TemporalField field) {
-        QuarterOfYear.Q1.getLong(field);
+        Quarter.Q1.getLong(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_get_TemporalField_null() {
-        QuarterOfYear.Q1.getLong((TemporalField) null);
+        Quarter.Q1.getLong((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------
@@ -208,7 +208,7 @@ public class TestQuarterOfYear {
 
     @Test(dataProvider="plus")
     public void test_plus_long(int base, long amount, int expected) {
-        assertEquals(QuarterOfYear.of(base).plus(amount), QuarterOfYear.of(expected));
+        assertEquals(Quarter.of(base).plus(amount), Quarter.of(expected));
     }
 
     //-----------------------------------------------------------------------
@@ -233,7 +233,7 @@ public class TestQuarterOfYear {
 
     @Test(dataProvider="minus")
     public void test_minus_long(int base, long amount, int expected) {
-        assertEquals(QuarterOfYear.of(base).minus(amount), QuarterOfYear.of(expected));
+        assertEquals(Quarter.of(base).minus(amount), Quarter.of(expected));
     }
 
     //-----------------------------------------------------------------------
@@ -241,10 +241,10 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test
     public void test_firstMonth() {
-        assertEquals(QuarterOfYear.Q1.firstMonth(), Month.JANUARY);
-        assertEquals(QuarterOfYear.Q2.firstMonth(), Month.APRIL);
-        assertEquals(QuarterOfYear.Q3.firstMonth(), Month.JULY);
-        assertEquals(QuarterOfYear.Q4.firstMonth(), Month.OCTOBER);
+        assertEquals(Quarter.Q1.firstMonth(), Month.JANUARY);
+        assertEquals(Quarter.Q2.firstMonth(), Month.APRIL);
+        assertEquals(Quarter.Q3.firstMonth(), Month.JULY);
+        assertEquals(Quarter.Q4.firstMonth(), Month.OCTOBER);
     }
 
     //-----------------------------------------------------------------------
@@ -252,10 +252,10 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString() {
-        assertEquals(QuarterOfYear.Q1.toString(), "Q1");
-        assertEquals(QuarterOfYear.Q2.toString(), "Q2");
-        assertEquals(QuarterOfYear.Q3.toString(), "Q3");
-        assertEquals(QuarterOfYear.Q4.toString(), "Q4");
+        assertEquals(Quarter.Q1.toString(), "Q1");
+        assertEquals(Quarter.Q2.toString(), "Q2");
+        assertEquals(Quarter.Q3.toString(), "Q3");
+        assertEquals(Quarter.Q4.toString(), "Q4");
     }
 
     //-----------------------------------------------------------------------
@@ -263,8 +263,8 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     @Test
     public void test_enum() {
-        assertEquals(QuarterOfYear.valueOf("Q4"), QuarterOfYear.Q4);
-        assertEquals(QuarterOfYear.values()[0], QuarterOfYear.Q1);
+        assertEquals(Quarter.valueOf("Q4"), Quarter.Q4);
+        assertEquals(Quarter.values()[0], Quarter.Q1);
     }
 
 }

@@ -56,7 +56,7 @@ import java.util.Locale;
 /**
  * A quarter-of-year, such as 'Q2'.
  * <p>
- * {@code QuarterOfYear} is an enum representing the 4 quarters of the year -
+ * {@code Quarter} is an enum representing the 4 quarters of the year -
  * Q1, Q2, Q3 and Q4. These are defined as January to March, April to June,
  * July to September and October to December.
  * <p>
@@ -64,7 +64,7 @@ import java.util.Locale;
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code QuarterOfYear}.
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code Quarter}.
  * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
@@ -74,7 +74,7 @@ import java.util.Locale;
  * @implSpec
  * This is an immutable and thread-safe enum.
  */
-public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
+public enum Quarter implements TemporalAccessor, TemporalAdjuster {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -99,17 +99,17 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code QuarterOfYear} from an {@code int} value.
+     * Obtains an instance of {@code Quarter} from an {@code int} value.
      * <p>
-     * {@code QuarterOfYear} is an enum representing the 4 quarters of the year.
+     * {@code Quarter} is an enum representing the 4 quarters of the year.
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
      *
      * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
-     * @return the QuarterOfYear singleton, not null
+     * @return the Quarter singleton, not null
      * @throws DateTimeException if the quarter-of-year is invalid
      */
-    public static QuarterOfYear of(int quarterOfYear) {
+    public static Quarter of(int quarterOfYear) {
         switch (quarterOfYear) {
             case 1:
                 return Q1;
@@ -120,32 +120,32 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
             case 4:
                 return Q4;
             default:
-                throw new DateTimeException("Invalid value for QuarterOfYear: " + quarterOfYear);
+                throw new DateTimeException("Invalid value for Quarter: " + quarterOfYear);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code QuarterOfYear} from a temporal object.
+     * Obtains an instance of {@code Quarter} from a temporal object.
      * <p>
      * This obtains a quarter based on the specified temporal.
      * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
-     * which this factory converts to an instance of {@code QuarterOfYear}.
+     * which this factory converts to an instance of {@code Quarter}.
      * <p>
      * The conversion extracts the {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} field.
      * The extraction is only permitted if the temporal object has an ISO
      * chronology, or can be converted to a {@code LocalDate}.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
-     * allowing it to be used in queries via method reference, {@code QuarterOfYear::from}.
+     * allowing it to be used in queries via method reference, {@code Quarter::from}.
      *
      * @param temporal  the temporal-time object to convert, not null
      * @return the quarter-of-year, not null
-     * @throws DateTimeException if unable to convert to a {@code QuarterOfYear}
+     * @throws DateTimeException if unable to convert to a {@code Quarter}
      */
-    public static QuarterOfYear from(TemporalAccessor temporal) {
-        if (temporal instanceof QuarterOfYear) {
-            return (QuarterOfYear) temporal;
+    public static Quarter from(TemporalAccessor temporal) {
+        if (temporal instanceof Quarter) {
+            return (Quarter) temporal;
         } else if (temporal instanceof Month) {
             Month month = (Month) temporal;
             return of(month.ordinal() / 3 + 1);
@@ -156,7 +156,7 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
             }
             return of(temporal.get(QUARTER_OF_YEAR));
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain QuarterOfYear from TemporalAccessor: " +
+            throw new DateTimeException("Unable to obtain Quarter from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
         }
     }
@@ -332,7 +332,7 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
      * @param quarters  the quarters to add, positive or negative
      * @return the resulting quarter, not null
      */
-    public QuarterOfYear plus(long quarters) {
+    public Quarter plus(long quarters) {
         int amount = (int) quarters % 4;
         return values()[(ordinal() + (amount + 4)) % 4];
     }
@@ -348,7 +348,7 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
      * @param quarters  the quarters to subtract, positive or negative
      * @return the resulting quarter, not null
      */
-    public QuarterOfYear minus(long quarters) {
+    public Quarter minus(long quarters) {
         return plus(-(quarters % 4));
     }
 
