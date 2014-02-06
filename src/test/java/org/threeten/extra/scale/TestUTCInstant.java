@@ -40,9 +40,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import javax.time.Duration;
-import javax.time.Instant;
+import java.time.Duration;
+import java.time.Instant;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -59,8 +58,8 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_interfaces() {
-        assertTrue(Serializable.class.isAssignableFrom(Duration.class));
-        assertTrue(Comparable.class.isAssignableFrom(Duration.class));
+        assertTrue(Serializable.class.isAssignableFrom(UTCInstant.class));
+        assertTrue(Comparable.class.isAssignableFrom(UTCInstant.class));
     }
 
     //-----------------------------------------------------------------------

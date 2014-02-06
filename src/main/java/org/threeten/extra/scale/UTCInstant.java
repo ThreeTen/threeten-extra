@@ -32,20 +32,19 @@
 package org.threeten.extra.scale;
 
 import java.io.Serializable;
-
-import javax.time.Duration;
-import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.calendrical.JulianDayField;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.JulianFields;
 
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale
  * with leap seconds.
  * <p>
- * Most of the Java time classes work on the assumption that the time-line is simple,
- * there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
- * However, the Earth's rotation is not straightforward, and a solar day does not match
- * this definition.
+ * The <code>java.time</code> classes use the Java time-scale for simplicity.
+ * That scale works on the assumption that the time-line is simple, there are no leap-seconds
+ * and there are always 24 * 60 * 60 seconds in a day. Unfortunately, the Earth's rotation
+ * is not straightforward, and a solar day does not match this definition.
  * <p>
  * This class is an alternative representation based on the UTC time-scale which
  * includes leap-seconds. Leap-seconds are additional seconds that are inserted into the
@@ -87,21 +86,14 @@ import javax.time.calendrical.JulianDayField;
  * <p>
  * This class may be used for instants in the far past and far future.
  * Since some instants will be prior to 1972, it is not strictly an implementation of UTC.
- * Instead, it is a proleptic time-scale based on UTC and equivalent to it since 1972.
- * Prior to 1972, the default rules fix the UTC-TAI offset at 10 seconds.
- * While not historically accurate, it is a simple, easy definition, suitable for this library.
- * <p>
- * The standard Java epoch of {@code 1970-01-01} is prior to the introduction of whole leap-seconds into UTC in 1972.
- * As such, the Time Framework for Java needs to define what the 1970 epoch actually means.
- * The chosen definition follows the UTC definition given above, such that {@code 1970-01-01} is 10 seconds
- * offset from TAI.
+ * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1972.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class UTCInstant
         implements Comparable<UTCInstant>, Serializable {
-    // does not implement InstantProvider as that would enable methods like
+    // does not implement Temporal as that would enable methods like
     // Duration.between which gives the wrong answer due to lossy conversion
 
     /**
@@ -169,6 +161,7 @@ public final class UTCInstant
      *
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
+     * @param rules  the UTC rules to use, not null
      * @return the UTC instant, not null
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
@@ -502,7 +495,7 @@ public final class UTCInstant
      */
     @Override
     public String toString() {
-        LocalDate date = JulianDayField.MODIFIED_JULIAN_DAY.createDate(mjDay);  // TODO: capacity/import issues
+        LocalDate date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay);  // TODO: capacity/import issues
         StringBuilder buf = new StringBuilder(18);
         int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
         int hourValue = sod / (60 * 60);

@@ -124,7 +124,7 @@ public abstract class UTCRules {
     /**
      * Gets the leap second adjustment on the specified date.
      * <p>
-     * The UTC standard restricts the adjustment to a day to {@code -1} or {@code 1}.
+     * The UTC standard restricts the adjustment on any day to {@code -1} or {@code 1}.
      * <p>
      * Any leap seconds are added to, or removed from, the end of the specified date.
      * <p>

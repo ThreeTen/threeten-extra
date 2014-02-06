@@ -44,10 +44,10 @@ import java.time.format.DateTimeParseException;
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.
  * <p>
- * Most of the Time Framework for Java works on the assumption that the time-line is
- * simple, there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
- * However, the Earth's rotation is not straightforward, and a solar day does not match
- * this definition.
+ * The <code>java.time</code> classes use the Java time-scale for simplicity.
+ * That scale works on the assumption that the time-line is simple, there are no leap-seconds
+ * and there are always 24 * 60 * 60 seconds in a day. Unfortunately, the Earth's rotation
+ * is not straightforward, and a solar day does not match this definition.
  * <p>
  * This class is an alternative representation based on the TAI time-scale.
  * TAI is a single incrementing count of SI seconds.
@@ -78,13 +78,12 @@ import java.time.format.DateTimeParseException;
  * Since some instants will be prior to 1958, it is not strictly an implementation of TAI.
  * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1958.
  *
- *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class TAIInstant
         implements Comparable<TAIInstant>, Serializable {
-    // does not implement InstantProvider as that would enable methods like
+    // does not implement Temporal as that would enable methods like
     // Duration.between which gives the wrong answer due to lossy conversion
 
     /**

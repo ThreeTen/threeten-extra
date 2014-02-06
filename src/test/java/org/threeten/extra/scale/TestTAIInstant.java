@@ -40,10 +40,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import javax.time.Duration;
-import javax.time.Instant;
-import javax.time.format.DateTimeParseException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -57,8 +56,8 @@ public class TestTAIInstant {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_interfaces() {
-        assertTrue(Serializable.class.isAssignableFrom(Duration.class));
-        assertTrue(Comparable.class.isAssignableFrom(Duration.class));
+        assertTrue(Serializable.class.isAssignableFrom(TAIInstant.class));
+        assertTrue(Comparable.class.isAssignableFrom(TAIInstant.class));
     }
 
     //-----------------------------------------------------------------------

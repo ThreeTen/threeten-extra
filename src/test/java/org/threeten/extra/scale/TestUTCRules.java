@@ -41,12 +41,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.JulianFields;
 import java.util.Arrays;
-
-import javax.time.Duration;
-import javax.time.Instant;
-import javax.time.OffsetDateTime;
-import javax.time.ZoneOffset;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -230,7 +231,7 @@ public class TestUTCRules {
 
     @Test(dataProvider="LeapSeconds")
     public void test_leapSeconds(long mjd, int adjust, int offset, String checkDate) {
-//        assertEquals(mjd, LocalDate.parse(checkDate).toModifiedJulianDay(), "Invalid test");
+        assertEquals(mjd, LocalDate.parse(checkDate).getLong(JulianFields.MODIFIED_JULIAN_DAY), "Invalid test");
 
         assertEquals(rules.getLeapSecondAdjustment(mjd), adjust);
         assertEquals(rules.getTAIOffset(mjd), offset);
@@ -244,7 +245,7 @@ public class TestUTCRules {
     //-----------------------------------------------------------------------
     // convertToUTC(TAIInstant)/convertToTAI(UTCInstant)
     //-----------------------------------------------------------------------
-    private static final int CURRENT_TAI_OFFSET = 34;  // change this as leap secs added
+    private static final int CURRENT_TAI_OFFSET = 35;  // change this as leap secs added
     private static final long SECS_PER_DAY = 24 * 60 * 60L;
     private static final long NANOS_PER_SEC = 1000000000L;
     private static final long MJD_1800 = -21504L;
@@ -429,7 +430,7 @@ public class TestUTCRules {
     }
 
     public void test_convertToInstant_justAfterLeap() {
-        OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         Instant instant = odt.toInstant();
         UTCInstant utc = UTCInstant.ofModifiedJulianDay(MJD_1980, 0, rules);
         assertEquals(rules.convertToInstant(utc), instant);
@@ -437,7 +438,7 @@ public class TestUTCRules {
     }
 
     public void test_convertToInstant_furtherAfterLeap() {
-        OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 1, ZoneOffset.UTC);
+        OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 1, 0, ZoneOffset.UTC);
         Instant instant = odt.toInstant();
         UTCInstant utc = UTCInstant.ofModifiedJulianDay(MJD_1980, NANOS_PER_SEC, rules);
         assertEquals(rules.convertToInstant(utc), instant);

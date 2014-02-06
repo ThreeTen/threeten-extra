@@ -67,7 +67,7 @@ public interface TimeSource {
      * @return the current {@code Instant} from this time-source, not null
      * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations
      */
-    public abstract Instant instant();
+    Instant instant();
 
     /**
      * Gets the current {@code UTCInstant}.
@@ -78,7 +78,7 @@ public interface TimeSource {
      * @return the current {@code UTCInstant} from this time-source, not null
      * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations
      */
-    public abstract UTCInstant utcInstant();
+    UTCInstant utcInstant();
 
     /**
      * Gets the current {@code TAIInstant}.
@@ -90,6 +90,6 @@ public interface TimeSource {
      * @return the current {@code TAIInstant} from this time-source, not null
      * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations
      */
-    public abstract TAIInstant taiInstant();
+    TAIInstant taiInstant();
 
 }

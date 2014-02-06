@@ -31,17 +31,24 @@
  */
 package org.threeten.extra.scale;
 
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.temporal.JulianFields;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * System default UTC rules.
@@ -52,13 +59,17 @@ import java.util.concurrent.atomic.AtomicReference;
 final class SystemUTCRules extends UTCRules implements Serializable {
 
     /**
-     * Singleton.
+     * Leap second file format.
      */
-    static final SystemUTCRules INSTANCE = new SystemUTCRules();
+    private static final Pattern LEAP_FILE_FORMAT = Pattern.compile("([0-9-]{10})[ ]+([0-9]+)");
     /**
      * Serialization version.
      */
     private static final long serialVersionUID = 7594178360693417218L;
+    /**
+     * Singleton.
+     */
+    static final SystemUTCRules INSTANCE = new SystemUTCRules();
 
     /**
      * The table of leap second dates.
@@ -68,7 +79,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     /** Data holder. */
     private static final class Data implements Serializable {
         /** Serialization version. */
-       private static final long serialVersionUID = -3655687912882817265L;
+        private static final long serialVersionUID = -3655687912882817265L;
         /** Constructor. */
         private Data(long[] dates, int[] offsets, long[] taiSeconds) {
             super();
@@ -77,11 +88,11 @@ final class SystemUTCRules extends UTCRules implements Serializable {
             this.taiSeconds = taiSeconds;
         }
         /** The table of leap second date when the leap second occurs. */
-        final long[] dates;
+        private final long[] dates;
         /** The table of TAI offset after the leap second. */
-        final int[] offsets;
+        private final int[] offsets;
         /** The table of TAI second when the new offset starts. */
-        final long[] taiSeconds;
+        private final long[] taiSeconds;
 
         /**
          * @return The modified Julian Date of the newest leap second
@@ -202,7 +213,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         Data bestData = null;
         URL url = null;
         try {
-            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/LeapSecondRules.dat");
+            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("org/threeten/extra/scale/LeapSeconds.txt");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
                 Data candidate = loadLeapSeconds(url);
@@ -228,40 +239,33 @@ final class SystemUTCRules extends UTCRules implements Serializable {
      * @throws Exception if an error occurs
      */
     private static Data loadLeapSeconds(URL url) throws ClassNotFoundException, IOException {
-        boolean throwing = false;
-        InputStream in = null;
-        try {
-            in = url.openStream();
-            DataInputStream dis = new DataInputStream(in);
-            if (dis.readByte() != 1) {
-                throw new StreamCorruptedException("File format not recognised");
-            }
-            int leaps = dis.readInt();
-            long[] dates = new long[leaps];
-            int[] offsets = new int[leaps];
-            long[] taiSeconds = new long[leaps];
-            for (int i = 0 ; i < leaps; ++i) {
-                long changeMjd = dis.readLong();  // date leap second is added
-                int offset = dis.readInt();
-                dates[i] = changeMjd;
-                offsets[i] = offset;
-                taiSeconds[i] = tai(changeMjd, offset);
-            }
-            return new Data(dates, offsets, taiSeconds);
-        } catch (IOException ex) {
-            throwing = true;
-            throw ex;
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    if (throwing == false) {
-                        throw ex;
-                    }
-                }
-            }
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
+            lines = reader.lines().collect(Collectors.toList());
         }
+        List<Long> dates = new ArrayList<>();
+        List<Integer> offsets = new ArrayList<>();
+        for (String line : lines) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            Matcher matcher = LEAP_FILE_FORMAT.matcher(line);
+            if (matcher.matches() == false) {
+                throw new StreamCorruptedException("Invalid leap second file");
+            }
+            dates.add(LocalDate.parse(matcher.group(1)).getLong(JulianFields.MODIFIED_JULIAN_DAY));
+            offsets.add(Integer.valueOf(matcher.group(2)));
+        }
+        long[] datesData = new long[dates.size()];
+        int[] offsetsData = new int[dates.size()];
+        long[] taiData = new long[dates.size()];
+        for (int i = 0; i < datesData.length; i++) {
+            datesData[i] = dates.get(i);
+            offsetsData[i] = offsets.get(i);
+            taiData[i] = tai(datesData[i], offsetsData[i]);
+        }
+        return new Data(datesData, offsetsData, taiData);
     }
 
     /**
