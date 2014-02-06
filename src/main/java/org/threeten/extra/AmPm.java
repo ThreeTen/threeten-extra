@@ -69,7 +69,7 @@ import java.util.Locale;
  * As such, this enum may be used by any calendar system that has the AM/PM
  * concept defined exactly equivalent to the ISO calendar system.
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This is an immutable and thread-safe enum.
  */
 public enum AmPm implements TemporalAccessor, TemporalAdjuster {

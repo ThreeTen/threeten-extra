@@ -88,8 +88,11 @@ import java.time.temporal.JulianFields;
  * Since some instants will be prior to 1972, it is not strictly an implementation of UTC.
  * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1972.
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class UTCInstant
         implements Comparable<UTCInstant>, Serializable {

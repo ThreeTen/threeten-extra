@@ -52,8 +52,11 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  * Static factory methods allow you to construct instances.
  * The second-of-minute may be queried using getValue().
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class SecondOfMinute
         implements Comparable<SecondOfMinute>, TemporalAdjuster, Serializable {

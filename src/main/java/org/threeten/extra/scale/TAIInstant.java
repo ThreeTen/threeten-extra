@@ -78,8 +78,11 @@ import java.time.format.DateTimeParseException;
  * Since some instants will be prior to 1958, it is not strictly an implementation of TAI.
  * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1958.
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class TAIInstant
         implements Comparable<TAIInstant>, Serializable {

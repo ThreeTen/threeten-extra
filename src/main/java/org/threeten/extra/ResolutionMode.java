@@ -34,7 +34,7 @@ package org.threeten.extra;
 /**
  * How to resolve invalid combinations of date or time fields.
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This is an immutable and thread-safe enum.
  */
 public enum ResolutionMode {

@@ -40,7 +40,7 @@ import java.time.temporal.TemporalAdjuster;
 /**
  * A helper class for rules around weekends.
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This is a thread-safe utility class.
  * All returned classes are immutable and thread-safe.
  */

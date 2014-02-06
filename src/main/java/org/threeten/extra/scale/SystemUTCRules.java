@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 /**
  * System default UTC rules.
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This class is immutable and thread-safe.
  */
 final class SystemUTCRules extends UTCRules implements Serializable {

@@ -41,7 +41,7 @@ import java.time.Instant;
  * in the UTC and TAI time-scales. However, there is currently no implementation that
  * provides accurate UTC or TAI.
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This abstract class must be implemented with care to ensure other classes in
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.

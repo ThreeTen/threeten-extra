@@ -44,7 +44,7 @@ import java.time.temporal.ChronoUnit;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This is an abstract class and must be implemented with care to ensure
  * other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.

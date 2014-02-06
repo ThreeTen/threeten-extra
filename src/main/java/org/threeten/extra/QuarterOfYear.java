@@ -69,7 +69,7 @@ import java.util.Objects;
  * As such, this enum may be used by any calendar system that has the quarter-of-year
  * concept defined exactly equivalent to the ISO calendar system.
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This is an immutable and thread-safe enum.
  */
 public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
@@ -309,7 +309,7 @@ public enum QuarterOfYear implements TemporalAccessor, TemporalAdjuster {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * <h4>Implementation notes</h4>
+     * @implSpec
      * Adjusts the specified date-time to have the value of this quarter.
      * The date-time object must use the ISO calendar system.
      * The adjustment is equivalent to using {@link DateTime#with(TemporalField, long)}

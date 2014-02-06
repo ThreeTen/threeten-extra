@@ -69,12 +69,12 @@ import java.time.temporal.ValueRange;
  * This date operates using the {@linkplain CopticChronology Coptic calendar}.
  * This calendar system is primarily used in Christian Egypt.
  * Dates are aligned such that {@code 0001-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
- * <p>
- * NOTE: Treat this class as a value type.
- * Do not synchronize, rely on the identity hash code or use the distinction between equals() and ==.
  *
  * @implSpec
  * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class CopticDate
         implements ChronoLocalDate, Serializable {

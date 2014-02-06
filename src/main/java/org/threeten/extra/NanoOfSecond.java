@@ -51,8 +51,11 @@ import java.time.temporal.TemporalField;
  * Static factory methods allow you to construct instances.
  * The nano-of-second may be queried using getValue().
  *
- * <h4>Implementation notes</h4>
+ * @implSpec
  * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class NanoOfSecond
         implements Comparable<NanoOfSecond>, TemporalAdjuster, Serializable {
