@@ -29,21 +29,21 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.extra;
+package org.threeten.extra.amount;
 
-import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
 /**
- * A period representing a number of months.
+ * A period representing a number of seconds.
  * <p>
- * Months is an immutable period that can only store months.
- * It is a type-safe way of representing a number of months in an application.
+ * Seconds is an immutable period that can only store seconds.
+ * It is a type-safe way of representing a number of seconds in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The number of months may be queried using getMonths().
+ * The number of seconds may be queried using getSeconds().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  *
@@ -53,45 +53,45 @@ import java.time.temporal.ChronoUnit;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class Months extends AbstractPeriodField implements Comparable<Months>, Serializable {
+public final class Seconds extends AbstractPeriodField implements Comparable<Seconds>, Serializable {
 
     /**
-     * A constant for zero months.
+     * A constant for zero seconds.
      */
-    public static final Months ZERO = new Months(0);
+    public static final Seconds ZERO = new Seconds(0);
 
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = -6707836597261000171L;
+    private static final long serialVersionUID = -2642064517515968004L;
 
     /**
-     * The number of months in the period.
+     * The number of seconds in the period.
      */
-    private final int months;
+    private final int seconds;
 
     /**
-     * Obtains an instance of <code>Months</code>.
+     * Obtains an instance of <code>Seconds</code>.
      *
-     * @param months  the number of months the instance will represent
-     * @return the created Months
+     * @param seconds  the number of seconds the instance will represent
+     * @return the created Seconds
      */
-    public static Months of(int months) {
-        if (months == 0) {
+    public static Seconds of(int seconds) {
+        if (seconds == 0) {
             return ZERO;
         }
-        return new Months(months);
+        return new Seconds(seconds);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of months.
+     * Constructs an instance using a specific number of seconds.
      *
-     * @param months  the months to use
+     * @param seconds  the seconds to use
      */
-    private Months(int months) {
+    private Seconds(int seconds) {
         super();
-        this.months = months;
+        this.seconds = seconds;
     }
 
     /**
@@ -100,103 +100,103 @@ public final class Months extends AbstractPeriodField implements Comparable<Mont
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Months.of(months);
+        return Seconds.of(seconds);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of months held in this period.
+     * Gets the number of seconds held in this period.
      *
-     * @return the number of months
+     * @return the number of seconds
      */
     @Override
     public int getAmount() {
-        return months;
+        return seconds;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of months.
+     * Returns a new instance of the subclass with a different number of seconds.
      *
-     * @param amount  the number of months to set in the new instance, may be negative
+     * @param amount  the number of seconds to set in the new instance, may be negative
      * @return a new period element, never null
      */
     @Override
-    public Months withAmount(int amount) {
-        return Months.of(amount);
+    public Seconds withAmount(int amount) {
+        return Seconds.of(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the months unit, never null
+     * @return the seconds unit, never null
      */
     @Override
     public ChronoUnit getUnit() {
-        return MONTHS;
+        return SECONDS;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of months added.
+     * Returns a new instance with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to add, may be negative
-     * @return the new period plus the specified number of months
+     * @param seconds  the amount of seconds to add, may be negative
+     * @return the new period plus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Months plus(int months) {
-        return (Months) super.plus(months);
+    public Seconds plus(int seconds) {
+        return (Seconds) super.plus(seconds);
     }
 
     /**
-     * Returns a new instance with the specified number of months added.
+     * Returns a new instance with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to add, may be negative, not null
-     * @return the new period plus the specified number of months
-     * @throws NullPointerException if the months to add is null
+     * @param seconds  the amount of seconds to add, may be negative, not null
+     * @return the new period plus the specified number of seconds
+     * @throws NullPointerException if the seconds to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Months plus(Months months) {
-        return plus(months.getAmount());
+    public Seconds plus(Seconds seconds) {
+        return plus(seconds.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of months taken away.
+     * Returns a new instance with the specified number of seconds taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to take away, may be negative
-     * @return the new period minus the specified number of months
+     * @param seconds  the amount of seconds to take away, may be negative
+     * @return the new period minus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Months minus(int months) {
-        return (Months) super.minus(months);
+    public Seconds minus(int seconds) {
+        return (Seconds) super.minus(seconds);
     }
 
     /**
-     * Returns a new instance with the specified number of months taken away.
+     * Returns a new instance with the specified number of seconds taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to take away, may be negative, not null
-     * @return the new period minus the specified number of months
-     * @throws NullPointerException if the months to add is null
+     * @param seconds  the amount of seconds to take away, may be negative, not null
+     * @return the new period minus the specified number of seconds
+     * @throws NullPointerException if the seconds to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Months minus(Months months) {
-        return minus(months.getAmount());
+    public Seconds minus(Seconds seconds) {
+        return minus(seconds.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the months multiplied by the specified scalar.
+     * Returns a new instance with the seconds multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -205,12 +205,12 @@ public final class Months extends AbstractPeriodField implements Comparable<Mont
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Months multipliedBy(int scalar) {
-        return (Months) super.multipliedBy(scalar);
+    public Seconds multipliedBy(int scalar) {
+        return (Seconds) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the months divided by the specified divisor.
+     * Returns a new instance with the seconds divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -220,70 +220,70 @@ public final class Months extends AbstractPeriodField implements Comparable<Mont
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Months dividedBy(int divisor) {
-        return (Months) super.dividedBy(divisor);
+    public Seconds dividedBy(int divisor) {
+        return (Seconds) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the months value negated.
+     * Returns a new instance with the seconds value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Months negated() {
-        return (Months) super.negated();
+    public Seconds negated() {
+        return (Seconds) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of months in this instance to another instance.
+     * Compares the number of seconds in this instance to another instance.
      *
-     * @param otherMonths  the other number of months, not null
+     * @param otherSeconds  the other number of seconds, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMonths is null
+     * @throws NullPointerException if otherSeconds is null
      */
-    public int compareTo(Months otherMonths) {
-        int thisValue = this.months;
-        int otherValue = otherMonths.months;
+    public int compareTo(Seconds otherSeconds) {
+        int thisValue = this.seconds;
+        int otherValue = otherSeconds.seconds;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of months in this instance greater than that in
+     * Is the number of seconds in this instance greater than that in
      * another instance.
      *
-     * @param otherMonths  the other number of months, not null
-     * @return true if this number of months is greater
-     * @throws NullPointerException if otherMonths is null
+     * @param otherSeconds  the other number of seconds, not null
+     * @return true if this number of seconds is greater
+     * @throws NullPointerException if otherSeconds is null
      */
-    public boolean isGreaterThan(Months otherMonths) {
-        return compareTo(otherMonths) > 0;
+    public boolean isGreaterThan(Seconds otherSeconds) {
+        return compareTo(otherSeconds) > 0;
     }
 
     /**
-     * Is the number of months in this instance less than that in
+     * Is the number of seconds in this instance less than that in
      * another instance.
      *
-     * @param otherMonths  the other number of months, not null
-     * @return true if this number of months is less
-     * @throws NullPointerException if otherMonths is null
+     * @param otherSeconds  the other number of seconds, not null
+     * @return true if this number of seconds is less
+     * @throws NullPointerException if otherSeconds is null
      */
-    public boolean isLessThan(Months otherMonths) {
-        return compareTo(otherMonths) < 0;
+    public boolean isLessThan(Seconds otherSeconds) {
+        return compareTo(otherSeconds) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of months.
-     * This will be in the format 'PnM' where n is the number of months.
+     * Returns a string representation of the number of seconds.
+     * This will be in the format 'PTnS' where n is the number of seconds.
      *
-     * @return the number of months in ISO8601 string format
+     * @return the number of seconds in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P" + months + "M";
+        return "PT" + seconds + "S";
     }
 
 }

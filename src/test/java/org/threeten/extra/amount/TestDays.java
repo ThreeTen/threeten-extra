@@ -29,9 +29,9 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.extra;
+package org.threeten.extra.amount;
 
-import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -50,47 +50,47 @@ import org.testng.annotations.Test;
  * Test class.
  */
 @Test
-public class TestMonths {
+public class TestDays {
 
     //-----------------------------------------------------------------------
     public void test_isSerializable() {
-        assertTrue(Serializable.class.isAssignableFrom(Months.class));
+        assertTrue(Serializable.class.isAssignableFrom(Days.class));
     }
 
     //-----------------------------------------------------------------------
     public void test_factoryZeroSingleton() {
-        assertSame(Months.ZERO, Months.of(0));
-        assertSame(Months.ZERO, Months.of(0));
-        assertEquals(0, Months.ZERO.getAmount());
+        assertSame(Days.ZERO, Days.of(0));
+        assertSame(Days.ZERO, Days.of(0));
+        assertEquals(0, Days.ZERO.getAmount());
     }
 
     //-----------------------------------------------------------------------
-    public void test_factoryGetMonths() {
-        assertEquals(1,  Months.of(1).getAmount());
-        assertEquals(2,  Months.of(2).getAmount());
-        assertEquals(Integer.MAX_VALUE,  Months.of(Integer.MAX_VALUE).getAmount());
-        assertEquals(-1,  Months.of(-1).getAmount());
-        assertEquals(-2,  Months.of(-2).getAmount());
-        assertEquals(Integer.MIN_VALUE,  Months.of(Integer.MIN_VALUE).getAmount());
+    public void test_factoryGetDays() {
+        assertEquals(1,  Days.of(1).getAmount());
+        assertEquals(2,  Days.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE,  Days.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1,  Days.of(-1).getAmount());
+        assertEquals(-2,  Days.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE,  Days.of(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
-        Months orginal = Months.ZERO;
+        Days orginal = Days.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        Months ser = (Months) in.readObject();
-        assertSame(Months.ZERO, ser);
+        Days ser = (Days) in.readObject();
+        assertSame(Days.ZERO, ser);
     }
 
     //-----------------------------------------------------------------------
     public void test_compareTo() {
-        Months test5 = Months.of(5);
-        Months test6 = Months.of(6);
+        Days test5 = Days.of(5);
+        Days test6 = Days.of(6);
         assertEquals(0, test5.compareTo(test5));
         assertEquals(-1, test5.compareTo(test6));
         assertEquals(1, test6.compareTo(test5));
@@ -98,14 +98,14 @@ public class TestMonths {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_compareTo_null() {
-        Months test5 = Months.of(5);
+        Days test5 = Days.of(5);
         test5.compareTo(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isGreaterThan() {
-        Months test5 = Months.of(5);
-        Months test6 = Months.of(6);
+        Days test5 = Days.of(5);
+        Days test6 = Days.of(6);
         assertEquals(false, test5.isGreaterThan(test5));
         assertEquals(false, test5.isGreaterThan(test6));
         assertEquals(true, test6.isGreaterThan(test5));
@@ -113,14 +113,14 @@ public class TestMonths {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isGreaterThan_null() {
-        Months test5 = Months.of(5);
+        Days test5 = Days.of(5);
         test5.isGreaterThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isLessThan() {
-        Months test5 = Months.of(5);
-        Months test6 = Months.of(6);
+        Days test5 = Days.of(5);
+        Days test6 = Days.of(6);
         assertEquals(false, test5.isLessThan(test5));
         assertEquals(true, test5.isLessThan(test6));
         assertEquals(false, test6.isLessThan(test5));
@@ -128,204 +128,204 @@ public class TestMonths {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isLessThan_null() {
-        Months test5 = Months.of(5);
+        Days test5 = Days.of(5);
         test5.isLessThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_equals() {
-        Months test5 = Months.of(5);
-        Months test6 = Months.of(6);
+        Days test5 = Days.of(5);
+        Days test6 = Days.of(6);
         assertEquals(true, test5.equals(test5));
         assertEquals(false, test5.equals(test6));
         assertEquals(false, test6.equals(test5));
     }
 
     public void test_equals_null() {
-        Months test5 = Months.of(5);
+        Days test5 = Days.of(5);
         assertEquals(false, test5.equals(null));
     }
 
     public void test_equals_otherClass() {
-        Months test5 = Months.of(5);
+        Days test5 = Days.of(5);
         assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        Months test5 = Months.of(5);
-        Months test6 = Months.of(6);
+        Days test5 = Days.of(5);
+        Days test6 = Days.of(6);
         assertEquals(true, test5.hashCode() == test5.hashCode());
         assertEquals(false, test5.hashCode() == test6.hashCode());
     }
 
     //-----------------------------------------------------------------------
     public void test_getUnit() {
-        ChronoUnit unit = Months.of(5).getUnit();
+        ChronoUnit unit = Days.of(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, MONTHS);
+        assertEquals(unit, DAYS);
     }
 
     //-----------------------------------------------------------------------
     public void test_plus() {
-        Months test5 = Months.of(5);
-        assertEquals(Months.of(5), test5.plus(0));
-        assertEquals(Months.of(7), test5.plus(2));
-        assertEquals(Months.of(3), test5.plus(-2));
-        assertEquals(Months.of(Integer.MAX_VALUE), Months.of(Integer.MAX_VALUE - 1).plus(1));
-        assertEquals(Months.of(Integer.MIN_VALUE), Months.of(Integer.MIN_VALUE + 1).plus(-1));
+        Days test5 = Days.of(5);
+        assertEquals(Days.of(5), test5.plus(0));
+        assertEquals(Days.of(7), test5.plus(2));
+        assertEquals(Days.of(3), test5.plus(-2));
+        assertEquals(Days.of(Integer.MAX_VALUE), Days.of(Integer.MAX_VALUE - 1).plus(1));
+        assertEquals(Days.of(Integer.MIN_VALUE), Days.of(Integer.MIN_VALUE + 1).plus(-1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooBig() {
-        Months.of(Integer.MAX_VALUE - 1).plus(2);
+        Days.of(Integer.MAX_VALUE - 1).plus(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooSmall() {
-        Months.of(Integer.MIN_VALUE + 1).plus(-2);
+        Days.of(Integer.MIN_VALUE + 1).plus(-2);
     }
 
     //-----------------------------------------------------------------------
-    public void test_plus_Months() {
-        Months test5 = Months.of(5);
-        assertEquals(Months.of(5), test5.plus(Months.of(0)));
-        assertEquals(Months.of(7), test5.plus(Months.of(2)));
-        assertEquals(Months.of(3), test5.plus(Months.of(-2)));
-        assertEquals(Months.of(Integer.MAX_VALUE),
-                Months.of(Integer.MAX_VALUE - 1).plus(Months.of(1)));
-        assertEquals(Months.of(Integer.MIN_VALUE),
-                Months.of(Integer.MIN_VALUE + 1).plus(Months.of(-1)));
+    public void test_plus_Days() {
+        Days test5 = Days.of(5);
+        assertEquals(Days.of(5), test5.plus(Days.of(0)));
+        assertEquals(Days.of(7), test5.plus(Days.of(2)));
+        assertEquals(Days.of(3), test5.plus(Days.of(-2)));
+        assertEquals(Days.of(Integer.MAX_VALUE),
+                Days.of(Integer.MAX_VALUE - 1).plus(Days.of(1)));
+        assertEquals(Days.of(Integer.MIN_VALUE),
+                Days.of(Integer.MIN_VALUE + 1).plus(Days.of(-1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_plus_Months_overflowTooBig() {
-        Months.of(Integer.MAX_VALUE - 1).plus(Months.of(2));
+    public void test_plus_Days_overflowTooBig() {
+        Days.of(Integer.MAX_VALUE - 1).plus(Days.of(2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_plus_Months_overflowTooSmall() {
-        Months.of(Integer.MIN_VALUE + 1).plus(Months.of(-2));
+    public void test_plus_Days_overflowTooSmall() {
+        Days.of(Integer.MIN_VALUE + 1).plus(Days.of(-2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
-    public void test_plus_Months_null() {
-        Months.of(Integer.MIN_VALUE + 1).plus(null);
+    public void test_plus_Days_null() {
+        Days.of(Integer.MIN_VALUE + 1).plus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_minus() {
-        Months test5 = Months.of(5);
-        assertEquals(Months.of(5), test5.minus(0));
-        assertEquals(Months.of(3), test5.minus(2));
-        assertEquals(Months.of(7), test5.minus(-2));
-        assertEquals(Months.of(Integer.MAX_VALUE), Months.of(Integer.MAX_VALUE - 1).minus(-1));
-        assertEquals(Months.of(Integer.MIN_VALUE), Months.of(Integer.MIN_VALUE + 1).minus(1));
+        Days test5 = Days.of(5);
+        assertEquals(Days.of(5), test5.minus(0));
+        assertEquals(Days.of(3), test5.minus(2));
+        assertEquals(Days.of(7), test5.minus(-2));
+        assertEquals(Days.of(Integer.MAX_VALUE), Days.of(Integer.MAX_VALUE - 1).minus(-1));
+        assertEquals(Days.of(Integer.MIN_VALUE), Days.of(Integer.MIN_VALUE + 1).minus(1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooBig() {
-        Months.of(Integer.MAX_VALUE - 1).minus(-2);
+        Days.of(Integer.MAX_VALUE - 1).minus(-2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooSmall() {
-        Months.of(Integer.MIN_VALUE + 1).minus(2);
+        Days.of(Integer.MIN_VALUE + 1).minus(2);
     }
 
     //-----------------------------------------------------------------------
-    public void test_minus_Months() {
-        Months test5 = Months.of(5);
-        assertEquals(Months.of(5), test5.minus(Months.of(0)));
-        assertEquals(Months.of(3), test5.minus(Months.of(2)));
-        assertEquals(Months.of(7), test5.minus(Months.of(-2)));
-        assertEquals(Months.of(Integer.MAX_VALUE),
-                Months.of(Integer.MAX_VALUE - 1).minus(Months.of(-1)));
-        assertEquals(Months.of(Integer.MIN_VALUE),
-                Months.of(Integer.MIN_VALUE + 1).minus(Months.of(1)));
+    public void test_minus_Days() {
+        Days test5 = Days.of(5);
+        assertEquals(Days.of(5), test5.minus(Days.of(0)));
+        assertEquals(Days.of(3), test5.minus(Days.of(2)));
+        assertEquals(Days.of(7), test5.minus(Days.of(-2)));
+        assertEquals(Days.of(Integer.MAX_VALUE),
+                Days.of(Integer.MAX_VALUE - 1).minus(Days.of(-1)));
+        assertEquals(Days.of(Integer.MIN_VALUE),
+                Days.of(Integer.MIN_VALUE + 1).minus(Days.of(1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_minus_Months_overflowTooBig() {
-        Months.of(Integer.MAX_VALUE - 1).minus(Months.of(-2));
+    public void test_minus_Days_overflowTooBig() {
+        Days.of(Integer.MAX_VALUE - 1).minus(Days.of(-2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_minus_Months_overflowTooSmall() {
-        Months.of(Integer.MIN_VALUE + 1).minus(Months.of(2));
+    public void test_minus_Days_overflowTooSmall() {
+        Days.of(Integer.MIN_VALUE + 1).minus(Days.of(2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
-    public void test_minus_Months_null() {
-        Months.of(Integer.MIN_VALUE + 1).minus(null);
+    public void test_minus_Days_null() {
+        Days.of(Integer.MIN_VALUE + 1).minus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_multipliedBy() {
-        Months test5 = Months.of(5);
-        assertEquals(Months.of(0), test5.multipliedBy(0));
-        assertEquals(Months.of(5), test5.multipliedBy(1));
-        assertEquals(Months.of(10), test5.multipliedBy(2));
-        assertEquals(Months.of(15), test5.multipliedBy(3));
-        assertEquals(Months.of(-15), test5.multipliedBy(-3));
+        Days test5 = Days.of(5);
+        assertEquals(Days.of(0), test5.multipliedBy(0));
+        assertEquals(Days.of(5), test5.multipliedBy(1));
+        assertEquals(Days.of(10), test5.multipliedBy(2));
+        assertEquals(Days.of(15), test5.multipliedBy(3));
+        assertEquals(Days.of(-15), test5.multipliedBy(-3));
     }
 
     public void test_multipliedBy_negate() {
-        Months test5 = Months.of(5);
-        assertEquals(Months.of(-15), test5.multipliedBy(-3));
+        Days test5 = Days.of(5);
+        assertEquals(Days.of(-15), test5.multipliedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooBig() {
-        Months.of(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
+        Days.of(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooSmall() {
-        Months.of(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
+        Days.of(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
     }
 
     //-----------------------------------------------------------------------
     public void test_dividedBy() {
-        Months test12 = Months.of(12);
-        assertEquals(Months.of(12), test12.dividedBy(1));
-        assertEquals(Months.of(6), test12.dividedBy(2));
-        assertEquals(Months.of(4), test12.dividedBy(3));
-        assertEquals(Months.of(3), test12.dividedBy(4));
-        assertEquals(Months.of(2), test12.dividedBy(5));
-        assertEquals(Months.of(2), test12.dividedBy(6));
-        assertEquals(Months.of(-4), test12.dividedBy(-3));
+        Days test12 = Days.of(12);
+        assertEquals(Days.of(12), test12.dividedBy(1));
+        assertEquals(Days.of(6), test12.dividedBy(2));
+        assertEquals(Days.of(4), test12.dividedBy(3));
+        assertEquals(Days.of(3), test12.dividedBy(4));
+        assertEquals(Days.of(2), test12.dividedBy(5));
+        assertEquals(Days.of(2), test12.dividedBy(6));
+        assertEquals(Days.of(-4), test12.dividedBy(-3));
     }
 
     public void test_dividedBy_negate() {
-        Months test12 = Months.of(12);
-        assertEquals(Months.of(-4), test12.dividedBy(-3));
+        Days test12 = Days.of(12);
+        assertEquals(Days.of(-4), test12.dividedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_dividedBy_divideByZero() {
-        Months.of(1).dividedBy(0);
+        Days.of(1).dividedBy(0);
     }
 
     //-----------------------------------------------------------------------
     public void test_negated() {
-        assertEquals(Months.of(0), Months.of(0).negated());
-        assertEquals(Months.of(-12), Months.of(12).negated());
-        assertEquals(Months.of(12), Months.of(-12).negated());
-        assertEquals(Months.of(-Integer.MAX_VALUE), Months.of(Integer.MAX_VALUE).negated());
+        assertEquals(Days.of(0), Days.of(0).negated());
+        assertEquals(Days.of(-12), Days.of(12).negated());
+        assertEquals(Days.of(12), Days.of(-12).negated());
+        assertEquals(Days.of(-Integer.MAX_VALUE), Days.of(Integer.MAX_VALUE).negated());
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
-        Months.of(Integer.MIN_VALUE).negated();
+        Days.of(Integer.MIN_VALUE).negated();
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() {
-        Months test5 = Months.of(5);
-        assertEquals("P5M", test5.toString());
-        Months testM1 = Months.of(-1);
-        assertEquals("P-1M", testM1.toString());
+        Days test5 = Days.of(5);
+        assertEquals("P5D", test5.toString());
+        Days testM1 = Days.of(-1);
+        assertEquals("P-1D", testM1.toString());
     }
 
 }

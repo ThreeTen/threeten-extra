@@ -29,21 +29,21 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.extra;
+package org.threeten.extra.amount;
 
-import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.WEEKS;
 
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
 /**
- * A period representing a number of hours.
+ * A period representing a number of weeks.
  * <p>
- * Hours is an immutable period that can only store hours.
- * It is a type-safe way of representing a number of hours in an application.
+ * Weeks is an immutable period that can only store weeks.
+ * It is a type-safe way of representing a number of weeks in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The number of hours may be queried using getHours().
+ * The number of weeks may be queried using getWeeks().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  *
@@ -53,45 +53,45 @@ import java.time.temporal.ChronoUnit;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class Hours extends AbstractPeriodField implements Comparable<Hours>, Serializable {
+public final class Weeks extends AbstractPeriodField implements Comparable<Weeks>, Serializable {
 
     /**
-     * A constant for zero hours.
+     * A constant for zero weeks.
      */
-    public static final Hours ZERO = new Hours(0);
+    public static final Weeks ZERO = new Weeks(0);
 
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 8022588567806417190L;
+    private static final long serialVersionUID = 1319559649928819478L;
 
     /**
-     * The number of hours in the period.
+     * The number of weeks in the period.
      */
-    private final int hours;
+    private final int weeks;
 
     /**
-     * Obtains an instance of <code>Hours</code>.
+     * Obtains an instance of <code>Weeks</code>.
      *
-     * @param hours  the number of hours the instance will represent
-     * @return the created Hours
+     * @param weeks  the number of weeks the instance will represent
+     * @return the created Weeks
      */
-    public static Hours of(int hours) {
-        if (hours == 0) {
+    public static Weeks of(int weeks) {
+        if (weeks == 0) {
             return ZERO;
         }
-        return new Hours(hours);
+        return new Weeks(weeks);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of hours.
+     * Constructs an instance using a specific number of weeks.
      *
-     * @param hours  the hours to use
+     * @param weeks  the weeks to use
      */
-    private Hours(int hours) {
+    private Weeks(int weeks) {
         super();
-        this.hours = hours;
+        this.weeks = weeks;
     }
 
     /**
@@ -100,103 +100,103 @@ public final class Hours extends AbstractPeriodField implements Comparable<Hours
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Hours.of(hours);
+        return Weeks.of(weeks);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of hours held in this period.
+     * Gets the number of weeks held in this period.
      *
-     * @return the number of hours
+     * @return the number of weeks
      */
     @Override
     public int getAmount() {
-        return hours;
+        return weeks;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of hours.
+     * Returns a new instance of the subclass with a different number of weeks.
      *
-     * @param amount  the number of hours to set in the new instance, may be negative
+     * @param amount  the number of weeks to set in the new instance, may be negative
      * @return a new period element, never null
      */
     @Override
-    public Hours withAmount(int amount) {
-        return Hours.of(amount);
+    public Weeks withAmount(int amount) {
+        return Weeks.of(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the hours unit, never null
+     * @return the weeks unit, never null
      */
     @Override
     public ChronoUnit getUnit() {
-        return HOURS;
+        return WEEKS;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of hours added.
+     * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the amount of hours to add, may be negative
-     * @return the new period plus the specified number of hours
+     * @param weeks  the amount of weeks to add, may be negative
+     * @return the new period plus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Hours plus(int hours) {
-        return (Hours) super.plus(hours);
+    public Weeks plus(int weeks) {
+        return (Weeks) super.plus(weeks);
     }
 
     /**
-     * Returns a new instance with the specified number of hours added.
+     * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the amount of hours to add, may be negative, not null
-     * @return the new period plus the specified number of hours
-     * @throws NullPointerException if the hours to add is null
+     * @param weeks  the amount of weeks to add, may be negative, not null
+     * @return the new period plus the specified number of weeks
+     * @throws NullPointerException if the weeks to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Hours plus(Hours hours) {
-        return plus(hours.getAmount());
+    public Weeks plus(Weeks weeks) {
+        return plus(weeks.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of hours taken away.
+     * Returns a new instance with the specified number of weeks taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the amount of hours to take away, may be negative
-     * @return the new period minus the specified number of hours
+     * @param weeks  the amount of weeks to take away, may be negative
+     * @return the new period minus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Hours minus(int hours) {
-        return (Hours) super.minus(hours);
+    public Weeks minus(int weeks) {
+        return (Weeks) super.minus(weeks);
     }
 
     /**
-     * Returns a new instance with the specified number of hours taken away.
+     * Returns a new instance with the specified number of weeks taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the amount of hours to take away, may be negative, not null
-     * @return the new period minus the specified number of hours
-     * @throws NullPointerException if the hours to add is null
+     * @param weeks  the amount of weeks to take away, may be negative, not null
+     * @return the new period minus the specified number of weeks
+     * @throws NullPointerException if the weeks to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Hours minus(Hours hours) {
-        return minus(hours.getAmount());
+    public Weeks minus(Weeks weeks) {
+        return minus(weeks.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the hours multiplied by the specified scalar.
+     * Returns a new instance with the weeks multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -205,12 +205,12 @@ public final class Hours extends AbstractPeriodField implements Comparable<Hours
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Hours multipliedBy(int scalar) {
-        return (Hours) super.multipliedBy(scalar);
+    public Weeks multipliedBy(int scalar) {
+        return (Weeks) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the hours divided by the specified divisor.
+     * Returns a new instance with the weeks divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -220,70 +220,70 @@ public final class Hours extends AbstractPeriodField implements Comparable<Hours
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Hours dividedBy(int divisor) {
-        return (Hours) super.dividedBy(divisor);
+    public Weeks dividedBy(int divisor) {
+        return (Weeks) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the hours value negated.
+     * Returns a new instance with the weeks value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Hours negated() {
-        return (Hours) super.negated();
+    public Weeks negated() {
+        return (Weeks) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of hours in this instance to another instance.
+     * Compares the number of weeks in this instance to another instance.
      *
-     * @param otherHours  the other number of hours, not null
+     * @param otherWeeks  the other number of weeks, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherHours is null
+     * @throws NullPointerException if otherWeeks is null
      */
-    public int compareTo(Hours otherHours) {
-        int thisValue = this.hours;
-        int otherValue = otherHours.hours;
+    public int compareTo(Weeks otherWeeks) {
+        int thisValue = this.weeks;
+        int otherValue = otherWeeks.weeks;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of hours in this instance greater than that in
+     * Is the number of weeks in this instance greater than that in
      * another instance.
      *
-     * @param otherHours  the other number of hours, not null
-     * @return true if this number of hours is greater
-     * @throws NullPointerException if otherHours is null
+     * @param otherWeeks  the other number of weeks, not null
+     * @return true if this number of weeks is greater
+     * @throws NullPointerException if otherWeeks is null
      */
-    public boolean isGreaterThan(Hours otherHours) {
-        return compareTo(otherHours) > 0;
+    public boolean isGreaterThan(Weeks otherWeeks) {
+        return compareTo(otherWeeks) > 0;
     }
 
     /**
-     * Is the number of hours in this instance less than that in
+     * Is the number of weeks in this instance less than that in
      * another instance.
      *
-     * @param otherHours  the other number of hours, not null
-     * @return true if this number of hours is less
-     * @throws NullPointerException if otherHours is null
+     * @param otherWeeks  the other number of weeks, not null
+     * @return true if this number of weeks is less
+     * @throws NullPointerException if otherWeeks is null
      */
-    public boolean isLessThan(Hours otherHours) {
-        return compareTo(otherHours) < 0;
+    public boolean isLessThan(Weeks otherWeeks) {
+        return compareTo(otherWeeks) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of hours.
-     * This will be in the format 'PTnH' where n is the number of hours.
+     * Returns a string representation of the number of weeks.
+     * This will be in the format 'PnW' where n is the number of weeks.
      *
-     * @return the number of hours in ISO8601 string format
+     * @return the number of weeks in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "PT" + hours + "H";
+        return "P" + weeks + "W";
     }
 
 }

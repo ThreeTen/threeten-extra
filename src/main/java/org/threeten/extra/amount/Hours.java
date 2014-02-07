@@ -29,21 +29,21 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.extra;
+package org.threeten.extra.amount;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.HOURS;
 
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
 /**
- * A period representing a number of minutes.
+ * A period representing a number of hours.
  * <p>
- * Minutes is an immutable period that can only store minutes.
- * It is a type-safe way of representing a number of minutes in an application.
+ * Hours is an immutable period that can only store hours.
+ * It is a type-safe way of representing a number of hours in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The number of minutes may be queried using getMinutes().
+ * The number of hours may be queried using getHours().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  *
@@ -53,45 +53,45 @@ import java.time.temporal.ChronoUnit;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class Minutes extends AbstractPeriodField implements Comparable<Minutes>, Serializable {
+public final class Hours extends AbstractPeriodField implements Comparable<Hours>, Serializable {
 
     /**
-     * A constant for zero minutes.
+     * A constant for zero hours.
      */
-    public static final Minutes ZERO = new Minutes(0);
+    public static final Hours ZERO = new Hours(0);
 
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 6589679170157660773L;
+    private static final long serialVersionUID = 8022588567806417190L;
 
     /**
-     * The number of minutes in the period.
+     * The number of hours in the period.
      */
-    private final int minutes;
+    private final int hours;
 
     /**
-     * Obtains an instance of <code>Minutes</code>.
+     * Obtains an instance of <code>Hours</code>.
      *
-     * @param minutes  the number of minutes the instance will represent
-     * @return the created Minutes
+     * @param hours  the number of hours the instance will represent
+     * @return the created Hours
      */
-    public static Minutes of(int minutes) {
-        if (minutes == 0) {
+    public static Hours of(int hours) {
+        if (hours == 0) {
             return ZERO;
         }
-        return new Minutes(minutes);
+        return new Hours(hours);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of minutes.
+     * Constructs an instance using a specific number of hours.
      *
-     * @param minutes  the minutes to use
+     * @param hours  the hours to use
      */
-    private Minutes(int minutes) {
+    private Hours(int hours) {
         super();
-        this.minutes = minutes;
+        this.hours = hours;
     }
 
     /**
@@ -100,103 +100,103 @@ public final class Minutes extends AbstractPeriodField implements Comparable<Min
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Minutes.of(minutes);
+        return Hours.of(hours);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of minutes held in this period.
+     * Gets the number of hours held in this period.
      *
-     * @return the number of minutes
+     * @return the number of hours
      */
     @Override
     public int getAmount() {
-        return minutes;
+        return hours;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of minutes.
+     * Returns a new instance of the subclass with a different number of hours.
      *
-     * @param amount  the number of minutes to set in the new instance, may be negative
+     * @param amount  the number of hours to set in the new instance, may be negative
      * @return a new period element, never null
      */
     @Override
-    public Minutes withAmount(int amount) {
-        return Minutes.of(amount);
+    public Hours withAmount(int amount) {
+        return Hours.of(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the minutes unit, never null
+     * @return the hours unit, never null
      */
     @Override
     public ChronoUnit getUnit() {
-        return MINUTES;
+        return HOURS;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of minutes added.
+     * Returns a new instance with the specified number of hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the amount of minutes to add, may be negative
-     * @return the new period plus the specified number of minutes
+     * @param hours  the amount of hours to add, may be negative
+     * @return the new period plus the specified number of hours
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Minutes plus(int minutes) {
-        return (Minutes) super.plus(minutes);
+    public Hours plus(int hours) {
+        return (Hours) super.plus(hours);
     }
 
     /**
-     * Returns a new instance with the specified number of minutes added.
+     * Returns a new instance with the specified number of hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the amount of minutes to add, may be negative, not null
-     * @return the new period plus the specified number of minutes
-     * @throws NullPointerException if the minutes to add is null
+     * @param hours  the amount of hours to add, may be negative, not null
+     * @return the new period plus the specified number of hours
+     * @throws NullPointerException if the hours to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Minutes plus(Minutes minutes) {
-        return plus(minutes.getAmount());
+    public Hours plus(Hours hours) {
+        return plus(hours.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of minutes taken away.
+     * Returns a new instance with the specified number of hours taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the amount of minutes to take away, may be negative
-     * @return the new period minus the specified number of minutes
+     * @param hours  the amount of hours to take away, may be negative
+     * @return the new period minus the specified number of hours
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Minutes minus(int minutes) {
-        return (Minutes) super.minus(minutes);
+    public Hours minus(int hours) {
+        return (Hours) super.minus(hours);
     }
 
     /**
-     * Returns a new instance with the specified number of minutes taken away.
+     * Returns a new instance with the specified number of hours taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the amount of minutes to take away, may be negative, not null
-     * @return the new period minus the specified number of minutes
-     * @throws NullPointerException if the minutes to add is null
+     * @param hours  the amount of hours to take away, may be negative, not null
+     * @return the new period minus the specified number of hours
+     * @throws NullPointerException if the hours to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Minutes minus(Minutes minutes) {
-        return minus(minutes.getAmount());
+    public Hours minus(Hours hours) {
+        return minus(hours.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the minutes multiplied by the specified scalar.
+     * Returns a new instance with the hours multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -205,12 +205,12 @@ public final class Minutes extends AbstractPeriodField implements Comparable<Min
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Minutes multipliedBy(int scalar) {
-        return (Minutes) super.multipliedBy(scalar);
+    public Hours multipliedBy(int scalar) {
+        return (Hours) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the minutes divided by the specified divisor.
+     * Returns a new instance with the hours divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -220,70 +220,70 @@ public final class Minutes extends AbstractPeriodField implements Comparable<Min
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Minutes dividedBy(int divisor) {
-        return (Minutes) super.dividedBy(divisor);
+    public Hours dividedBy(int divisor) {
+        return (Hours) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the minutes value negated.
+     * Returns a new instance with the hours value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Minutes negated() {
-        return (Minutes) super.negated();
+    public Hours negated() {
+        return (Hours) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of minutes in this instance to another instance.
+     * Compares the number of hours in this instance to another instance.
      *
-     * @param otherMinutes  the other number of minutes, not null
+     * @param otherHours  the other number of hours, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMinutes is null
+     * @throws NullPointerException if otherHours is null
      */
-    public int compareTo(Minutes otherMinutes) {
-        int thisValue = this.minutes;
-        int otherValue = otherMinutes.minutes;
+    public int compareTo(Hours otherHours) {
+        int thisValue = this.hours;
+        int otherValue = otherHours.hours;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of minutes in this instance greater than that in
+     * Is the number of hours in this instance greater than that in
      * another instance.
      *
-     * @param otherMinutes  the other number of minutes, not null
-     * @return true if this number of minutes is greater
-     * @throws NullPointerException if otherMinutes is null
+     * @param otherHours  the other number of hours, not null
+     * @return true if this number of hours is greater
+     * @throws NullPointerException if otherHours is null
      */
-    public boolean isGreaterThan(Minutes otherMinutes) {
-        return compareTo(otherMinutes) > 0;
+    public boolean isGreaterThan(Hours otherHours) {
+        return compareTo(otherHours) > 0;
     }
 
     /**
-     * Is the number of minutes in this instance less than that in
+     * Is the number of hours in this instance less than that in
      * another instance.
      *
-     * @param otherMinutes  the other number of minutes, not null
-     * @return true if this number of minutes is less
-     * @throws NullPointerException if otherMinutes is null
+     * @param otherHours  the other number of hours, not null
+     * @return true if this number of hours is less
+     * @throws NullPointerException if otherHours is null
      */
-    public boolean isLessThan(Minutes otherMinutes) {
-        return compareTo(otherMinutes) < 0;
+    public boolean isLessThan(Hours otherHours) {
+        return compareTo(otherHours) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of minutes.
-     * This will be in the format 'PTnM' where n is the number of minutes.
+     * Returns a string representation of the number of hours.
+     * This will be in the format 'PTnH' where n is the number of hours.
      *
-     * @return the number of minutes in ISO8601 string format
+     * @return the number of hours in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "PT" + minutes + "M";
+        return "PT" + hours + "H";
     }
 
 }

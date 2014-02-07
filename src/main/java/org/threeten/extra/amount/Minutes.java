@@ -29,21 +29,21 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.extra;
+package org.threeten.extra.amount;
 
-import static java.time.temporal.ChronoUnit.YEARS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
 /**
- * A period representing a number of years.
+ * A period representing a number of minutes.
  * <p>
- * Years is an immutable period that can only store years.
- * It is a type-safe way of representing a number of years in an application.
+ * Minutes is an immutable period that can only store minutes.
+ * It is a type-safe way of representing a number of minutes in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The number of years may be queried using getYears().
+ * The number of minutes may be queried using getMinutes().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  *
@@ -53,45 +53,45 @@ import java.time.temporal.ChronoUnit;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class Years extends AbstractPeriodField implements Comparable<Years>, Serializable {
+public final class Minutes extends AbstractPeriodField implements Comparable<Minutes>, Serializable {
 
     /**
-     * A constant for zero years.
+     * A constant for zero minutes.
      */
-    public static final Years ZERO = new Years(0);
+    public static final Minutes ZERO = new Minutes(0);
 
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 7544293392056034941L;
+    private static final long serialVersionUID = 6589679170157660773L;
 
     /**
-     * The number of years in the period.
+     * The number of minutes in the period.
      */
-    private final int years;
+    private final int minutes;
 
     /**
-     * Obtains an instance of <code>Years</code>.
+     * Obtains an instance of <code>Minutes</code>.
      *
-     * @param years  the number of years the instance will represent
-     * @return the created Years
+     * @param minutes  the number of minutes the instance will represent
+     * @return the created Minutes
      */
-    public static Years of(int years) {
-        if (years == 0) {
+    public static Minutes of(int minutes) {
+        if (minutes == 0) {
             return ZERO;
         }
-        return new Years(years);
+        return new Minutes(minutes);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of years.
+     * Constructs an instance using a specific number of minutes.
      *
-     * @param years  the years to use
+     * @param minutes  the minutes to use
      */
-    private Years(int years) {
+    private Minutes(int minutes) {
         super();
-        this.years = years;
+        this.minutes = minutes;
     }
 
     /**
@@ -100,103 +100,103 @@ public final class Years extends AbstractPeriodField implements Comparable<Years
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Years.of(years);
+        return Minutes.of(minutes);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of years held in this period.
+     * Gets the number of minutes held in this period.
      *
-     * @return the number of years
+     * @return the number of minutes
      */
     @Override
     public int getAmount() {
-        return years;
+        return minutes;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of years.
+     * Returns a new instance of the subclass with a different number of minutes.
      *
-     * @param amount  the number of years to set in the new instance, may be negative
+     * @param amount  the number of minutes to set in the new instance, may be negative
      * @return a new period element, never null
      */
     @Override
-    public Years withAmount(int amount) {
-        return Years.of(amount);
+    public Minutes withAmount(int amount) {
+        return Minutes.of(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the years unit, never null
+     * @return the minutes unit, never null
      */
     @Override
     public ChronoUnit getUnit() {
-        return YEARS;
+        return MINUTES;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of years added.
+     * Returns a new instance with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the amount of years to add, may be negative
-     * @return the new period plus the specified number of years
+     * @param minutes  the amount of minutes to add, may be negative
+     * @return the new period plus the specified number of minutes
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Years plus(int years) {
-        return (Years) super.plus(years);
+    public Minutes plus(int minutes) {
+        return (Minutes) super.plus(minutes);
     }
 
     /**
-     * Returns a new instance with the specified number of years added.
+     * Returns a new instance with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the amount of years to add, may be negative, not null
-     * @return the new period plus the specified number of years
-     * @throws NullPointerException if the years to add is null
+     * @param minutes  the amount of minutes to add, may be negative, not null
+     * @return the new period plus the specified number of minutes
+     * @throws NullPointerException if the minutes to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Years plus(Years years) {
-        return plus(years.getAmount());
+    public Minutes plus(Minutes minutes) {
+        return plus(minutes.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of years taken away.
+     * Returns a new instance with the specified number of minutes taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the amount of years to take away, may be negative
-     * @return the new period minus the specified number of years
+     * @param minutes  the amount of minutes to take away, may be negative
+     * @return the new period minus the specified number of minutes
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Years minus(int years) {
-        return (Years) super.minus(years);
+    public Minutes minus(int minutes) {
+        return (Minutes) super.minus(minutes);
     }
 
     /**
-     * Returns a new instance with the specified number of years taken away.
+     * Returns a new instance with the specified number of minutes taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the amount of years to take away, may be negative, not null
-     * @return the new period minus the specified number of years
-     * @throws NullPointerException if the years to add is null
+     * @param minutes  the amount of minutes to take away, may be negative, not null
+     * @return the new period minus the specified number of minutes
+     * @throws NullPointerException if the minutes to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Years minus(Years years) {
-        return minus(years.getAmount());
+    public Minutes minus(Minutes minutes) {
+        return minus(minutes.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the years multiplied by the specified scalar.
+     * Returns a new instance with the minutes multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -205,12 +205,12 @@ public final class Years extends AbstractPeriodField implements Comparable<Years
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Years multipliedBy(int scalar) {
-        return (Years) super.multipliedBy(scalar);
+    public Minutes multipliedBy(int scalar) {
+        return (Minutes) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the years divided by the specified divisor.
+     * Returns a new instance with the minutes divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -220,70 +220,70 @@ public final class Years extends AbstractPeriodField implements Comparable<Years
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Years dividedBy(int divisor) {
-        return (Years) super.dividedBy(divisor);
+    public Minutes dividedBy(int divisor) {
+        return (Minutes) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the years value negated.
+     * Returns a new instance with the minutes value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Years negated() {
-        return (Years) super.negated();
+    public Minutes negated() {
+        return (Minutes) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of years in this instance to another instance.
+     * Compares the number of minutes in this instance to another instance.
      *
-     * @param otherYears  the other number of years, not null
+     * @param otherMinutes  the other number of minutes, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherYears is null
+     * @throws NullPointerException if otherMinutes is null
      */
-    public int compareTo(Years otherYears) {
-        int thisValue = this.years;
-        int otherValue = otherYears.years;
+    public int compareTo(Minutes otherMinutes) {
+        int thisValue = this.minutes;
+        int otherValue = otherMinutes.minutes;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of years in this instance greater than that in
+     * Is the number of minutes in this instance greater than that in
      * another instance.
      *
-     * @param otherYears  the other number of years, not null
-     * @return true if this number of years is greater
-     * @throws NullPointerException if otherYears is null
+     * @param otherMinutes  the other number of minutes, not null
+     * @return true if this number of minutes is greater
+     * @throws NullPointerException if otherMinutes is null
      */
-    public boolean isGreaterThan(Years otherYears) {
-        return compareTo(otherYears) > 0;
+    public boolean isGreaterThan(Minutes otherMinutes) {
+        return compareTo(otherMinutes) > 0;
     }
 
     /**
-     * Is the number of years in this instance less than that in
+     * Is the number of minutes in this instance less than that in
      * another instance.
      *
-     * @param otherYears  the other number of years, not null
-     * @return true if this number of years is less
-     * @throws NullPointerException if otherYears is null
+     * @param otherMinutes  the other number of minutes, not null
+     * @return true if this number of minutes is less
+     * @throws NullPointerException if otherMinutes is null
      */
-    public boolean isLessThan(Years otherYears) {
-        return compareTo(otherYears) < 0;
+    public boolean isLessThan(Minutes otherMinutes) {
+        return compareTo(otherMinutes) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of years.
-     * This will be in the format 'PnY' where n is the number of years.
+     * Returns a string representation of the number of minutes.
+     * This will be in the format 'PTnM' where n is the number of minutes.
      *
-     * @return the number of years in ISO8601 string format
+     * @return the number of minutes in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P" + years + "Y";
+        return "PT" + minutes + "M";
     }
 
 }
