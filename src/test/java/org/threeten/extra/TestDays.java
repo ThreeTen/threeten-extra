@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.extra.amount;
+package org.threeten.extra;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;

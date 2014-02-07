@@ -29,9 +29,9 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.extra.amount;
+package org.threeten.extra;
 
-import static java.time.temporal.ChronoUnit.YEARS;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
@@ -45,10 +45,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A year-based amount of time, such as '12 years'.
+ * A day-based amount of time, such as '12 days'.
  * <p>
- * This class models a quantity or amount of time in terms of years.
- * It is a type-safe way of representing a number of years in an application.
+ * This class models a quantity or amount of time in terms of days.
+ * It is a type-safe way of representing a number of days in an application.
  * <p>
  * The model is of a directed duration, meaning that the duration may be negative.
  *
@@ -58,17 +58,17 @@ import java.util.Objects;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class Years
-        implements TemporalAmount, Comparable<Years>, Serializable {
+public final class Days
+        implements TemporalAmount, Comparable<Days>, Serializable {
 
     /**
-     * A constant for zero years.
+     * A constant for zero days.
      */
-    public static final Years ZERO = new Years(0);
+    public static final Days ZERO = new Days(0);
     /**
-     * A constant for one year.
+     * A constant for one day.
      */
-    public static final Years ONE = new Years(1);
+    public static final Days ONE = new Days(1);
 
     /**
      * A serialization identifier for this class.
@@ -76,85 +76,85 @@ public final class Years
     private static final long serialVersionUID = -8903767091325669093L;
 
     /**
-     * The number of years.
+     * The number of days.
      */
-    private final int years;
+    private final int days;
 
     /**
-     * Obtains a {@code Years} representing a number of years.
+     * Obtains a {@code Days} representing a number of days.
      * <p>
-     * The resulting amount will have the specified years.
+     * The resulting amount will have the specified days.
      *
-     * @param years  the number of years, positive or negative
-     * @return the number of years, not null
+     * @param days  the number of days, positive or negative
+     * @return the number of days, not null
      */
-    public static Years of(int years) {
-        if (years == 0) {
+    public static Days of(int days) {
+        if (days == 0) {
             return ZERO;
-        } else if (years == 1) {
+        } else if (days == 1) {
             return ONE;
         }
-        return new Years(years);
+        return new Days(days);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Years} from a temporal amount.
+     * Obtains an instance of {@code Days} from a temporal amount.
      * <p>
      * This obtains an instance based on the specified amount.
      * A {@code TemporalAmount} represents an amount of time, which may be
-     * date-based or time-based, which this factory extracts to a {@code Years}.
+     * date-based or time-based, which this factory extracts to a {@code Days}.
      * <p>
      * The conversion loops around the set of units from the amount and uses
-     * the {@link ChronoUnit#YEARS YEARS} unit to create an amount.
+     * the {@link ChronoUnit#DAYS DAYS} unit to create an amount.
      * If any other non-zero units are found then an exception is thrown.
      *
      * @param amount  the temporal amount to convert, not null
      * @return the equivalent amount, not null
-     * @throws DateTimeException if unable to convert to a {@code Years}
+     * @throws DateTimeException if unable to convert to a {@code Days}
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static Years from(TemporalAmount amount) {
-        if (amount instanceof Years) {
-            return (Years) amount;
+    public static Days from(TemporalAmount amount) {
+        if (amount instanceof Days) {
+            return (Days) amount;
         }
         Objects.requireNonNull(amount, "amount");
-        int years = 0;
+        int days = 0;
         for (TemporalUnit unit : amount.getUnits()) {
             long value = amount.get(unit);
-            if (YEARS.equals(unit)) {
-                years = Math.toIntExact(value);
+            if (DAYS.equals(unit)) {
+                days = Math.toIntExact(value);
             } else if (value != 0) {
-                throw new DateTimeException("Unit must be Years, but was " + amount.getUnits());
+                throw new DateTimeException("Unit must be Days, but was " + amount.getUnits());
             }
         }
-        return of(years);
+        return of(days);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code Years} consisting of the number of years between two dates.
+     * Obtains a {@code Days} consisting of the number of days between two dates.
      * <p>
      * The start date is included, but the end date is not.
      * The result of this method can be negative if the end is before the start.
      *
      * @param startDateInclusive  the start date, inclusive, not null
      * @param endDateExclusive  the end date, exclusive, not null
-     * @return the number of years between this date and the end date, not null
+     * @return the number of days between this date and the end date, not null
      */
-    public static Years between(Temporal startDateInclusive, Temporal endDateExclusive) {
-        return of(Math.toIntExact(YEARS.between(startDateInclusive, endDateExclusive)));
+    public static Days between(Temporal startDateInclusive, Temporal endDateExclusive) {
+        return of(Math.toIntExact(DAYS.between(startDateInclusive, endDateExclusive)));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of years.
+     * Constructs an instance using a specific number of days.
      *
-     * @param years  the years to use
+     * @param days  the days to use
      */
-    private Years(int years) {
+    private Days(int days) {
         super();
-        this.years = years;
+        this.days = days;
     }
 
     /**
@@ -163,14 +163,14 @@ public final class Years
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Years.of(years);
+        return Days.of(days);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the requested unit.
      * <p>
-     * This returns a value for the three supported unit - {@link ChronoUnit#YEARS YEARS}.
+     * This returns a value for the three supported unit - {@link ChronoUnit#DAYS DAYS}.
      * All other units throw an exception.
      *
      * @param unit  the {@code TemporalUnit} for which to return the value
@@ -179,8 +179,8 @@ public final class Years
      */
     @Override
     public long get(TemporalUnit unit) {
-        if (unit == ChronoUnit.YEARS) {
-            return getYears();
+        if (unit == ChronoUnit.DAYS) {
+            return getDays();
         }
         throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
@@ -188,86 +188,86 @@ public final class Years
     /**
      * Gets the set of units supported by this amount.
      * <p>
-     * The single supported unit is {@link ChronoUnit#YEARS YEARS}.
+     * The single supported unit is {@link ChronoUnit#DAYS DAYS}.
      * <p>
      * This set can be used in conjunction with {@link #get(TemporalUnit)}
      * to access the entire state of the amount.
      *
-     * @return a list containing the years unit, not null
+     * @return a list containing the days unit, not null
      */
     @Override
     public List<TemporalUnit> getUnits() {
-        return Collections.singletonList(YEARS);
+        return Collections.singletonList(DAYS);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of years in this amount.
+     * Gets the number of days in this amount.
      *
-     * @return the number of years
+     * @return the number of days
      */
-    public int getYears() {
-        return years;
+    public int getDays() {
+        return days;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount added.
      * <p>
-     * The parameter is converted using {@link Years#from(TemporalAmount)}
-     * and must only consist of years.
+     * The parameter is converted using {@link Days#from(TemporalAmount)}
+     * and must only consist of days.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code Years} based on this instance with the requested amount added, not null
+     * @return a {@code Days} based on this instance with the requested amount added, not null
      * @throws DateTimeException if the specified amount  contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Years plus(TemporalAmount amountToAdd) {
-        return plus(Years.from(amountToAdd).getYears());
+    public Days plus(TemporalAmount amountToAdd) {
+        return plus(Days.from(amountToAdd).getDays());
     }
 
     /**
-     * Returns a copy of this amount with the specified number of years added.
+     * Returns a copy of this amount with the specified number of days added.
      *
-     * @param years  the amount of years to add, may be negative
-     * @return a {@code Years} based on this instance with the requested amount added, not null
+     * @param days  the amount of days to add, may be negative
+     * @return a {@code Days} based on this instance with the requested amount added, not null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Years plus(int years) {
-        if (years == 0) {
+    public Days plus(int days) {
+        if (days == 0) {
             return this;
         }
-        return of(Math.addExact(this.years, years));
+        return of(Math.addExact(this.days, days));
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount subtracted.
      * <p>
-     * The parameter is converted using {@link Years#from(TemporalAmount)}
-     * and must only consist of years.
+     * The parameter is converted using {@link Days#from(TemporalAmount)}
+     * and must only consist of days.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code Years} based on this instance with the requested amount subtracted, not null
+     * @return a {@code Days} based on this instance with the requested amount subtracted, not null
      * @throws DateTimeException if the specified amount  contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Years minus(TemporalAmount amountToAdd) {
-        return minus(Years.from(amountToAdd).getYears());
+    public Days minus(TemporalAmount amountToAdd) {
+        return minus(Days.from(amountToAdd).getDays());
     }
 
     /**
-     * Returns a copy of this amount with the specified number of years subtracted.
+     * Returns a copy of this amount with the specified number of days subtracted.
      *
-     * @param years  the amount of years to add, may be negative
-     * @return a {@code Years} based on this instance with the requested amount subtracted, not null
+     * @param days  the amount of days to add, may be negative
+     * @return a {@code Days} based on this instance with the requested amount subtracted, not null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Years minus(int years) {
-        if (years == 0) {
+    public Days minus(int days) {
+        if (days == 0) {
             return this;
         }
-        return of(Math.subtractExact(this.years, years));
+        return of(Math.subtractExact(this.days, days));
     }
 
     //-----------------------------------------------------------------------
@@ -278,11 +278,11 @@ public final class Years
      * @return the amount multiplied by the specified scalar, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Years multipliedBy(int scalar) {
+    public Days multipliedBy(int scalar) {
         if (scalar == 1) {
             return this;
         }
-        return of(Math.multiplyExact(years, scalar));
+        return of(Math.multiplyExact(days, scalar));
     }
 
     /**
@@ -294,11 +294,11 @@ public final class Years
      * @return the amount divided by the specified divisor, not null
      * @throws ArithmeticException if the divisor is zero
      */
-    public Years dividedBy(int divisor) {
+    public Days dividedBy(int divisor) {
         if (divisor == 1) {
             return this;
         }
-        return of(years / divisor);
+        return of(days / divisor);
     }
 
     /**
@@ -308,7 +308,7 @@ public final class Years
      * @throws ArithmeticException if numeric overflow occurs, which only happens if
      *  the amount is {@code Long.MIN_VALUE}
      */
-    public Years negated() {
+    public Days negated() {
         return multipliedBy(-1);
     }
 
@@ -321,8 +321,8 @@ public final class Years
      * @throws ArithmeticException if numeric overflow occurs, which only happens if
      *  the amount is {@code Long.MIN_VALUE}
      */
-    public Years abs() {
-        return years < 0 ? negated() : this;
+    public Days abs() {
+        return days < 0 ? negated() : this;
     }
 
     //-----------------------------------------------------------------------
@@ -345,13 +345,13 @@ public final class Years
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
-     * @throws UnsupportedTemporalTypeException if the YEARS unit is not supported
+     * @throws UnsupportedTemporalTypeException if the DAYS unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal addTo(Temporal temporal) {
-        if (years != 0) {
-            temporal = temporal.plus(years, YEARS);
+        if (days != 0) {
+            temporal = temporal.plus(days, DAYS);
         }
         return temporal;
     }
@@ -375,20 +375,20 @@ public final class Years
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
-     * @throws UnsupportedTemporalTypeException if the YEARS unit is not supported
+     * @throws UnsupportedTemporalTypeException if the DAYS unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal subtractFrom(Temporal temporal) {
-        if (years != 0) {
-            temporal = temporal.minus(years, YEARS);
+        if (days != 0) {
+            temporal = temporal.minus(days, DAYS);
         }
         return temporal;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this amount to the specified {@code Years}.
+     * Compares this amount to the specified {@code Days}.
      * <p>
      * The comparison is based on the total length of the amounts.
      * It is "consistent with equals", as defined by {@link Comparable}.
@@ -396,15 +396,15 @@ public final class Years
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    public int compareTo(Years otherAmount) {
-        int thisValue = this.years;
-        int otherValue = otherAmount.years;
+    public int compareTo(Days otherAmount) {
+        int thisValue = this.days;
+        int otherValue = otherAmount.days;
         return Integer.compare(thisValue, otherValue);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this amount is equal to the specified {@code Years}.
+     * Checks if this amount is equal to the specified {@code Days}.
      * <p>
      * The comparison is based on the total length of the durations.
      *
@@ -416,9 +416,9 @@ public final class Years
         if (this == otherAmount) {
             return true;
         }
-        if (otherAmount instanceof Years) {
-            Years other = (Years) otherAmount;
-            return this.years == other.years;
+        if (otherAmount instanceof Days) {
+            Days other = (Days) otherAmount;
+            return this.days == other.days;
         }
         return false;
     }
@@ -430,19 +430,19 @@ public final class Years
      */
     @Override
     public int hashCode() {
-        return years;
+        return days;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of years.
-     * This will be in the format 'PnY' where n is the number of years.
+     * Returns a string representation of the number of days.
+     * This will be in the format 'PnD' where n is the number of days.
      *
-     * @return the number of years in ISO-8601 string format
+     * @return the number of days in ISO-8601 string format
      */
     @Override
     public String toString() {
-        return "P" + years + "Y";
+        return "P" + days + "D";
     }
 
 }
