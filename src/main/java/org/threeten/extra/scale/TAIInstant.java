@@ -32,14 +32,13 @@
 package org.threeten.extra.scale;
 
 import java.io.Serializable;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.

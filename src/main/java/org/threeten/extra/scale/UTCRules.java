@@ -31,9 +31,8 @@
  */
 package org.threeten.extra.scale;
 
-import java.util.ConcurrentModificationException;
-
 import java.time.Instant;
+import java.util.ConcurrentModificationException;
 
 /**
  * Rules defining the UTC time-scale, notably when leap seconds occur.
