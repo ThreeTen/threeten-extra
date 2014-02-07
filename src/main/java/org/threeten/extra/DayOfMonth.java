@@ -145,8 +145,7 @@ public final class DayOfMonth
     /**
      * Obtains an instance of {@code DayOfMonth}.
      * <p>
-     * A day-of-month object represents one of the 31 days of the month, from
-     * 1 to 31.
+     * A day-of-month object represents one of the 31 days of the month, from 1 to 31.
      *
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the day-of-month, not null
@@ -154,9 +153,9 @@ public final class DayOfMonth
      */
     public static DayOfMonth of(int dayOfMonth) {
         try {
-            return VALUES[--dayOfMonth];
+            return VALUES[dayOfMonth - 1];
         } catch (IndexOutOfBoundsException ex) {
-            throw new DateTimeException("Invalid value for DayOfMonth: " + ++dayOfMonth);
+            throw new DateTimeException("Invalid value for DayOfMonth: " + dayOfMonth);
         }
     }
 
@@ -306,9 +305,9 @@ public final class DayOfMonth
      * @param field  the field to get, not null
      * @return the value for the field
      * @throws DateTimeException if a value for the field cannot be obtained or
-     *         the value is outside the range of valid values for the field
+     *  the value is outside the range of valid values for the field
      * @throws UnsupportedTemporalTypeException if the field is not supported or
-     *         the range of values exceeds an {@code int}
+     *  the range of values exceeds an {@code int}
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
@@ -408,8 +407,8 @@ public final class DayOfMonth
      * {@link Temporal#with(TemporalAdjuster)}:
      * <pre>
      *   // these two lines are equivalent, but the second approach is recommended
-     *   temporal = thisYear.adjustInto(temporal);
-     *   temporal = temporal.with(thisYear);
+     *   temporal = thisDay.adjustInto(temporal);
+     *   temporal = temporal.with(thisDay);
      * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -534,7 +533,7 @@ public final class DayOfMonth
      */
     @Override
     public String toString() {
-        return Integer.toString(day);
+        return "DayOfMonth:" + day;
     }
 
 }

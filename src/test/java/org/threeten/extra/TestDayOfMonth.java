@@ -618,7 +618,7 @@ public class TestDayOfMonth {
     public void test_toString() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth a = DayOfMonth.of(i);
-            assertEquals(a.toString(), "" + i);
+            assertEquals(a.toString(), "DayOfMonth:" + i);
         }
     }
 
