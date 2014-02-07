@@ -31,7 +31,7 @@
  */
 package org.threeten.extra.amount;
 
-import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MONTHS;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
@@ -45,10 +45,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A day-based amount of time, such as '12 days'.
+ * A month-based amount of time, such as '12 months'.
  * <p>
- * This class models a quantity or amount of time in terms of days.
- * It is a type-safe way of representing a number of days in an application.
+ * This class models a quantity or amount of time in terms of months.
+ * It is a type-safe way of representing a number of months in an application.
  * <p>
  * The model is of a directed duration, meaning that the duration may be negative.
  *
@@ -58,17 +58,17 @@ import java.util.Objects;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class Days
-        implements TemporalAmount, Comparable<Days>, Serializable {
+public final class Months
+        implements TemporalAmount, Comparable<Months>, Serializable {
 
     /**
-     * A constant for zero days.
+     * A constant for zero months.
      */
-    public static final Days ZERO = new Days(0);
+    public static final Months ZERO = new Months(0);
     /**
-     * A constant for one day.
+     * A constant for one month.
      */
-    public static final Days ONE = new Days(1);
+    public static final Months ONE = new Months(1);
 
     /**
      * A serialization identifier for this class.
@@ -76,85 +76,85 @@ public final class Days
     private static final long serialVersionUID = -8903767091325669093L;
 
     /**
-     * The number of days.
+     * The number of months.
      */
-    private final int days;
+    private final int months;
 
     /**
-     * Obtains a {@code Days} representing a number of days.
+     * Obtains a {@code Months} representing a number of months.
      * <p>
-     * The resulting amount will have the specified days.
+     * The resulting amount will have the specified months.
      *
-     * @param days  the number of days, positive or negative
-     * @return the number of days, not null
+     * @param months  the number of months, positive or negative
+     * @return the number of months, not null
      */
-    public static Days of(int days) {
-        if (days == 0) {
+    public static Months of(int months) {
+        if (months == 0) {
             return ZERO;
-        } else if (days == 1) {
+        } else if (months == 1) {
             return ONE;
         }
-        return new Days(days);
+        return new Months(months);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Days} from a temporal amount.
+     * Obtains an instance of {@code Months} from a temporal amount.
      * <p>
      * This obtains an instance based on the specified amount.
      * A {@code TemporalAmount} represents an amount of time, which may be
-     * date-based or time-based, which this factory extracts to a {@code Days}.
+     * date-based or time-based, which this factory extracts to a {@code Months}.
      * <p>
      * The conversion loops around the set of units from the amount and uses
-     * the {@link ChronoUnit#DAYS DAYS} unit to create an amount.
+     * the {@link ChronoUnit#MONTHS MONTHS} unit to create an amount.
      * If any other non-zero units are found then an exception is thrown.
      *
      * @param amount  the temporal amount to convert, not null
      * @return the equivalent amount, not null
-     * @throws DateTimeException if unable to convert to a {@code Days}
+     * @throws DateTimeException if unable to convert to a {@code Months}
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static Days from(TemporalAmount amount) {
-        if (amount instanceof Days) {
-            return (Days) amount;
+    public static Months from(TemporalAmount amount) {
+        if (amount instanceof Months) {
+            return (Months) amount;
         }
         Objects.requireNonNull(amount, "amount");
-        int days = 0;
+        int months = 0;
         for (TemporalUnit unit : amount.getUnits()) {
             long value = amount.get(unit);
-            if (DAYS.equals(unit)) {
-                days = Math.toIntExact(value);
+            if (MONTHS.equals(unit)) {
+                months = Math.toIntExact(value);
             } else if (value != 0) {
-                throw new DateTimeException("Unit must be Days, but was " + amount.getUnits());
+                throw new DateTimeException("Unit must be Months, but was " + amount.getUnits());
             }
         }
-        return of(days);
+        return of(months);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code Days} consisting of the number of days between two dates.
+     * Obtains a {@code Months} consisting of the number of months between two dates.
      * <p>
      * The start date is included, but the end date is not.
      * The result of this method can be negative if the end is before the start.
      *
      * @param startDateInclusive  the start date, inclusive, not null
      * @param endDateExclusive  the end date, exclusive, not null
-     * @return the number of days between this date and the end date, not null
+     * @return the number of months between this date and the end date, not null
      */
-    public static Days between(Temporal startDateInclusive, Temporal endDateExclusive) {
-        return of(Math.toIntExact(DAYS.between(startDateInclusive, endDateExclusive)));
+    public static Months between(Temporal startDateInclusive, Temporal endDateExclusive) {
+        return of(Math.toIntExact(MONTHS.between(startDateInclusive, endDateExclusive)));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of days.
+     * Constructs an instance using a specific number of months.
      *
-     * @param days  the days to use
+     * @param months  the months to use
      */
-    private Days(int days) {
+    private Months(int months) {
         super();
-        this.days = days;
+        this.months = months;
     }
 
     /**
@@ -163,14 +163,14 @@ public final class Days
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Days.of(days);
+        return Months.of(months);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the requested unit.
      * <p>
-     * This returns a value for the three supported unit - {@link ChronoUnit#DAYS DAYS}.
+     * This returns a value for the three supported unit - {@link ChronoUnit#MONTHS MONTHS}.
      * All other units throw an exception.
      *
      * @param unit  the {@code TemporalUnit} for which to return the value
@@ -179,8 +179,8 @@ public final class Days
      */
     @Override
     public long get(TemporalUnit unit) {
-        if (unit == ChronoUnit.DAYS) {
-            return getDays();
+        if (unit == ChronoUnit.MONTHS) {
+            return getMonths();
         }
         throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
@@ -188,86 +188,86 @@ public final class Days
     /**
      * Gets the set of units supported by this amount.
      * <p>
-     * The single supported unit is {@link ChronoUnit#DAYS DAYS}.
+     * The single supported unit is {@link ChronoUnit#MONTHS MONTHS}.
      * <p>
      * This set can be used in conjunction with {@link #get(TemporalUnit)}
      * to access the entire state of the amount.
      *
-     * @return a list containing the days unit, not null
+     * @return a list containing the months unit, not null
      */
     @Override
     public List<TemporalUnit> getUnits() {
-        return Collections.singletonList(DAYS);
+        return Collections.singletonList(MONTHS);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of days in this amount.
+     * Gets the number of months in this amount.
      *
-     * @return the number of days
+     * @return the number of months
      */
-    public int getDays() {
-        return days;
+    public int getMonths() {
+        return months;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount added.
      * <p>
-     * The parameter is converted using {@link Days#from(TemporalAmount)}
-     * and must only consist of days.
+     * The parameter is converted using {@link Months#from(TemporalAmount)}
+     * and must only consist of months.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code Days} based on this instance with the requested amount added, not null
+     * @return a {@code Months} based on this instance with the requested amount added, not null
      * @throws DateTimeException if the specified amount  contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Days plus(TemporalAmount amountToAdd) {
-        return plus(Days.from(amountToAdd).getDays());
+    public Months plus(TemporalAmount amountToAdd) {
+        return plus(Months.from(amountToAdd).getMonths());
     }
 
     /**
-     * Returns a copy of this amount with the specified number of days added.
+     * Returns a copy of this amount with the specified number of months added.
      *
-     * @param days  the amount of days to add, may be negative
-     * @return a {@code Days} based on this instance with the requested amount added, not null
+     * @param months  the amount of months to add, may be negative
+     * @return a {@code Months} based on this instance with the requested amount added, not null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Days plus(int days) {
-        if (days == 0) {
+    public Months plus(int months) {
+        if (months == 0) {
             return this;
         }
-        return of(Math.addExact(this.days, days));
+        return of(Math.addExact(this.months, months));
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount subtracted.
      * <p>
-     * The parameter is converted using {@link Days#from(TemporalAmount)}
-     * and must only consist of days.
+     * The parameter is converted using {@link Months#from(TemporalAmount)}
+     * and must only consist of months.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code Days} based on this instance with the requested amount subtracted, not null
+     * @return a {@code Months} based on this instance with the requested amount subtracted, not null
      * @throws DateTimeException if the specified amount  contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Days minus(TemporalAmount amountToAdd) {
-        return minus(Days.from(amountToAdd).getDays());
+    public Months minus(TemporalAmount amountToAdd) {
+        return minus(Months.from(amountToAdd).getMonths());
     }
 
     /**
-     * Returns a copy of this amount with the specified number of days subtracted.
+     * Returns a copy of this amount with the specified number of months subtracted.
      *
-     * @param days  the amount of days to add, may be negative
-     * @return a {@code Days} based on this instance with the requested amount subtracted, not null
+     * @param months  the amount of months to add, may be negative
+     * @return a {@code Months} based on this instance with the requested amount subtracted, not null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Days minus(int days) {
-        if (days == 0) {
+    public Months minus(int months) {
+        if (months == 0) {
             return this;
         }
-        return of(Math.subtractExact(this.days, days));
+        return of(Math.subtractExact(this.months, months));
     }
 
     //-----------------------------------------------------------------------
@@ -278,11 +278,11 @@ public final class Days
      * @return the amount multiplied by the specified scalar, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Days multipliedBy(int scalar) {
+    public Months multipliedBy(int scalar) {
         if (scalar == 1) {
             return this;
         }
-        return of(Math.multiplyExact(days, scalar));
+        return of(Math.multiplyExact(months, scalar));
     }
 
     /**
@@ -294,11 +294,11 @@ public final class Days
      * @return the amount divided by the specified divisor, not null
      * @throws ArithmeticException if the divisor is zero
      */
-    public Days dividedBy(int divisor) {
+    public Months dividedBy(int divisor) {
         if (divisor == 1) {
             return this;
         }
-        return of(days / divisor);
+        return of(months / divisor);
     }
 
     /**
@@ -308,7 +308,7 @@ public final class Days
      * @throws ArithmeticException if numeric overflow occurs, which only happens if
      *  the amount is {@code Long.MIN_VALUE}
      */
-    public Days negated() {
+    public Months negated() {
         return multipliedBy(-1);
     }
 
@@ -321,8 +321,8 @@ public final class Days
      * @throws ArithmeticException if numeric overflow occurs, which only happens if
      *  the amount is {@code Long.MIN_VALUE}
      */
-    public Days abs() {
-        return days < 0 ? negated() : this;
+    public Months abs() {
+        return months < 0 ? negated() : this;
     }
 
     //-----------------------------------------------------------------------
@@ -345,13 +345,13 @@ public final class Days
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
-     * @throws UnsupportedTemporalTypeException if the DAYS unit is not supported
+     * @throws UnsupportedTemporalTypeException if the MONTHS unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal addTo(Temporal temporal) {
-        if (days != 0) {
-            temporal = temporal.plus(days, DAYS);
+        if (months != 0) {
+            temporal = temporal.plus(months, MONTHS);
         }
         return temporal;
     }
@@ -375,20 +375,20 @@ public final class Days
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
-     * @throws UnsupportedTemporalTypeException if the DAYS unit is not supported
+     * @throws UnsupportedTemporalTypeException if the MONTHS unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal subtractFrom(Temporal temporal) {
-        if (days != 0) {
-            temporal = temporal.minus(days, DAYS);
+        if (months != 0) {
+            temporal = temporal.minus(months, MONTHS);
         }
         return temporal;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this amount to the specified {@code Days}.
+     * Compares this amount to the specified {@code Months}.
      * <p>
      * The comparison is based on the total length of the amounts.
      * It is "consistent with equals", as defined by {@link Comparable}.
@@ -396,15 +396,15 @@ public final class Days
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    public int compareTo(Days otherAmount) {
-        int thisValue = this.days;
-        int otherValue = otherAmount.days;
+    public int compareTo(Months otherAmount) {
+        int thisValue = this.months;
+        int otherValue = otherAmount.months;
         return Integer.compare(thisValue, otherValue);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this amount is equal to the specified {@code Days}.
+     * Checks if this amount is equal to the specified {@code Months}.
      * <p>
      * The comparison is based on the total length of the durations.
      *
@@ -416,9 +416,9 @@ public final class Days
         if (this == otherAmount) {
             return true;
         }
-        if (otherAmount instanceof Days) {
-            Days other = (Days) otherAmount;
-            return this.days == other.days;
+        if (otherAmount instanceof Months) {
+            Months other = (Months) otherAmount;
+            return this.months == other.months;
         }
         return false;
     }
@@ -430,19 +430,19 @@ public final class Days
      */
     @Override
     public int hashCode() {
-        return days;
+        return months;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of days.
-     * This will be in the format 'PnD' where n is the number of days.
+     * Returns a string representation of the number of months.
+     * This will be in the format 'PnM' where n is the number of months.
      *
-     * @return the number of days in ISO-8601 string format
+     * @return the number of months in ISO-8601 string format
      */
     @Override
     public String toString() {
-        return "P" + days + "D";
+        return "P" + months + "M";
     }
 
 }
