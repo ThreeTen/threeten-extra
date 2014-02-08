@@ -43,7 +43,9 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Period;
+import java.time.format.DateTimeParseException;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -91,6 +93,44 @@ public class TestMonths {
         assertEquals(Months.of(-1).getMonths(), -1);
         assertEquals(Months.of(-2).getMonths(), -2);
         assertEquals(Months.of(Integer.MIN_VALUE).getMonths(), Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_parse_CharSequence() {
+        assertEquals(Months.parse("P0M"), Months.of(0));
+        assertEquals(Months.parse("P1M"), Months.of(1));
+        assertEquals(Months.parse("P2M"), Months.of(2));
+        assertEquals(Months.parse("P123456789M"), Months.of(123456789));
+        assertEquals(Months.parse("P-2M"), Months.of(-2));
+        assertEquals(Months.parse("-P2M"), Months.of(-2));
+        assertEquals(Months.parse("-P-2M"), Months.of(2));
+    }
+
+    @DataProvider(name = "parseInvalid")
+    Object[][] data_invalid() {
+        return new Object[][] {
+                {"P3Y"},
+                {"P3W"},
+                {"P3D"},
+                
+                {"3"},
+                {"-3"},
+                {"3M"},
+                {"-3M"},
+                {"P3"},
+                {"P-3"},
+                {"PM"},
+        };
+    }
+
+    @Test(expectedExceptions = DateTimeParseException.class, dataProvider = "parseInvalid")
+    public void test_parse_CharSequence_invalid(String str) {
+        Months.parse(str);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_parse_CharSequence_null() {
+        Months.parse((CharSequence) null);
     }
 
     //-----------------------------------------------------------------------

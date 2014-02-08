@@ -43,7 +43,9 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Period;
+import java.time.format.DateTimeParseException;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -91,6 +93,44 @@ public class TestYears {
         assertEquals(Years.of(-1).getYears(), -1);
         assertEquals(Years.of(-2).getYears(), -2);
         assertEquals(Years.of(Integer.MIN_VALUE).getYears(), Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_parse_CharSequence() {
+        assertEquals(Years.parse("P0Y"), Years.of(0));
+        assertEquals(Years.parse("P1Y"), Years.of(1));
+        assertEquals(Years.parse("P2Y"), Years.of(2));
+        assertEquals(Years.parse("P123456789Y"), Years.of(123456789));
+        assertEquals(Years.parse("P-2Y"), Years.of(-2));
+        assertEquals(Years.parse("-P2Y"), Years.of(-2));
+        assertEquals(Years.parse("-P-2Y"), Years.of(2));
+    }
+
+    @DataProvider(name = "parseInvalid")
+    Object[][] data_invalid() {
+        return new Object[][] {
+                {"P3M"},
+                {"P3W"},
+                {"P3D"},
+                
+                {"3"},
+                {"-3"},
+                {"3Y"},
+                {"-3Y"},
+                {"P3"},
+                {"P-3"},
+                {"PY"},
+        };
+    }
+
+    @Test(expectedExceptions = DateTimeParseException.class, dataProvider = "parseInvalid")
+    public void test_parse_CharSequence_invalid(String str) {
+        Years.parse(str);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_parse_CharSequence_null() {
+        Years.parse((CharSequence) null);
     }
 
     //-----------------------------------------------------------------------

@@ -36,6 +36,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Period;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -44,6 +45,8 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A day-based amount of time, such as '12 days'.
@@ -75,6 +78,11 @@ public final class Days
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -8903767091325669093L;
+    /**
+     * The pattern for parsing.
+     */
+    private static final Pattern PATTERN =
+            Pattern.compile("([-+]?)P([-+]?[0-9]+)D", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of days.
@@ -130,6 +138,50 @@ public final class Days
             }
         }
         return of(days);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains a {@code Days} from a text string such as {@code PnD}.
+     * <p>
+     * This will parse the string produced by {@code toString()} which is
+     * based on the ISO-8601 period formats {@code PnD}.
+     * <p>
+     * The string starts with an optional sign, denoted by the ASCII negative
+     * or positive symbol. If negative, the whole amount is negated.
+     * The ASCII letter "P" is next in upper or lower case.
+     * The ASCII integer amount is next, which may be negative.
+     * The ASCII letter "D" is next in upper or lower case.
+     * <p>
+     * The leading plus/minus sign, and negative values for days are
+     * not part of the ISO-8601 standard.
+     * <p>
+     * For example, the following are valid inputs:
+     * <pre>
+     *   "P2D"             -- Days.of(2)
+     *   "P-2D"            -- Days.of(-2)
+     *   "-P2D"            -- Days.of(-2)
+     *   "-P-2D"           -- Days.of(2)
+     * </pre>
+     *
+     * @param text  the text to parse, not null
+     * @return the parsed period, not null
+     * @throws DateTimeParseException if the text cannot be parsed to a period
+     */
+    public static Days parse(CharSequence text) {
+        Objects.requireNonNull(text, "text");
+        Matcher matcher = PATTERN.matcher(text);
+        if (matcher.matches()) {
+            int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
+            String str = matcher.group(2);
+            try {
+                int val = Integer.parseInt(str);
+                return of(Math.multiplyExact(val, negate));
+            } catch (NumberFormatException ex) {
+                throw new DateTimeParseException("Text cannot be parsed to a Days", text, 0, ex);
+            }
+        }
+        throw new DateTimeParseException("Text cannot be parsed to a Days", text, 0);
     }
 
     //-----------------------------------------------------------------------
