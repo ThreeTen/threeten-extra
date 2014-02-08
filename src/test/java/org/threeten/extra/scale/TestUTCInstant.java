@@ -56,7 +56,7 @@ public class TestUTCInstant {
     private static final long NANOS_PER_SEC = 1000000000L;
 
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
+    @Test
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(UTCInstant.class));
         assertTrue(Comparable.class.isAssignableFrom(UTCInstant.class));
@@ -65,7 +65,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // serialization
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_deserialization() throws Exception {
         UTCInstant orginal = UTCInstant.ofModifiedJulianDay(2, 3);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -123,7 +123,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // ofModififiedJulianDay(long,long)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_ofModifiedJulianDay_long_long() {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
@@ -136,7 +136,7 @@ public class TestUTCInstant {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void factory_ofModifiedJulianDay_long_long_setupLeap() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant t = UTCInstant.ofModifiedJulianDay(41683 - 1, SECS_PER_DAY * NANOS_PER_SEC + 2, mockRules);
@@ -145,12 +145,12 @@ public class TestUTCInstant {
         assertEquals(t.getRules(), mockRules);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=IllegalArgumentException.class)
     public void factory_ofModifiedJulianDay_long_long_nanosNegative() {
         UTCInstant.ofModifiedJulianDay(2L, -1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=IllegalArgumentException.class)
     public void factory_ofModifiedJulianDay_long_long_nanosTooBigNotLeapDay() {
         UTCInstant.ofModifiedJulianDay(2L, SECS_PER_DAY * NANOS_PER_SEC);
     }
@@ -158,7 +158,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // ofModififiedJulianDay(long,long,Rules)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_ofModifiedJulianDay_long_long_Rules() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         for (long i = -2; i <= 2; i++) {
@@ -172,7 +172,7 @@ public class TestUTCInstant {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void factory_ofModifiedJulianDay_long_long_Rules_setupLeap() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant t = UTCInstant.ofModifiedJulianDay(0, SECS_PER_DAY * NANOS_PER_SEC + 2, mockRules);
@@ -182,19 +182,19 @@ public class TestUTCInstant {
         assertEquals(t.isLeapSecond(), true);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=IllegalArgumentException.class)
     public void factory_ofModifiedJulianDay_long_long_Rules_nanosNegative() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant.ofModifiedJulianDay(2L, -1, mockRules);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=IllegalArgumentException.class)
     public void factory_ofModifiedJulianDay_long_long_Rules_nanosTooBigNotDoubleLeapDay() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant.ofModifiedJulianDay(2L, (SECS_PER_DAY + 1) * NANOS_PER_SEC, mockRules);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_ofModifiedJulianDay_long_long_Rules_null() {
         UTCInstant.ofModifiedJulianDay(0, 0, (UTCRules) null);
     }
@@ -202,7 +202,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // of(Instant)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_Instant() {
         UTCInstant test = UTCInstant.of(Instant.ofEpochSecond(0, 2));  // 1970-01-01
         assertEquals(test.getModifiedJulianDay(), 40587);
@@ -210,7 +210,7 @@ public class TestUTCInstant {
         assertEquals(test.getRules(), UTCRules.system());
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_Instant_null() {
         UTCInstant.of((Instant) null);
     }
@@ -218,7 +218,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // of(Instant, LeapSecondRules)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_Instant_Rules() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant test = UTCInstant.of(Instant.ofEpochSecond(0, 2), mockRules);  // 1970-01-01
@@ -227,7 +227,7 @@ public class TestUTCInstant {
         assertEquals(test.getRules(), mockRules);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_Instant_Rules_null() {
         UTCInstant.of(Instant.ofEpochSecond(0, 2), (UTCRules) null);
     }
@@ -235,7 +235,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // of(TAIInstant)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_TAIInstant() {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 0; j < 10; j++) {
@@ -246,7 +246,7 @@ public class TestUTCInstant {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_TAIInstant_null() {
         UTCInstant.of((TAIInstant) null);
     }
@@ -254,7 +254,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // of(TAIInstant, LeapSecondRules)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_TAIInstant_Rules() {
         TAIInstant tai = TAIInstant.ofTAISeconds(2 * SECS_PER_DAY + 10, 2);
         UTCInstant test = UTCInstant.of(tai, UTCRules.system());
@@ -263,7 +263,7 @@ public class TestUTCInstant {
         assertEquals(test.getRules(), UTCRules.system());
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_TAIInstant_Rules_null() {
         UTCInstant.of(TAIInstant.ofTAISeconds(0, 2), (UTCRules) null);
     }
@@ -317,7 +317,7 @@ public class TestUTCInstant {
        };
     }
 
-    @Test(dataProvider="WithNanoOfDay", groups={"tck"})
+    @Test(dataProvider="WithNanoOfDay")
     public void test_withNanoOfDay(long mjd, long nanos, long newNanoOfDay, Long expectedMjd, Long expectedNanos) {
         UTCInstant i = UTCInstant.ofModifiedJulianDay(mjd, nanos, new MockUTCRulesLeapOn1000());
         if (expectedMjd != null) {
@@ -372,20 +372,20 @@ public class TestUTCInstant {
        };
     }
 
-    @Test(dataProvider="Plus", groups={"tck"})
+    @Test(dataProvider="Plus")
     public void test_plus(long mjd, long nanos, long plusSeconds, int plusNanos, long expectedMjd, long expectedNanos) {
        UTCInstant i = UTCInstant.ofModifiedJulianDay(mjd, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
        assertEquals(i.getModifiedJulianDay(), expectedMjd);
        assertEquals(i.getNanoOfDay(), expectedNanos);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plus_overflowTooBig() {
        UTCInstant i = UTCInstant.ofModifiedJulianDay(Long.MAX_VALUE, SECS_PER_DAY * NANOS_PER_SEC - 1);
        i.plus(Duration.ofNanos(1));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plus_overflowTooSmall() {
        UTCInstant i = UTCInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0);
        i.plus(Duration.ofNanos(-1));
@@ -429,20 +429,20 @@ public class TestUTCInstant {
        };
     }
 
-    @Test(dataProvider="Minus", groups={"tck"})
+    @Test(dataProvider="Minus")
     public void test_minus(long mjd, long nanos, long minusSeconds, int minusNanos, long expectedMjd, long expectedNanos) {
        UTCInstant i = UTCInstant.ofModifiedJulianDay(mjd, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
        assertEquals(i.getModifiedJulianDay(), expectedMjd);
        assertEquals(i.getNanoOfDay(), expectedNanos);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minus_overflowTooSmall() {
        UTCInstant i = UTCInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0);
        i.minus(Duration.ofNanos(1));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minus_overflowTooBig() {
        UTCInstant i = UTCInstant.ofModifiedJulianDay(Long.MAX_VALUE, SECS_PER_DAY * NANOS_PER_SEC - 1);
        i.minus(Duration.ofNanos(-1));
@@ -451,7 +451,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // durationUntil()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_durationUntil_oneDayNoLeap() {
         UTCInstant utc1 = UTCInstant.ofModifiedJulianDay(41681, 0);  // 1972-12-30
         UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41682, 0);  // 1972-12-31
@@ -460,7 +460,7 @@ public class TestUTCInstant {
         assertEquals(test.getNano(), 0);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_durationUntil_oneDayLeap() {
         UTCInstant utc1 = UTCInstant.ofModifiedJulianDay(41682, 0);  // 1972-12-31
         UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41683, 0);  // 1973-01-01
@@ -469,7 +469,7 @@ public class TestUTCInstant {
         assertEquals(test.getNano(), 0);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_durationUntil_oneDayLeapNegative() {
         UTCInstant utc1 = UTCInstant.ofModifiedJulianDay(41683, 0);  // 1973-01-01
         UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41682, 0);  // 1972-12-31
@@ -481,7 +481,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // toTAIInstant()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_toTAIInstant() {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 0; j < 10; j++) {
@@ -496,7 +496,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // toInstant()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_toInstant() {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 0; j < 10; j++) {
@@ -510,7 +510,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_comparisons() {
         doTest_comparisons_UTCInstant(
             UTCInstant.ofModifiedJulianDay(-2L, 0),
@@ -548,13 +548,13 @@ public class TestUTCInstant {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_ObjectNull() {
         UTCInstant a = UTCInstant.ofModifiedJulianDay(0L, 0);
         a.compareTo(null);
     }
 
-    @Test(expectedExceptions=ClassCastException.class, groups={"tck"})
+    @Test(expectedExceptions=ClassCastException.class)
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareToNonUTCInstant() {
        Comparable c = UTCInstant.ofModifiedJulianDay(0L, 2);
@@ -564,7 +564,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_equals() {
         UTCInstant test5a = UTCInstant.ofModifiedJulianDay(5L, 20);
         UTCInstant test5b = UTCInstant.ofModifiedJulianDay(5L, 20);
@@ -592,13 +592,13 @@ public class TestUTCInstant {
         assertEquals(test6.equals(test6), true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_equals_null() {
         UTCInstant test5 = UTCInstant.ofModifiedJulianDay(5L, 20);
         assertEquals(test5.equals(null), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_equals_otherClass() {
         UTCInstant test5 = UTCInstant.ofModifiedJulianDay(5L, 20);
         assertEquals(test5.equals(""), false);
@@ -607,7 +607,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_hashCode() {
         UTCInstant test5a = UTCInstant.ofModifiedJulianDay(5L, 20);
         UTCInstant test5b = UTCInstant.ofModifiedJulianDay(5L, 20);
@@ -625,7 +625,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_toString() {
         assertEquals(UTCInstant.ofModifiedJulianDay(40587, 0).toString(), "1970-01-01T00:00:00.000000000(UTC)");
         assertEquals(UTCInstant.ofModifiedJulianDay(40588, 1).toString(), "1970-01-02T00:00:00.000000001(UTC)");
@@ -635,7 +635,7 @@ public class TestUTCInstant {
         assertEquals(UTCInstant.ofModifiedJulianDay(40621, 60L * 60L * 1000000000L).toString(), "1970-02-04T01:00:00.000000000(UTC)");
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_toString_leap() {
         assertEquals(UTCInstant.ofModifiedJulianDay(41682, 24L * 60L * 60L * 1000000000L - 1000000000L).toString(), "1972-12-31T23:59:59.000000000(UTC)");
         assertEquals(UTCInstant.ofModifiedJulianDay(41682, 24L * 60L * 60L * 1000000000L).toString(), "1972-12-31T23:59:60.000000000(UTC)");

@@ -66,11 +66,12 @@ public class TestQuarter {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
+    @Test
     public void test_interfaces() {
         assertTrue(Enum.class.isAssignableFrom(Quarter.class));
         assertTrue(Serializable.class.isAssignableFrom(Quarter.class));
         assertTrue(Comparable.class.isAssignableFrom(Quarter.class));
+        assertTrue(TemporalAccessor.class.isAssignableFrom(Quarter.class));
     }
 
     //-----------------------------------------------------------------------

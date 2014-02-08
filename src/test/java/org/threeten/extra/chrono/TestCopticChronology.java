@@ -342,7 +342,7 @@ public class TestCopticChronology {
         assertEquals(test, CopticDate.of(1728, 10, 29));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
         CopticDate coptic = CopticDate.of(1726, 1, 4);
         coptic.with(Month.APRIL);
