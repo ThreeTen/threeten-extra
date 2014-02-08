@@ -77,23 +77,23 @@ public class TestMonths {
     public void test_ZERO() {
         assertSame(Months.of(0), Months.ZERO);
         assertSame(Months.of(0), Months.ZERO);
-        assertEquals(Months.ZERO.getMonths(), 0);
+        assertEquals(Months.ZERO.getAmount(), 0);
     }
 
     public void test_ONE() {
         assertSame(Months.of(1), Months.ONE);
         assertSame(Months.of(1), Months.ONE);
-        assertEquals(Months.ONE.getMonths(), 1);
+        assertEquals(Months.ONE.getAmount(), 1);
     }
 
     //-----------------------------------------------------------------------
     public void test_of() {
-        assertEquals(Months.of(1).getMonths(), 1);
-        assertEquals(Months.of(2).getMonths(), 2);
-        assertEquals(Months.of(Integer.MAX_VALUE).getMonths(), Integer.MAX_VALUE);
-        assertEquals(Months.of(-1).getMonths(), -1);
-        assertEquals(Months.of(-2).getMonths(), -2);
-        assertEquals(Months.of(Integer.MIN_VALUE).getMonths(), Integer.MIN_VALUE);
+        assertEquals(Months.of(1).getAmount(), 1);
+        assertEquals(Months.of(2).getAmount(), 2);
+        assertEquals(Months.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
+        assertEquals(Months.of(-1).getAmount(), -1);
+        assertEquals(Months.of(-2).getAmount(), -2);
+        assertEquals(Months.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------

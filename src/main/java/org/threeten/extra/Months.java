@@ -233,7 +233,7 @@ public final class Months
     @Override
     public long get(TemporalUnit unit) {
         if (unit == ChronoUnit.MONTHS) {
-            return getMonths();
+            return months;
         }
         throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
@@ -259,7 +259,7 @@ public final class Months
      *
      * @return the number of months
      */
-    public int getMonths() {
+    public int getAmount() {
         return months;
     }
 
@@ -276,7 +276,7 @@ public final class Months
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Months plus(TemporalAmount amountToAdd) {
-        return plus(Months.from(amountToAdd).getMonths());
+        return plus(Months.from(amountToAdd).getAmount());
     }
 
     /**
@@ -306,7 +306,7 @@ public final class Months
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Months minus(TemporalAmount amountToAdd) {
-        return minus(Months.from(amountToAdd).getMonths());
+        return minus(Months.from(amountToAdd).getAmount());
     }
 
     /**

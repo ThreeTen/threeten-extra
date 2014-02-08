@@ -233,7 +233,7 @@ public final class Years
     @Override
     public long get(TemporalUnit unit) {
         if (unit == ChronoUnit.YEARS) {
-            return getYears();
+            return years;
         }
         throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
@@ -259,7 +259,7 @@ public final class Years
      *
      * @return the number of years
      */
-    public int getYears() {
+    public int getAmount() {
         return years;
     }
 
@@ -276,7 +276,7 @@ public final class Years
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Years plus(TemporalAmount amountToAdd) {
-        return plus(Years.from(amountToAdd).getYears());
+        return plus(Years.from(amountToAdd).getAmount());
     }
 
     /**
@@ -306,7 +306,7 @@ public final class Years
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Years minus(TemporalAmount amountToAdd) {
-        return minus(Years.from(amountToAdd).getYears());
+        return minus(Years.from(amountToAdd).getAmount());
     }
 
     /**

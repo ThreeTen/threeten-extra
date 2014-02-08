@@ -233,7 +233,7 @@ public final class Days
     @Override
     public long get(TemporalUnit unit) {
         if (unit == ChronoUnit.DAYS) {
-            return getDays();
+            return days;
         }
         throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
@@ -259,7 +259,7 @@ public final class Days
      *
      * @return the number of days
      */
-    public int getDays() {
+    public int getAmount() {
         return days;
     }
 
@@ -276,7 +276,7 @@ public final class Days
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Days plus(TemporalAmount amountToAdd) {
-        return plus(Days.from(amountToAdd).getDays());
+        return plus(Days.from(amountToAdd).getAmount());
     }
 
     /**
@@ -306,7 +306,7 @@ public final class Days
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Days minus(TemporalAmount amountToAdd) {
-        return minus(Days.from(amountToAdd).getDays());
+        return minus(Days.from(amountToAdd).getAmount());
     }
 
     /**

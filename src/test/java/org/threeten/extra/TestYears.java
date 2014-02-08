@@ -77,23 +77,23 @@ public class TestYears {
     public void test_ZERO() {
         assertSame(Years.of(0), Years.ZERO);
         assertSame(Years.of(0), Years.ZERO);
-        assertEquals(Years.ZERO.getYears(), 0);
+        assertEquals(Years.ZERO.getAmount(), 0);
     }
 
     public void test_ONE() {
         assertSame(Years.of(1), Years.ONE);
         assertSame(Years.of(1), Years.ONE);
-        assertEquals(Years.ONE.getYears(), 1);
+        assertEquals(Years.ONE.getAmount(), 1);
     }
 
     //-----------------------------------------------------------------------
     public void test_of() {
-        assertEquals(Years.of(1).getYears(), 1);
-        assertEquals(Years.of(2).getYears(), 2);
-        assertEquals(Years.of(Integer.MAX_VALUE).getYears(), Integer.MAX_VALUE);
-        assertEquals(Years.of(-1).getYears(), -1);
-        assertEquals(Years.of(-2).getYears(), -2);
-        assertEquals(Years.of(Integer.MIN_VALUE).getYears(), Integer.MIN_VALUE);
+        assertEquals(Years.of(1).getAmount(), 1);
+        assertEquals(Years.of(2).getAmount(), 2);
+        assertEquals(Years.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
+        assertEquals(Years.of(-1).getAmount(), -1);
+        assertEquals(Years.of(-2).getAmount(), -2);
+        assertEquals(Years.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------

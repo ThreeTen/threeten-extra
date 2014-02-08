@@ -77,23 +77,23 @@ public class TestDays {
     public void test_ZERO() {
         assertSame(Days.of(0), Days.ZERO);
         assertSame(Days.of(0), Days.ZERO);
-        assertEquals(Days.ZERO.getDays(), 0);
+        assertEquals(Days.ZERO.getAmount(), 0);
     }
 
     public void test_ONE() {
         assertSame(Days.of(1), Days.ONE);
         assertSame(Days.of(1), Days.ONE);
-        assertEquals(Days.ONE.getDays(), 1);
+        assertEquals(Days.ONE.getAmount(), 1);
     }
 
     //-----------------------------------------------------------------------
     public void test_of() {
-        assertEquals(Days.of(1).getDays(), 1);
-        assertEquals(Days.of(2).getDays(), 2);
-        assertEquals(Days.of(Integer.MAX_VALUE).getDays(), Integer.MAX_VALUE);
-        assertEquals(Days.of(-1).getDays(), -1);
-        assertEquals(Days.of(-2).getDays(), -2);
-        assertEquals(Days.of(Integer.MIN_VALUE).getDays(), Integer.MIN_VALUE);
+        assertEquals(Days.of(1).getAmount(), 1);
+        assertEquals(Days.of(2).getAmount(), 2);
+        assertEquals(Days.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
+        assertEquals(Days.of(-1).getAmount(), -1);
+        assertEquals(Days.of(-2).getAmount(), -2);
+        assertEquals(Days.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
