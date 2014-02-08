@@ -44,6 +44,7 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAmount;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -93,6 +94,21 @@ public class TestYears {
         assertEquals(Years.of(-1).getYears(), -1);
         assertEquals(Years.of(-2).getYears(), -2);
         assertEquals(Years.of(Integer.MIN_VALUE).getYears(), Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_from() {
+        assertEquals(Years.from(Period.ofYears(2)), Years.of(2));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_from_wrongUnit() {
+        Years.from(Period.ofMonths(2));
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_from_null() {
+        Years.from((TemporalAmount) null);
     }
 
     //-----------------------------------------------------------------------
