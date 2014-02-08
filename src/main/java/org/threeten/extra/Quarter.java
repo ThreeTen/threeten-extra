@@ -374,6 +374,30 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the length of this quarter in days.
+     * <p>
+     * This takes a flag to determine whether to return the length for a leap year or not.
+     * <p>
+     * Q1 has 90 in a standard year and 91 days in a leap year.
+     * Q2 has 91 days.
+     * Q3 and Q4 have 92 days.
+     *
+     * @param leapYear  true if the length is required for a leap year
+     * @return the length of this month in days, from 90 to 92
+     */
+    public int length(boolean leapYear) {
+        switch (this) {
+            case Q1:
+                return (leapYear ? 91 : 90);
+            case Q2:
+                return 91;
+            default:
+                return 92;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the first of the three months that this quarter refers to.
      * <p>
      * Q1 will return January.<br />

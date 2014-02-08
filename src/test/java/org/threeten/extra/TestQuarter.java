@@ -352,6 +352,21 @@ public class TestQuarter {
     }
 
     //-----------------------------------------------------------------------
+    // length(boolean)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_length_boolean() {
+        assertEquals(Quarter.Q1.length(true), 91);
+        assertEquals(Quarter.Q1.length(false), 90);
+        assertEquals(Quarter.Q2.length(true), 91);
+        assertEquals(Quarter.Q2.length(false), 91);
+        assertEquals(Quarter.Q3.length(true), 92);
+        assertEquals(Quarter.Q3.length(false), 92);
+        assertEquals(Quarter.Q4.length(true), 92);
+        assertEquals(Quarter.Q4.length(false), 92);
+    }
+
+    //-----------------------------------------------------------------------
     // firstMonth()
     //-----------------------------------------------------------------------
     @Test
