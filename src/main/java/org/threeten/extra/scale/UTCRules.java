@@ -43,7 +43,7 @@ import java.util.ConcurrentModificationException;
  * The static methods on this class provide access to the system leap second rules.
  * These are used by default.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All implementations must be final, immutable and thread-safe.
@@ -203,10 +203,10 @@ public abstract class UTCRules {
      * Overriding this algorithm is possible, however doing so will conflict other parts
      * of the specification.
      * <p>
-     * The algorithm calculates the UTC-SLS nanos-of-day {@code US} from the UTC nanos-of day {@code U}.<br />
-     * Let {@code L = getLeapAdjustment(mjd)}.<br />
-     * Let {@code B = 86400 + L - 1000}.<br />
-     * Let {@code US = U - L * (U - B) / 1000}.<br />
+     * The algorithm calculates the UTC-SLS nanos-of-day {@code US} from the UTC nanos-of day {@code U}.<br>
+     * Let {@code L = getLeapAdjustment(mjd)}.<br>
+     * Let {@code B = 86400 + L - 1000}.<br>
+     * Let {@code US = U - L * (U - B) / 1000}.<br>
      * Where the algorithm is applied while {@code U >= B}.
      *
      * @param utcInstant  the UTC instant to convert, not null
@@ -237,11 +237,11 @@ public abstract class UTCRules {
      * Overriding this algorithm is possible, however doing so will conflict other parts
      * of the specification.
      * <p>
-     * The algorithm calculates the UTC nanos-of-day {@code U} from the UTC-SLS nanos-of day {@code US}.<br />
-     * Let {@code L = getLeapAdjustment(mjd)}.<br />
-     * Let {@code B = 86400 + L - 1000}.<br />
-     * Let {@code U = B + ((US - B) * 1000) / (1000 - L)}.<br />
-     * Where the algorithm is applied while {@code US >= B}.<br />
+     * The algorithm calculates the UTC nanos-of-day {@code U} from the UTC-SLS nanos-of day {@code US}.<br>
+     * Let {@code L = getLeapAdjustment(mjd)}.<br>
+     * Let {@code B = 86400 + L - 1000}.<br>
+     * Let {@code U = B + ((US - B) * 1000) / (1000 - L)}.<br>
+     * Where the algorithm is applied while {@code US >= B}.<br>
      * (This algorithm has been tuned for integer arithmetic from the UTC-SLS specification.)
      *
      * @param instant  the instant to convert, not null

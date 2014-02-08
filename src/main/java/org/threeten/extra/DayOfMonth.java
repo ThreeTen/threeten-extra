@@ -66,7 +66,7 @@ import java.util.Objects;
  * For example, the value "21" can be stored in a {@code DayOfMonth} and
  * would represent the 21st day of any month.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the
@@ -230,7 +230,7 @@ public final class DayOfMonth
      * <p>
      * This checks if this day-of-month can be queried for the specified field.
      * If false, then calling the {@link #range(TemporalField) range},
-     * {@link #get(TemporalField) get} and {@link #with(TemporalField, long)}
+     * {@link #get(TemporalField) get} and {@link #getLong(TemporalField) getLong}
      * methods will throw an exception.
      * <p>
      * If the field is a {@link ChronoField} then the query is implemented here.

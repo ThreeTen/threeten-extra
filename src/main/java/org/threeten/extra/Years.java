@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  * <p>
  * The model is of a directed duration, meaning that the duration may be negative.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the

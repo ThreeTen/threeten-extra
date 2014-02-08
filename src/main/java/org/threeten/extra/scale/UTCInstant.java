@@ -66,7 +66,7 @@ import java.time.temporal.JulianFields;
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.
  *
- * <h4>Time-scale</h4>
+ * <h3>Time-scale</h3>
  * <p>
  * The length of the solar day is the standard way that humans measure time.
  * As the Earth's rotation changes, the length of the day varies.
@@ -88,7 +88,7 @@ import java.time.temporal.JulianFields;
  * Since some instants will be prior to 1972, it is not strictly an implementation of UTC.
  * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1972.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the

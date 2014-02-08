@@ -89,7 +89,7 @@ import java.util.Objects;
  * However, any application that makes use of historical dates, and requires them
  * to be accurate will find the ISO-8601 approach unsuitable.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the

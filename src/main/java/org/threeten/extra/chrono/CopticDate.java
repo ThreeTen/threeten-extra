@@ -70,7 +70,7 @@ import java.time.temporal.ValueRange;
  * This calendar system is primarily used in Christian Egypt.
  * Dates are aligned such that {@code 0001-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the

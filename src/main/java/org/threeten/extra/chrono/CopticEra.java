@@ -47,7 +47,7 @@ import java.time.chrono.Era;
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code CopticEra}.
  * Use {@code getValue()} instead.</b>
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This is an immutable and thread-safe enum.
  */
 public enum CopticEra implements Era {

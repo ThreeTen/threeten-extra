@@ -72,7 +72,7 @@ import java.util.Locale;
  * As such, this enum may be used by any calendar system that has the quarter-of-year
  * concept defined exactly equivalent to the ISO calendar system.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This is an immutable and thread-safe enum.
  */
 public enum Quarter implements TemporalAccessor, TemporalAdjuster {
@@ -400,9 +400,9 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
     /**
      * Gets the first of the three months that this quarter refers to.
      * <p>
-     * Q1 will return January.<br />
-     * Q2 will return April.<br />
-     * Q3 will return July.<br />
+     * Q1 will return January.<br>
+     * Q2 will return April.<br>
+     * Q3 will return July.<br>
      * Q4 will return October.
      * <p>
      * To obtain the other two months of the quarter, simply use {@link Month#plus(long)}

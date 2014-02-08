@@ -41,7 +41,7 @@ import java.time.Instant;
  * in the UTC and TAI time-scales. However, there is currently no implementation that
  * provides accurate UTC or TAI.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This abstract class must be implemented with care to ensure other classes in
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
@@ -60,9 +60,9 @@ public interface TimeSource {
     /**
      * Gets the current {@code Instant}.
      * <p>
-     * The instant returned by this method will vary according to the implementation.
-     * For example, the time-source returned by {@link #system()} will return
-     * an instant based on {@link System#currentTimeMillis()}.
+     * The instant returned is based on the Java time-scale defined in {@link Instant}.
+     * An accurate implementation of this interface will return the correct instant
+     * as per that definition.
      *
      * @return the current {@code Instant} from this time-source, not null
      * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations

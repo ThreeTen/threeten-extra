@@ -42,7 +42,7 @@ import java.time.temporal.TemporalAdjuster;
  * <p>
  * This class currently only works with Saturday/Sunday weekends.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This is a thread-safe utility class.
  * All returned classes are immutable and thread-safe.
  */

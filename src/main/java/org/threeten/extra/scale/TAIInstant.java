@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.
  *
- * <h4>Time-scale</h4>
+ * <h3>Time-scale</h3>
  * <p>
  * The TAI time-scale is a very simple well-regarded representation of time.
  * The scale is defined using atomic clocks counting SI seconds.
@@ -77,7 +77,7 @@ import java.util.regex.Pattern;
  * Since some instants will be prior to 1958, it is not strictly an implementation of TAI.
  * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1958.
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the
@@ -177,9 +177,10 @@ public final class TAIInstant
      * Obtains an instance of {@code TAIInstant} from a text string.
      * <p>
      * The following format is accepted:
-     * <p><ul>
+     * <ul>
      * <li>{@code {seconds}.{nanosOfSecond}s(TAI)}
-     * </ul><p>
+     * </ul>
+     * <p>
      * The accepted format is strict.
      * The seconds part must contain only numbers and a possible leading negative sign.
      * The nanoseconds part must contain exactly nine digits.

@@ -73,7 +73,7 @@ import java.util.Map;
  * <li>leap-year - Leap years occur every 4 years.
  * </ul>
  *
- * @implSpec
+ * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
  */
 public final class CopticChronology extends AbstractChronology implements Serializable {
