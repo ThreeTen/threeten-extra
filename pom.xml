@@ -104,6 +104,33 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/Test*.java</include>
+          </includes>
+          <argLine>-Xmx2G</argLine>
+          <parallel>classes</parallel>
+          <threadCount>4</threadCount>
+          <!-- remove slow SuiteHTMLReporter -->
+          <properties>
+            <property>
+              <name>usedefaultlisteners</name>
+              <value>false</value>
+            </property>
+            <property>
+              <name>listener</name>
+              <value>org.testng.reporters.ExitCodeListener</value>
+            </property>
+            <property>
+              <name>reporter</name>
+              <value>org.testng.reporters.FailedReporter,org.testng.reporters.XMLReporter,org.testng.reporters.JUnitReportReporter</value>
+            </property>
+          </properties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
