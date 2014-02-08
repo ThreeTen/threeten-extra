@@ -296,6 +296,13 @@ public class TestYears {
     }
 
     //-----------------------------------------------------------------------
+    public void test_toPeriod() {
+        for (int i = -20; i < 20; i++) {
+            assertEquals(Years.of(i).toPeriod(), Period.ofYears(i));
+        }
+    }
+
+    //-----------------------------------------------------------------------
     public void test_compareTo() {
         Years test5 = Years.of(5);
         Years test6 = Years.of(6);

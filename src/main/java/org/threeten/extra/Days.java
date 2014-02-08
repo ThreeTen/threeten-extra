@@ -35,6 +35,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -323,6 +324,18 @@ public final class Days
      */
     public Days abs() {
         return days < 0 ? negated() : this;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets the number of days as a {@code Period}.
+     * <p>
+     * This returns a period with the same number of days.
+     *
+     * @return the equivalent period, not null
+     */
+    public Period toPeriod() {
+        return Period.ofDays(days);
     }
 
     //-----------------------------------------------------------------------

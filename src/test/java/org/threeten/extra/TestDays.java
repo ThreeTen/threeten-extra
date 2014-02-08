@@ -296,6 +296,13 @@ public class TestDays {
     }
 
     //-----------------------------------------------------------------------
+    public void test_toPeriod() {
+        for (int i = -20; i < 20; i++) {
+            assertEquals(Days.of(i).toPeriod(), Period.ofDays(i));
+        }
+    }
+
+    //-----------------------------------------------------------------------
     public void test_compareTo() {
         Days test5 = Days.of(5);
         Days test6 = Days.of(6);

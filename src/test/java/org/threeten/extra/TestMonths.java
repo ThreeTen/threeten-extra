@@ -296,6 +296,13 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
+    public void test_toPeriod() {
+        for (int i = -20; i < 20; i++) {
+            assertEquals(Months.of(i).toPeriod(), Period.ofMonths(i));
+        }
+    }
+
+    //-----------------------------------------------------------------------
     public void test_compareTo() {
         Months test5 = Months.of(5);
         Months test6 = Months.of(6);

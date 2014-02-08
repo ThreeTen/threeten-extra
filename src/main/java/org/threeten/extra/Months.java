@@ -35,6 +35,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -323,6 +324,18 @@ public final class Months
      */
     public Months abs() {
         return months < 0 ? negated() : this;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets the number of months as a {@code Period}.
+     * <p>
+     * This returns a period with the same number of months.
+     *
+     * @return the equivalent period, not null
+     */
+    public Period toPeriod() {
+        return Period.ofMonths(months);
     }
 
     //-----------------------------------------------------------------------
