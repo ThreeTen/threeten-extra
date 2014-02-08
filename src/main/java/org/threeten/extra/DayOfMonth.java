@@ -100,6 +100,7 @@ public final class DayOfMonth
      * <p>
      * This will query the {@link java.time.Clock#systemDefaultZone() system clock} in the default
      * time-zone to obtain the current day-of-month.
+     * The zone and offset will be set based on the time-zone in the clock.
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
@@ -205,9 +206,9 @@ public final class DayOfMonth
     }
 
     /**
-     * Resolve the singleton.
+     * Validates the input.
      *
-     * @return the singleton, not null
+     * @return the valid object, not null
      */
     private Object readResolve() {
         return of(day);
@@ -340,11 +341,9 @@ public final class DayOfMonth
      */
     @Override
     public long getLong(TemporalField field) {
-        if (field instanceof ChronoField) {
-            switch ((ChronoField) field) {
-                case DAY_OF_MONTH:
-                    return day;
-            }
+        if (field == DAY_OF_MONTH) {
+            return day;
+        } else if (field instanceof ChronoField) {
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.getFrom(this);

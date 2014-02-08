@@ -236,7 +236,7 @@ public enum AmPm implements TemporalAccessor, TemporalAdjuster {
         if (field == AMPM_OF_DAY) {
             return field.range();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field);
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.rangeRefinedBy(this);
     }

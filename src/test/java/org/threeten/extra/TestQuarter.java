@@ -31,10 +31,39 @@
  */
 package org.threeten.extra;
 
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static java.time.temporal.ChronoField.AMPM_OF_DAY;
+import static java.time.temporal.ChronoField.CLOCK_HOUR_OF_AMPM;
+import static java.time.temporal.ChronoField.CLOCK_HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.ERA;
+import static java.time.temporal.ChronoField.HOUR_OF_AMPM;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.INSTANT_SECONDS;
+import static java.time.temporal.ChronoField.MICRO_OF_DAY;
+import static java.time.temporal.ChronoField.MICRO_OF_SECOND;
+import static java.time.temporal.ChronoField.MILLI_OF_DAY;
+import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
+import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.NANO_OF_DAY;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
+import static java.time.temporal.ChronoField.OFFSET_SECONDS;
+import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
+import static java.time.temporal.ChronoField.SECOND_OF_DAY;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
+import static java.time.temporal.ChronoField.YEAR;
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
@@ -45,10 +74,9 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.chrono.IsoChronology;
 import java.time.format.TextStyle;
-import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Locale;
 
 import org.testng.annotations.BeforeMethod;
@@ -82,7 +110,6 @@ public class TestQuarter {
         for (int i = 1; i <= 4; i++) {
             Quarter test = Quarter.of(i);
             assertEquals(test.getValue(), i);
-            assertSame(Quarter.of(i), test);
         }
     }
 
@@ -126,10 +153,16 @@ public class TestQuarter {
     }
 
     //-----------------------------------------------------------------------
-    // from(Temporal)
+    // from(TemporalAccessor)
     //-----------------------------------------------------------------------
     @Test
-    public void test_from_Temporal_Month() {
+    public void test_from_TemporalAccessor() {
+        assertEquals(Quarter.from(LocalDate.of(2011, 6, 6)), Quarter.Q2);
+        assertEquals(Quarter.from(LocalDateTime.of(2012, 2, 3, 12, 30)), Quarter.Q1);
+    }
+
+    @Test
+    public void test_from_TemporalAccessor_Month() {
         assertEquals(Quarter.from(Month.JANUARY), Quarter.Q1);
         assertEquals(Quarter.from(Month.FEBRUARY), Quarter.Q1);
         assertEquals(Quarter.from(Month.MARCH), Quarter.Q1);
@@ -144,19 +177,13 @@ public class TestQuarter {
         assertEquals(Quarter.from(Month.DECEMBER), Quarter.Q4);
     }
 
-    @Test
-    public void test_from_Temporal() {
-        assertEquals(Quarter.from(LocalDate.of(2011, 6, 6)), Quarter.Q2);
-        assertEquals(Quarter.from(LocalDateTime.of(2012, 2, 3, 12, 30)), Quarter.Q1);
-    }
-
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_from_Temporal_invalid_noDerive() {
+    public void test_from_TemporalAccessorl_invalid_noDerive() {
         Quarter.from(LocalTime.of(12, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_from_Temporal_null() {
+    public void test_from_TemporalAccessor_null() {
         Quarter.from((TemporalAccessor) null);
     }
 
@@ -179,44 +206,99 @@ public class TestQuarter {
     }
 
     //-----------------------------------------------------------------------
-    // get(TemporalField)
+    // isSupported()
     //-----------------------------------------------------------------------
-    @DataProvider(name="invalidFields")
-    Object[][] data_invalidFields() {
-        return new Object[][] {
-            {ChronoField.NANO_OF_DAY},
-            {ChronoField.HOUR_OF_DAY},
-            {ChronoField.DAY_OF_MONTH},
-            {ChronoField.MONTH_OF_YEAR},
-            {ChronoField.INSTANT_SECONDS},
-//            {MockFieldNoValue.INSTANCE},
-        };
+    public void test_isSupported() {
+        Quarter test = Quarter.Q1;
+        assertEquals(test.isSupported(null), false);
+        assertEquals(test.isSupported(NANO_OF_SECOND), false);
+        assertEquals(test.isSupported(NANO_OF_DAY), false);
+        assertEquals(test.isSupported(MICRO_OF_SECOND), false);
+        assertEquals(test.isSupported(MICRO_OF_DAY), false);
+        assertEquals(test.isSupported(MILLI_OF_SECOND), false);
+        assertEquals(test.isSupported(MILLI_OF_DAY), false);
+        assertEquals(test.isSupported(SECOND_OF_MINUTE), false);
+        assertEquals(test.isSupported(SECOND_OF_DAY), false);
+        assertEquals(test.isSupported(MINUTE_OF_HOUR), false);
+        assertEquals(test.isSupported(MINUTE_OF_DAY), false);
+        assertEquals(test.isSupported(HOUR_OF_AMPM), false);
+        assertEquals(test.isSupported(CLOCK_HOUR_OF_AMPM), false);
+        assertEquals(test.isSupported(HOUR_OF_DAY), false);
+        assertEquals(test.isSupported(CLOCK_HOUR_OF_DAY), false);
+        assertEquals(test.isSupported(AMPM_OF_DAY), false);
+        assertEquals(test.isSupported(DAY_OF_WEEK), false);
+        assertEquals(test.isSupported(ALIGNED_DAY_OF_WEEK_IN_MONTH), false);
+        assertEquals(test.isSupported(ALIGNED_DAY_OF_WEEK_IN_YEAR), false);
+        assertEquals(test.isSupported(DAY_OF_MONTH), false);
+        assertEquals(test.isSupported(DAY_OF_YEAR), false);
+        assertEquals(test.isSupported(EPOCH_DAY), false);
+        assertEquals(test.isSupported(ALIGNED_WEEK_OF_MONTH), false);
+        assertEquals(test.isSupported(ALIGNED_WEEK_OF_YEAR), false);
+        assertEquals(test.isSupported(MONTH_OF_YEAR), false);
+        assertEquals(test.isSupported(PROLEPTIC_MONTH), false);
+        assertEquals(test.isSupported(YEAR_OF_ERA), false);
+        assertEquals(test.isSupported(YEAR), false);
+        assertEquals(test.isSupported(ERA), false);
+        assertEquals(test.isSupported(INSTANT_SECONDS), false);
+        assertEquals(test.isSupported(OFFSET_SECONDS), false);
+        assertEquals(test.isSupported(QUARTER_OF_YEAR), true);
     }
 
-    @Test
-    public void test_get_TemporalField() {
+    //-----------------------------------------------------------------------
+    // range()
+    //-----------------------------------------------------------------------
+    public void test_range() {
+        assertEquals(Quarter.Q1.range(QUARTER_OF_YEAR), QUARTER_OF_YEAR.range());
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_range_invalidField() {
+        Quarter.Q1.range(MONTH_OF_YEAR);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_range_null() {
+        Quarter.Q1.range(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
         assertEquals(Quarter.Q1.get(QUARTER_OF_YEAR), 1);
         assertEquals(Quarter.Q2.get(QUARTER_OF_YEAR), 2);
         assertEquals(Quarter.Q3.get(QUARTER_OF_YEAR), 3);
         assertEquals(Quarter.Q4.get(QUARTER_OF_YEAR), 4);
     }
 
-    @Test
-    public void test_getLong_TemporalField() {
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_get_invalidField() {
+        Quarter.Q2.get(MONTH_OF_YEAR);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_get_null() {
+        Quarter.Q2.get(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // getLong()
+    //-----------------------------------------------------------------------
+    public void test_getLong() {
         assertEquals(Quarter.Q1.getLong(QUARTER_OF_YEAR), 1);
         assertEquals(Quarter.Q2.getLong(QUARTER_OF_YEAR), 2);
         assertEquals(Quarter.Q3.getLong(QUARTER_OF_YEAR), 3);
         assertEquals(Quarter.Q4.getLong(QUARTER_OF_YEAR), 4);
     }
 
-    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class )
-    public void test_get_TemporalField_invalidField(TemporalField field) {
-        Quarter.Q1.getLong(field);
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_getLong_invalidField() {
+        Quarter.Q2.getLong(MONTH_OF_YEAR);
     }
 
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_get_TemporalField_null() {
-        Quarter.Q1.getLong((TemporalField) null);
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getLong_null() {
+        Quarter.Q2.getLong(null);
     }
 
     //-----------------------------------------------------------------------

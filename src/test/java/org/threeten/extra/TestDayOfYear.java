@@ -75,8 +75,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
 import java.time.chrono.IsoChronology;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
@@ -93,6 +95,7 @@ public class TestDayOfYear {
     private static final Year YEAR_LEAP = Year.of(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;
     private static final int LEAP_YEAR_LENGTH = 366;
+    private static final DayOfYear TEST = DayOfYear.of(12);
 
     @BeforeMethod
     public void setUp() {
@@ -119,7 +122,9 @@ public class TestDayOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_int() {
+    // of(int)
+    //-----------------------------------------------------------------------
+    public void test_of_int() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.of(i);
             assertEquals(test.getValue(), i);
@@ -128,17 +133,19 @@ public class TestDayOfYear {
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_factory_int_minuteTooLow() {
+    public void test_of_int_tooLow() {
         DayOfYear.of(0);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_factory_int_hourTooHigh() {
+    public void test_of_int_tooHigh() {
         DayOfYear.of(367);
     }
 
     //-----------------------------------------------------------------------
-    public void test_from_Temporal_notLeapYear() {
+    // from(TemporalAccessor)
+    //-----------------------------------------------------------------------
+    public void test_from_TemporalAccessor_notLeapYear() {
         LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.from(date);
@@ -149,7 +156,7 @@ public class TestDayOfYear {
         assertEquals(test.getValue(), 1);
     }
 
-    public void test_from_Temporal_leapYear() {
+    public void test_from_TemporalAccessor_leapYear() {
         LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.from(date);
@@ -159,115 +166,105 @@ public class TestDayOfYear {
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_factory_Temporal_noDerive() {
+    public void test_from_TemporalAccessor_noDerive() {
         DayOfYear.from(LocalTime.NOON);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Temporal_null() {
+    public void test_from_TemporalAccessor_null() {
         DayOfYear.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
-    // isSupported()
+    // isSupported(TemporalField)
     //-----------------------------------------------------------------------
     public void test_isSupported() {
-        DayOfYear test = DayOfYear.of(12);
-        assertEquals(test.isSupported(null), false);
-        assertEquals(test.isSupported(NANO_OF_SECOND), false);
-        assertEquals(test.isSupported(NANO_OF_DAY), false);
-        assertEquals(test.isSupported(MICRO_OF_SECOND), false);
-        assertEquals(test.isSupported(MICRO_OF_DAY), false);
-        assertEquals(test.isSupported(MILLI_OF_SECOND), false);
-        assertEquals(test.isSupported(MILLI_OF_DAY), false);
-        assertEquals(test.isSupported(SECOND_OF_MINUTE), false);
-        assertEquals(test.isSupported(SECOND_OF_DAY), false);
-        assertEquals(test.isSupported(MINUTE_OF_HOUR), false);
-        assertEquals(test.isSupported(MINUTE_OF_DAY), false);
-        assertEquals(test.isSupported(HOUR_OF_AMPM), false);
-        assertEquals(test.isSupported(CLOCK_HOUR_OF_AMPM), false);
-        assertEquals(test.isSupported(HOUR_OF_DAY), false);
-        assertEquals(test.isSupported(CLOCK_HOUR_OF_DAY), false);
-        assertEquals(test.isSupported(AMPM_OF_DAY), false);
-        assertEquals(test.isSupported(DAY_OF_WEEK), false);
-        assertEquals(test.isSupported(ALIGNED_DAY_OF_WEEK_IN_MONTH), false);
-        assertEquals(test.isSupported(ALIGNED_DAY_OF_WEEK_IN_YEAR), false);
-        assertEquals(test.isSupported(DAY_OF_MONTH), false);
-        assertEquals(test.isSupported(DAY_OF_YEAR), true);
-        assertEquals(test.isSupported(EPOCH_DAY), false);
-        assertEquals(test.isSupported(ALIGNED_WEEK_OF_MONTH), false);
-        assertEquals(test.isSupported(ALIGNED_WEEK_OF_YEAR), false);
-        assertEquals(test.isSupported(MONTH_OF_YEAR), false);
-        assertEquals(test.isSupported(PROLEPTIC_MONTH), false);
-        assertEquals(test.isSupported(YEAR_OF_ERA), false);
-        assertEquals(test.isSupported(YEAR), false);
-        assertEquals(test.isSupported(ERA), false);
-        assertEquals(test.isSupported(INSTANT_SECONDS), false);
-        assertEquals(test.isSupported(OFFSET_SECONDS), false);
+        assertEquals(TEST.isSupported((TemporalField) null), false);
+        assertEquals(TEST.isSupported(NANO_OF_SECOND), false);
+        assertEquals(TEST.isSupported(NANO_OF_DAY), false);
+        assertEquals(TEST.isSupported(MICRO_OF_SECOND), false);
+        assertEquals(TEST.isSupported(MICRO_OF_DAY), false);
+        assertEquals(TEST.isSupported(MILLI_OF_SECOND), false);
+        assertEquals(TEST.isSupported(MILLI_OF_DAY), false);
+        assertEquals(TEST.isSupported(SECOND_OF_MINUTE), false);
+        assertEquals(TEST.isSupported(SECOND_OF_DAY), false);
+        assertEquals(TEST.isSupported(MINUTE_OF_HOUR), false);
+        assertEquals(TEST.isSupported(MINUTE_OF_DAY), false);
+        assertEquals(TEST.isSupported(HOUR_OF_AMPM), false);
+        assertEquals(TEST.isSupported(CLOCK_HOUR_OF_AMPM), false);
+        assertEquals(TEST.isSupported(HOUR_OF_DAY), false);
+        assertEquals(TEST.isSupported(CLOCK_HOUR_OF_DAY), false);
+        assertEquals(TEST.isSupported(AMPM_OF_DAY), false);
+        assertEquals(TEST.isSupported(DAY_OF_WEEK), false);
+        assertEquals(TEST.isSupported(ALIGNED_DAY_OF_WEEK_IN_MONTH), false);
+        assertEquals(TEST.isSupported(ALIGNED_DAY_OF_WEEK_IN_YEAR), false);
+        assertEquals(TEST.isSupported(DAY_OF_MONTH), false);
+        assertEquals(TEST.isSupported(DAY_OF_YEAR), true);
+        assertEquals(TEST.isSupported(EPOCH_DAY), false);
+        assertEquals(TEST.isSupported(ALIGNED_WEEK_OF_MONTH), false);
+        assertEquals(TEST.isSupported(ALIGNED_WEEK_OF_YEAR), false);
+        assertEquals(TEST.isSupported(MONTH_OF_YEAR), false);
+        assertEquals(TEST.isSupported(PROLEPTIC_MONTH), false);
+        assertEquals(TEST.isSupported(YEAR_OF_ERA), false);
+        assertEquals(TEST.isSupported(YEAR), false);
+        assertEquals(TEST.isSupported(ERA), false);
+        assertEquals(TEST.isSupported(INSTANT_SECONDS), false);
+        assertEquals(TEST.isSupported(OFFSET_SECONDS), false);
     }
 
     //-----------------------------------------------------------------------
-    // range()
+    // range(TemporalField)
     //-----------------------------------------------------------------------
     public void test_range() {
-        DayOfYear test = DayOfYear.of(12);
-        assertEquals(test.range(DAY_OF_YEAR), DAY_OF_YEAR.range());
+        assertEquals(TEST.range(DAY_OF_YEAR), DAY_OF_YEAR.range());
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_range_invalidField() {
-        DayOfYear test = DayOfYear.of(12);
-        test.range(MONTH_OF_YEAR);
+        TEST.range(MONTH_OF_YEAR);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_range_null() {
-        DayOfYear test = DayOfYear.of(12);
-        test.range(null);
+        TEST.range((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------
-    // get()
+    // get(TemporalField)
     //-----------------------------------------------------------------------
     public void test_get() {
-        DayOfYear test = DayOfYear.of(12);
-        assertEquals(test.get(DAY_OF_YEAR), 12);
+        assertEquals(TEST.get(DAY_OF_YEAR), 12);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_get_invalidField() {
-        DayOfYear test = DayOfYear.of(12);
-        test.get(MONTH_OF_YEAR);
+        TEST.get(MONTH_OF_YEAR);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_get_null() {
-        DayOfYear test = DayOfYear.of(12);
-        test.get(null);
+        TEST.get((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------
-    // getLong()
+    // getLong(TemporalField)
     //-----------------------------------------------------------------------
     public void test_getLong() {
-        DayOfYear test = DayOfYear.of(12);
-        assertEquals(test.getLong(DAY_OF_YEAR), 12L);
+        assertEquals(TEST.getLong(DAY_OF_YEAR), 12L);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_getLong_invalidField() {
-        DayOfYear test = DayOfYear.of(12);
-        test.getLong(MONTH_OF_YEAR);
+        TEST.getLong(MONTH_OF_YEAR);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_getLong_null() {
-        DayOfYear test = DayOfYear.of(12);
-        test.getLong(null);
+        TEST.getLong((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------
-    // isValidYear()
+    // isValidYear(int)
     //-----------------------------------------------------------------------
     @Test
     public void test_isValidYearMonth_366() {
@@ -285,22 +282,21 @@ public class TestDayOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // query()
+    // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
     public void test_query() {
-        DayOfYear test = DayOfYear.of(12);
-        assertEquals(test.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
-        assertEquals(test.query(TemporalQueries.localDate()), null);
-        assertEquals(test.query(TemporalQueries.localTime()), null);
-        assertEquals(test.query(TemporalQueries.offset()), null);
-        assertEquals(test.query(TemporalQueries.precision()), null);
-        assertEquals(test.query(TemporalQueries.zone()), null);
-        assertEquals(test.query(TemporalQueries.zoneId()), null);
+        assertEquals(TEST.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
+        assertEquals(TEST.query(TemporalQueries.localDate()), null);
+        assertEquals(TEST.query(TemporalQueries.localTime()), null);
+        assertEquals(TEST.query(TemporalQueries.offset()), null);
+        assertEquals(TEST.query(TemporalQueries.precision()), null);
+        assertEquals(TEST.query(TemporalQueries.zone()), null);
+        assertEquals(TEST.query(TemporalQueries.zoneId()), null);
     }
 
     //-----------------------------------------------------------------------
-    // adjustInto()
+    // adjustInto(Temporal)
     //-----------------------------------------------------------------------
     public void test_adjustInto_fromStartOfYear_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 1, 1);
@@ -357,10 +353,8 @@ public class TestDayOfYear {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustInto_nullLocalDate() {
-        LocalDate date = null;
-        DayOfYear test = DayOfYear.of(1);
-        test.adjustInto(date);
+    public void test_adjustInto_null() {
+        TEST.adjustInto((Temporal) null);
     }
 
     //-----------------------------------------------------------------------
@@ -392,8 +386,7 @@ public class TestDayOfYear {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atYear_Year_nullYear() {
-        DayOfYear test = DayOfYear.of(1);
-        test.atYear((Year) null);
+        TEST.atYear((Year) null);
     }
 
     //-----------------------------------------------------------------------
@@ -425,8 +418,7 @@ public class TestDayOfYear {
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_atYear_int_invalidDay() {
-        DayOfYear test = DayOfYear.of(1);
-        test.atYear(Year.MIN_VALUE - 1);
+        TEST.atYear(Year.MIN_VALUE - 1);
     }
 
     //-----------------------------------------------------------------------
