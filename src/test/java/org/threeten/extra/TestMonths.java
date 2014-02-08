@@ -58,29 +58,6 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
-    public void test_ZERO() {
-        assertSame(Months.ZERO, Months.of(0));
-        assertSame(Months.ZERO, Months.of(0));
-        assertEquals(0, Months.ZERO.getMonths());
-    }
-
-    public void test_ONE() {
-        assertSame(Months.ONE, Months.of(1));
-        assertSame(Months.ONE, Months.of(1));
-        assertEquals(1, Months.ONE.getMonths());
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_of() {
-        assertEquals(1,  Months.of(1).getMonths());
-        assertEquals(2,  Months.of(2).getMonths());
-        assertEquals(Integer.MAX_VALUE,  Months.of(Integer.MAX_VALUE).getMonths());
-        assertEquals(-1,  Months.of(-1).getMonths());
-        assertEquals(-2,  Months.of(-2).getMonths());
-        assertEquals(Integer.MIN_VALUE,  Months.of(Integer.MIN_VALUE).getMonths());
-    }
-
-    //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
         Months orginal = Months.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -91,6 +68,29 @@ public class TestMonths {
         ObjectInputStream in = new ObjectInputStream(bais);
         Months ser = (Months) in.readObject();
         assertSame(Months.ZERO, ser);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_ZERO() {
+        assertSame(Months.of(0), Months.ZERO);
+        assertSame(Months.of(0), Months.ZERO);
+        assertEquals(Months.ZERO.getMonths(), 0);
+    }
+
+    public void test_ONE() {
+        assertSame(Months.of(1), Months.ONE);
+        assertSame(Months.of(1), Months.ONE);
+        assertEquals(Months.ONE.getMonths(), 1);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_of() {
+        assertEquals(Months.of(1).getMonths(), 1);
+        assertEquals(Months.of(2).getMonths(), 2);
+        assertEquals(Months.of(Integer.MAX_VALUE).getMonths(), Integer.MAX_VALUE);
+        assertEquals(Months.of(-1).getMonths(), -1);
+        assertEquals(Months.of(-2).getMonths(), -2);
+        assertEquals(Months.of(Integer.MIN_VALUE).getMonths(), Integer.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------

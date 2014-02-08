@@ -58,29 +58,6 @@ public class TestYears {
     }
 
     //-----------------------------------------------------------------------
-    public void test_ZERO() {
-        assertSame(Years.ZERO, Years.of(0));
-        assertSame(Years.ZERO, Years.of(0));
-        assertEquals(0, Years.ZERO.getYears());
-    }
-
-    public void test_ONE() {
-        assertSame(Years.ONE, Years.of(1));
-        assertSame(Years.ONE, Years.of(1));
-        assertEquals(1, Years.ONE.getYears());
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_of() {
-        assertEquals(1,  Years.of(1).getYears());
-        assertEquals(2,  Years.of(2).getYears());
-        assertEquals(Integer.MAX_VALUE,  Years.of(Integer.MAX_VALUE).getYears());
-        assertEquals(-1,  Years.of(-1).getYears());
-        assertEquals(-2,  Years.of(-2).getYears());
-        assertEquals(Integer.MIN_VALUE,  Years.of(Integer.MIN_VALUE).getYears());
-    }
-
-    //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
         Years orginal = Years.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -91,6 +68,29 @@ public class TestYears {
         ObjectInputStream in = new ObjectInputStream(bais);
         Years ser = (Years) in.readObject();
         assertSame(Years.ZERO, ser);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_ZERO() {
+        assertSame(Years.of(0), Years.ZERO);
+        assertSame(Years.of(0), Years.ZERO);
+        assertEquals(Years.ZERO.getYears(), 0);
+    }
+
+    public void test_ONE() {
+        assertSame(Years.of(1), Years.ONE);
+        assertSame(Years.of(1), Years.ONE);
+        assertEquals(Years.ONE.getYears(), 1);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_of() {
+        assertEquals(Years.of(1).getYears(), 1);
+        assertEquals(Years.of(2).getYears(), 2);
+        assertEquals(Years.of(Integer.MAX_VALUE).getYears(), Integer.MAX_VALUE);
+        assertEquals(Years.of(-1).getYears(), -1);
+        assertEquals(Years.of(-2).getYears(), -2);
+        assertEquals(Years.of(Integer.MIN_VALUE).getYears(), Integer.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------

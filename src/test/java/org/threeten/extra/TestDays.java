@@ -58,29 +58,6 @@ public class TestDays {
     }
 
     //-----------------------------------------------------------------------
-    public void test_ZERO() {
-        assertSame(Days.ZERO, Days.of(0));
-        assertSame(Days.ZERO, Days.of(0));
-        assertEquals(0, Days.ZERO.getDays());
-    }
-
-    public void test_ONE() {
-        assertSame(Days.ONE, Days.of(1));
-        assertSame(Days.ONE, Days.of(1));
-        assertEquals(1, Days.ONE.getDays());
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_of() {
-        assertEquals(1,  Days.of(1).getDays());
-        assertEquals(2,  Days.of(2).getDays());
-        assertEquals(Integer.MAX_VALUE,  Days.of(Integer.MAX_VALUE).getDays());
-        assertEquals(-1,  Days.of(-1).getDays());
-        assertEquals(-2,  Days.of(-2).getDays());
-        assertEquals(Integer.MIN_VALUE,  Days.of(Integer.MIN_VALUE).getDays());
-    }
-
-    //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
         Days orginal = Days.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -91,6 +68,29 @@ public class TestDays {
         ObjectInputStream in = new ObjectInputStream(bais);
         Days ser = (Days) in.readObject();
         assertSame(Days.ZERO, ser);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_ZERO() {
+        assertSame(Days.of(0), Days.ZERO);
+        assertSame(Days.of(0), Days.ZERO);
+        assertEquals(Days.ZERO.getDays(), 0);
+    }
+
+    public void test_ONE() {
+        assertSame(Days.of(1), Days.ONE);
+        assertSame(Days.of(1), Days.ONE);
+        assertEquals(Days.ONE.getDays(), 1);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_of() {
+        assertEquals(Days.of(1).getDays(), 1);
+        assertEquals(Days.of(2).getDays(), 2);
+        assertEquals(Days.of(Integer.MAX_VALUE).getDays(), Integer.MAX_VALUE);
+        assertEquals(Days.of(-1).getDays(), -1);
+        assertEquals(Days.of(-2).getDays(), -2);
+        assertEquals(Days.of(Integer.MIN_VALUE).getDays(), Integer.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
