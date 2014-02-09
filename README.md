@@ -1,7 +1,8 @@
 threeten-extra
 ==============
 
-This project provides additional date and time tools built on ThreeTen that are not planned to be added to the JDK.
-Some of these classes were older experiments, some just didn't fit the JDK profile.
+ThreeTen-Extra provides additional date-time classes that complement those in JDK 8.
 
-The long term goal is to release this as a separate jar (eg. via Maven).
+Not every piece of date/time logic is destined for the JDK.
+Some concepts are too specialized or too bulky to make it in.
+This project provides some of those additional classes as a well-tested and reliable jar.

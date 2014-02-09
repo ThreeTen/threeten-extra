@@ -9,9 +9,9 @@
   <artifactId>threeten-extra</artifactId>
   <packaging>jar</packaging>
   <name>ThreeTen-extra</name>
-  <version>0.5-SNAPSHOT</version>
+  <version>0.8-SNAPSHOT</version>
   <description>Additional functionality that enhances JSR-310 dates and times in JDK 8</description>
-  <url>https://github.com/ThreeTen/threeten-extra</url>
+  <url>https://threeten.github.io/threeten-extra</url>
 
   <!-- ==================================================================== -->
   <issueManagement>
@@ -52,7 +52,7 @@
   <licenses>
     <license>
       <name>BSD 3-clause</name>
-      <url>http://opensource.org/licenses/BSD-3-Clause</url>
+      <url>https://raw2.github.com/ThreeTen/threeten-extra/master/LICENSE.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
