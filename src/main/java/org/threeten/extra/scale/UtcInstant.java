@@ -31,12 +31,21 @@
  */
 package org.threeten.extra.scale;
 
+import static java.time.temporal.ChronoField.INSTANT_SECONDS;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.extra.scale.UtcRules.NANOS_PER_SECOND;
+import static org.threeten.extra.scale.UtcRules.OFFSET_MJD_EPOCH;
+import static org.threeten.extra.scale.UtcRules.SECS_PER_DAY;
+
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.JulianFields;
+import java.time.temporal.TemporalAccessor;
 
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale
@@ -100,14 +109,6 @@ public final class UtcInstant
     // does not implement Temporal as that would enable methods like
     // Duration.between which gives the wrong answer due to lossy conversion
 
-    /**
-     * Constant for seconds per day.
-     */
-    private static final long SECS_PER_DAY = 24 * 60 * 60;
-    /**
-     * Constant for nanos per second.
-     */
-    private static final long NANOS_PER_SECOND = 1000000000;
     /**
      * Serialization version.
      */
@@ -187,6 +188,33 @@ public final class UtcInstant
      */
     public static UtcInstant of(TaiInstant instant) {
         return UtcRules.system().convertToUtc(instant);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code UtcInstant} from a text string
+     * {@code 2007-12-03T10:15:30.00Z}.
+     * <p>
+     * The string must represent a valid instant in UTC and is parsed using
+     * {@link DateTimeFormatter#ISO_INSTANT} with leap seconds handled.
+     *
+     * @param text  the text to parse such as "12345.123456789s(TAI)", not null
+     * @return the parsed instant, not null
+     * @throws DateTimeParseException if the text cannot be parsed
+     * @throws DateTimeException if parsed text represents an invalid leap second
+     */
+    public static UtcInstant parse(CharSequence text) {
+        TemporalAccessor parsed = DateTimeFormatter.ISO_INSTANT.parse(text);
+        long epochSecond = parsed.getLong(INSTANT_SECONDS);
+        long nanoOfSecond = parsed.getLong(NANO_OF_SECOND);
+        boolean leap = parsed.query(DateTimeFormatter.parsedLeapSecond());
+        long epochDay = Math.floorDiv(epochSecond, SECS_PER_DAY);
+        long mjd = epochDay + OFFSET_MJD_EPOCH;
+        long nanoOfDay = Math.floorMod(epochSecond, SECS_PER_DAY) * NANOS_PER_SECOND + nanoOfSecond;
+        if (leap) {
+            nanoOfDay += NANOS_PER_SECOND;
+        }
+        return UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
     }
 
     //-----------------------------------------------------------------------
@@ -426,31 +454,40 @@ public final class UtcInstant
      * A string representation of this instant.
      * <p>
      * The string is formatted using ISO-8601.
+     * The output includes seconds, 9 nanosecond digits and a trailing 'Z'.
+     * The time-of-day will be 23:59:60 during a positive leap second.
      *
      * @return a representation of this instant, not null
      */
     @Override
     public String toString() {
         LocalDate date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay);  // TODO: capacity/import issues
-        StringBuilder buf = new StringBuilder(18);
+        StringBuilder buf = new StringBuilder(30);
         int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
         int hourValue = sod / (60 * 60);
         int minuteValue = (sod / 60) % 60;
         int secondValue = sod % 60;
+        int nanoValue = (int) (nanoOfDay % NANOS_PER_SECOND);
         if (hourValue == 24) {
             hourValue = 23;
             minuteValue = 59;
-            secondValue += 60;
+            secondValue = 60;
         }
-        int nanoValue = (int) (nanoOfDay % NANOS_PER_SECOND);
         buf.append(date).append('T')
             .append(hourValue < 10 ? "0" : "").append(hourValue)
             .append(minuteValue < 10 ? ":0" : ":").append(minuteValue)
             .append(secondValue < 10 ? ":0" : ":").append(secondValue);
-        int pos = buf.length();
-        buf.append(nanoValue + NANOS_PER_SECOND);
-        buf.setCharAt(pos, '.');
-        buf.append("(UTC)");
+        if (nanoValue > 0) {
+            buf.append('.');
+            if (nanoValue % 1000_000 == 0) {
+                buf.append(Integer.toString((nanoValue / 1000_000) + 1000).substring(1));
+            } else if (nanoValue % 1000 == 0) {
+                buf.append(Integer.toString((nanoValue / 1000) + 1000_000).substring(1));
+            } else {
+                buf.append(Integer.toString((nanoValue) + 1000_000_000).substring(1));
+            }
+        }
+        buf.append('Z');
         return buf.toString();
     }
 

@@ -43,6 +43,7 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -203,6 +204,39 @@ public class TestUtcInstant {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_TaiInstant_null() {
         UtcInstant.of((TaiInstant) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(CharSequence)
+    //-----------------------------------------------------------------------
+    @Test
+    public void factory_parse_CharSequence() {
+        assertEquals(UtcInstant.parse("1972-12-31T23:59:59Z"), UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_DAY - NANOS_PER_SEC));
+        assertEquals(UtcInstant.parse("1972-12-31T23:59:60Z"), UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_DAY));
+    }
+
+    @DataProvider(name="BadParse")
+    Object[][] provider_badParse() {
+        return new Object[][] {
+            {""},
+            {"A"},
+            {"2012-13-01T00:00:00Z"},  // bad month
+        };
+    }
+
+    @Test(dataProvider="BadParse", expectedExceptions=DateTimeParseException.class)
+    public void factory_parse_CharSequence_invalid(String str) {
+        UtcInstant.parse(str);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void factory_parse_CharSequence_invalidLeapSecond() {
+        UtcInstant.parse("1972-11-11T23:59:60Z");  // leap second but not leap day
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_CharSequence_null() {
+        UtcInstant.parse((String) null);
     }
 
     //-----------------------------------------------------------------------
@@ -580,21 +614,33 @@ public class TestUtcInstant {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @Test
-    public void test_toString() {
-        assertEquals(UtcInstant.ofModifiedJulianDay(40587, 0).toString(), "1970-01-01T00:00:00.000000000(UTC)");
-        assertEquals(UtcInstant.ofModifiedJulianDay(40588, 1).toString(), "1970-01-02T00:00:00.000000001(UTC)");
-        assertEquals(UtcInstant.ofModifiedJulianDay(40618, 999999999).toString(), "1970-02-01T00:00:00.999999999(UTC)");
-        assertEquals(UtcInstant.ofModifiedJulianDay(40619, 1000000000).toString(), "1970-02-02T00:00:01.000000000(UTC)");
-        assertEquals(UtcInstant.ofModifiedJulianDay(40620, 60L * 1000000000L).toString(), "1970-02-03T00:01:00.000000000(UTC)");
-        assertEquals(UtcInstant.ofModifiedJulianDay(40621, 60L * 60L * 1000000000L).toString(), "1970-02-04T01:00:00.000000000(UTC)");
+    @DataProvider(name="ToString")
+    Object[][] provider_toString() {
+        return new Object[][] {
+            {40587, 0, "1970-01-01T00:00:00Z"},
+            {40588, 1, "1970-01-02T00:00:00.000000001Z"},
+            {40588, 999, "1970-01-02T00:00:00.000000999Z"},
+            {40588, 1000, "1970-01-02T00:00:00.000001Z"},
+            {40588, 999000, "1970-01-02T00:00:00.000999Z"},
+            {40588, 1000000, "1970-01-02T00:00:00.001Z"},
+            {40618, 999999999, "1970-02-01T00:00:00.999999999Z"},
+            {40619, 1000000000, "1970-02-02T00:00:01Z"},
+            {40620, 60L * 1000000000L, "1970-02-03T00:01:00Z"},
+            {40621, 60L * 60L * 1000000000L, "1970-02-04T01:00:00Z"},
+            {MJD_1972_12_31_LEAP, 24L * 60L * 60L * 1000000000L - 1000000000L, "1972-12-31T23:59:59Z"},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, "1972-12-31T23:59:60Z"},
+            {MJD_1973_01_01, 0, "1973-01-01T00:00:00Z"},
+        };
     }
 
-    @Test
-    public void test_toString_leap() {
-        assertEquals(UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, 24L * 60L * 60L * 1000000000L - 1000000000L).toString(), "1972-12-31T23:59:59.000000000(UTC)");
-        assertEquals(UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_DAY).toString(), "1972-12-31T23:59:60.000000000(UTC)");
-        assertEquals(UtcInstant.ofModifiedJulianDay(MJD_1973_01_01, 0).toString(), "1973-01-01T00:00:00.000000000(UTC)");
+    @Test(dataProvider = "ToString")
+    public void test_toString(long mjd, long nod, String expected) {
+        assertEquals(UtcInstant.ofModifiedJulianDay(mjd, nod).toString(), expected);
+    }
+
+    @Test(dataProvider = "ToString")
+    public void test_toString_parse(long mjd, long nod, String str) {
+        assertEquals(UtcInstant.parse(str), UtcInstant.ofModifiedJulianDay(mjd, nod));
     }
 
 }
