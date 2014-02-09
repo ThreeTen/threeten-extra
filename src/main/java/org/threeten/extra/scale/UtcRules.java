@@ -31,6 +31,7 @@
  */
 package org.threeten.extra.scale;
 
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.util.ConcurrentModificationException;
 
@@ -38,10 +39,15 @@ import java.util.ConcurrentModificationException;
  * Rules defining the UTC time-scale, notably when leap seconds occur.
  * <p>
  * This class defines the UTC time-scale including when leap seconds occur.
- * Subclasses obtain the data from a suitable source, such as TZDB or GPS.
+ * Subclasses obtain the data from a suitable source, such as a file.
  * <p>
  * The static methods on this class provide access to the system leap second rules.
- * These are used by default.
+ * These are used by default in {@code UtcInstant} and {@code TaiInstant}.
+ * Using other rules requires manual use of this class.
+ * <p>
+ * The system rules can be updated using the file {@code org/threeten/extra/scale/LeapSeconds.txt}.
+ * You can create your own version of this file and place it on the classpath
+ * and it will be used.
  *
  * <h3>Implementation Requirements:</h3>
  * This is an abstract class and must be implemented with care
@@ -92,17 +98,18 @@ public abstract class UtcRules {
      * a {@code ConcurrentModificationException}.
      * <p>
      * If the leap second being added matches a previous definition, then the method returns normally.
-     * If the date is before the last registered date and doesn't match, then an exception is thrown.
+     * If the date is before the last registered date and does not match a previous definition,
+     * then an exception is thrown.
      *
-     * @param mjDay  the modified julian date that the leap second occurs at the end of
+     * @param mjDay  the Modified Julian Day that the leap second occurs at the end of
      * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
      * @throws IllegalArgumentException if the leap adjustment is invalid
      * @throws IllegalArgumentException if the day is before or equal the last known leap second day
      *  and the definition does not match a previously registered leap
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
      */
-    public static void registerSystemLeapSecond(long mjDay, int leapAdjustment) {
-        SystemUtcRules.INSTANCE.registerLeapSecond(mjDay, leapAdjustment);
+    public static void registerLeapSecond(long mjDay, int leapAdjustment) {
+        SystemUtcRules.INSTANCE.register(mjDay, leapAdjustment);
     }
 
     //-----------------------------------------------------------------------
@@ -160,18 +167,42 @@ public abstract class UtcRules {
 
     //-----------------------------------------------------------------------
     /**
+     * Validates combination of Modified Julian Day and nanosecond-of-day.
+     * <p>
+     * Modified Julian Day is a simple incrementing count of days where day 0 is 1858-11-17.
+     * Nanosecond-of-day is a simple count of nanoseconds from the start of the day
+     * including any additional leap-second.
+     * This method validates the nanosecond-of-day value against the Modified Julian Day.
+     * <p>
+     * The nanosecond-of-day value has a valid range from {@code 0} to
+     * {@code 86,400,000,000,000 - 1} on most days, and a larger or smaller range
+     * on leap-second days.
+     *
+     * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
+     * @param nanoOfDay  the nanoseconds within the day, including leap seconds
+     * @throws DateTimeException if nanoOfDay is out of range
+     */
+    public void validateModifiedJulianDay(long mjDay, long nanoOfDay) {
+        long leapSecs = getLeapSecondAdjustment(mjDay);
+        long maxNanos = (SECS_PER_DAY + leapSecs) * NANOS_PER_SECOND;
+        if (nanoOfDay < 0 || nanoOfDay >= maxNanos) {
+            throw new DateTimeException("Nanosecond-of-day must be between 0 and " + maxNanos + " on date " + mjDay);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts a {@code UtcInstant} to a {@code TaiInstant}.
      * <p>
      * This method converts from the UTC to the TAI time-scale using the
      * leap-second rules of the implementation.
-     * <p>
-     * The standard implementation uses {@code getTAIOffset}.
      *
      * @param utcInstant  the UTC instant to convert, not null
      * @return the converted TAI instant, not null
-     * @throws ArithmeticException if the capacity is exceeded
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    protected TaiInstant convertToTai(UtcInstant utcInstant) {
+    public TaiInstant convertToTai(UtcInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long nod = utcInstant.getNanoOfDay();
         long taiUtcDaySeconds = Math.multiplyExact(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
@@ -188,16 +219,17 @@ public abstract class UtcRules {
      *
      * @param taiInstant  the TAI instant to convert, not null
      * @return the converted UTC instant, not null
-     * @throws ArithmeticException if the capacity is exceeded
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    protected abstract UtcInstant convertToUtc(TaiInstant taiInstant);
+    public abstract UtcInstant convertToUtc(TaiInstant taiInstant);
 
     //-----------------------------------------------------------------------
     /**
      * Converts a {@code UtcInstant} to an {@code Instant}.
      * <p>
-     * This method converts from the UTC time-scale to one with 86400 seconds per day
-     * using the leap-second rules of the implementation.
+     * This method converts from the UTC time-scale to one with 86400 subdivisions
+     * per day using the leap-second rules of the implementation.
      * <p>
      * The standard implementation uses the UTC-SLS algorithm.
      * Overriding this algorithm is possible, however doing so will conflict other parts
@@ -211,9 +243,10 @@ public abstract class UtcRules {
      *
      * @param utcInstant  the UTC instant to convert, not null
      * @return the converted instant, not null
-     * @throws ArithmeticException if the capacity is exceeded
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    protected Instant convertToInstant(UtcInstant utcInstant) {
+    public Instant convertToInstant(UtcInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long utcNanos = utcInstant.getNanoOfDay();
         long epochDay = Math.subtractExact(mjd, OFFSET_MJD_EPOCH);
@@ -230,8 +263,8 @@ public abstract class UtcRules {
     /**
      * Converts an {@code Instant} to a {@code UtcInstant}.
      * <p>
-     * This method converts from an instant with 86400 seconds per day to the UTC
-     * time-scale using the leap-second rules of the implementation.
+     * This method converts from an instant with 86400 subdivisions per day
+     * to the UTC time-scale using the leap-second rules of the implementation.
      * <p>
      * The standard implementation uses the UTC-SLS algorithm.
      * Overriding this algorithm is possible, however doing so will conflict other parts
@@ -246,9 +279,10 @@ public abstract class UtcRules {
      *
      * @param instant  the instant to convert, not null
      * @return the converted UTC instant, not null
-     * @throws ArithmeticException if the capacity is exceeded
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    protected UtcInstant convertToUtc(Instant instant) {
+    public UtcInstant convertToUtc(Instant instant) {
         long epochDay = Math.floorDiv(instant.getEpochSecond(), SECS_PER_DAY);
         long mjd = epochDay + OFFSET_MJD_EPOCH;
         long slsNanos = Math.floorMod(instant.getEpochSecond(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNano();
@@ -258,7 +292,44 @@ public abstract class UtcRules {
         if (leapAdj != 0 && slsNanos >= startSlsNanos) {
             utcNanos = startSlsNanos + ((slsNanos - startSlsNanos) * 1000) / (1000 - leapAdj);  // apply UTC-SLS mapping
         }
-        return UtcInstant.ofModifiedJulianDay(mjd, utcNanos, this);
+        return UtcInstant.ofModifiedJulianDay(mjd, utcNanos);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Converts a {@code TaiInstant} to an {@code Instant}.
+     * <p>
+     * This method converts from the TAI time-scale to one with 86400 subdivisions
+     * per day using the leap-second rules of the implementation.
+     * <p>
+     * The standard implementation uses UTC-SLS. It uses
+     * {@link #convertToUtc(TaiInstant)} and {@link #convertToInstant(UtcInstant)}.
+     *
+     * @param taiInstant  the TAI instant to convert, not null
+     * @return the converted instant, not null
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public Instant convertToInstant(TaiInstant taiInstant) {
+        return convertToInstant(convertToUtc(taiInstant));
+    }
+
+    /**
+     * Converts an {@code Instant} to a {@code TaiInstant}.
+     * <p>
+     * This method converts from an instant with 86400 subdivisions per day
+     * to the TAI time-scale using the leap-second rules of the implementation.
+     * <p>
+     * The standard implementation uses the UTC-SLS algorithm. It uses
+     * {@link #convertToUtc(TaiInstant)} and {@link #convertToInstant(UtcInstant)}.
+     *
+     * @param instant  the instant to convert, not null
+     * @return the converted instant, not null
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public TaiInstant convertToTai(Instant instant) {
+        return convertToTai(convertToUtc(instant));
     }
 
     //-----------------------------------------------------------------------

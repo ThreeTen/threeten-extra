@@ -129,6 +129,7 @@ public final class TaiInstant
      * @param taiSeconds  the number of seconds from the epoch of 1958-01-01T00:00:00(TAI)
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
      * @return the TAI instant, not null
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static TaiInstant ofTaiSeconds(long taiSeconds, long nanoAdjustment) {
         long secs = Math.addExact(taiSeconds, Math.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
@@ -137,10 +138,9 @@ public final class TaiInstant
     }
 
     /**
-     * Obtains an instance of {@code TaiInstant} from an {@code Instant}
-     * using the system default leap second rules.
+     * Obtains an instance of {@code TaiInstant} from an {@code Instant}.
      * <p>
-     * Converting a UTC-SLS instant to a TAI instant requires leap second rules.
+     * Converting a UTC-SLS instant to TAI requires leap second rules.
      * This method uses the latest available system rules.
      * The conversion first maps from UTC-SLS to UTC, then converts to TAI.
      * <p>
@@ -149,30 +149,34 @@ public final class TaiInstant
      *
      * @param instant  the instant to convert, not null
      * @return the TAI instant, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the range of {@code TaiInstant} is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static TaiInstant of(Instant instant) {
-        return UtcInstant.of(instant).toTaiInstant();
+        return UtcRules.system().convertToTai(instant);
     }
 
     /**
      * Obtains an instance of {@code TaiInstant} from a {@code UtcInstant}.
      * <p>
-     * Converting a UTC instant to a TAI instant requires leap second rules.
-     * This method uses the rules held in within the UTC instant.
+     * Converting a UTC instant to TAI requires leap second rules.
+     * This method uses the latest available system rules.
      * <p>
-     * Conversion from a {@code UtcInstant} will be entirely accurate.
-     * The resulting TAI instant will not reference the leap second rules, so
-     * converting back to a UTC instant may result in a different UTC instant.
+     * The {@code TaiInstant} will represent exactly the same point on the
+     * time-line as per the available leap-second rules.
+     * If the leap-second rules change then conversion back to UTC may
+     * result in a different instant.
      *
      * @param instant  the instant to convert, not null
      * @return the TAI instant, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the range of {@code TaiInstant} is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static TaiInstant of(UtcInstant instant) {
-        return instant.toTaiInstant();
+        return UtcRules.system().convertToTai(instant);
     }
 
+    //-------------------------------------------------------------------------
     /**
      * Obtains an instance of {@code TaiInstant} from a text string.
      * <p>
@@ -354,32 +358,40 @@ public final class TaiInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this instant to a {@code UtcInstant} using the system default
-     * leap second rules.
+     * Converts this instant to an {@code Instant}.
      * <p>
-     * This method converts this instant from the TAI to the UTC time-scale using the
-     * system default leap-second rules. This conversion does not lose information
-     * and the UTC instant may safely be converted back to a {@code TaiInstant}.
+     * Converting a TAI instant to UTC-SLS requires leap second rules.
+     * This method uses the latest available system rules.
+     * The conversion first maps from TAI to UTC, then converts to UTC-SLS.
+     * <p>
+     * Conversion to an {@code Instant} will not be completely accurate near
+     * a leap second in accordance with UTC-SLS.
      *
-     * @return a {@code UtcInstant} representing the same instant using the system leap second rules, not null
+     * @return an {@code Instant} representing the best approximation of this instant, not null
+     * @throws DateTimeException if the range of {@code Instant} is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    public UtcInstant toUtcInstant() {
-        return UtcInstant.of(this, UtcRules.system());
+    public Instant toInstant() {
+        return UtcRules.system().convertToInstant(this);
     }
 
     /**
-     * Converts this instant to an {@code Instant} using the system default
-     * leap second rules.
+     * Converts this instant to a {@code UtcInstant}.
      * <p>
-     * This method converts this instant from the TAI to the UTC-SLS time-scale using the
-     * system default leap-second rules to convert to UTC.
-     * This conversion will lose information around a leap second in accordance with UTC-SLS.
-     * Converting back to a {@code TaiInstant} may result in a slightly different instant.
+     * Converting a TAI instant to UTC requires leap second rules.
+     * This method uses the latest available system rules.
+     * <p>
+     * The {@code UtcInstant} will represent exactly the same point on the
+     * time-line as per the available leap-second rules.
+     * If the leap-second rules change then conversion back to TAI may
+     * result in a different instant.
      *
-     * @return an {@code Instant} representing the best approximation of this instant, not null
+     * @return a {@code UtcInstant} representing the same instant, not null
+     * @throws DateTimeException if the range of {@code UtcInstant} is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    public Instant toInstant() {
-        return toUtcInstant().toInstant();
+    public UtcInstant toUtcInstant() {
+        return UtcRules.system().convertToUtc(this);
     }
 
     //-----------------------------------------------------------------------

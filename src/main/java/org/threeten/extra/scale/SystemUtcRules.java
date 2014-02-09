@@ -122,14 +122,14 @@ final class SystemUtcRules extends UtcRules implements Serializable {
     /**
      * Adds a new leap second to these rules.
      *
-     * @param mjDay  the modified julian date that the leap second occurs at the end of
+     * @param mjDay  the Modified Julian Day that the leap second occurs at the end of
      * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
      * @throws IllegalArgumentException if the leap adjustment is invalid
      * @throws IllegalArgumentException if the day is before or equal the last known leap second day
      *  and the definition does not match a previously registered leap
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
      */
-    void registerLeapSecond(long mjDay, int leapAdjustment) {
+    void register(long mjDay, int leapAdjustment) {
         if (leapAdjustment != -1 && leapAdjustment != 1) {
             throw new IllegalArgumentException("Leap adjustment must be -1 or 1");
         }
@@ -184,7 +184,7 @@ final class SystemUtcRules extends UtcRules implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    protected UtcInstant convertToUtc(TaiInstant taiInstant) {
+    public UtcInstant convertToUtc(TaiInstant taiInstant) {
         Data data = dataRef.get();
         long[] mjds = data.dates;
         long[] tais = data.taiSeconds;
@@ -199,7 +199,7 @@ final class SystemUtcRules extends UtcRules implements Serializable {
             mjd--;
             nod = SECS_PER_DAY * NANOS_PER_SECOND + (nod / NANOS_PER_SECOND) * NANOS_PER_SECOND + nod % NANOS_PER_SECOND;
         }
-        return UtcInstant.ofModifiedJulianDay(mjd, nod, this);
+        return UtcInstant.ofModifiedJulianDay(mjd, nod);
     }
 
     //-----------------------------------------------------------------------
