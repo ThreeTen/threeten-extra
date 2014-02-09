@@ -38,26 +38,25 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 
 /**
- * Utilities to assist with handling weekends.
+ * Additional utilities for working with temporal classes.
  * <p>
- * This class currently only works with Saturday/Sunday weekends.
+ * This currently contains adjusters that ignore Saturday/Sunday weekends.
  *
  * <h3>Implementation Requirements:</h3>
  * This is a thread-safe utility class.
  * All returned classes are immutable and thread-safe.
  */
-public final class WeekendRules {
+public final class Temporals {
 
     /**
      * Restricted constructor.
      */
-    private WeekendRules() {
+    private Temporals() {
     }
 
     //-------------------------------------------------------------------------
     /**
-     * Returns the next non weekend day adjuster, which adjusts the date one day
-     * forward skipping Saturday and Sunday.
+     * Returns an adjuster that returns the next working day, ignoring Saturday and Sunday.
      * <p>
      * Some territories have weekends that do not consist of Saturday and Sunday.
      * No implementation is supplied to support this, however an adjuster
@@ -65,22 +64,21 @@ public final class WeekendRules {
      *
      * @return the next working day adjuster, not null
      */
-    public static TemporalAdjuster nextNonWeekendDay() {
-        return Adjuster.NEXT_NON_WEEKEND;
+    public static TemporalAdjuster nextWorkingDay() {
+        return Adjuster.NEXT_WORKING;
     }
 
     /**
-     * Returns the previous non weekend day adjuster, which adjusts the date one day
-     * backward skipping Saturday and Sunday.
+     * Returns an adjuster that returns the previous working day, ignoring Saturday and Sunday.
      * <p>
      * Some territories have weekends that do not consist of Saturday and Sunday.
      * No implementation is supplied to support this, however an adjuster
      * can be easily written to do so.
      *
-     * @return the next working day adjuster, not null
+     * @return the previous working day adjuster, not null
      */
-    public static TemporalAdjuster previousNonWeekendDay() {
-        return Adjuster.PREVIOUS_NON_WEEKEND;
+    public static TemporalAdjuster previousWorkingDay() {
+        return Adjuster.PREVIOUS_WORKING;
     }
 
     //-----------------------------------------------------------------------
@@ -88,8 +86,8 @@ public final class WeekendRules {
      * Enum implementing the adjusters.
      */
     private static enum Adjuster implements TemporalAdjuster {
-        /** Next non weekend day adjuster. */
-        NEXT_NON_WEEKEND {
+        /** Next working day adjuster. */
+        NEXT_WORKING {
             @Override
             public Temporal adjustInto(Temporal temporal) {
                 int dow = temporal.get(DAY_OF_WEEK);
@@ -103,8 +101,8 @@ public final class WeekendRules {
                 }
             }
         },
-        /** Previous non weekend day adjuster. */
-        PREVIOUS_NON_WEEKEND {
+        /** Previous working day adjuster. */
+        PREVIOUS_WORKING {
             @Override
             public Temporal adjustInto(Temporal temporal) {
                 int dow = temporal.get(DAY_OF_WEEK);

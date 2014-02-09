@@ -39,7 +39,6 @@ import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -57,37 +56,32 @@ import java.time.temporal.TemporalAdjuster;
 import org.testng.annotations.Test;
 
 /**
- * Test WeekendRules.
+ * Test Temporals.
  */
 @Test
-public class TestWeekendRules {
+public class TestTemporals {
 
     //-----------------------------------------------------------------------
-    // nextNonWeekendDay()
+    // nextWorkingDay()
     //-----------------------------------------------------------------------
-    public void test_nextNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        TemporalAdjuster nextNonWeekendDay = WeekendRules.nextNonWeekendDay();
-        assertTrue(nextNonWeekendDay instanceof Serializable);
+    public void test_nextWorkingDay_serialization() throws IOException, ClassNotFoundException {
+        TemporalAdjuster nextWorkingDay = Temporals.nextWorkingDay();
+        assertTrue(nextWorkingDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(nextNonWeekendDay);
+        oos.writeObject(nextWorkingDay);
         oos.close();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertSame(ois.readObject(), nextNonWeekendDay);
+        assertSame(ois.readObject(), nextWorkingDay);
     }
 
-    public void factory_nextNonWeekendDay() {
-        assertNotNull(WeekendRules.nextNonWeekendDay());
-        assertSame(WeekendRules.nextNonWeekendDay(), WeekendRules.nextNonWeekendDay());
-    }
-
-    public void test_nextNonWeekendDay() {
+    public void test_nextWorkingDay() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
-                LocalDate test = (LocalDate) WeekendRules.nextNonWeekendDay().adjustInto(date);
+                LocalDate test = (LocalDate) Temporals.nextWorkingDay().adjustInto(date);
                 assertTrue(test.isAfter(date));
                 assertFalse(test.getDayOfWeek().equals(SATURDAY));
                 assertFalse(test.getDayOfWeek().equals(SUNDAY));
@@ -122,42 +116,37 @@ public class TestWeekendRules {
         }
     }
 
-    public void test_nextNonWeekendDay_yearChange() {
+    public void test_nextWorkingDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, DECEMBER, 31);
-        Temporal test = WeekendRules.nextNonWeekendDay().adjustInto(friday);
+        Temporal test = Temporals.nextWorkingDay().adjustInto(friday);
         assertEquals(LocalDate.of(2011, JANUARY, 3), test);
 
         LocalDate saturday = LocalDate.of(2011, DECEMBER, 31);
-        test = WeekendRules.nextNonWeekendDay().adjustInto(saturday);
+        test = Temporals.nextWorkingDay().adjustInto(saturday);
         assertEquals(LocalDate.of(2012, JANUARY, 2), test);
     }
 
     //-----------------------------------------------------------------------
-    // previousNonWeekendDay()
+    // previousWorkingDay()
     //-----------------------------------------------------------------------
-    public void test_previousNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        TemporalAdjuster previousNonWeekendDay = WeekendRules.previousNonWeekendDay();
-        assertTrue(previousNonWeekendDay instanceof Serializable);
+    public void test_previousWorkingDay_serialization() throws IOException, ClassNotFoundException {
+        TemporalAdjuster previousWorkingDay = Temporals.previousWorkingDay();
+        assertTrue(previousWorkingDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(previousNonWeekendDay);
+        oos.writeObject(previousWorkingDay);
         oos.close();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertSame(ois.readObject(), previousNonWeekendDay);
+        assertSame(ois.readObject(), previousWorkingDay);
     }
 
-    public void factory_previousNonWeekendDay() {
-        assertNotNull(WeekendRules.previousNonWeekendDay());
-        assertSame(WeekendRules.previousNonWeekendDay(), WeekendRules.previousNonWeekendDay());
-    }
-
-    public void test_previousNonWeekendDay() {
+    public void test_previousWorkingDay() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
-                LocalDate test = (LocalDate) WeekendRules.previousNonWeekendDay().adjustInto(date);
+                LocalDate test = (LocalDate) Temporals.previousWorkingDay().adjustInto(date);
                 assertTrue(test.isBefore(date));
                 assertFalse(test.getDayOfWeek().equals(SATURDAY));
                 assertFalse(test.getDayOfWeek().equals(SUNDAY));
@@ -192,13 +181,13 @@ public class TestWeekendRules {
         }
     }
 
-    public void test_previousNonWeekendDay_yearChange() {
+    public void test_previousWorkingDay_yearChange() {
         LocalDate monday = LocalDate.of(2011, JANUARY, 3);
-        Temporal test = WeekendRules.previousNonWeekendDay().adjustInto(monday);
+        Temporal test = Temporals.previousWorkingDay().adjustInto(monday);
         assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
 
         LocalDate sunday = LocalDate.of(2011, JANUARY, 2);
-        test = WeekendRules.previousNonWeekendDay().adjustInto(sunday);
+        test = Temporals.previousWorkingDay().adjustInto(sunday);
         assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
     }
 
