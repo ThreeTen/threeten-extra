@@ -37,6 +37,6 @@
     <logo name="Maven" href="http://maven.apache.org/"
           img="http://maven.apache.org/images/logos/maven-feather.png"/>
     <logo name="GitHub" href="https://github.com/ThreeTen/threeten-extra"
-          img="http://www.threeten.org/images/github.png"/>
+          img="http://threeten.github.io/images/github.png"/>
   </poweredBy>
 </project>
