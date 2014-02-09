@@ -70,26 +70,26 @@ public interface TimeSource {
     Instant instant();
 
     /**
-     * Gets the current {@code UTCInstant}.
+     * Gets the current {@code UtcInstant}.
      * <p>
      * The UTC time-scale is the current world civil time and includes leap seconds.
      * An accurate implementation of this interface will return the correct UTC instant.
      *
-     * @return the current {@code UTCInstant} from this time-source, not null
+     * @return the current {@code UtcInstant} from this time-source, not null
      * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations
      */
-    UTCInstant utcInstant();
+    UtcInstant utcInstant();
 
     /**
-     * Gets the current {@code TAIInstant}.
+     * Gets the current {@code TaiInstant}.
      * <p>
      * The TAI time-scale is a simple incrementing number of seconds from the TAI epoch of 1958-01-01(TAI).
      * It ignores all human concepts of time such as days.
      * An accurate implementation of this interface will return the correct TAI instant.
      *
-     * @return the current {@code TAIInstant} from this time-source, not null
+     * @return the current {@code TaiInstant} from this time-source, not null
      * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations
      */
-    TAIInstant taiInstant();
+    TaiInstant TaiInstant();
 
 }

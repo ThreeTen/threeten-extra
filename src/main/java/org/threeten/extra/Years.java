@@ -269,6 +269,8 @@ public final class Years
      * <p>
      * The parameter is converted using {@link Years#from(TemporalAmount)}
      * and must only consist of years.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the amount to add, not null
      * @return a {@code Years} based on this instance with the requested amount added, not null
@@ -281,6 +283,8 @@ public final class Years
 
     /**
      * Returns a copy of this amount with the specified number of years added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param years  the amount of years to add, may be negative
      * @return a {@code Years} based on this instance with the requested amount added, not null
@@ -299,6 +303,8 @@ public final class Years
      * <p>
      * The parameter is converted using {@link Years#from(TemporalAmount)}
      * and must only consist of years.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the amount to add, not null
      * @return a {@code Years} based on this instance with the requested amount subtracted, not null
@@ -311,6 +317,8 @@ public final class Years
 
     /**
      * Returns a copy of this amount with the specified number of years subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param years  the amount of years to add, may be negative
      * @return a {@code Years} based on this instance with the requested amount subtracted, not null
@@ -326,6 +334,8 @@ public final class Years
     //-----------------------------------------------------------------------
     /**
      * Returns an instance with the amount multiplied by the specified scalar.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param scalar  the scalar to multiply by, not null
      * @return the amount multiplied by the specified scalar, not null
@@ -342,6 +352,8 @@ public final class Years
      * Returns an instance with the amount divided by the specified divisor.
      * <p>
      * The calculation uses integer division, thus 3 divided by 2 is 1.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param divisor  the amount to divide by, may be negative
      * @return the amount divided by the specified divisor, not null
@@ -356,6 +368,8 @@ public final class Years
 
     /**
      * Returns an instance with the amount negated.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @return the negated amount, not null
      * @throws ArithmeticException if numeric overflow occurs, which only happens if
@@ -369,6 +383,8 @@ public final class Years
      * Returns a copy of this duration with a positive length.
      * <p>
      * This method returns a positive duration by effectively removing the sign from any negative total length.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @return the absolute amount, not null
      * @throws ArithmeticException if numeric overflow occurs, which only happens if
@@ -406,6 +422,8 @@ public final class Years
      * </pre>
      * <p>
      * Only non-zero amounts will be added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
@@ -436,6 +454,8 @@ public final class Years
      * </pre>
      * <p>
      * Only non-zero amounts will be subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
