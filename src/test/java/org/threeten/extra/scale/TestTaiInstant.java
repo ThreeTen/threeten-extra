@@ -189,10 +189,10 @@ public class TestTaiInstant {
     }
 
     //-----------------------------------------------------------------------
-    // parse(String)
+    // parse(CharSequence)
     //-----------------------------------------------------------------------
     @Test
-    public void factory_parse_String() {
+    public void factory_parse_CharSequence() {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 900000000; j < 990000000; j += 10000000) {
                 String str = i + "." + j + "s(TAI)";
@@ -214,13 +214,14 @@ public class TestTaiInstant {
             {"-123.123s(TAI)"},
         };
     }
+
     @Test(dataProvider="BadParse", expectedExceptions=DateTimeParseException.class)
-    public void factory_parse_String_invalid(String str) {
+    public void factory_parse_CharSequence_invalid(String str) {
         TaiInstant.parse(str);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_String_null() {
+    public void factory_parse_CharSequence_null() {
         TaiInstant.parse((String) null);
     }
 

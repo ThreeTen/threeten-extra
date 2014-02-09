@@ -193,7 +193,7 @@ public final class TaiInstant
      *
      * @param text  the text to parse such as "12345.123456789s(TAI)", not null
      * @return the parsed instant, not null
-     * @throws DateTimeException if the text cannot be parsed
+     * @throws DateTimeParseException if the text cannot be parsed
      */
     public static TaiInstant parse(CharSequence text) {
         Objects.requireNonNull(text, "text");

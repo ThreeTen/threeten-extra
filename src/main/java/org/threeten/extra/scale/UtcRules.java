@@ -205,7 +205,7 @@ public abstract class UtcRules {
     public TaiInstant convertToTai(UtcInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long nod = utcInstant.getNanoOfDay();
-        long taiUtcDaySeconds = Math.multiplyExact(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
+        long taiUtcDaySeconds = Math.multiplyExact(Math.subtractExact(mjd, OFFSET_MJD_TAI), SECS_PER_DAY);
         long taiSecs = Math.addExact(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTaiOffset(mjd));
         int nos = (int) (nod % NANOS_PER_SECOND);
         return TaiInstant.ofTaiSeconds(taiSecs, nos);

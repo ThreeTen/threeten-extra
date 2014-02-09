@@ -442,6 +442,12 @@ public class TestUtcInstant {
         }
     }
 
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_toTaiInstant_maxInvalid() {
+        UtcInstant utc = UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, 0);
+        utc.toTaiInstant();
+    }
+
     //-----------------------------------------------------------------------
     // toInstant()
     //-----------------------------------------------------------------------
