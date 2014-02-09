@@ -49,7 +49,7 @@ import java.util.ConcurrentModificationException;
  * All implementations must be final, immutable and thread-safe.
  * Subclasses should be {@code Serializable} wherever possible.
  */
-public abstract class UTCRules {
+public abstract class UtcRules {
 
     /**
      * Constant for the offset from MJD day 0 to the Java Epoch of 1970-01-01: 40587.
@@ -76,8 +76,8 @@ public abstract class UTCRules {
      *
      * @return the system rules, not null
      */
-    public static UTCRules system() {
-        return SystemUTCRules.INSTANCE;
+    public static UtcRules system() {
+        return SystemUtcRules.INSTANCE;
     }
 
     /**
@@ -102,14 +102,14 @@ public abstract class UTCRules {
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
      */
     public static void registerSystemLeapSecond(long mjDay, int leapAdjustment) {
-        SystemUTCRules.INSTANCE.registerLeapSecond(mjDay, leapAdjustment);
+        SystemUtcRules.INSTANCE.registerLeapSecond(mjDay, leapAdjustment);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Creates an instance of the rules.
      */
-    protected UTCRules() {
+    protected UtcRules() {
     }
 
     //-----------------------------------------------------------------------
@@ -127,8 +127,8 @@ public abstract class UTCRules {
      * <p>
      * Any leap seconds are added to, or removed from, the end of the specified date.
      * <p>
-     * NOTE: If the UTC specification is altered to allow multiple leap seconds at once,
-     * then the result of this method would change.
+     * If the UTC specification is altered to allow multiple leap seconds at once, then
+     * the result of this method would return a number with an absolute value greater than one.
      *
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
      * @return the number of seconds added, or removed, from the date, either -1 or 1
@@ -145,7 +145,7 @@ public abstract class UTCRules {
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
      * @return the TAI offset in seconds
      */
-    public abstract int getTAIOffset(long mjDay);
+    public abstract int getTaiOffset(long mjDay);
 
     /**
      * Gets all known leap second dates.
@@ -160,7 +160,7 @@ public abstract class UTCRules {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts a {@code UTCInstant} to a {@code TAIInstant}.
+     * Converts a {@code UtcInstant} to a {@code TaiInstant}.
      * <p>
      * This method converts from the UTC to the TAI time-scale using the
      * leap-second rules of the implementation.
@@ -171,17 +171,17 @@ public abstract class UTCRules {
      * @return the converted TAI instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    protected TAIInstant convertToTAI(UTCInstant utcInstant) {
+    protected TaiInstant convertToTai(UtcInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long nod = utcInstant.getNanoOfDay();
         long taiUtcDaySeconds = Math.multiplyExact(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
-        long taiSecs = Math.addExact(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
+        long taiSecs = Math.addExact(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTaiOffset(mjd));
         int nos = (int) (nod % NANOS_PER_SECOND);
-        return TAIInstant.ofTAISeconds(taiSecs, nos);
+        return TaiInstant.ofTaiSeconds(taiSecs, nos);
     }
 
     /**
-     * Converts a {@code TAIInstant} to a {@code UTCInstant}.
+     * Converts a {@code TaiInstant} to a {@code UtcInstant}.
      * <p>
      * This method converts from the TAI to the UTC time-scale using the
      * leap-second rules of the implementation.
@@ -190,11 +190,11 @@ public abstract class UTCRules {
      * @return the converted UTC instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    protected abstract UTCInstant convertToUTC(TAIInstant taiInstant);
+    protected abstract UtcInstant convertToUtc(TaiInstant taiInstant);
 
     //-----------------------------------------------------------------------
     /**
-     * Converts a {@code UTCInstant} to an {@code Instant}.
+     * Converts a {@code UtcInstant} to an {@code Instant}.
      * <p>
      * This method converts from the UTC time-scale to one with 86400 seconds per day
      * using the leap-second rules of the implementation.
@@ -213,7 +213,7 @@ public abstract class UTCRules {
      * @return the converted instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    protected Instant convertToInstant(UTCInstant utcInstant) {
+    protected Instant convertToInstant(UtcInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long utcNanos = utcInstant.getNanoOfDay();
         long epochDay = Math.subtractExact(mjd, OFFSET_MJD_EPOCH);
@@ -228,7 +228,7 @@ public abstract class UTCRules {
     }
 
     /**
-     * Converts an {@code Instant} to a {@code UTCInstant}.
+     * Converts an {@code Instant} to a {@code UtcInstant}.
      * <p>
      * This method converts from an instant with 86400 seconds per day to the UTC
      * time-scale using the leap-second rules of the implementation.
@@ -248,7 +248,7 @@ public abstract class UTCRules {
      * @return the converted UTC instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    protected UTCInstant convertToUTC(Instant instant) {
+    protected UtcInstant convertToUtc(Instant instant) {
         long epochDay = Math.floorDiv(instant.getEpochSecond(), SECS_PER_DAY);
         long mjd = epochDay + OFFSET_MJD_EPOCH;
         long slsNanos = Math.floorMod(instant.getEpochSecond(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNano();
@@ -258,7 +258,7 @@ public abstract class UTCRules {
         if (leapAdj != 0 && slsNanos >= startSlsNanos) {
             utcNanos = startSlsNanos + ((slsNanos - startSlsNanos) * 1000) / (1000 - leapAdj);  // apply UTC-SLS mapping
         }
-        return UTCInstant.ofModifiedJulianDay(mjd, utcNanos, this);
+        return UtcInstant.ofModifiedJulianDay(mjd, utcNanos, this);
     }
 
     //-----------------------------------------------------------------------
@@ -269,7 +269,7 @@ public abstract class UTCRules {
      */
     @Override
     public String toString() {
-        return "UTCRules[" + getName() + ']';
+        return "UtcRules[" + getName() + ']';
     }
 
 }

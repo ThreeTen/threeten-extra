@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
  * <p>
  * The duration between two points on the TAI time-scale is calculated solely using this class.
  * Do not use the {@code between} method on {@code Duration} as that will lose information.
- * Instead use {@link #durationUntil(TAIInstant)} on this class.
+ * Instead use {@link #durationUntil(TaiInstant)} on this class.
  * <p>
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
@@ -83,8 +83,8 @@ import java.util.regex.Pattern;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class TAIInstant
-        implements Comparable<TAIInstant>, Serializable {
+public final class TaiInstant
+        implements Comparable<TaiInstant>, Serializable {
     // does not implement Temporal as that would enable methods like
     // Duration.between which gives the wrong answer due to lossy conversion
 
@@ -113,7 +113,7 @@ public final class TAIInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code TAIInstant} from the number of seconds from
+     * Obtains an instance of {@code TaiInstant} from the number of seconds from
      * the TAI epoch of 1958-01-01T00:00:00(TAI) with a nanosecond fraction of second.
      * <p>
      * This method allows an arbitrary number of nanoseconds to be passed in.
@@ -121,23 +121,23 @@ public final class TAIInstant
      * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
      * For example, the following will result in the exactly the same instant:
      * <pre>
-     *  TAIInstant.ofSeconds(3, 1);
-     *  TAIInstant.ofSeconds(4, -999999999);
-     *  TAIInstant.ofSeconds(2, 1000000001);
+     *  TaiInstant.ofTaiSeconds(3, 1);
+     *  TaiInstant.ofTaiSeconds(4, -999999999);
+     *  TaiInstant.ofTaiSeconds(2, 1000000001);
      * </pre>
      *
      * @param taiSeconds  the number of seconds from the epoch of 1958-01-01T00:00:00(TAI)
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
      * @return the TAI instant, not null
      */
-    public static TAIInstant ofTAISeconds(long taiSeconds, long nanoAdjustment) {
+    public static TaiInstant ofTaiSeconds(long taiSeconds, long nanoAdjustment) {
         long secs = Math.addExact(taiSeconds, Math.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
         int nos = (int) Math.floorMod(nanoAdjustment, NANOS_PER_SECOND);  // safe cast
-        return new TAIInstant(secs, nos);
+        return new TaiInstant(secs, nos);
     }
 
     /**
-     * Obtains an instance of {@code TAIInstant} from an {@code Instant}
+     * Obtains an instance of {@code TaiInstant} from an {@code Instant}
      * using the system default leap second rules.
      * <p>
      * Converting a UTC-SLS instant to a TAI instant requires leap second rules.
@@ -151,17 +151,17 @@ public final class TAIInstant
      * @return the TAI instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public static TAIInstant of(Instant instant) {
-        return UTCInstant.of(instant).toTAIInstant();
+    public static TaiInstant of(Instant instant) {
+        return UtcInstant.of(instant).toTaiInstant();
     }
 
     /**
-     * Obtains an instance of {@code TAIInstant} from a {@code UTCInstant}.
+     * Obtains an instance of {@code TaiInstant} from a {@code UtcInstant}.
      * <p>
      * Converting a UTC instant to a TAI instant requires leap second rules.
      * This method uses the rules held in within the UTC instant.
      * <p>
-     * Conversion from a {@code UTCInstant} will be entirely accurate.
+     * Conversion from a {@code UtcInstant} will be entirely accurate.
      * The resulting TAI instant will not reference the leap second rules, so
      * converting back to a UTC instant may result in a different UTC instant.
      *
@@ -169,12 +169,12 @@ public final class TAIInstant
      * @return the TAI instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public static TAIInstant of(UTCInstant instant) {
-        return instant.toTAIInstant();
+    public static TaiInstant of(UtcInstant instant) {
+        return instant.toTaiInstant();
     }
 
     /**
-     * Obtains an instance of {@code TAIInstant} from a text string.
+     * Obtains an instance of {@code TaiInstant} from a text string.
      * <p>
      * The following format is accepted:
      * <ul>
@@ -191,14 +191,14 @@ public final class TAIInstant
      * @return the parsed instant, not null
      * @throws DateTimeException if the text cannot be parsed
      */
-    public static TAIInstant parse(CharSequence text) {
+    public static TaiInstant parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         Matcher matcher = PARSER.matcher(text);
         if (matcher.matches()) {
             try {
                 long seconds = Long.parseLong(matcher.group(1));
                 long nanos = Long.parseLong(matcher.group(2));
-                return TAIInstant.ofTAISeconds(seconds, nanos);
+                return TaiInstant.ofTaiSeconds(seconds, nanos);
             } catch (NumberFormatException ex) {
                 throw new DateTimeParseException("The text could not be parsed", text, 0, ex);
             }
@@ -213,7 +213,7 @@ public final class TAIInstant
      * @param taiSeconds  the number of TAI seconds from the epoch
      * @param nanoOfSecond  the nanoseconds within the second, from 0 to 999,999,999
      */
-    private TAIInstant(long taiSeconds, int nanoOfSecond) {
+    private TaiInstant(long taiSeconds, int nanoOfSecond) {
         super();
         this.seconds = taiSeconds;
         this.nanos = nanoOfSecond;
@@ -229,12 +229,12 @@ public final class TAIInstant
      *
      * @return the seconds from the epoch of 1958-01-01T00:00:00(TAI)
      */
-    public long getTAISeconds() {
+    public long getTaiSeconds() {
         return seconds;
     }
 
     /**
-     * Returns a copy of this {@code TAIInstant} with the number of seconds
+     * Returns a copy of this {@code TaiInstant} with the number of seconds
      * from the TAI epoch of 1958-01-01T00:00:00(TAI).
      * <p>
      * The TAI second count is a simple incrementing count of seconds where
@@ -244,10 +244,10 @@ public final class TAIInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param taiSeconds  the number of seconds from the epoch of 1958-01-01T00:00:00(TAI)
-     * @return a {@code TAIInstant} based on this instant with the requested second, not null
+     * @return a {@code TaiInstant} based on this instant with the requested second, not null
      */
-    public TAIInstant withTAISeconds(long taiSeconds) {
-        return ofTAISeconds(taiSeconds, nanos);
+    public TaiInstant withTaiSeconds(long taiSeconds) {
+        return ofTaiSeconds(taiSeconds, nanos);
     }
 
     /**
@@ -255,7 +255,7 @@ public final class TAIInstant
      * of the second.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds from
-     * the second returned by {@code getTAISeconds}.
+     * the second returned by {@code getTaiSeconds()}.
      *
      * @return the nanoseconds within the second, from 0 to 999,999,999
      */
@@ -264,22 +264,22 @@ public final class TAIInstant
     }
 
     /**
-     * Returns a copy of this {@code TAIInstant} with the nano-of-second value changed.
+     * Returns a copy of this {@code TaiInstant} with the nano-of-second value changed.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds from
-     * the second returned by {@code getTAISeconds}.
+     * the second returned by {@code getTaiSeconds()}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
-     * @return a {@code TAIInstant} based on this instant with the requested nano-of-second, not null
+     * @return a {@code TaiInstant} based on this instant with the requested nano-of-second, not null
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
-    public TAIInstant withNano(int nanoOfSecond) {
+    public TaiInstant withNano(int nanoOfSecond) {
         if (nanoOfSecond < 0 || nanoOfSecond >= NANOS_PER_SECOND) {
             throw new IllegalArgumentException("NanoOfSecond must be from 0 to 999,999,999");
         }
-        return ofTAISeconds(seconds, nanoOfSecond);
+        return ofTaiSeconds(seconds, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
@@ -294,10 +294,10 @@ public final class TAIInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a {@code TAIInstant} based on this instant with the duration added, not null
+     * @return a {@code TaiInstant} based on this instant with the duration added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public TAIInstant plus(Duration duration) {
+    public TaiInstant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
         int nanosToAdd = duration.getNano();
         if ((secsToAdd | nanosToAdd) == 0) {
@@ -305,7 +305,7 @@ public final class TAIInstant
         }
         long secs = Math.addExact(seconds, secsToAdd);
         long nanoAdjustment = ((long) nanos) + nanosToAdd;  // safe int+int
-        return ofTAISeconds(secs, nanoAdjustment);
+        return ofTaiSeconds(secs, nanoAdjustment);
     }
 
     //-----------------------------------------------------------------------
@@ -320,10 +320,10 @@ public final class TAIInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, not null
-     * @return a {@code TAIInstant} based on this instant with the duration subtracted, not null
+     * @return a {@code TaiInstant} based on this instant with the duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public TAIInstant minus(Duration duration) {
+    public TaiInstant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
         int nanosToSubtract = duration.getNano();
         if ((secsToSubtract | nanosToSubtract) == 0) {
@@ -331,7 +331,7 @@ public final class TAIInstant
         }
         long secs = Math.subtractExact(seconds, secsToSubtract);
         long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
-        return ofTAISeconds(secs, nanoAdjustment);
+        return ofTaiSeconds(secs, nanoAdjustment);
     }
 
     //-----------------------------------------------------------------------
@@ -342,29 +342,29 @@ public final class TAIInstant
      * the TAI time-scale. Adding the duration to this instant using {@link #plus}
      * will always result in an instant equal to the specified instant.
      *
-     * @param taiInstant  the instant to calculate the duration until, not null
+     * @param TaiInstant  the instant to calculate the duration until, not null
      * @return the duration until the specified instant, may be negative, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public Duration durationUntil(TAIInstant taiInstant) {
-        long durSecs = Math.subtractExact(taiInstant.seconds, seconds);
-        long durNanos = taiInstant.nanos - nanos;
+    public Duration durationUntil(TaiInstant TaiInstant) {
+        long durSecs = Math.subtractExact(TaiInstant.seconds, seconds);
+        long durNanos = TaiInstant.nanos - nanos;
         return Duration.ofSeconds(durSecs, durNanos);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this instant to a {@code UTCInstant} using the system default
+     * Converts this instant to a {@code UtcInstant} using the system default
      * leap second rules.
      * <p>
      * This method converts this instant from the TAI to the UTC time-scale using the
      * system default leap-second rules. This conversion does not lose information
-     * and the UTC instant may safely be converted back to a {@code TAIInstant}.
+     * and the UTC instant may safely be converted back to a {@code TaiInstant}.
      *
-     * @return a {@code UTCInstant} representing the same instant using the system leap second rules, not null
+     * @return a {@code UtcInstant} representing the same instant using the system leap second rules, not null
      */
-    public UTCInstant toUTCInstant() {
-        return UTCInstant.of(this, UTCRules.system());
+    public UtcInstant toUtcInstant() {
+        return UtcInstant.of(this, UtcRules.system());
     }
 
     /**
@@ -374,12 +374,12 @@ public final class TAIInstant
      * This method converts this instant from the TAI to the UTC-SLS time-scale using the
      * system default leap-second rules to convert to UTC.
      * This conversion will lose information around a leap second in accordance with UTC-SLS.
-     * Converting back to a {@code TAIInstant} may result in a slightly different instant.
+     * Converting back to a {@code TaiInstant} may result in a slightly different instant.
      *
      * @return an {@code Instant} representing the best approximation of this instant, not null
      */
     public Instant toInstant() {
-        return toUTCInstant().toInstant();
+        return toUtcInstant().toInstant();
     }
 
     //-----------------------------------------------------------------------
@@ -389,7 +389,7 @@ public final class TAIInstant
      * @param otherInstant  the other instant to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    public int compareTo(TAIInstant otherInstant) {
+    public int compareTo(TaiInstant otherInstant) {
         int cmp = Long.compare(seconds, otherInstant.seconds);
         if (cmp != 0) {
             return cmp;
@@ -399,7 +399,7 @@ public final class TAIInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instant is equal to the specified {@code TAIInstant}.
+     * Checks if this instant is equal to the specified {@code TaiInstant}.
      *
      * @param otherInstant  the other instant, null returns false
      * @return true if the other instant is equal to this one
@@ -409,8 +409,8 @@ public final class TAIInstant
         if (this == otherInstant) {
             return true;
         }
-        if (otherInstant instanceof TAIInstant) {
-            TAIInstant other = (TAIInstant) otherInstant;
+        if (otherInstant instanceof TaiInstant) {
+            TaiInstant other = (TaiInstant) otherInstant;
             return this.seconds == other.seconds &&
                    this.nanos == other.nanos;
         }

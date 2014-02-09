@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
  */
-final class SystemUTCRules extends UTCRules implements Serializable {
+final class SystemUtcRules extends UtcRules implements Serializable {
 
     /**
      * Leap second file format.
@@ -69,7 +69,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     /**
      * Singleton.
      */
-    static final SystemUTCRules INSTANCE = new SystemUTCRules();
+    static final SystemUtcRules INSTANCE = new SystemUtcRules();
 
     /**
      * The table of leap second dates.
@@ -106,7 +106,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     /**
      * Restricted constructor.
      */
-    private SystemUTCRules() {
+    private SystemUtcRules() {
     }
 
     /**
@@ -169,7 +169,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     }
 
     @Override
-    public int getTAIOffset(long mjDay) {
+    public int getTaiOffset(long mjDay) {
         Data data = dataRef.get();
         int pos = Arrays.binarySearch(data.dates, mjDay);
         pos = (pos < 0 ? ~pos : pos);
@@ -184,14 +184,14 @@ final class SystemUTCRules extends UTCRules implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    protected UTCInstant convertToUTC(TAIInstant taiInstant) {
+    protected UtcInstant convertToUtc(TaiInstant taiInstant) {
         Data data = dataRef.get();
         long[] mjds = data.dates;
         long[] tais = data.taiSeconds;
-        int pos = Arrays.binarySearch(tais, taiInstant.getTAISeconds());
+        int pos = Arrays.binarySearch(tais, taiInstant.getTaiSeconds());
         pos = (pos >= 0 ? pos : ~pos - 1);
         int taiOffset = (pos >= 0 ? data.offsets[pos] : 10);
-        long adjustedTaiSecs = taiInstant.getTAISeconds() - taiOffset;
+        long adjustedTaiSecs = taiInstant.getTaiSeconds() - taiOffset;
         long mjd = Math.floorDiv(adjustedTaiSecs, SECS_PER_DAY) + OFFSET_MJD_TAI;
         long nod = Math.floorMod(adjustedTaiSecs, SECS_PER_DAY) * NANOS_PER_SECOND + taiInstant.getNano();
         long mjdNextRegionStart = (pos + 1 < mjds.length ? mjds[pos + 1] + 1 : Long.MAX_VALUE);
@@ -199,7 +199,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
             mjd--;
             nod = SECS_PER_DAY * NANOS_PER_SECOND + (nod / NANOS_PER_SECOND) * NANOS_PER_SECOND + nod % NANOS_PER_SECOND;
         }
-        return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
+        return UtcInstant.ofModifiedJulianDay(mjd, nod, this);
     }
 
     //-----------------------------------------------------------------------

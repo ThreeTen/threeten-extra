@@ -31,40 +31,38 @@
  */
 package org.threeten.extra.scale;
 
-
-
 /**
- * Mock rules that always returns a leap second.
+ * Mock rules that returns a leap second on day 1000.
  */
-public class MockUTCRulesAlwaysLeap extends UTCRules {
+public class MockUtcRulesLeapOn1000 extends UtcRules {
 
     @Override
     public String getName() {
-        return "Mock";
+        return "Mock1000";
     }
 
     @Override
     public int getLeapSecondAdjustment(long mjDay) {
-        return 1;  // always leap
+        return (mjDay == 1000 ? 1 : 0);
     }
 
     @Override
-    public int getTAIOffset(long mjDay) {
-        return (int) mjDay;
+    public int getTaiOffset(long mjDay) {
+        return (mjDay <= 1000 ? 10 : 11);
     }
 
     @Override
     public long[] getLeapSecondDates() {
-        return new long[0];
+        return new long[] {1000};
     }
 
     @Override
-    public TAIInstant convertToTAI(UTCInstant utcInstant) {
+    public TaiInstant convertToTai(UtcInstant utcInstant) {
         return null;
     }
 
     @Override
-    public UTCInstant convertToUTC(TAIInstant taiInstant) {
+    public UtcInstant convertToUtc(TaiInstant taiInstant) {
         return null;
     }
 

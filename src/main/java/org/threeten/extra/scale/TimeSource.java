@@ -90,6 +90,6 @@ public interface TimeSource {
      * @return the current {@code TaiInstant} from this time-source, not null
      * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations
      */
-    TaiInstant TaiInstant();
+    TaiInstant taiInstant();
 
 }

@@ -52,7 +52,7 @@ import java.time.temporal.JulianFields;
  * When a leap second occurs, an accurate clock will show the time {@code 23:59:60} just before midnight.
  * <p>
  * Leap-seconds are announced in advance, typically at least six months.
- * The {@link UTCRules} class models which dates have leap-seconds.
+ * The {@link UtcRules} class models which dates have leap-seconds.
  * Alternative implementations of the rules may be supplied.
  * <p>
  * The default rules implementation fixes the start point of UTC as 1972.
@@ -60,7 +60,7 @@ import java.time.temporal.JulianFields;
  * <p>
  * The duration between two points on the UTC time-scale is calculated solely using this class.
  * Do not use the {@code between} method on {@code Duration} as that will lose information.
- * Instead use {@link #durationUntil(UTCInstant)} on this class.
+ * Instead use {@link #durationUntil(UtcInstant)} on this class.
  * <p>
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
@@ -94,8 +94,8 @@ import java.time.temporal.JulianFields;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class UTCInstant
-        implements Comparable<UTCInstant>, Serializable {
+public final class UtcInstant
+        implements Comparable<UtcInstant>, Serializable {
     // does not implement Temporal as that would enable methods like
     // Duration.between which gives the wrong answer due to lossy conversion
 
@@ -124,11 +124,11 @@ public final class UTCInstant
     /**
      * The leap second rules.
      */
-    private final UTCRules rules;
+    private final UtcRules rules;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code UTCInstant} from a Modified Julian Day with
+     * Obtains an instance of {@code UtcInstant} from a Modified Julian Day with
      * a nanosecond fraction of second using the system default leap second rules.
      * <p>
      * This factory creates an instance of a UTC instant.
@@ -145,12 +145,12 @@ public final class UTCInstant
      * @return the UTC instant, not null
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
-    public static UTCInstant ofModifiedJulianDay(long mjDay, long nanoOfDay) {
-        return ofModifiedJulianDay(mjDay, nanoOfDay, UTCRules.system());
+    public static UtcInstant ofModifiedJulianDay(long mjDay, long nanoOfDay) {
+        return ofModifiedJulianDay(mjDay, nanoOfDay, UtcRules.system());
     }
 
     /**
-     * Obtains an instance of {@code UTCInstant} from a Modified Julian Day with
+     * Obtains an instance of {@code UtcInstant} from a Modified Julian Day with
      * a nanosecond fraction of second using the specified leap second rules.
      * <p>
      * This factory creates an instance of a UTC instant.
@@ -168,17 +168,17 @@ public final class UTCInstant
      * @return the UTC instant, not null
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
-    public static UTCInstant ofModifiedJulianDay(long mjDay, long nanoOfDay, UTCRules rules) {
+    public static UtcInstant ofModifiedJulianDay(long mjDay, long nanoOfDay, UtcRules rules) {
         long leapSecs = rules.getLeapSecondAdjustment(mjDay);
         long maxNanos = (SECS_PER_DAY + leapSecs) * NANOS_PER_SECOND;
         if (nanoOfDay < 0 || nanoOfDay >= maxNanos) {
             throw new IllegalArgumentException("Nanosecond-of-day must be between 0 and " + maxNanos + " on date " + mjDay);
         }
-        return new UTCInstant(mjDay, nanoOfDay, rules);
+        return new UtcInstant(mjDay, nanoOfDay, rules);
     }
 
     /**
-     * Obtains an instance of {@code UTCInstant} from a provider of instants
+     * Obtains an instance of {@code UtcInstant} from a provider of instants
      * using the system default leap second rules.
      * <p>
      * This method converts from the UTC-SLS to the UTC time-scale using the
@@ -189,12 +189,12 @@ public final class UTCInstant
      * @param instant  the instant to convert, not null
      * @return the UTC instant, not null
      */
-    public static UTCInstant of(Instant instant) {
-        return of(instant, UTCRules.system());
+    public static UtcInstant of(Instant instant) {
+        return of(instant, UtcRules.system());
     }
 
     /**
-     * Obtains an instance of {@code UTCInstant} from a provider of instants
+     * Obtains an instance of {@code UtcInstant} from a provider of instants
      * using the specified leap second rules.
      * <p>
      * This method converts from the UTC-SLS to the UTC time-scale using the
@@ -206,39 +206,39 @@ public final class UTCInstant
      * @param rules  the leap second rules, not null
      * @return the UTC instant, not null
      */
-    public static UTCInstant of(Instant instant, UTCRules rules) {
-        return rules.convertToUTC(instant);
+    public static UtcInstant of(Instant instant, UtcRules rules) {
+        return rules.convertToUtc(instant);
     }
 
     /**
-     * Obtains an instance of {@code UTCInstant} from a TAI instant
+     * Obtains an instance of {@code UtcInstant} from a TAI instant
      * using the system default leap second rules.
      * <p>
      * This method converts from the TAI to the UTC time-scale using the
      * system default leap-second rules. This conversion does not lose information
-     * and the UTC instant may safely be converted back to a {@code TAIInstant}.
+     * and the UTC instant may safely be converted back to a {@code TaiInstant}.
      *
-     * @param taiInstant  the TAI instant to convert, not null
+     * @param instant  the TAI instant to convert, not null
      * @return the UTC instant, not null
      */
-    public static UTCInstant of(TAIInstant taiInstant) {
-        return of(taiInstant, UTCRules.system());
+    public static UtcInstant of(TaiInstant instant) {
+        return of(instant, UtcRules.system());
     }
 
     /**
-     * Obtains an instance of {@code UTCInstant} from a TAI instant
+     * Obtains an instance of {@code UtcInstant} from a TAI instant
      * using the specified leap second rules.
      * <p>
      * This method converts from the TAI to the UTC time-scale using the
      * specified leap-second rules. This conversion does not lose information
-     * and the UTC instant may safely be converted back to a {@code TAIInstant}.
+     * and the UTC instant may safely be converted back to a {@code TaiInstant}.
      *
-     * @param taiInstant  the TAI instant to convert, not null
+     * @param instant  the TAI instant to convert, not null
      * @param rules  the leap second rules, not null
      * @return the UTC instant, not null
      */
-    public static UTCInstant of(TAIInstant taiInstant, UTCRules rules) {
-        return rules.convertToUTC(taiInstant);
+    public static UtcInstant of(TaiInstant instant, UtcRules rules) {
+        return rules.convertToUtc(instant);
     }
 
     //-----------------------------------------------------------------------
@@ -249,7 +249,7 @@ public final class UTCInstant
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
      * @param rules  the leap second rules, not null
      */
-    private UTCInstant(long mjDay, long nanoOfDay, UTCRules rules) {
+    private UtcInstant(long mjDay, long nanoOfDay, UtcRules rules) {
         super();
         this.mjDay = mjDay;
         this.nanoOfDay = nanoOfDay;
@@ -262,7 +262,7 @@ public final class UTCInstant
      *
      * @return the leap seconds rules
      */
-    public UTCRules getRules() {
+    public UtcRules getRules() {
         return rules;
     }
 
@@ -281,7 +281,7 @@ public final class UTCInstant
     }
 
     /**
-     * Returns a copy of this {@code UTCInstant} with the Modified Julian Day (MJD) altered.
+     * Returns a copy of this {@code UtcInstant} with the Modified Julian Day (MJD) altered.
      * <p>
      * The Modified Julian Day count is a simple incrementing count of days
      * where day 0 is 1858-11-17.
@@ -291,10 +291,10 @@ public final class UTCInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
-     * @return a {@code UTCInstant} based on this instant with the requested day, not null
+     * @return a {@code UtcInstant} based on this instant with the requested day, not null
      * @throws IllegalArgumentException if nanoOfDay becomes invalid
      */
-    public UTCInstant withModifiedJulianDay(long mjDay) {
+    public UtcInstant withModifiedJulianDay(long mjDay) {
         return ofModifiedJulianDay(mjDay, nanoOfDay, rules);
     }
 
@@ -313,7 +313,7 @@ public final class UTCInstant
     }
 
     /**
-     * Returns a copy of this {@code UTCInstant} with the nano-of-day altered.
+     * Returns a copy of this {@code UtcInstant} with the nano-of-day altered.
      * <p>
      * The nanosecond-of-day value measures the total number of nanoseconds within
      * the day from the start of the day returned by {@code getModifiedJulianDay}.
@@ -322,10 +322,10 @@ public final class UTCInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
-     * @return a {@code UTCInstant} based on this instant with the requested nano-of-day, not null
+     * @return a {@code UtcInstant} based on this instant with the requested nano-of-day, not null
      * @throws IllegalArgumentException if the nanoOfDay value is invalid
      */
-    public UTCInstant withNanoOfDay(long nanoOfDay) {
+    public UtcInstant withNanoOfDay(long nanoOfDay) {
         return ofModifiedJulianDay(mjDay, nanoOfDay, rules);
     }
 
@@ -354,11 +354,11 @@ public final class UTCInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a {@code UTCInstant} with the duration added, not null
+     * @return a {@code UtcInstant} with the duration added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public UTCInstant plus(Duration duration) {
-        return UTCInstant.of(toTAIInstant().plus(duration), rules);
+    public UtcInstant plus(Duration duration) {
+        return UtcInstant.of(toTaiInstant().plus(duration), rules);
     }
 
     //-----------------------------------------------------------------------
@@ -373,11 +373,11 @@ public final class UTCInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, not null
-     * @return a {@code UTCInstant} with the duration subtracted, not null
+     * @return a {@code UtcInstant} with the duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public UTCInstant minus(Duration duration) {
-        return UTCInstant.of(toTAIInstant().minus(duration), rules);
+    public UtcInstant minus(Duration duration) {
+        return UtcInstant.of(toTaiInstant().minus(duration), rules);
     }
 
     //-----------------------------------------------------------------------
@@ -393,27 +393,27 @@ public final class UTCInstant
      * @return the duration until the specified instant, may be negative, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public Duration durationUntil(UTCInstant utcInstant) {
-        TAIInstant thisTAI = toTAIInstant();
-        TAIInstant otherTAI = utcInstant.toTAIInstant();
+    public Duration durationUntil(UtcInstant utcInstant) {
+        TaiInstant thisTAI = toTaiInstant();
+        TaiInstant otherTAI = utcInstant.toTaiInstant();
         return thisTAI.durationUntil(otherTAI);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this instant to a {@code TAIInstant} using the stored
+     * Converts this instant to a {@code TaiInstant} using the stored
      * leap second rules.
      * <p>
      * This method converts from the UTC to the TAI time-scale using the stored leap-second rules.
-     * Conversion to a {@code TAIInstant} retains the same point on the time-line
+     * Conversion to a {@code TaiInstant} retains the same point on the time-line
      * but loses the stored rules. If the TAI instant is converted back to a UTC instant
      * with different or updated rules then the calculated UTC instant may be different.
      *
-     * @return a {@code TAIInstant} representing the same instant, not null
+     * @return a {@code TaiInstant} representing the same instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public TAIInstant toTAIInstant() {
-        return rules.convertToTAI(this);
+    public TaiInstant toTaiInstant() {
+        return rules.convertToTai(this);
     }
 
     /**
@@ -423,7 +423,7 @@ public final class UTCInstant
      * This method converts this instant from the UTC to the UTC-SLS time-scale using the
      * stored leap-second rules.
      * This conversion will lose information around a leap second in accordance with UTC-SLS.
-     * Converting back to a {@code UTCInstant} may result in a slightly different instant.
+     * Converting back to a {@code UtcInstant} may result in a slightly different instant.
      *
      * @return an {@code Instant} representing the best approximation of this instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
@@ -442,7 +442,7 @@ public final class UTCInstant
      * @param otherInstant  the other instant to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    public int compareTo(UTCInstant otherInstant) {
+    public int compareTo(UtcInstant otherInstant) {
         int cmp = Long.compare(mjDay, otherInstant.mjDay);
         if (cmp != 0) {
             return cmp;
@@ -452,12 +452,12 @@ public final class UTCInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instant is equal to the specified {@code UTCInstant}.
+     * Checks if this instant is equal to the specified {@code UtcInstant}.
      * <p>
      * The comparison is based on the positions on the time-line and the rules.
      * This definition means that two instants representing the same instant on
      * the time-line will differ if the rules differ. To compare the time-line
-     * instant, convert both instants to a {@code TAIInstant}.
+     * instant, convert both instants to a {@code TaiInstant}.
      *
      * @param otherInstant  the other instant, null returns false
      * @return true if the other instant is equal to this one
@@ -467,8 +467,8 @@ public final class UTCInstant
         if (this == otherInstant) {
             return true;
         }
-        if (otherInstant instanceof UTCInstant) {
-            UTCInstant other = (UTCInstant) otherInstant;
+        if (otherInstant instanceof UtcInstant) {
+            UtcInstant other = (UtcInstant) otherInstant;
             return this.mjDay == other.mjDay &&
                    this.nanoOfDay == other.nanoOfDay &&
                    this.rules.equals(other.rules);
@@ -483,7 +483,6 @@ public final class UTCInstant
      */
     @Override
     public int hashCode() {
-        // TODO: Evaluate hash code
         return ((int) (mjDay ^ (mjDay >>> 32))) + 51 * ((int) (nanoOfDay ^ (nanoOfDay >>> 32))) +
             rules.hashCode();
     }
