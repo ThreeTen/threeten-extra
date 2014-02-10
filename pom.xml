@@ -9,7 +9,7 @@
   <artifactId>threeten-extra</artifactId>
   <packaging>jar</packaging>
   <name>ThreeTen-extra</name>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.8</version>
   <description>Additional functionality that enhances JSR-310 dates and times in JDK 8</description>
   <url>https://threeten.github.io/threeten-extra</url>
 

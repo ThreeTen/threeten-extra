@@ -57,7 +57,7 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-Release 0.8.0 is the current development release intended for feedback.
+Release 0.8 is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 </p>
@@ -65,7 +65,7 @@ There should be no great reason why it cannot be used in production if you can c
 The project runs on JDK 8 and has no dependencies.
 </p>
 <p>
-Available in <a href="http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|0.8.0|jar">Maven Central</a>.
+Available in <a href="http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|0.8|jar">Maven Central</a>.
 </p>
 </section>
 
