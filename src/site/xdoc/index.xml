@@ -33,7 +33,7 @@ The following are included:
 <li><code>DayOfYear</code> temporal value type</li>
 <li><code>AmPm</code> temporal enum</li>
 <li><code>Quarter</code> temporal enum</li>
-<li><code>YearMonth</code> temporal value type</li>
+<li><code>YearQuarter</code> temporal value type</li>
 <li><code>Days</code>, <code>Months</code> and <code>Years</code> amount value types</li>
 <li>Weekend adjusters</li>
 <li>Coptic calendar system</li>
