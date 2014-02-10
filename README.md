@@ -11,9 +11,9 @@ This project provides some of those additional classes as a well-tested and reli
 ### Documentation
 Various documentation is available:
 
-* The [home page](http://threeten.github.io/threeten-extra/)
-* The [user guide](http://threeten.github.io/threeten-extra/userguide.html)
-* The [Javadoc](http://threeten.github.io/threeten-extra/apidocs/index.html)
+* The [home page](http://www.threeten.org/threeten-extra/)
+* The [user guide](http://www.threeten.org/threeten-extra/userguide.html)
+* The [Javadoc](http://www.threeten.org/threeten-extra/apidocs/index.html)
 
 
 ### Releases

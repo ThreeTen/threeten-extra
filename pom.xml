@@ -11,7 +11,7 @@
   <name>ThreeTen-extra</name>
   <version>0.8.1-SNAPSHOT</version>
   <description>Additional functionality that enhances JSR-310 dates and times in JDK 8</description>
-  <url>https://threeten.github.io/threeten-extra</url>
+  <url>https://www.threeten.org/threeten-extra</url>
 
   <!-- ==================================================================== -->
   <issueManagement>
