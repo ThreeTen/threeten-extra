@@ -9,6 +9,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9" date="xxx" description="v0.9">
       <action dev="jodastephen" type="add" >
+        Extend conversion between amount types.
+        Handle conversions in from(TemporalAmount) using Temporals.convertAmount(...).
+        Fixes #7.
+      </action>
+      <action dev="jodastephen" type="add" >
         Add Temporals.convertAmount(...).
         Allows an amount in one unit to be converted to an amount in a different unit.
         Fixes #6.

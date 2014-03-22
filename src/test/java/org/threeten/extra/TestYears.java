@@ -97,13 +97,34 @@ public class TestYears {
     }
 
     //-----------------------------------------------------------------------
-    public void test_from() {
+    public void test_from_P0Y() {
+        assertEquals(Years.from(Period.ofYears(0)), Years.of(0));
+    }
+
+    public void test_from_P2Y() {
         assertEquals(Years.from(Period.ofYears(2)), Years.of(2));
     }
 
+    public void test_from_P24M() {
+        assertEquals(Years.from(Period.ofMonths(24)), Years.of(2));
+    }
+
+    public void test_from_yearsAndMonths() {
+        assertEquals(Years.from(Period.of(3, 24, 0)), Years.of(5));
+    }
+
+    public void test_from_decadesAndMonths() {
+        assertEquals(Years.from(new MockDecadesMonths(2, -12)), Years.of(19));
+    }
+
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_from_wrongUnit() {
-        Years.from(Period.ofMonths(2));
+    public void test_from_wrongUnit_remainder() {
+        Years.from(Period.ofMonths(3));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_from_wrongUnit_noConversion() {
+        Years.from(Period.ofDays(2));
     }
 
     @Test(expectedExceptions = NullPointerException.class)

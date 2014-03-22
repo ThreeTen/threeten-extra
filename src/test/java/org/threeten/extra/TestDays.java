@@ -130,8 +130,17 @@ public class TestDays {
         assertEquals(Days.from(new MockWeeksDays(2, 3)), Days.of(17));
     }
 
+    public void test_from_Duration() {
+        assertEquals(Days.from(Duration.ofDays(2)), Days.of(2));
+    }
+
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_from_wrongUnit() {
+    public void test_from_wrongUnit_remainder() {
+        Days.from(Duration.ofHours(3));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_from_wrongUnit_noConversion() {
         Days.from(Period.ofMonths(2));
     }
 

@@ -32,7 +32,6 @@
 package org.threeten.extra;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.WEEKS;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
@@ -139,10 +138,10 @@ public final class Days
      * A {@code TemporalAmount} represents an amount of time, which may be
      * date-based or time-based, which this factory extracts to a {@code Days}.
      * <p>
-     * The conversion loops around the set of units from the amount extracting
-     * the number of days. Only units with non-zero amounts are considered.
-     * The {@link ChronoUnit#DAYS DAYS} and {@link ChronoUnit#WEEKS WEEKS} units
-     * are accepted. All other units are rejected with an exception.
+     * The result is calculated by looping around each unit in the specified amount.
+     * Each amount is converted to days using {@link Temporals#convertAmount}.
+     * If the conversion yields a remainder, an exception is thrown.
+     * If the amount is zero, the unit is ignored.
      *
      * @param amount  the temporal amount to convert, not null
      * @return the equivalent amount, not null
@@ -157,12 +156,13 @@ public final class Days
         int days = 0;
         for (TemporalUnit unit : amount.getUnits()) {
             long value = amount.get(unit);
-            if (DAYS.equals(unit)) {
-                days = Math.addExact(days, Math.toIntExact(value));
-            } else if (WEEKS.equals(unit)) {
-                days = Math.addExact(days, Math.toIntExact(Math.multiplyExact(value, DAYS_PER_WEEK)));
-            } else if (value != 0) {
-                throw new DateTimeException("Unit must be Days, but was " + amount.getUnits());
+            if (value != 0) {
+                long[] converted = Temporals.convertAmount(value, unit, DAYS);
+                if (converted[1] != 0) {
+                    throw new DateTimeException(
+                        "Amount could not be converted to a whole number of days: " + value + " " + unit);
+                }
+                days = Math.addExact(days, Math.toIntExact(converted[0]));
             }
         }
         return of(days);

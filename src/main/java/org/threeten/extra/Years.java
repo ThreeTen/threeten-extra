@@ -114,9 +114,11 @@ public final class Years
      * A {@code TemporalAmount} represents an amount of time, which may be
      * date-based or time-based, which this factory extracts to a {@code Years}.
      * <p>
-     * The conversion loops around the set of units from the amount and uses
-     * the {@link ChronoUnit#YEARS YEARS} unit to create an amount.
-     * If any other non-zero units are found then an exception is thrown.
+     * The result is calculated by looping around each unit in the specified amount.
+     * Each amount is converted to years using {@link Temporals#convertAmount}.
+     * If the conversion yields a remainder, an exception is thrown.
+     * If the amount is zero, the unit is ignored.
+     * For example, "12 months" can be converted to years but "11 months" cannot.
      *
      * @param amount  the temporal amount to convert, not null
      * @return the equivalent amount, not null
@@ -131,10 +133,13 @@ public final class Years
         int years = 0;
         for (TemporalUnit unit : amount.getUnits()) {
             long value = amount.get(unit);
-            if (YEARS.equals(unit)) {
-                years = Math.toIntExact(value);
-            } else if (value != 0) {
-                throw new DateTimeException("Unit must be Years, but was " + amount.getUnits());
+            if (value != 0) {
+                long[] converted = Temporals.convertAmount(value, unit, YEARS);
+                if (converted[1] != 0) {
+                    throw new DateTimeException(
+                        "Amount could not be converted to a whole number of years: " + value + " " + unit);
+                }
+                years = Math.addExact(years, Math.toIntExact(converted[0]));
             }
         }
         return of(years);

@@ -130,8 +130,12 @@ public class TestMonths {
         assertEquals(Months.from(new MockYearsMonths(2, 3)), Months.of(27));
     }
 
+    public void test_from_yearsAndMonths() {
+        assertEquals(Months.from(Period.of(3, 5, 0)), Months.of(41));
+    }
+
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_from_wrongUnit() {
+    public void test_from_wrongUnit_noConversion() {
         Months.from(Period.ofDays(2));
     }
 
