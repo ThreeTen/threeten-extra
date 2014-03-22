@@ -7,9 +7,9 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="0.8" date="xxx" description="v0.8">
-      <action dev="scolebourne" type="add" >
-        First moderinzed version.
+    <release version="0.8" date="2014-02-10" description="v0.8">
+      <action dev="jodastephen" type="add" >
+        First modernized version.
       </action>
     </release>
   </body>
