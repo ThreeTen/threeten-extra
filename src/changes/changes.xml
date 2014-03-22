@@ -7,6 +7,14 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="0.9" date="xxx" description="v0.9">
+      <action dev="jodastephen" type="add" >
+        Add Days.ofWeeks(int).
+        Support weeks in Days.from(TemporalAmount).
+        Support weeks in Days.parse(CharSequence).
+        Fixes #4.
+      </action>
+    </release>
     <release version="0.8" date="2014-02-10" description="v0.8">
       <action dev="jodastephen" type="add" >
         First modernized version.
