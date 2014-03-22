@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * This class models a quantity or amount of time in terms of days.
  * It is a type-safe way of representing a number of days in an application.
  * <p>
- * The model is of a directed duration, meaning that the duration may be negative.
+ * The model is of a directed amount, meaning that the amount may be negative.
  *
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
@@ -223,7 +223,7 @@ public final class Days
     /**
      * Gets the value of the requested unit.
      * <p>
-     * This returns a value for the three supported unit - {@link ChronoUnit#DAYS DAYS}.
+     * This returns a value for the supported unit - {@link ChronoUnit#DAYS DAYS}.
      * All other units throw an exception.
      *
      * @param unit  the {@code TemporalUnit} for which to return the value
@@ -267,8 +267,7 @@ public final class Days
     /**
      * Returns a copy of this amount with the specified amount added.
      * <p>
-     * The parameter is converted using {@link Days#from(TemporalAmount)}
-     * and must only consist of days.
+     * The parameter is converted using {@link Days#from(TemporalAmount)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -301,8 +300,7 @@ public final class Days
     /**
      * Returns a copy of this amount with the specified amount subtracted.
      * <p>
-     * The parameter is converted using {@link Days#from(TemporalAmount)}
-     * and must only consist of days.
+     * The parameter is converted using {@link Days#from(TemporalAmount)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

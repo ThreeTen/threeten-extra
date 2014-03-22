@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * This class models a quantity or amount of time in terms of months.
  * It is a type-safe way of representing a number of months in an application.
  * <p>
- * The model is of a directed duration, meaning that the duration may be negative.
+ * The model is of a directed amount, meaning that the amount may be negative.
  *
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
@@ -142,26 +142,26 @@ public final class Months
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code Months} from a text string such as {@code PnD}.
+     * Obtains a {@code Months} from a text string such as {@code PnM}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
-     * based on the ISO-8601 period formats {@code PnD}.
+     * based on the ISO-8601 period formats {@code PnM}.
      * <p>
      * The string starts with an optional sign, denoted by the ASCII negative
      * or positive symbol. If negative, the whole amount is negated.
      * The ASCII letter "P" is next in upper or lower case.
      * The ASCII integer amount is next, which may be negative.
-     * The ASCII letter "D" is next in upper or lower case.
+     * The ASCII letter "M" is next in upper or lower case.
      * <p>
-     * The leading plus/minus sign, and negative values for days are
+     * The leading plus/minus sign, and negative values for months are
      * not part of the ISO-8601 standard.
      * <p>
      * For example, the following are valid inputs:
      * <pre>
-     *   "P2D"             -- Months.of(2)
-     *   "P-2D"            -- Months.of(-2)
-     *   "-P2D"            -- Months.of(-2)
-     *   "-P-2D"           -- Months.of(2)
+     *   "P2M"             -- Months.of(2)
+     *   "P-2M"            -- Months.of(-2)
+     *   "-P2M"            -- Months.of(-2)
+     *   "-P-2M"           -- Months.of(2)
      * </pre>
      *
      * @param text  the text to parse, not null
@@ -223,7 +223,7 @@ public final class Months
     /**
      * Gets the value of the requested unit.
      * <p>
-     * This returns a value for the three supported unit - {@link ChronoUnit#MONTHS MONTHS}.
+     * This returns a value for the supported unit - {@link ChronoUnit#MONTHS MONTHS}.
      * All other units throw an exception.
      *
      * @param unit  the {@code TemporalUnit} for which to return the value
@@ -267,8 +267,7 @@ public final class Months
     /**
      * Returns a copy of this amount with the specified amount added.
      * <p>
-     * The parameter is converted using {@link Months#from(TemporalAmount)}
-     * and must only consist of months.
+     * The parameter is converted using {@link Months#from(TemporalAmount)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -301,8 +300,7 @@ public final class Months
     /**
      * Returns a copy of this amount with the specified amount subtracted.
      * <p>
-     * The parameter is converted using {@link Months#from(TemporalAmount)}
-     * and must only consist of months.
+     * The parameter is converted using {@link Months#from(TemporalAmount)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
