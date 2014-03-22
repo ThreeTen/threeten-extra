@@ -141,14 +141,50 @@ public class TestDays {
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_CharSequence() {
-        assertEquals(Days.parse("P0D"), Days.of(0));
-        assertEquals(Days.parse("P1D"), Days.of(1));
-        assertEquals(Days.parse("P2D"), Days.of(2));
-        assertEquals(Days.parse("P123456789D"), Days.of(123456789));
-        assertEquals(Days.parse("P-2D"), Days.of(-2));
-        assertEquals(Days.parse("-P2D"), Days.of(-2));
-        assertEquals(Days.parse("-P-2D"), Days.of(2));
+    @DataProvider(name = "parseValid")
+    Object[][] data_valid() {
+        return new Object[][] {
+                {"P0D", 0},
+                {"P1D", 1},
+                {"P2D", 2},
+                {"P123456789D", 123456789},
+                {"P+0D", 0},
+                {"P+2D", 2},
+                {"P-0D", 0},
+                {"P-2D", -2},
+                
+                {"P0W", 0},
+                {"P1W", 7},
+                {"P2W", 14},
+                {"P12345678W", 12345678 * 7},
+                {"P+0W", 0},
+                {"P+2W", 14},
+                {"P-0W", 0},
+                {"P-2W", -14},
+                
+                {"P0W0D", 0},
+                {"P2W3D", 17},
+                {"P+2W3D", 17},
+                {"P2W+3D", 17},
+                {"P-2W3D", -11},
+                {"P2W-3D", 11},
+                {"P-2W-3D", -17},
+        };
+    }
+
+    @Test(dataProvider = "parseValid")
+    public void test_parse_CharSequence_valid(String str, int expectedDays) {
+        assertEquals(Days.parse(str), Days.of(expectedDays));
+    }
+
+    @Test(dataProvider = "parseValid")
+    public void test_parse_CharSequence_valid_initialPlus(String str, int expectedDays) {
+        assertEquals(Days.parse("+" + str), Days.of(expectedDays));
+    }
+
+    @Test(dataProvider = "parseValid")
+    public void test_parse_CharSequence_valid_initialMinus(String str, int expectedDays) {
+        assertEquals(Days.parse("-" + str), Days.of(-expectedDays));
     }
 
     @DataProvider(name = "parseInvalid")
@@ -156,7 +192,8 @@ public class TestDays {
         return new Object[][] {
                 {"P3Y"},
                 {"P3M"},
-                {"P3W"},
+                {"P3Q"},
+                {"P1D2W"},
                 
                 {"3"},
                 {"-3"},
@@ -164,7 +201,9 @@ public class TestDays {
                 {"-3D"},
                 {"P3"},
                 {"P-3"},
+                {"P"},
                 {"PD"},
+                {"PW"},
         };
     }
 

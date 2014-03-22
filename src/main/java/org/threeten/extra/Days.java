@@ -87,7 +87,9 @@ public final class Days
      * The pattern for parsing.
      */
     private static final Pattern PATTERN =
-            Pattern.compile("([-+]?)P([-+]?[0-9]+)D", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("([-+]?)P"
+                            + "(?:([-+]?[0-9]+)W)?"
+                            + "(?:([-+]?[0-9]+)D)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of days.
@@ -171,15 +173,20 @@ public final class Days
      * Obtains a {@code Days} from a text string such as {@code PnD}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
-     * based on the ISO-8601 period formats {@code PnD}.
+     * based on the ISO-8601 period formats {@code PnD} and {@code PnW}.
      * <p>
      * The string starts with an optional sign, denoted by the ASCII negative
      * or positive symbol. If negative, the whole amount is negated.
      * The ASCII letter "P" is next in upper or lower case.
-     * The ASCII integer amount is next, which may be negative.
-     * The ASCII letter "D" is next in upper or lower case.
+     * There are then two sections, each consisting of a number and a suffix.
+     * At least one of the two sections must be present.
+     * The sections have suffixes in ASCII of "W" and "D" for weeks and days,
+     * accepted in upper or lower case. The suffixes must occur in order.
+     * The number part of each section must consist of ASCII digits.
+     * The number may be prefixed by the ASCII negative or positive symbol.
+     * The number must parse to an {@code int}.
      * <p>
-     * The leading plus/minus sign, and negative values for days are
+     * The leading plus/minus sign, and negative values for weeks and days are
      * not part of the ISO-8601 standard.
      * <p>
      * For example, the following are valid inputs:
@@ -188,6 +195,8 @@ public final class Days
      *   "P-2D"            -- Days.of(-2)
      *   "-P2D"            -- Days.of(-2)
      *   "-P-2D"           -- Days.of(2)
+     *   "P3W"             -- Days.of(3 * 7)
+     *   "P3W-2D"          -- Days.of(3 * 7 - 2)
      * </pre>
      *
      * @param text  the text to parse, not null
@@ -199,12 +208,26 @@ public final class Days
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String str = matcher.group(2);
-            try {
-                int val = Integer.parseInt(str);
-                return of(Math.multiplyExact(val, negate));
-            } catch (NumberFormatException ex) {
-                throw new DateTimeParseException("Text cannot be parsed to a Days", text, 0, ex);
+            String weeksStr = matcher.group(2);
+            String daysStr = matcher.group(3);
+            if (weeksStr != null || daysStr != null) {
+                int days = 0;
+                if (daysStr != null) {
+                    try {
+                        days = Integer.parseInt(daysStr);
+                    } catch (NumberFormatException ex) {
+                        throw new DateTimeParseException("Text cannot be parsed to a Days, non-numeric days", text, 0, ex);
+                    }
+                }
+                if (weeksStr != null) {
+                    try {
+                        int weeks = Math.multiplyExact(Integer.parseInt(weeksStr), DAYS_PER_WEEK);
+                        days = Math.addExact(days, weeks);
+                    } catch (NumberFormatException ex) {
+                        throw new DateTimeParseException("Text cannot be parsed to a Days, non-numeric weeks", text, 0, ex);
+                    }
+                }
+                return of(Math.multiplyExact(days, negate));
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to a Days", text, 0);
