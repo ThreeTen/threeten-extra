@@ -79,6 +79,10 @@ public final class Days
      */
     private static final long serialVersionUID = -8903767091325669093L;
     /**
+     * The number of days per week.
+     */
+    private static final int DAYS_PER_WEEK = 7;
+    /**
      * The pattern for parsing.
      */
     private static final Pattern PATTERN =
@@ -104,6 +108,24 @@ public final class Days
             return ONE;
         }
         return new Days(days);
+    }
+
+    /**
+     * Obtains a {@code Days} representing the number of days
+     * equivalent to a number of weeks.
+     * <p>
+     * The resulting amount will be day-based, with the number of days
+     * equal to the number of weeks multiplied by 7.
+     *
+     * @param weeks  the number of weeks, positive or negative
+     * @return the amount with the input weeks converted to days, not null
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public static Days ofWeeks(int weeks) {
+        if (weeks == 0) {
+            return ZERO;
+        }
+        return new Days(Math.multiplyExact(weeks, DAYS_PER_WEEK));
     }
 
     //-----------------------------------------------------------------------

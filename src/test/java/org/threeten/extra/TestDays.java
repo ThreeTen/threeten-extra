@@ -88,12 +88,29 @@ public class TestDays {
 
     //-----------------------------------------------------------------------
     public void test_of() {
+        assertEquals(Days.of(0).getAmount(), 0);
         assertEquals(Days.of(1).getAmount(), 1);
         assertEquals(Days.of(2).getAmount(), 2);
         assertEquals(Days.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
         assertEquals(Days.of(-1).getAmount(), -1);
         assertEquals(Days.of(-2).getAmount(), -2);
         assertEquals(Days.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_ofWeeks() {
+        assertEquals(Days.ofWeeks(0).getAmount(), 0);
+        assertEquals(Days.ofWeeks(1).getAmount(), 7);
+        assertEquals(Days.ofWeeks(2).getAmount(), 14);
+        assertEquals(Days.ofWeeks(Integer.MAX_VALUE / 7).getAmount(), (Integer.MAX_VALUE / 7) * 7);
+        assertEquals(Days.ofWeeks(-1).getAmount(), -7);
+        assertEquals(Days.ofWeeks(-2).getAmount(), -14);
+        assertEquals(Days.ofWeeks(Integer.MIN_VALUE / 7).getAmount(), (Integer.MIN_VALUE / 7) * 7);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_ofWeeks_overflow() {
+        Days.ofWeeks((Integer.MAX_VALUE / 7) + 7);
     }
 
     //-----------------------------------------------------------------------
