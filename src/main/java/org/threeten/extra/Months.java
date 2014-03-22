@@ -79,6 +79,10 @@ public final class Months
      */
     private static final long serialVersionUID = -8903767091325669093L;
     /**
+     * The number of months per year.
+     */
+    private static final int MONTHS_PER_YEAR = 12;
+    /**
      * The pattern for parsing.
      */
     private static final Pattern PATTERN =
@@ -104,6 +108,24 @@ public final class Months
             return ONE;
         }
         return new Months(months);
+    }
+
+    /**
+     * Obtains a {@code Months} representing the number of months
+     * equivalent to a number of years.
+     * <p>
+     * The resulting amount will be month-based, with the number of months
+     * equal to the number of years multiplied by 12.
+     *
+     * @param years  the number of years, positive or negative
+     * @return the amount with the input years converted to months, not null
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public static Months ofYears(int years) {
+        if (years == 0) {
+            return ZERO;
+        }
+        return new Months(Math.multiplyExact(years, MONTHS_PER_YEAR));
     }
 
     //-----------------------------------------------------------------------

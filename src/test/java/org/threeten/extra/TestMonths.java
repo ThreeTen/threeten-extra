@@ -88,12 +88,29 @@ public class TestMonths {
 
     //-----------------------------------------------------------------------
     public void test_of() {
+        assertEquals(Months.of(0).getAmount(), 0);
         assertEquals(Months.of(1).getAmount(), 1);
         assertEquals(Months.of(2).getAmount(), 2);
         assertEquals(Months.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
         assertEquals(Months.of(-1).getAmount(), -1);
         assertEquals(Months.of(-2).getAmount(), -2);
         assertEquals(Months.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_ofYears() {
+        assertEquals(Months.ofYears(0).getAmount(), 0);
+        assertEquals(Months.ofYears(1).getAmount(), 12);
+        assertEquals(Months.ofYears(2).getAmount(), 24);
+        assertEquals(Months.ofYears(Integer.MAX_VALUE / 12).getAmount(), (Integer.MAX_VALUE / 12) * 12);
+        assertEquals(Months.ofYears(-1).getAmount(), -12);
+        assertEquals(Months.ofYears(-2).getAmount(), -24);
+        assertEquals(Months.ofYears(Integer.MIN_VALUE / 12).getAmount(), (Integer.MIN_VALUE / 12) * 12);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_ofYears_overflow() {
+        Months.ofYears((Integer.MAX_VALUE / 12) + 12);
     }
 
     //-----------------------------------------------------------------------
