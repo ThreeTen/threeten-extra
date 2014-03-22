@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.YEARS;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
@@ -136,9 +137,10 @@ public final class Months
      * A {@code TemporalAmount} represents an amount of time, which may be
      * date-based or time-based, which this factory extracts to a {@code Months}.
      * <p>
-     * The conversion loops around the set of units from the amount and uses
-     * the {@link ChronoUnit#MONTHS MONTHS} unit to create an amount.
-     * If any other non-zero units are found then an exception is thrown.
+     * The conversion loops around the set of units from the amount extracting
+     * the number of days. Only units with non-zero amounts are considered.
+     * The {@link ChronoUnit#MONTHS MONTHS} and {@link ChronoUnit#YEARS YEARS} units
+     * are accepted. All other units are rejected with an exception.
      *
      * @param amount  the temporal amount to convert, not null
      * @return the equivalent amount, not null
@@ -154,7 +156,9 @@ public final class Months
         for (TemporalUnit unit : amount.getUnits()) {
             long value = amount.get(unit);
             if (MONTHS.equals(unit)) {
-                months = Math.toIntExact(value);
+                months = Math.addExact(months, Math.toIntExact(value));
+            } else if (YEARS.equals(unit)) {
+                months = Math.addExact(months, Math.toIntExact(Math.multiplyExact(value, MONTHS_PER_YEAR)));
             } else if (value != 0) {
                 throw new DateTimeException("Unit must be Months, but was " + amount.getUnits());
             }

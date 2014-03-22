@@ -114,13 +114,25 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
-    public void test_from() {
+    public void test_from_Period_P0M() {
+        assertEquals(Months.from(Period.ofMonths(0)), Months.of(0));
+    }
+
+    public void test_from_Period_P2M() {
         assertEquals(Months.from(Period.ofMonths(2)), Months.of(2));
+    }
+
+    public void test_from_P2Y() {
+        assertEquals(Months.from(new MockYearsMonths(2, 0)), Months.of(24));
+    }
+
+    public void test_from_P2Y3M() {
+        assertEquals(Months.from(new MockYearsMonths(2, 3)), Months.of(27));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_from_wrongUnit() {
-        Months.from(Period.ofYears(2));
+        Months.from(Period.ofDays(2));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -186,8 +198,8 @@ public class TestMonths {
     }
 
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_plus_TemporalAmount_PeriodYears() {
-        Months.of(1).plus(Period.ofYears(2));
+    public void test_plus_TemporalAmount_PeriodDays() {
+        Months.of(1).plus(Period.ofDays(2));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -250,8 +262,8 @@ public class TestMonths {
     }
 
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_minus_TemporalAmount_PeriodYears() {
-        Months.of(1).minus(Period.ofYears(2));
+    public void test_minus_TemporalAmount_PeriodDays() {
+        Months.of(1).minus(Period.ofDays(2));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
