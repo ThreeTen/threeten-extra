@@ -9,6 +9,12 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9" date="xxx" description="v0.9">
       <action dev="jodastephen" type="add" >
+        Add Months.ofYears(int).
+        Support weeks in Months.from(TemporalAmount).
+        Support weeks in Months.parse(CharSequence).
+        Fixes #5
+      </action>
+      <action dev="jodastephen" type="add" >
         Add Days.ofWeeks(int).
         Support weeks in Days.from(TemporalAmount).
         Support weeks in Days.parse(CharSequence).
