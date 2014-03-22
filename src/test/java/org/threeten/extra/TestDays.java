@@ -114,8 +114,20 @@ public class TestDays {
     }
 
     //-----------------------------------------------------------------------
-    public void test_from() {
+    public void test_from_Period_P0D() {
+        assertEquals(Days.from(Period.ofDays(0)), Days.of(0));
+    }
+
+    public void test_from_Period_P2D() {
         assertEquals(Days.from(Period.ofDays(2)), Days.of(2));
+    }
+
+    public void test_from_P2W() {
+        assertEquals(Days.from(new MockWeeksDays(2, 0)), Days.of(14));
+    }
+
+    public void test_from_P2W3D() {
+        assertEquals(Days.from(new MockWeeksDays(2, 3)), Days.of(17));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
