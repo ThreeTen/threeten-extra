@@ -141,22 +141,59 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_CharSequence() {
-        assertEquals(Months.parse("P0M"), Months.of(0));
-        assertEquals(Months.parse("P1M"), Months.of(1));
-        assertEquals(Months.parse("P2M"), Months.of(2));
-        assertEquals(Months.parse("P123456789M"), Months.of(123456789));
-        assertEquals(Months.parse("P-2M"), Months.of(-2));
-        assertEquals(Months.parse("-P2M"), Months.of(-2));
-        assertEquals(Months.parse("-P-2M"), Months.of(2));
+    @DataProvider(name = "parseValid")
+    Object[][] data_valid() {
+        return new Object[][] {
+                {"P0M", 0},
+                {"P1M", 1},
+                {"P2M", 2},
+                {"P123456789M", 123456789},
+                {"P+0M", 0},
+                {"P+2M", 2},
+                {"P-0M", 0},
+                {"P-2M", -2},
+                
+                {"P0Y", 0},
+                {"P1Y", 12},
+                {"P2Y", 24},
+                {"P1234567Y", 1234567 * 12},
+                {"P+0Y", 0},
+                {"P+2Y", 24},
+                {"P-0Y", 0},
+                {"P-2Y", -24},
+                
+                {"P0Y0M", 0},
+                {"P2Y3M", 27},
+                {"P+2Y3M", 27},
+                {"P2Y+3M", 27},
+                {"P-2Y3M", -21},
+                {"P2Y-3M", 21},
+                {"P-2Y-3M", -27},
+        };
+    }
+
+    @Test(dataProvider = "parseValid")
+    public void test_parse_CharSequence_valid(String str, int expectedDays) {
+        assertEquals(Months.parse(str), Months.of(expectedDays));
+    }
+
+    @Test(dataProvider = "parseValid")
+    public void test_parse_CharSequence_valid_initialPlus(String str, int expectedDays) {
+        assertEquals(Months.parse("+" + str), Months.of(expectedDays));
+    }
+
+    @Test(dataProvider = "parseValid")
+    public void test_parse_CharSequence_valid_initialMinus(String str, int expectedDays) {
+        assertEquals(Months.parse("-" + str), Months.of(-expectedDays));
     }
 
     @DataProvider(name = "parseInvalid")
     Object[][] data_invalid() {
         return new Object[][] {
-                {"P3Y"},
                 {"P3W"},
                 {"P3D"},
+                {"P3Q"},
+                {"P1M2Y"},
                 
                 {"3"},
                 {"-3"},

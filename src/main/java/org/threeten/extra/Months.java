@@ -87,7 +87,9 @@ public final class Months
      * The pattern for parsing.
      */
     private static final Pattern PATTERN =
-            Pattern.compile("([-+]?)P([-+]?[0-9]+)M", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("([-+]?)P"
+                            + "(?:([-+]?[0-9]+)Y)?"
+                            + "(?:([-+]?[0-9]+)M)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of months.
@@ -171,15 +173,20 @@ public final class Months
      * Obtains a {@code Months} from a text string such as {@code PnM}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
-     * based on the ISO-8601 period formats {@code PnM}.
+     * based on the ISO-8601 period format {@code PnYnM}.
      * <p>
      * The string starts with an optional sign, denoted by the ASCII negative
      * or positive symbol. If negative, the whole amount is negated.
      * The ASCII letter "P" is next in upper or lower case.
-     * The ASCII integer amount is next, which may be negative.
-     * The ASCII letter "M" is next in upper or lower case.
+     * There are then two sections, each consisting of a number and a suffix.
+     * At least one of the two sections must be present.
+     * The sections have suffixes in ASCII of "Y" and "M" for years and months,
+     * accepted in upper or lower case. The suffixes must occur in order.
+     * The number part of each section must consist of ASCII digits.
+     * The number may be prefixed by the ASCII negative or positive symbol.
+     * The number must parse to an {@code int}.
      * <p>
-     * The leading plus/minus sign, and negative values for months are
+     * The leading plus/minus sign, and negative values for years and months are
      * not part of the ISO-8601 standard.
      * <p>
      * For example, the following are valid inputs:
@@ -188,6 +195,8 @@ public final class Months
      *   "P-2M"            -- Months.of(-2)
      *   "-P2M"            -- Months.of(-2)
      *   "-P-2M"           -- Months.of(2)
+     *   "P3Y"             -- Months.of(3 * 12)
+     *   "P3Y-2M"          -- Months.of(3 * 12 - 2)
      * </pre>
      *
      * @param text  the text to parse, not null
@@ -199,12 +208,26 @@ public final class Months
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String str = matcher.group(2);
-            try {
-                int val = Integer.parseInt(str);
-                return of(Math.multiplyExact(val, negate));
-            } catch (NumberFormatException ex) {
-                throw new DateTimeParseException("Text cannot be parsed to a Months", text, 0, ex);
+            String weeksStr = matcher.group(2);
+            String daysStr = matcher.group(3);
+            if (weeksStr != null || daysStr != null) {
+                int months = 0;
+                if (daysStr != null) {
+                    try {
+                        months = Integer.parseInt(daysStr);
+                    } catch (NumberFormatException ex) {
+                        throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric months", text, 0, ex);
+                    }
+                }
+                if (weeksStr != null) {
+                    try {
+                        int years = Math.multiplyExact(Integer.parseInt(weeksStr), MONTHS_PER_YEAR);
+                        months = Math.addExact(months, years);
+                    } catch (NumberFormatException ex) {
+                        throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric years", text, 0, ex);
+                    }
+                }
+                return of(Math.multiplyExact(months, negate));
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to a Months", text, 0);
