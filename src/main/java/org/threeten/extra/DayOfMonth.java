@@ -447,7 +447,7 @@ public final class DayOfMonth
     }
 
     /**
-     * Combines this year with a month to create a {@code MonthDay}.
+     * Combines this day-of-month with a month to create a {@code MonthDay}.
      * <p>
      * This returns a {@code MonthDay} formed from this day and the specified month.
      * <p>
@@ -468,7 +468,7 @@ public final class DayOfMonth
     }
 
     /**
-     * Combines this year with a year-month to create a {@code LocalDate}.
+     * Combines this day-of-month with a year-month to create a {@code LocalDate}.
      * <p>
      * This returns a {@code LocalDate} formed from this year and the specified year-month.
      * <p>
@@ -526,7 +526,7 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this year as a {@code String}.
+     * Outputs this day-of-month as a {@code String}.
      *
      * @return a string representation of this day-of-month, not null
      */
