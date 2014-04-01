@@ -70,10 +70,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.Clock;
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
+import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -96,6 +99,7 @@ public class TestDayOfYear {
     private static final int STANDARD_YEAR_LENGTH = 365;
     private static final int LEAP_YEAR_LENGTH = 366;
     private static final DayOfYear TEST = DayOfYear.of(12);
+    private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
 
     @BeforeMethod
     public void setUp() {
@@ -482,6 +486,31 @@ public class TestDayOfYear {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear a = DayOfYear.of(i);
             assertEquals(a.toString(), "DayOfYear:" + i);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
+    //-----------------------------------------------------------------------
+    public void test_now_clock_notLeapYear() {
+        LocalDate date = LocalDate.of(2007, 1, 1);
+        for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
+            Instant instant = date.atStartOfDay(PARIS).toInstant();
+            Clock clock = Clock.fixed(instant, PARIS);
+            DayOfYear test = DayOfYear.now(clock);
+            assertEquals(test.getValue(), i);
+            date = date.plusDays(1);
+        }
+    }
+
+    public void test_now_clock_leapYear() {
+        LocalDate date = LocalDate.of(2008, 1, 1);
+        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
+            Instant instant = date.atStartOfDay(PARIS).toInstant();
+            Clock clock = Clock.fixed(instant, PARIS);
+            DayOfYear test = DayOfYear.now(clock);
+            assertEquals(test.getValue(), i);
+            date = date.plusDays(1);
         }
     }
 
