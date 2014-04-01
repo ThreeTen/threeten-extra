@@ -107,7 +107,7 @@ public final class DayOfMonth
      *
      * @return the current day-of-month using the system clock and default time-zone, not null
      */
-    public static Year now() {
+    public static DayOfMonth now() {
         return now(Clock.systemDefaultZone());
     }
 
@@ -123,7 +123,7 @@ public final class DayOfMonth
      * @param zone  the zone ID to use, not null
      * @return the current day-of-month using the system clock, not null
      */
-    public static Year now(ZoneId zone) {
+    public static DayOfMonth now(ZoneId zone) {
         return now(Clock.system(zone));
     }
 
@@ -137,9 +137,9 @@ public final class DayOfMonth
      * @param clock  the clock to use, not null
      * @return the current day-of-month, not null
      */
-    public static Year now(Clock clock) {
+    public static DayOfMonth now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
-        return Year.of(now.getYear());
+        return DayOfMonth.of(now.getDayOfMonth());
     }
 
     //-----------------------------------------------------------------------
