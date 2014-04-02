@@ -508,7 +508,7 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this year as a {@code String}.
+     * Outputs this day-of-year as a {@code String}.
      *
      * @return a string representation of this day-of-year, not null
      */
