@@ -82,12 +82,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.Clock;
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -107,6 +110,7 @@ public class TestDayOfMonth {
 
     private static final int MAX_LENGTH = 31;
     private static final DayOfMonth TEST = DayOfMonth.of(12);
+    private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
 
     @BeforeMethod
     public void setUp() {
@@ -633,6 +637,17 @@ public class TestDayOfMonth {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth a = DayOfMonth.of(i);
             assertEquals(a.toString(), "DayOfMonth:" + i);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
+    //-----------------------------------------------------------------------
+    public void test_now_clock() {
+        for (int i = 1; i <= 31; i++) {  // Jan
+            Instant instant = LocalDate.of(2008, 1, i).atStartOfDay(PARIS).toInstant();
+            Clock clock = Clock.fixed(instant, PARIS);
+            assertEquals(DayOfMonth.now(clock).getValue(), i);
         }
     }
 

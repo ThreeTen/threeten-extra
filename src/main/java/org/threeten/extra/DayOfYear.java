@@ -104,7 +104,7 @@ public final class DayOfYear
      *
      * @return the current day-of-year using the system clock and default time-zone, not null
      */
-    public static Year now() {
+    public static DayOfYear now() {
         return now(Clock.systemDefaultZone());
     }
 
@@ -120,7 +120,7 @@ public final class DayOfYear
      * @param zone  the zone ID to use, not null
      * @return the current day-of-year using the system clock, not null
      */
-    public static Year now(ZoneId zone) {
+    public static DayOfYear now(ZoneId zone) {
         return now(Clock.system(zone));
     }
 
@@ -134,9 +134,9 @@ public final class DayOfYear
      * @param clock  the clock to use, not null
      * @return the current day-of-year, not null
      */
-    public static Year now(Clock clock) {
+    public static DayOfYear now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
-        return Year.of(now.getYear());
+        return DayOfYear.of(now.getDayOfYear());
     }
 
     //-----------------------------------------------------------------------
