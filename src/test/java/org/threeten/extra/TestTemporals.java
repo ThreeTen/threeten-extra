@@ -52,6 +52,10 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertSame;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,7 +72,6 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import org.testng.AssertJUnit;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -81,9 +84,10 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     // nextWorkingDay()
     //-----------------------------------------------------------------------
-    @Test public void test_nextWorkingDay_serialization() throws IOException, ClassNotFoundException {
+    @Test
+    public void test_nextWorkingDay_serialization() throws IOException, ClassNotFoundException {
         TemporalAdjuster nextWorkingDay = Temporals.nextWorkingDay();
-        AssertJUnit.assertTrue(nextWorkingDay instanceof Serializable);
+        assertTrue(nextWorkingDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -91,7 +95,7 @@ public class TestTemporals {
         oos.close();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        AssertJUnit.assertSame(ois.readObject(), nextWorkingDay);
+        assertSame(ois.readObject(), nextWorkingDay);
     }
 
     @Test public void test_nextWorkingDay() {
@@ -99,35 +103,35 @@ public class TestTemporals {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
                 LocalDate test = (LocalDate) Temporals.nextWorkingDay().adjustInto(date);
-                AssertJUnit.assertTrue(test.isAfter(date));
-                AssertJUnit.assertFalse(test.getDayOfWeek().equals(SATURDAY));
-                AssertJUnit.assertFalse(test.getDayOfWeek().equals(SUNDAY));
+                assertTrue(test.isAfter(date));
+                assertFalse(test.getDayOfWeek().equals(SATURDAY));
+                assertFalse(test.getDayOfWeek().equals(SUNDAY));
 
                 switch (date.getDayOfWeek()) {
                     case FRIDAY:
                     case SATURDAY:
-                        AssertJUnit.assertEquals(test.getDayOfWeek(), MONDAY);
+                        assertEquals(test.getDayOfWeek(), MONDAY);
                         break;
                     default:
-                        AssertJUnit.assertEquals(date.getDayOfWeek().plus(1), test.getDayOfWeek());
+                        assertEquals(date.getDayOfWeek().plus(1), test.getDayOfWeek());
                 }
 
                 if (test.getYear() == 2007) {
                     int dayDiff = test.getDayOfYear() - date.getDayOfYear();
                     switch (date.getDayOfWeek()) {
                         case FRIDAY:
-                            AssertJUnit.assertEquals(dayDiff, 3);
+                            assertEquals(dayDiff, 3);
                             break;
                         case SATURDAY:
-                            AssertJUnit.assertEquals(dayDiff, 2);
+                            assertEquals(dayDiff, 2);
                             break;
                         default:
-                            AssertJUnit.assertEquals(dayDiff, 1);
+                            assertEquals(dayDiff, 1);
                     }
                 } else {
-                    AssertJUnit.assertEquals(test.getYear(), 2008);
-                    AssertJUnit.assertEquals(test.getMonth(), JANUARY);
-                    AssertJUnit.assertEquals(test.getDayOfMonth(), 1);
+                    assertEquals(test.getYear(), 2008);
+                    assertEquals(test.getMonth(), JANUARY);
+                    assertEquals(test.getDayOfMonth(), 1);
                 }
             }
         }
@@ -136,11 +140,11 @@ public class TestTemporals {
     @Test public void test_nextWorkingDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, DECEMBER, 31);
         Temporal test = Temporals.nextWorkingDay().adjustInto(friday);
-        AssertJUnit.assertEquals(LocalDate.of(2011, JANUARY, 3), test);
+        assertEquals(LocalDate.of(2011, JANUARY, 3), test);
 
         LocalDate saturday = LocalDate.of(2011, DECEMBER, 31);
         test = Temporals.nextWorkingDay().adjustInto(saturday);
-        AssertJUnit.assertEquals(LocalDate.of(2012, JANUARY, 2), test);
+        assertEquals(LocalDate.of(2012, JANUARY, 2), test);
     }
 
     //-----------------------------------------------------------------------
@@ -148,7 +152,7 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     @Test public void test_previousWorkingDay_serialization() throws IOException, ClassNotFoundException {
         TemporalAdjuster previousWorkingDay = Temporals.previousWorkingDay();
-        AssertJUnit.assertTrue(previousWorkingDay instanceof Serializable);
+        assertTrue(previousWorkingDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -156,7 +160,7 @@ public class TestTemporals {
         oos.close();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        AssertJUnit.assertSame(ois.readObject(), previousWorkingDay);
+        assertSame(ois.readObject(), previousWorkingDay);
     }
 
     @Test public void test_previousWorkingDay() {
@@ -164,35 +168,35 @@ public class TestTemporals {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = LocalDate.of(2007, month, i);
                 LocalDate test = (LocalDate) Temporals.previousWorkingDay().adjustInto(date);
-                AssertJUnit.assertTrue(test.isBefore(date));
-                AssertJUnit.assertFalse(test.getDayOfWeek().equals(SATURDAY));
-                AssertJUnit.assertFalse(test.getDayOfWeek().equals(SUNDAY));
+                assertTrue(test.isBefore(date));
+                assertFalse(test.getDayOfWeek().equals(SATURDAY));
+                assertFalse(test.getDayOfWeek().equals(SUNDAY));
 
                 switch (date.getDayOfWeek()) {
                     case MONDAY:
                     case SUNDAY:
-                        AssertJUnit.assertEquals(test.getDayOfWeek(), FRIDAY);
+                        assertEquals(test.getDayOfWeek(), FRIDAY);
                         break;
                     default:
-                        AssertJUnit.assertEquals(date.getDayOfWeek().minus(1), test.getDayOfWeek());
+                        assertEquals(date.getDayOfWeek().minus(1), test.getDayOfWeek());
                 }
 
                 if (test.getYear() == 2007) {
                     int dayDiff = test.getDayOfYear() - date.getDayOfYear();
                     switch (date.getDayOfWeek()) {
                         case MONDAY:
-                            AssertJUnit.assertEquals(dayDiff, -3);
+                            assertEquals(dayDiff, -3);
                             break;
                         case SUNDAY:
-                            AssertJUnit.assertEquals(dayDiff, -2);
+                            assertEquals(dayDiff, -2);
                             break;
                         default:
-                            AssertJUnit.assertEquals(dayDiff, -1);
+                            assertEquals(dayDiff, -1);
                     }
                 } else {
-                    AssertJUnit.assertEquals(test.getYear(), 2006);
-                    AssertJUnit.assertEquals(test.getMonth(), DECEMBER);
-                    AssertJUnit.assertEquals(test.getDayOfMonth(), 29);
+                    assertEquals(test.getYear(), 2006);
+                    assertEquals(test.getMonth(), DECEMBER);
+                    assertEquals(test.getDayOfMonth(), 29);
                 }
             }
         }
@@ -201,11 +205,11 @@ public class TestTemporals {
     @Test public void test_previousWorkingDay_yearChange() {
         LocalDate monday = LocalDate.of(2011, JANUARY, 3);
         Temporal test = Temporals.previousWorkingDay().adjustInto(monday);
-        AssertJUnit.assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
+        assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
 
         LocalDate sunday = LocalDate.of(2011, JANUARY, 2);
         test = Temporals.previousWorkingDay().adjustInto(sunday);
-        AssertJUnit.assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
+        assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
     }
 
     //-------------------------------------------------------------------------
@@ -361,8 +365,8 @@ public class TestTemporals {
                     long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
                     long resultWhole, long resultRemainder) {
         long[] result = Temporals.convertAmount(fromAmount, fromUnit, resultUnit);
-        AssertJUnit.assertEquals(result[0], resultWhole);
-        AssertJUnit.assertEquals(result[1], resultRemainder);
+        assertEquals(result[0], resultWhole);
+        assertEquals(result[1], resultRemainder);
     }
 
     @Test(dataProvider = "convertAmount")
@@ -370,8 +374,8 @@ public class TestTemporals {
                     long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
                     long resultWhole, long resultRemainder) {
         long[] result = Temporals.convertAmount(-fromAmount, fromUnit, resultUnit);
-        AssertJUnit.assertEquals(result[0], -resultWhole);
-        AssertJUnit.assertEquals(result[1], -resultRemainder);
+        assertEquals(result[0], -resultWhole);
+        assertEquals(result[1], -resultRemainder);
     }
 
     @Test
@@ -379,8 +383,8 @@ public class TestTemporals {
         for (ChronoUnit unit : ChronoUnit.values()) {
             if (unit != ERAS && unit != FOREVER) {
                 long[] result = Temporals.convertAmount(0, unit, unit);
-                AssertJUnit.assertEquals(result[0], 0);
-                AssertJUnit.assertEquals(result[1], 0);
+                assertEquals(result[0], 0);
+                assertEquals(result[1], 0);
             }
         }
     }
@@ -390,8 +394,8 @@ public class TestTemporals {
         for (ChronoUnit unit : ChronoUnit.values()) {
             if (unit != ERAS && unit != FOREVER) {
                 long[] result = Temporals.convertAmount(2, unit, unit);
-                AssertJUnit.assertEquals(result[0], 2);
-                AssertJUnit.assertEquals(result[1], 0);
+                assertEquals(result[0], 2);
+                assertEquals(result[1], 0);
             }
         }
     }
