@@ -37,6 +37,7 @@ The following are included:
 <li><code>Days</code>, <code>Months</code> and <code>Years</code> amount value types</li>
 <li>Weekend adjusters</li>
 <li>Coptic calendar system</li>
+<li>Julian calendar system</li>
 <li>Support for the TAI and UTC time-scales</li>
 </ul>
 </section>
