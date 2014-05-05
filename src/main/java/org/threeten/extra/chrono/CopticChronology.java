@@ -35,7 +35,6 @@ import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
 import java.time.chrono.ChronoLocalDateTime;
@@ -73,7 +72,7 @@ import java.util.Map;
  * <li>leap-year - Leap years occur every 4 years.
  * </ul>
  *
- * <h3>Implementation Requirements:</h3>
+ * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
 public final class CopticChronology extends AbstractChronology implements Serializable {
@@ -228,7 +227,7 @@ public final class CopticChronology extends AbstractChronology implements Serial
      */
     @Override
     public CopticDate dateYearDay(int prolepticYear, int dayOfYear) {
-        return CopticDate.ofYearDay(prolepticYear, dayOfYear);  // TODO
+        return CopticDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     /**
@@ -243,38 +242,104 @@ public final class CopticChronology extends AbstractChronology implements Serial
         return CopticDate.ofEpochDay(epochDay);
     }
 
-    @Override
+    //-------------------------------------------------------------------------
+    /**
+     * Obtains the current Coptic local date from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current Coptic local date using the system clock and default time-zone, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
     public CopticDate dateNow() {
-        return dateNow(Clock.systemDefaultZone());
+        return CopticDate.now();
     }
 
-    @Override
+    /**
+     * Obtains the current Coptic local date from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current Coptic local date using the system clock, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
     public CopticDate dateNow(ZoneId zone) {
-        return dateNow(Clock.system(zone));
+        return CopticDate.now(zone);
     }
 
-    @Override
+    /**
+     * Obtains the current Coptic local date from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current Coptic local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
     public CopticDate dateNow(Clock clock) {
-        return date(LocalDate.now(clock));
+        return CopticDate.now(clock);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Obtains a Coptic local date from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Coptic local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
     public CopticDate date(TemporalAccessor temporal) {
         return CopticDate.from(temporal);
     }
 
+    /**
+     * Obtains a Coptic local date-time from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Coptic local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
     @Override
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<CopticDate> localDateTime(TemporalAccessor temporal) {
         return (ChronoLocalDateTime<CopticDate>) super.localDateTime(temporal);
     }
 
+    /**
+     * Obtains a Coptic zoned date-time from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Coptic zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
     @Override
     @SuppressWarnings("unchecked")
     public ChronoZonedDateTime<CopticDate> zonedDateTime(TemporalAccessor temporal) {
         return (ChronoZonedDateTime<CopticDate>) super.zonedDateTime(temporal);
     }
 
+    /**
+     * Obtains a Coptic zoned date-time in this chronology from an {@code Instant}.
+     *
+     * @param instant  the instant to create the date-time from, not null
+     * @param zone  the time-zone, not null
+     * @return the Coptic zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
     @Override
     @SuppressWarnings("unchecked")
     public ChronoZonedDateTime<CopticDate> zonedDateTime(Instant instant, ZoneId zone) {

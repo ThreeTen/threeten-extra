@@ -70,7 +70,7 @@ import java.time.temporal.ValueRange;
  * This calendar system is primarily used in Christian Egypt.
  * Dates are aligned such that {@code 0001-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
  *
- * <h3>Implementation Requirements:</h3>
+ * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the
@@ -86,7 +86,7 @@ public final class CopticDate
     /**
      * The difference between the ISO and Coptic epoch day count.
      */
-    private static final int EPOCH_DAY_DIFFERENCE = 574971 + 40587;
+    private static final int EPOCH_DAY_DIFFERENCE = 574971 + 40587;  // MJD values
 
     /**
      * The proleptic year.
@@ -157,8 +157,8 @@ public final class CopticDate
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param prolepticYear  the Coptic proleptic-year
-     * @param month  the Coptic month-of-year, from 1 to 12
-     * @param dayOfMonth  the Coptic day-of-month, from 1 to 31
+     * @param month  the Coptic month-of-year, from 1 to 13
+     * @param dayOfMonth  the Coptic day-of-month, from 1 to 30
      * @return the date in Coptic calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
      *  or if the day-of-month is invalid for the month-year
@@ -197,13 +197,13 @@ public final class CopticDate
      * system from the proleptic-year and day-of-year fields.
      * <p>
      * This returns a {@code CopticDate} with the specified fields.
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The day must be valid for the year, otherwise an exception will be thrown.
      *
      * @param prolepticYear  the Coptic proleptic-year
      * @param dayOfYear  the Coptic day-of-year, from 1 to 366
      * @return the date in Coptic calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-year is invalid for the month-year
+     *  or if the day-of-year is invalid for the year
      */
     static CopticDate ofYearDay(int prolepticYear, int dayOfYear) {
         CopticChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
@@ -328,9 +328,9 @@ public final class CopticDate
      * Returns the length of the month represented by this date.
      * <p>
      * This returns the length of the month in days.
-     * Month lengths match those of the ISO calendar system.
+     * Months 1 to 12 have 30 days. Month 13 has 5 or 6 days.
      *
-     * @return the length of the month in days
+     * @return the length of the month in days, from 5 to 30
      */
     @Override
     public int lengthOfMonth() {
@@ -536,7 +536,7 @@ public final class CopticDate
     }
 
     //-------------------------------------------------------------------------
-    @Override        // for javadoc and covariant return type
+    @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<CopticDate> atTime(LocalTime localTime) {
         return (ChronoLocalDateTime<CopticDate>) ChronoLocalDate.super.atTime(localTime);

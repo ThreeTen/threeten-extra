@@ -124,6 +124,11 @@ public class TestCopticChronology {
     }
 
     @Test(dataProvider="samples")
+    public void test_CopticDate_chronology_dateEpochDay(CopticDate coptic, LocalDate iso) {
+        assertEquals(CopticChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), coptic);
+    }
+
+    @Test(dataProvider="samples")
     public void test_CopticDate_toEpochDay(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic.toEpochDay(), iso.toEpochDay());
     }
@@ -211,6 +216,11 @@ public class TestCopticChronology {
         CopticDate.of(year, month, dom);
     }
 
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_chronology_dateYearDay_badDate() {
+        CopticChronology.INSTANCE.dateYearDay(1728, 366);
+    }
+
     //-----------------------------------------------------------------------
     // isLeapYear()
     //-----------------------------------------------------------------------
@@ -240,6 +250,31 @@ public class TestCopticChronology {
         assertEquals(CopticChronology.INSTANCE.isLeapYear(-4), false);
         assertEquals(CopticChronology.INSTANCE.isLeapYear(-5), true);
         assertEquals(CopticChronology.INSTANCE.isLeapYear(-6), false);
+    }
+
+    @DataProvider(name="lengthOfMonth")
+    Object[][] data_lengthOfMonth() {
+        return new Object[][] {
+            {1726, 1, 30},
+            {1726, 2, 30},
+            {1726, 3, 30},
+            {1726, 4, 30},
+            {1726, 5, 30},
+            {1726, 6, 30},
+            {1726, 7, 30},
+            {1726, 8, 30},
+            {1726, 9, 30},
+            {1726, 10, 30},
+            {1726, 11, 30},
+            {1726, 12, 30},
+            {1726, 13, 5},
+            {1727, 13, 6},
+        };
+    }
+
+    @Test(dataProvider="lengthOfMonth")
+    public void test_lengthOfMonth(int year, int month, int length) {
+        assertEquals(CopticDate.of(year, month, 1).lengthOfMonth(), length);
     }
 
     //-----------------------------------------------------------------------
@@ -363,6 +398,29 @@ public class TestCopticChronology {
         CopticDate coptic = CopticDate.of(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN.with(coptic);
         assertEquals(test, LocalDateTime.of(2012, 7, 6, 0, 0));
+    }
+
+    //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
+    @Test
+    void test_equals() {
+        CopticDate a1 = CopticDate.of(1728, 1, 3);
+        CopticDate a2 = CopticDate.of(1728, 1, 3);
+        CopticDate b = CopticDate.of(1728, 1, 4);
+        CopticDate c = CopticDate.of(1728, 2, 3);
+        CopticDate d = CopticDate.of(1729, 1, 3);
+        
+        assertEquals(a1.equals(a1), true);
+        assertEquals(a1.equals(a2), true);
+        assertEquals(a1.equals(b), false);
+        assertEquals(a1.equals(c), false);
+        assertEquals(a1.equals(d), false);
+        
+        assertEquals(a1.equals(null), false);
+        assertEquals(a1.equals(""), false);
+        
+        assertEquals(a1.hashCode(), a2.hashCode());
     }
 
     //-----------------------------------------------------------------------
