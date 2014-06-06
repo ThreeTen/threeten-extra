@@ -48,23 +48,23 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Coptic calendar system.
+ * The Ethiopic calendar system.
  * <p>
- * This chronology defines the rules of the Coptic calendar system.
- * This calendar system is primarily used in Christian Egypt.
- * Dates are aligned such that {@code 0001-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
+ * This chronology defines the rules of the Ethiopic calendar system.
+ * This calendar system is primarily used in Ethiopia.
+ * Dates are aligned such that {@code 0001-01-01 (Ethiopic)} is {@code 0284-08-29 (ISO)}.
  * <p>
  * The fields are defined as follows:
  * <ul>
- * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (BEFORE_AM).
+ * <li>era - There are two eras, the current 'Incarnation Era' (INCARNATION) and the previous era (BEFORE_INCARNATION).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
  *  current era. For the previous era, years have zero, then negative values.
- * <li>month-of-year - There are 13 months in a Coptic year, numbered from 1 to 13.
- * <li>day-of-month - There are 30 days in each of the first 12 Coptic months, numbered 1 to 30.
+ * <li>month-of-year - There are 13 months in a Ethiopic year, numbered from 1 to 13.
+ * <li>day-of-month - There are 30 days in each of the first 12 Ethiopic months, numbered 1 to 30.
  *  The 13th month has 5 days, or 6 in a leap year, numbered 1 to 5 or 1 to 6.
- * <li>day-of-year - There are 365 days in a standard Coptic year and 366 in a leap year.
+ * <li>day-of-year - There are 365 days in a standard Ethiopic year and 366 in a leap year.
  *  The days are numbered from 1 to 365 or 1 to 366.
  * <li>leap-year - Leap years occur every 4 years.
  * </ul>
@@ -72,25 +72,25 @@ import java.util.Map;
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
-public final class CopticChronology
+public final class EthiopicChronology
         extends AbstractNileChronology
         implements Serializable {
 
     /**
-     * Singleton instance for the Coptic chronology.
+     * Singleton instance for the Ethiopic chronology.
      */
-    public static final CopticChronology INSTANCE = new CopticChronology();
+    public static final EthiopicChronology INSTANCE = new EthiopicChronology();
 
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 7291205177830286973L;
+    private static final long serialVersionUID = 53287687268768L;
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
      * Use the singleton {@link #INSTANCE} instead.
      */
-    public CopticChronology() {
+    public EthiopicChronology() {
     }
 
     /**
@@ -104,21 +104,21 @@ public final class CopticChronology
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ID of the chronology - 'Coptic'.
+     * Gets the ID of the chronology - 'Ethiopic'.
      * <p>
      * The ID uniquely identifies the {@code Chronology}.
      * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      *
-     * @return the chronology ID - 'Coptic'
+     * @return the chronology ID - 'Ethiopic'
      * @see #getCalendarType()
      */
     @Override
     public String getId() {
-        return "Coptic";
+        return "Ethiopic";
     }
 
     /**
-     * Gets the calendar type of the underlying calendar system - 'coptic'.
+     * Gets the calendar type of the underlying calendar system - 'ethiopic'.
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
@@ -126,92 +126,92 @@ public final class CopticChronology
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      *
-     * @return the calendar system type - 'coptic'
+     * @return the calendar system type - 'ethiopic'
      * @see #getId()
      */
     @Override
     public String getCalendarType() {
-        return "coptic";
+        return "ethiopic";
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a local date in Coptic calendar system from the
+     * Obtains a local date in Ethiopic calendar system from the
      * era, year-of-era, month-of-year and day-of-month fields.
      *
-     * @param era  the Coptic era, not null
+     * @param era  the Ethiopic era, not null
      * @param yearOfEra  the year-of-era
      * @param month  the month-of-year
      * @param dayOfMonth  the day-of-month
-     * @return the Coptic local date, not null
+     * @return the Ethiopic local date, not null
      * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not a {@code CopticEra}
+     * @throws ClassCastException if the {@code era} is not a {@code EthiopicEra}
      */
     @Override
-    public CopticDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+    public EthiopicDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
     /**
-     * Obtains a local date in Coptic calendar system from the
+     * Obtains a local date in Ethiopic calendar system from the
      * proleptic-year, month-of-year and day-of-month fields.
      *
      * @param prolepticYear  the proleptic-year
      * @param month  the month-of-year
      * @param dayOfMonth  the day-of-month
-     * @return the Coptic local date, not null
+     * @return the Ethiopic local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public CopticDate date(int prolepticYear, int month, int dayOfMonth) {
-        return CopticDate.of(prolepticYear, month, dayOfMonth);
+    public EthiopicDate date(int prolepticYear, int month, int dayOfMonth) {
+        return EthiopicDate.of(prolepticYear, month, dayOfMonth);
     }
 
     /**
-     * Obtains a local date in Coptic calendar system from the
+     * Obtains a local date in Ethiopic calendar system from the
      * era, year-of-era and day-of-year fields.
      *
-     * @param era  the Coptic era, not null
+     * @param era  the Ethiopic era, not null
      * @param yearOfEra  the year-of-era
      * @param dayOfYear  the day-of-year
-     * @return the Coptic local date, not null
+     * @return the Ethiopic local date, not null
      * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not a {@code CopticEra}
+     * @throws ClassCastException if the {@code era} is not a {@code EthiopicEra}
      */
     @Override
-    public CopticDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
+    public EthiopicDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
     /**
-     * Obtains a local date in Coptic calendar system from the
+     * Obtains a local date in Ethiopic calendar system from the
      * proleptic-year and day-of-year fields.
      *
      * @param prolepticYear  the proleptic-year
      * @param dayOfYear  the day-of-year
-     * @return the Coptic local date, not null
+     * @return the Ethiopic local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public CopticDate dateYearDay(int prolepticYear, int dayOfYear) {
-        return CopticDate.ofYearDay(prolepticYear, dayOfYear);
+    public EthiopicDate dateYearDay(int prolepticYear, int dayOfYear) {
+        return EthiopicDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     /**
-     * Obtains a local date in the Coptic calendar system from the epoch-day.
+     * Obtains a local date in the Ethiopic calendar system from the epoch-day.
      *
      * @param epochDay  the epoch day
-     * @return the Coptic local date, not null
+     * @return the Ethiopic local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public CopticDate dateEpochDay(long epochDay) {
-        return CopticDate.ofEpochDay(epochDay);
+    public EthiopicDate dateEpochDay(long epochDay) {
+        return EthiopicDate.ofEpochDay(epochDay);
     }
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains the current Coptic local date from the system clock in the default time-zone.
+     * Obtains the current Ethiopic local date from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
      * time-zone to obtain the current date.
@@ -219,16 +219,16 @@ public final class CopticChronology
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current Coptic local date using the system clock and default time-zone, not null
+     * @return the current Ethiopic local date using the system clock and default time-zone, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public CopticDate dateNow() {
-        return CopticDate.now();
+    public EthiopicDate dateNow() {
+        return EthiopicDate.now();
     }
 
     /**
-     * Obtains the current Coptic local date from the system clock in the specified time-zone.
+     * Obtains the current Ethiopic local date from the system clock in the specified time-zone.
      * <p>
      * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
      * Specifying the time-zone avoids dependence on the default time-zone.
@@ -236,106 +236,106 @@ public final class CopticChronology
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current Coptic local date using the system clock, not null
+     * @return the current Ethiopic local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public CopticDate dateNow(ZoneId zone) {
-        return CopticDate.now(zone);
+    public EthiopicDate dateNow(ZoneId zone) {
+        return EthiopicDate.now(zone);
     }
 
     /**
-     * Obtains the current Coptic local date from the specified clock.
+     * Obtains the current Ethiopic local date from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current date - today.
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param clock  the clock to use, not null
-     * @return the current Coptic local date, not null
+     * @return the current Ethiopic local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public CopticDate dateNow(Clock clock) {
-        return CopticDate.now(clock);
+    public EthiopicDate dateNow(Clock clock) {
+        return EthiopicDate.now(clock);
     }
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains a Coptic local date from another date-time object.
+     * Obtains a Ethiopic local date from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
-     * @return the Coptic local date, not null
+     * @return the Ethiopic local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public CopticDate date(TemporalAccessor temporal) {
-        return CopticDate.from(temporal);
+    public EthiopicDate date(TemporalAccessor temporal) {
+        return EthiopicDate.from(temporal);
     }
 
     /**
-     * Obtains a Coptic local date-time from another date-time object.
+     * Obtains a Ethiopic local date-time from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
-     * @return the Coptic local date-time, not null
+     * @return the Ethiopic local date-time, not null
      * @throws DateTimeException if unable to create the date-time
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ChronoLocalDateTime<CopticDate> localDateTime(TemporalAccessor temporal) {
-        return (ChronoLocalDateTime<CopticDate>) super.localDateTime(temporal);
+    public ChronoLocalDateTime<EthiopicDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<EthiopicDate>) super.localDateTime(temporal);
     }
 
     /**
-     * Obtains a Coptic zoned date-time from another date-time object.
+     * Obtains a Ethiopic zoned date-time from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
-     * @return the Coptic zoned date-time, not null
+     * @return the Ethiopic zoned date-time, not null
      * @throws DateTimeException if unable to create the date-time
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ChronoZonedDateTime<CopticDate> zonedDateTime(TemporalAccessor temporal) {
-        return (ChronoZonedDateTime<CopticDate>) super.zonedDateTime(temporal);
+    public ChronoZonedDateTime<EthiopicDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<EthiopicDate>) super.zonedDateTime(temporal);
     }
 
     /**
-     * Obtains a Coptic zoned date-time in this chronology from an {@code Instant}.
+     * Obtains a Ethiopic zoned date-time in this chronology from an {@code Instant}.
      *
      * @param instant  the instant to create the date-time from, not null
      * @param zone  the time-zone, not null
-     * @return the Coptic zoned date-time, not null
+     * @return the Ethiopic zoned date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ChronoZonedDateTime<CopticDate> zonedDateTime(Instant instant, ZoneId zone) {
-        return (ChronoZonedDateTime<CopticDate>) super.zonedDateTime(instant, zone);
+    public ChronoZonedDateTime<EthiopicDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<EthiopicDate>) super.zonedDateTime(instant, zone);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
-        if (era instanceof CopticEra == false) {
-            throw new ClassCastException("Era must be CopticEra");
+        if (era instanceof EthiopicEra == false) {
+            throw new ClassCastException("Era must be EthiopicEra");
         }
-        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
+        return (era == EthiopicEra.INCARNATION ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
-    public CopticEra eraOf(int eraValue) {
-        return CopticEra.of(eraValue);
+    public EthiopicEra eraOf(int eraValue) {
+        return EthiopicEra.of(eraValue);
     }
 
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(CopticEra.values());
+        return Arrays.<Era>asList(EthiopicEra.values());
     }
 
     //-----------------------------------------------------------------------
     @Override  // override for return type
-    public CopticDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
-        return (CopticDate) super.resolveDate(fieldValues, resolverStyle);
+    public EthiopicDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+        return (EthiopicDate) super.resolveDate(fieldValues, resolverStyle);
     }
 
 }
