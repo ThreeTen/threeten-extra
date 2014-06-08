@@ -292,7 +292,7 @@ public final class EthiopicDate
         return EthiopicDate.create(prolepticYear, month, day);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     @Override
     int getEpochDayDifference() {
         return EPOCH_DAY_DIFFERENCE;

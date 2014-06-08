@@ -290,7 +290,7 @@ public final class CopticDate
         return CopticDate.create(prolepticYear, month, day);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     @Override
     int getEpochDayDifference() {
         return EPOCH_DAY_DIFFERENCE;

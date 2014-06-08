@@ -31,14 +31,9 @@
  */
 package org.threeten.extra.chrono;
 
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
-import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 
@@ -53,7 +48,6 @@ import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -61,7 +55,6 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
-import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 
 /**
@@ -79,6 +72,7 @@ import java.time.temporal.ValueRange;
  * identity hash code or use the distinction between equals() and ==.
  */
 public final class JulianDate
+        extends AbstractDate
         implements ChronoLocalDate, Serializable {
 
     /**
@@ -326,6 +320,42 @@ public final class JulianDate
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    int getProlepticYear() {
+        return prolepticYear;
+    }
+
+    @Override
+    int getMonth() {
+        return month;
+    }
+
+    @Override
+    int getDayOfMonth() {
+        return day;
+    }
+
+    @Override
+    int getDayOfYear() {
+        return Month.of(month).firstDayOfYear(isLeapYear()) + day - 1;
+    }
+
+    @Override
+    AbstractDate withDayOfYear(int value) {
+        return plusDays(value - getDayOfYear());
+    }
+
+    @Override
+    ValueRange rangeAlignedWeekOfMonth() {
+        return ValueRange.of(1, month == 2 && isLeapYear() == false ? 4 : 5);
+    }
+
+    @Override
+    JulianDate resolvePrevious(int newYear, int newMonth, int dayOfMonth) {
+        return resolvePreviousValid(newYear, newMonth, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the chronology of this date, which is the Julian calendar system.
      * <p>
@@ -363,93 +393,16 @@ public final class JulianDate
     @Override
     public int lengthOfMonth() {
         switch (month) {
-        case 2:
-            return (isLeapYear() ? 29 : 28);
-        case 4:
-        case 6:
-        case 9:
-        case 11:
-            return 30;
-        default:
-            return 31;
-    }
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public ValueRange range(TemporalField field) {
-        if (field instanceof ChronoField) {
-            if (isSupported(field)) {
-                ChronoField f = (ChronoField) field;
-                switch (f) {
-                    case DAY_OF_MONTH:
-                        return ValueRange.of(1, lengthOfMonth());
-                    case DAY_OF_YEAR:
-                        return ValueRange.of(1, lengthOfYear());
-                    case ALIGNED_WEEK_OF_MONTH:
-                        return ValueRange.of(1, month == 2 && isLeapYear() == false ? 4 : 5);
-                    default:
-                        break;
-                }
-                return getChronology().range(f);
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+            case 2:
+                return (isLeapYear() ? 29 : 28);
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            default:
+                return 31;
         }
-        return field.rangeRefinedBy(this);
-    }
-
-    @Override
-    public long getLong(TemporalField field) {
-        if (field instanceof ChronoField) {
-            switch ((ChronoField) field) {
-                case DAY_OF_WEEK:
-                    return getDayOfWeek();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    return ((day - 1) % 7) + 1;
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    return ((getDayOfYear() - 1) % 7) + 1;
-                case DAY_OF_MONTH:
-                    return day;
-                case DAY_OF_YEAR:
-                    return getDayOfYear();
-                case EPOCH_DAY:
-                    return toEpochDay();
-                case ALIGNED_WEEK_OF_MONTH:
-                    return ((day - 1) / 7) + 1;
-                case ALIGNED_WEEK_OF_YEAR:
-                    return ((getDayOfYear() - 1) / 7) + 1;
-                case MONTH_OF_YEAR:
-                    return month;
-                case PROLEPTIC_MONTH:
-                    return getProlepticMonth();
-                case YEAR_OF_ERA:
-                    return getYearOfEra();
-                case YEAR:
-                    return prolepticYear;
-                case ERA:
-                    return (prolepticYear >= 1 ? 1 : 0);
-                default:
-                    break;
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-        }
-        return field.getFrom(this);
-    }
-
-    private int getDayOfWeek() {
-        return (int) (Math.floorMod(toEpochDay() + 3, 7) + 1);
-    }
-
-    private int getDayOfYear() {
-        return Month.of(month).firstDayOfYear(isLeapYear()) + day - 1;
-    }
-
-    private long getProlepticMonth() {
-        return prolepticYear * 12L + month - 1;
-    }
-
-    private int getYearOfEra() {
-        return prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear;
     }
 
     //-------------------------------------------------------------------------
@@ -460,43 +413,7 @@ public final class JulianDate
 
     @Override
     public JulianDate with(TemporalField field, long newValue) {
-        if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            f.checkValidValue(newValue);
-            int nvalue = (int) newValue;
-            switch (f) {
-                case DAY_OF_WEEK:
-                    return plusDays(newValue - getDayOfWeek());
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH));
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
-                case DAY_OF_MONTH:
-                    return resolvePreviousValid(prolepticYear, month, nvalue);
-                case DAY_OF_YEAR:
-                    return plusDays(newValue - getDayOfYear());
-                case EPOCH_DAY:
-                    return ofEpochDay(newValue);
-                case ALIGNED_WEEK_OF_MONTH:
-                    return plusDays((newValue - getLong(ALIGNED_WEEK_OF_MONTH)) * 7);
-                case ALIGNED_WEEK_OF_YEAR:
-                    return plusDays((newValue - getLong(ALIGNED_WEEK_OF_YEAR)) * 7);
-                case MONTH_OF_YEAR:
-                    return resolvePreviousValid(prolepticYear, nvalue, day);
-                case PROLEPTIC_MONTH:
-                    return plusMonths(newValue - getProlepticMonth());
-                case YEAR_OF_ERA:
-                    return resolvePreviousValid(prolepticYear >= 1 ? nvalue : 1 - nvalue, month, day);
-                case YEAR:
-                    return resolvePreviousValid(nvalue, month, day);
-                case ERA:
-                    return resolvePreviousValid(1 - prolepticYear, month, day);
-                default:
-                    break;
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-        }
-        return field.adjustInto(this, newValue);
+        return (JulianDate) super.with(field, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -507,57 +424,7 @@ public final class JulianDate
 
     @Override
     public JulianDate plus(long amountToAdd, TemporalUnit unit) {
-        if (unit instanceof ChronoUnit) {
-            ChronoUnit f = (ChronoUnit) unit;
-            switch (f) {
-                case DAYS:
-                    return plusDays(amountToAdd);
-                case WEEKS:
-                    return plusDays(Math.multiplyExact(amountToAdd, 7));
-                case MONTHS:
-                    return plusMonths(amountToAdd);
-                case YEARS:
-                    return plusYears(amountToAdd);
-                case DECADES:
-                    return plusYears(Math.multiplyExact(amountToAdd, 10));
-                case CENTURIES:
-                    return plusYears(Math.multiplyExact(amountToAdd, 100));
-                case MILLENNIA:
-                    return plusYears(Math.multiplyExact(amountToAdd, 1000));
-                case ERAS:
-                    return with(ERA, Math.addExact(getLong(ERA), amountToAdd));
-                default:
-                    break;
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
-        }
-        return unit.addTo(this, amountToAdd);
-    }
-
-    private JulianDate plusYears(long yearsToAdd) {
-        if (yearsToAdd == 0) {
-            return this;
-        }
-        int newYear = JulianChronology.YEAR_RANGE.checkValidIntValue(Math.addExact(prolepticYear, yearsToAdd), YEAR);
-        return resolvePreviousValid(newYear, month, day);
-    }
-
-    private JulianDate plusMonths(long months) {
-        if (months == 0) {
-            return this;
-        }
-        long monthCount = prolepticYear * 12L + (month - 1);
-        long calcMonths = monthCount + months;  // safe overflow
-        int newYear = JulianChronology.YEAR_RANGE.checkValidIntValue(Math.floorDiv(calcMonths, 12), YEAR);
-        int newMonth = (int)Math.floorMod(calcMonths, 12) + 1;
-        return resolvePreviousValid(newYear, newMonth, day);
-    }
-
-    private JulianDate plusDays(long days) {
-        if (days == 0) {
-            return this;
-        }
-        return JulianDate.ofEpochDay(Math.addExact(toEpochDay(), days));
+        return (JulianDate) super.plus(amountToAdd, unit);
     }
 
     @Override
@@ -579,59 +446,12 @@ public final class JulianDate
 
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
-        JulianDate end = JulianDate.from(endExclusive);
-        if (unit instanceof ChronoUnit) {
-            switch ((ChronoUnit) unit) {
-                case DAYS:
-                    return daysUntil(end);
-                case WEEKS:
-                    return daysUntil(end) / 7;
-                case MONTHS:
-                    return monthsUntil(end);
-                case YEARS:
-                    return monthsUntil(end) / 12;
-                case DECADES:
-                    return monthsUntil(end) / 120;
-                case CENTURIES:
-                    return monthsUntil(end) / 1200;
-                case MILLENNIA:
-                    return monthsUntil(end) / 12000;
-                case ERAS:
-                    return end.getLong(ERA) - getLong(ERA);
-                default:
-                    break;
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
-        }
-        return unit.between(this, end);
-    }
-
-    private long daysUntil(ChronoLocalDate end) {
-        return end.toEpochDay() - toEpochDay();  // no overflow
-    }
-
-    private long monthsUntil(JulianDate end) {
-        long packed1 = getProlepticMonth() * 32L + day;  // no overflow
-        long packed2 = end.getProlepticMonth() * 32L + end.day;  // no overflow
-        return (packed2 - packed1) / 32;
+        return super.until(JulianDate.from(endExclusive), unit);
     }
 
     @Override
     public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
-        JulianDate end = JulianDate.from(endDateExclusive);
-        long totalMonths = end.getProlepticMonth() - this.getProlepticMonth();  // safe
-        int days = end.day - this.day;
-        if (totalMonths > 0 && days < 0) {
-            totalMonths--;
-            JulianDate calcDate = this.plusMonths(totalMonths);
-            days = (int) (end.toEpochDay() - calcDate.toEpochDay());  // safe
-        } else if (totalMonths < 0 && days > 0) {
-            totalMonths++;
-            days -= end.lengthOfMonth();
-        }
-        long years = totalMonths / 12;  // safe
-        int months = (int) (totalMonths % 12);  // safe
-        return getChronology().period(Math.toIntExact(years), months, days);
+        return super.until(JulianDate.from(endDateExclusive));
     }
 
     //-----------------------------------------------------------------------
@@ -640,56 +460,6 @@ public final class JulianDate
         long year = (long) prolepticYear;
         long julianEpochDay = ((year - 1) * 365) + Math.floorDiv((year - 1), 4) + (getDayOfYear() - 1);
         return julianEpochDay - JULIAN_0001_TO_ISO_1970;
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Compares this date to another date, including the chronology.
-     * <p>
-     * Compares this {@code JulianDate} with another ensuring that the date is the same.
-     * <p>
-     * Only objects of type {@code JulianDate} are compared, other types return false.
-     * To compare the dates of two {@code TemporalAccessor} instances, including dates
-     * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other date
-     */
-    @Override  // override for performance
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof JulianDate) {
-            JulianDate otherDate = (JulianDate) obj;
-            return this.prolepticYear == otherDate.prolepticYear &&
-                    this.month == otherDate.month && this.day == otherDate.day;
-        }
-        return false;
-    }
-
-    /**
-     * A hash code for this date.
-     *
-     * @return a suitable hash code based only on the Chronology and the date
-     */
-    @Override  // override for performance
-    public int hashCode() {
-        return getChronology().getId().hashCode() ^
-                ((prolepticYear & 0xFFFFF800) ^ ((prolepticYear << 11) + (month << 6) + (day)));
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(30);
-        buf.append(getChronology().toString())
-                .append(" ")
-                .append(getEra())
-                .append(" ")
-                .append(getYearOfEra())
-                .append(month < 10 ? "-0" : "-").append(month)
-                .append(day < 10 ? "-0" : "-").append(day);
-        return buf.toString();
     }
 
 }

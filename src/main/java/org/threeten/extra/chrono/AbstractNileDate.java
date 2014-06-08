@@ -31,20 +31,6 @@
  */
 package org.threeten.extra.chrono;
 
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static java.time.temporal.ChronoField.ERA;
-import static java.time.temporal.ChronoField.YEAR;
-
-import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.ChronoPeriod;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalUnit;
-import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 
 /**
@@ -54,7 +40,7 @@ import java.time.temporal.ValueRange;
  * Implementations must be immutable and thread-safe.
  */
 abstract class AbstractNileDate
-        implements ChronoLocalDate {
+        extends AbstractDate {
 
     /**
      * Creates an instance.
@@ -65,16 +51,24 @@ abstract class AbstractNileDate
     //-----------------------------------------------------------------------
     abstract int getEpochDayDifference();
 
-    abstract int getProlepticYear();
+    @Override
+    int getDayOfYear() {
+        return (getMonth() - 1) * 30 + getDayOfMonth();
+    }
 
-    abstract int getMonth();
+    @Override
+    AbstractDate withDayOfYear(int value) {
+        return resolvePrevious(getProlepticYear(), ((value - 1) / 30) + 1, ((value - 1) % 30) + 1);
+    }
 
-    abstract int getDayOfMonth();
+    @Override
+    int lengthOfYearInMonths() {
+        return 13;
+    }
 
-    abstract AbstractNileDate resolvePrevious(int newYear, int newMonth, int dayOfMonth);
-
-    AbstractNileDate resolveEpochDay(long epcohDay) {
-        return (AbstractNileDate) getChronology().dateEpochDay(epcohDay);
+    @Override
+    ValueRange rangeAlignedWeekOfMonth() {
+        return ValueRange.of(1, getMonth() == 13 ? 1 : 5);
     }
 
     //-----------------------------------------------------------------------
@@ -94,291 +88,11 @@ abstract class AbstractNileDate
         return 30;
     }
 
-    //-----------------------------------------------------------------------
-    @Override
-    public ValueRange range(TemporalField field) {
-        if (field instanceof ChronoField) {
-            if (isSupported(field)) {
-                ChronoField f = (ChronoField) field;
-                switch (f) {
-                    case DAY_OF_MONTH:
-                        return ValueRange.of(1, lengthOfMonth());
-                    case DAY_OF_YEAR:
-                        return ValueRange.of(1, lengthOfYear());
-                    case ALIGNED_WEEK_OF_MONTH:
-                        return ValueRange.of(1, getMonth() == 13 ? 1 : 5);
-                    default:
-                        break;
-                }
-                return getChronology().range(f);
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-        }
-        return field.rangeRefinedBy(this);
-    }
-
-    @Override
-    public long getLong(TemporalField field) {
-        if (field instanceof ChronoField) {
-            switch ((ChronoField) field) {
-                case DAY_OF_WEEK:
-                    return getDayOfWeek();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    return ((getDayOfMonth() - 1) % 7) + 1;
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    return ((getDayOfYear() - 1) % 7) + 1;
-                case DAY_OF_MONTH:
-                    return getDayOfMonth();
-                case DAY_OF_YEAR:
-                    return getDayOfYear();
-                case EPOCH_DAY:
-                    return toEpochDay();
-                case ALIGNED_WEEK_OF_MONTH:
-                    return ((getDayOfMonth() - 1) / 7) + 1;
-                case ALIGNED_WEEK_OF_YEAR:
-                    return ((getDayOfYear() - 1) / 7) + 1;
-                case MONTH_OF_YEAR:
-                    return getMonth();
-                case PROLEPTIC_MONTH:
-                    return getProlepticMonth();
-                case YEAR_OF_ERA:
-                    return getYearOfEra();
-                case YEAR:
-                    return getProlepticYear();
-                case ERA:
-                    return (getProlepticYear() >= 1 ? 1 : 0);
-                default:
-                    break;
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-        }
-        return field.getFrom(this);
-    }
-
-    int getDayOfWeek() {
-        return (int) (Math.floorMod(toEpochDay() + 3, 7) + 1);
-    }
-
-    private int getDayOfYear() {
-        return (getMonth() - 1) * 30 + getDayOfMonth();
-    }
-
-    long getProlepticMonth() {
-        return getProlepticYear() * 13L + getMonth() - 1;
-    }
-
-    private int getYearOfEra() {
-        return getProlepticYear() >= 1 ? getProlepticYear() : 1 - getProlepticYear();
-    }
-
-    @Override
-    public AbstractNileDate with(TemporalField field, long newValue) {
-        if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            f.checkValidValue(newValue);
-            int nvalue = (int) newValue;
-            switch (f) {
-                case DAY_OF_WEEK:
-                    return plusDays(newValue - getDayOfWeek());
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH));
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
-                case DAY_OF_MONTH:
-                    return resolvePrevious(getProlepticYear(), getMonth(), nvalue);
-                case DAY_OF_YEAR:
-                    return resolvePrevious(getProlepticYear(), ((nvalue - 1) / 30) + 1, ((nvalue - 1) % 30) + 1);
-                case EPOCH_DAY:
-                    return resolveEpochDay(newValue);
-                case ALIGNED_WEEK_OF_MONTH:
-                    return plusDays((newValue - getLong(ALIGNED_WEEK_OF_MONTH)) * 7);
-                case ALIGNED_WEEK_OF_YEAR:
-                    return plusDays((newValue - getLong(ALIGNED_WEEK_OF_YEAR)) * 7);
-                case MONTH_OF_YEAR:
-                    return resolvePrevious(getProlepticYear(), nvalue, getDayOfMonth());
-                case PROLEPTIC_MONTH:
-                    return plusMonths(newValue - getProlepticMonth());
-                case YEAR_OF_ERA:
-                    return resolvePrevious(getProlepticYear() >= 1 ? nvalue : 1 - nvalue, getMonth(), getDayOfMonth());
-                case YEAR:
-                    return resolvePrevious(nvalue, getMonth(), getDayOfMonth());
-                case ERA:
-                    return resolvePrevious(1 - getProlepticYear(), getMonth(), getDayOfMonth());
-                default:
-                    break;
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-        }
-        return field.adjustInto(this, newValue);
-    }
-
-    @Override
-    public AbstractNileDate plus(long amountToAdd, TemporalUnit unit) {
-        if (unit instanceof ChronoUnit) {
-            ChronoUnit f = (ChronoUnit) unit;
-            switch (f) {
-                case DAYS:
-                    return plusDays(amountToAdd);
-                case WEEKS:
-                    return plusDays(Math.multiplyExact(amountToAdd, 7));
-                case MONTHS:
-                    return plusMonths(amountToAdd);
-                case YEARS:
-                    return plusYears(amountToAdd);
-                case DECADES:
-                    return plusYears(Math.multiplyExact(amountToAdd, 10));
-                case CENTURIES:
-                    return plusYears(Math.multiplyExact(amountToAdd, 100));
-                case MILLENNIA:
-                    return plusYears(Math.multiplyExact(amountToAdd, 1000));
-                case ERAS:
-                    return with(ERA, Math.addExact(getLong(ERA), amountToAdd));
-                default:
-                    break;
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
-        }
-        return unit.addTo(this, amountToAdd);
-    }
-
-    private AbstractNileDate plusYears(long yearsToAdd) {
-        if (yearsToAdd == 0) {
-            return this;
-        }
-        int newYear = YEAR.checkValidIntValue(Math.addExact(getProlepticYear(), yearsToAdd));
-        return resolvePrevious(newYear, getMonth(), getDayOfMonth());
-    }
-
-    AbstractNileDate plusMonths(long months) {
-        if (months == 0) {
-            return this;
-        }
-        long curEm = getProlepticYear() * 13L + (getMonth() - 1);
-        long calcEm = Math.addExact(curEm, months);
-        int newYear = Math.toIntExact(Math.floorDiv(calcEm, 13));
-        int newMonth = (int) (Math.floorMod(calcEm, 13) + 1);
-        return resolvePrevious(newYear, newMonth, getDayOfMonth());
-    }
-
-    AbstractNileDate plusDays(long days) {
-        if (days == 0) {
-            return this;
-        }
-        return resolveEpochDay(Math.addExact(toEpochDay(), days));
-    }
-
-    //-------------------------------------------------------------------------
-    long until(AbstractNileDate end, TemporalUnit unit) {
-        if (unit instanceof ChronoUnit) {
-            switch ((ChronoUnit) unit) {
-                case DAYS:
-                    return daysUntil(end);
-                case WEEKS:
-                    return daysUntil(end) / 7;
-                case MONTHS:
-                    return monthsUntil(end);
-                case YEARS:
-                    return monthsUntil(end) / 13;
-                case DECADES:
-                    return monthsUntil(end) / 130;
-                case CENTURIES:
-                    return monthsUntil(end) / 1300;
-                case MILLENNIA:
-                    return monthsUntil(end) / 13000;
-                case ERAS:
-                    return end.getLong(ERA) - getLong(ERA);
-                default:
-                    break;
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
-        }
-        return unit.between(this, end);
-    }
-
-    private long daysUntil(ChronoLocalDate end) {
-        return end.toEpochDay() - toEpochDay();  // no overflow
-    }
-
-    private long monthsUntil(AbstractNileDate end) {
-        long packed1 = getProlepticMonth() * 32L + getDayOfMonth();  // no overflow
-        long packed2 = end.getProlepticMonth() * 32L + end.getDayOfMonth();  // no overflow
-        return (packed2 - packed1) / 32;
-    }
-
-    ChronoPeriod until(AbstractNileDate end) {
-        long totalMonths = end.getProlepticMonth() - this.getProlepticMonth();  // safe
-        int days = end.getDayOfMonth() - this.getDayOfMonth();
-        if (totalMonths > 0 && days < 0) {
-            totalMonths--;
-            AbstractNileDate calcDate = this.plusMonths(totalMonths);
-            days = (int) (end.toEpochDay() - calcDate.toEpochDay());  // safe
-        } else if (totalMonths < 0 && days > 0) {
-            totalMonths++;
-            days -= end.lengthOfMonth();
-        }
-        long years = totalMonths / 13;  // safe
-        int months = (int) (totalMonths % 13);  // safe
-        return getChronology().period(Math.toIntExact(years), months, days);
-    }
-
-    //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
         long year = (long) getProlepticYear();
         long calendarEpochDay = ((year - 1) * 365) + Math.floorDiv(year, 4) + (getDayOfYear() - 1);
         return calendarEpochDay - getEpochDayDifference();
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Compares this date to another date, including the chronology.
-     * <p>
-     * Compares this date with another ensuring that the date is the same.
-     * <p>
-     * Only objects of this concrete type are compared, other types return false.
-     * To compare the dates of two {@code TemporalAccessor} instances, including dates
-     * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other date
-     */
-    @Override  // override for performance
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj != null && this.getClass() == obj.getClass()) {
-            AbstractNileDate otherDate = (AbstractNileDate) obj;
-            return this.getProlepticYear() == otherDate.getProlepticYear() &&
-                    this.getMonth() == otherDate.getMonth() &&
-                    this.getDayOfMonth() == otherDate.getDayOfMonth();
-        }
-        return false;
-    }
-
-    /**
-     * A hash code for this date.
-     *
-     * @return a suitable hash code based only on the Chronology and the date
-     */
-    @Override  // override for performance
-    public int hashCode() {
-        return getChronology().getId().hashCode() ^
-                ((getProlepticYear() & 0xFFFFF800) ^ ((getProlepticYear() << 11) +
-                        (getMonth() << 6) + (getDayOfMonth())));
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(30);
-        buf.append(getChronology().toString())
-                .append(" ")
-                .append(getEra())
-                .append(" ")
-                .append(getYearOfEra())
-                .append(getMonth() < 10 ? "-0" : "-").append(getMonth())
-                .append(getDayOfMonth() < 10 ? "-0" : "-").append(getDayOfMonth());
-        return buf.toString();
     }
 
 }
