@@ -31,13 +31,28 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.ERA;
+import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.DECADES;
+import static java.time.temporal.ChronoUnit.ERAS;
+import static java.time.temporal.ChronoUnit.MILLENNIA;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.WEEKS;
+import static java.time.temporal.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 
 import java.time.DateTimeException;
@@ -48,7 +63,11 @@ import java.time.Period;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+import java.time.temporal.WeekFields;
 import java.util.List;
 
 import org.testng.Assert;
@@ -134,7 +153,7 @@ public class TestCopticChronology {
     }
 
     @Test(dataProvider="samples")
-    public void test_CopticDate_until_CoptiDate(CopticDate coptic, LocalDate iso) {
+    public void test_CopticDate_until_CopticDate(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic.until(coptic), CopticChronology.INSTANCE.period(0, 0, 0));
     }
 
@@ -144,7 +163,7 @@ public class TestCopticChronology {
     }
 
     @Test(dataProvider="samples")
-    public void test_LocalDate_until_CoptiDate(CopticDate coptic, LocalDate iso) {
+    public void test_LocalDate_until_CopticDate(CopticDate coptic, LocalDate iso) {
         assertEquals(iso.until(coptic), Period.ZERO);
     }
 
@@ -351,6 +370,121 @@ public class TestCopticChronology {
     }
 
     //-----------------------------------------------------------------------
+    // CopticDate.range
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "ranges")
+    Object[][] data_ranges() {
+        return new Object[][] {
+                {1727, 1, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 2, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 3, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 4, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 5, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 6, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 7, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 8, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 9, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 10, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 11, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 12, 23, DAY_OF_MONTH, 1, 30},
+                {1727, 13, 2, DAY_OF_MONTH, 1, 6},
+                {1727, 1, 23, DAY_OF_YEAR, 1, 366},
+                {1727, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
+                {1727, 12, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
+                {1727, 13, 2, ALIGNED_WEEK_OF_MONTH, 1, 1},
+                
+                {1726, 13, 2, DAY_OF_MONTH, 1, 5},
+                {1726, 13, 2, DAY_OF_YEAR, 1, 365},
+                {1726, 13, 2, ALIGNED_WEEK_OF_MONTH, 1, 1},
+                
+                {1726, 2, 23, WeekFields.ISO.dayOfWeek(), 1, 7},
+        };
+    }
+
+    @Test(dataProvider = "ranges")
+    public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
+        assertEquals(CopticDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_range_unsupported() {
+        CopticDate.of(1727, 6, 30).range(MINUTE_OF_DAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // CopticDate.getLong
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "getLong")
+    Object[][] data_getLong() {
+        return new Object[][] {
+                {1727, 6, 8, DAY_OF_WEEK, 2},
+                {1727, 6, 8, DAY_OF_MONTH, 8},
+                {1727, 6, 8, DAY_OF_YEAR, 30 * 5 + 8},
+                {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1},
+                {1727, 6, 8, ALIGNED_WEEK_OF_MONTH, 2},
+                {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_YEAR, 4},
+                {1727, 6, 8, ALIGNED_WEEK_OF_YEAR, 23},
+                {1727, 6, 8, MONTH_OF_YEAR, 6},
+                {1727, 6, 8, PROLEPTIC_MONTH, 1727 * 13 + 6 - 1},
+                {1727, 6, 8, YEAR, 1727},
+                {1727, 6, 8, ERA, 1},
+                {1, 6, 8, ERA, 1},
+                {0, 6, 8, ERA, 0},
+                
+                {1727, 6, 8, WeekFields.ISO.dayOfWeek(), 2},
+        };
+    }
+
+    @Test(dataProvider = "getLong")
+    public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
+        assertEquals(CopticDate.of(year, month, dom).getLong(field), expected);
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_getLong_unsupported() {
+        CopticDate.of(1727, 6, 30).getLong(MINUTE_OF_DAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // CopticDate.with
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "with")
+    Object[][] data_with() {
+        return new Object[][] {
+                {1727, 6, 8, DAY_OF_WEEK, 4, 1727, 6, 10},
+                {1727, 6, 8, DAY_OF_MONTH, 30, 1727, 6, 30},
+                {1727, 6, 8, DAY_OF_YEAR, 365, 1727, 13, 5},
+                {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 1727, 6, 10},
+                {1727, 6, 8, ALIGNED_WEEK_OF_MONTH, 1, 1727, 6, 1},
+                {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 1727, 6, 6},
+                {1727, 6, 8, ALIGNED_WEEK_OF_YEAR, 22, 1727, 6, 1},
+                {1727, 6, 8, MONTH_OF_YEAR, 7, 1727, 7, 8},
+                {1727, 6, 8, PROLEPTIC_MONTH, 2009 * 13 + 3 - 1, 2009, 3, 8},
+                {1727, 6, 8, YEAR, 1728, 1728, 6, 8},
+                {1727, 6, 8, YEAR_OF_ERA, 2012, 2012, 6, 8},
+                {1727, 6, 8, ERA, 0, -1726, 6, 8},
+                
+                {1726, 3, 30, MONTH_OF_YEAR, 13, 1726, 13, 5},
+                {1727, 3, 30, MONTH_OF_YEAR, 13, 1727, 13, 6},
+                {1727, 13, 6, YEAR, 2006, 2006, 13, 5},
+                {-1727, 6, 8, YEAR_OF_ERA, 1722, -1721, 6, 8},
+                {1727, 6, 8, WeekFields.ISO.dayOfWeek(), 5, 1727, 6, 11},
+        };
+    }
+
+    @Test(dataProvider = "with")
+    public void test_with_TemporalField(int year, int month, int dom,
+            TemporalField field, long value,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(CopticDate.of(year, month, dom).with(field, value), CopticDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_with_TemporalField_unsupported() {
+        CopticDate.of(1727, 6, 30).with(MINUTE_OF_DAY, 0);
+    }
+
+    //-----------------------------------------------------------------------
     // CopticDate.with(TemporalAdjuster)
     //-----------------------------------------------------------------------
     @Test
@@ -398,6 +532,125 @@ public class TestCopticChronology {
         CopticDate coptic = CopticDate.of(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN.with(coptic);
         assertEquals(test, LocalDateTime.of(2012, 7, 6, 0, 0));
+    }
+
+    //-----------------------------------------------------------------------
+    // CopticDate.plus
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "plus")
+    Object[][] data_plus() {
+        return new Object[][] {
+                {1726, 5, 26, 0, DAYS, 1726, 5, 26},
+                {1726, 5, 26, 8, DAYS, 1726, 6, 4},
+                {1726, 5, 26, -3, DAYS, 1726, 5, 23},
+                {1726, 5, 26, 0, WEEKS, 1726, 5, 26},
+                {1726, 5, 26, 3, WEEKS, 1726, 6, 17},
+                {1726, 5, 26, -5, WEEKS, 1726, 4, 21},
+                {1726, 5, 26, 0, MONTHS, 1726, 5, 26},
+                {1726, 5, 26, 3, MONTHS, 1726, 8, 26},
+                {1726, 5, 26, -6, MONTHS, 1725, 12, 26},
+                {1726, 5, 26, 0, YEARS, 1726, 5, 26},
+                {1726, 5, 26, 3, YEARS, 1729, 5, 26},
+                {1726, 5, 26, -5, YEARS, 1721, 5, 26},
+                {1726, 5, 26, 0, DECADES, 1726, 5, 26},
+                {1726, 5, 26, 3, DECADES, 1756, 5, 26},
+                {1726, 5, 26, -5, DECADES, 1676, 5, 26},
+                {1726, 5, 26, 0, CENTURIES, 1726, 5, 26},
+                {1726, 5, 26, 3, CENTURIES, 2026, 5, 26},
+                {1726, 5, 26, -5, CENTURIES, 1226, 5, 26},
+                {1726, 5, 26, 0, MILLENNIA, 1726, 5, 26},
+                {1726, 5, 26, 3, MILLENNIA, 4726, 5, 26},
+                {1726, 5, 26, -5, MILLENNIA, 1726 - 5000, 5, 26},
+                {1726, 5, 26, -1, ERAS, -1725, 5, 26},
+        };
+    }
+
+    @Test(dataProvider = "plus")
+    public void test_plus_TemporalUnit(int year, int month, int dom,
+            long amount, TemporalUnit unit,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(CopticDate.of(year, month, dom).plus(amount, unit), CopticDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(dataProvider = "plus")
+    public void test_minus_TemporalUnit(
+            int expectedYear, int expectedMonth, int expectedDom,
+            long amount, TemporalUnit unit,
+            int year, int month, int dom) {
+        assertEquals(CopticDate.of(year, month, dom).minus(amount, unit), CopticDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_plus_TemporalUnit_unsupported() {
+        CopticDate.of(1727, 6, 30).plus(0, MINUTES);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plus_Period() {
+        assertEquals(CopticDate.of(1727, 5, 26).plus(CopticChronology.INSTANCE.period(0, 2, 3)), CopticDate.of(1727, 7, 29));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_plus_Period_ISO() {
+        assertEquals(CopticDate.of(1727, 5, 26).plus(Period.ofMonths(2)), CopticDate.of(1727, 7, 26));
+    }
+
+    @Test
+    public void test_minus_Period() {
+        assertEquals(CopticDate.of(1727, 5, 26).minus(CopticChronology.INSTANCE.period(0, 2, 3)), CopticDate.of(1727, 3, 23));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_minus_Period_ISO() {
+        assertEquals(CopticDate.of(1727, 5, 26).minus(Period.ofMonths(2)), CopticDate.of(1727, 3, 26));
+    }
+
+    //-----------------------------------------------------------------------
+    // CopticDate.until
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "until")
+    Object[][] data_until() {
+        return new Object[][] {
+                {1726, 5, 26, 1726, 5, 26, DAYS, 0},
+                {1726, 5, 26, 1726, 6, 1, DAYS, 5},
+                {1726, 5, 26, 1726, 5, 20, DAYS, -6},
+                {1726, 5, 26, 1726, 5, 26, WEEKS, 0},
+                {1726, 5, 26, 1726, 6, 2, WEEKS, 0},
+                {1726, 5, 26, 1726, 6, 3, WEEKS, 1},
+                {1726, 5, 26, 1726, 5, 26, MONTHS, 0},
+                {1726, 5, 26, 1726, 6, 25, MONTHS, 0},
+                {1726, 5, 26, 1726, 6, 26, MONTHS, 1},
+                {1726, 5, 26, 1726, 5, 26, YEARS, 0},
+                {1726, 5, 26, 1727, 5, 25, YEARS, 0},
+                {1726, 5, 26, 1727, 5, 26, YEARS, 1},
+                {1726, 5, 26, 1726, 5, 26, DECADES, 0},
+                {1726, 5, 26, 1736, 5, 25, DECADES, 0},
+                {1726, 5, 26, 1736, 5, 26, DECADES, 1},
+                {1726, 5, 26, 1726, 5, 26, CENTURIES, 0},
+                {1726, 5, 26, 1826, 5, 25, CENTURIES, 0},
+                {1726, 5, 26, 1826, 5, 26, CENTURIES, 1},
+                {1726, 5, 26, 1726, 5, 26, MILLENNIA, 0},
+                {1726, 5, 26, 2726, 5, 25, MILLENNIA, 0},
+                {1726, 5, 26, 2726, 5, 26, MILLENNIA, 1},
+        };
+    }
+
+    @Test(dataProvider = "until")
+    public void test_until_TemporalUnit(
+            int year1, int month1, int dom1,
+            int year2, int month2, int dom2,
+            TemporalUnit unit, long expected) {
+        CopticDate start = CopticDate.of(year1, month1, dom1);
+        CopticDate end = CopticDate.of(year2, month2, dom2);
+        assertEquals(start.until(end, unit), expected);
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_until_TemporalUnit_unsupported() {
+        CopticDate start = CopticDate.of(1726, 6, 30);
+        CopticDate end = CopticDate.of(1726, 7, 1);
+        start.until(end, MINUTES);
     }
 
     //-----------------------------------------------------------------------
