@@ -108,8 +108,9 @@ public final class JulianChronology extends AbstractChronology implements Serial
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
-     * Use the singleton {@link #INSTANCE} instead.
+     * @deprecated Use the singleton {@link #INSTANCE} instead.
      */
+    @Deprecated
     public JulianChronology() {
     }
 
