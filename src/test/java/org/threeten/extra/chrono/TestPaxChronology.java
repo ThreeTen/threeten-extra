@@ -1,6 +1,4 @@
 /*
- *  Some of this code is under copyright from other authors.
- *
  * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
