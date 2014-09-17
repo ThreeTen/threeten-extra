@@ -57,6 +57,21 @@ import org.testng.annotations.Test;
 @Test
 @SuppressWarnings({ "static-method", "javadoc", "checkstyle:magicnumber", "checkstyle:javadocmethod", "checkstyle:designforextension" })
 public class TestPaxChronology {
+
+    // -----------------------------------------------------------------------
+    // Chrono.ofName("Pax") Lookup by name
+    // -----------------------------------------------------------------------
+    @Test
+    @SuppressWarnings("checkstyle:multiplestringliterals")
+    public void test_chronology_of_name() {
+        final Chronology c = PaxChronology.INSTANCE;
+        final Chronology test = Chronology.of("Pax");
+        Assert.assertNotNull(test, "The Pax calendar could not be found byName");
+        Assert.assertEquals(test.getId(), "Pax", "ID mismatch");
+        Assert.assertEquals(test.getCalendarType(), null, "Value provided");
+        Assert.assertEquals(test, c);
+    }
+
     // -----------------------------------------------------------------------
     // with(WithAdjuster)
     // -----------------------------------------------------------------------
@@ -93,20 +108,6 @@ public class TestPaxChronology {
     @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
     public void testBadDates(final int year, final int month, final int dom) {
         PaxChronology.INSTANCE.date(year, month, dom);
-    }
-
-    // -----------------------------------------------------------------------
-    // Chrono.ofName("Pax") Lookup by name
-    // -----------------------------------------------------------------------
-    @Test
-    @SuppressWarnings("checkstyle:multiplestringliterals")
-    public void test_chronology_of_name() {
-        final Chronology c = PaxChronology.INSTANCE;
-        final Chronology test = Chronology.of("Pax");
-        Assert.assertNotNull(test, "The Pax calendar could not be found byName");
-        Assert.assertEquals(test.getId(), "Pax", "ID mismatch");
-        Assert.assertEquals(test.getCalendarType(), null, "Value provided");
-        Assert.assertEquals(test, c);
     }
 
     @Test
