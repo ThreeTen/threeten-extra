@@ -1,4 +1,4 @@
-package ext.site.temp;
+package org.threeten.extra.chrono;
 
 import java.time.Clock;
 import java.time.DateTimeException;
@@ -16,8 +16,8 @@ import org.testng.annotations.Test;
  */
 @Test
 @SuppressWarnings({ "static-method", "javadoc", "checkstyle:magicnumber", "checkstyle:javadocmethod", "checkstyle:javadocvariable",
-    "checkstyle:designforextension",
-    "checkstyle:multiplestringliterals", })
+        "checkstyle:designforextension",
+        "checkstyle:multiplestringliterals", })
 // TODO: Correct data for calendar system.
 public class TestPaxDate {
 

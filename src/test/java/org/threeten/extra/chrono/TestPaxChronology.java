@@ -31,7 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ext.site.temp;
+package org.threeten.extra.chrono;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;

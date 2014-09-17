@@ -31,12 +31,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ext.site.temp;
+package org.threeten.extra.chrono;
 
-import static ext.site.temp.PaxChronology.DAYS_IN_MONTH;
-import static ext.site.temp.PaxChronology.DAYS_IN_WEEK;
-import static ext.site.temp.PaxChronology.DAYS_IN_YEAR;
-import static ext.site.temp.PaxChronology.MONTHS_IN_YEAR;
 import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
 import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
@@ -45,6 +41,10 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
+import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_MONTH;
+import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_WEEK;
+import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_YEAR;
+import static org.threeten.extra.chrono.PaxChronology.MONTHS_IN_YEAR;
 
 import java.io.Serializable;
 import java.time.Clock;
