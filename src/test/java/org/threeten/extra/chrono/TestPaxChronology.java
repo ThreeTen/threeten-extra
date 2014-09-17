@@ -84,6 +84,80 @@ public class TestPaxChronology {
     }
 
     // -----------------------------------------------------------------------
+    // creation, toLocalDate()
+    // -----------------------------------------------------------------------
+    @DataProvider(name = "samples")
+    @SuppressWarnings("checkstyle:indentation")
+    Object[][] data_samples() {
+        return new Object[][] { { PaxChronology.INSTANCE.date(1, 1, 1), LocalDate.of(0, 12, 31) },
+            { PaxChronology.INSTANCE.date(1, 1, 2), LocalDate.of(1, 1, 1) },
+            { PaxChronology.INSTANCE.date(1, 1, 3), LocalDate.of(1, 1, 2) },
+            { PaxChronology.INSTANCE.date(2, 1, 1), LocalDate.of(1, 12, 30) },
+            { PaxChronology.INSTANCE.date(3, 1, 1), LocalDate.of(2, 12, 29) },
+            { PaxChronology.INSTANCE.date(3, 11, 15), LocalDate.of(3, 10, 25) },
+            { PaxChronology.INSTANCE.date(2014, 3, 5), LocalDate.of(2014, 3, 3) },
+            { PaxChronology.INSTANCE.date(2014, 11, 23), LocalDate.of(2014, 10, 28) },
+            { PaxChronology.INSTANCE.date(2014, 11, 24), LocalDate.of(2014, 10, 29) },
+        };
+    }
+    
+    @Test(dataProvider = "samples")
+    public void test_LocalDate_from_PaxDate(final ChronoLocalDate ddate, final LocalDate iso) {
+        assertEquals(LocalDate.from(ddate), iso);
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_Chronology_date_Temporal(final ChronoLocalDate ddate, final LocalDate iso) {
+        assertEquals(PaxChronology.INSTANCE.date(iso), ddate);
+    }
+
+    @DataProvider(name = "badDates")
+    @SuppressWarnings("checkstyle:indentation")
+    Object[][] data_badDates() {
+        return new Object[][] { { 2012, 0, 1 },
+                { 2012, 1, 0 },
+                { 2012, 0, 0 },
+                { 2012, -1, 1 },
+                { 2012, 0, 1 },
+                { 2012, 15, 1 },
+                { 2012, 16, 1 },
+                { 2012, 1, -1 },
+                { 2012, 1, 0 },
+                { 2012, 1, 29 },
+                { 2012, 13, -1 },
+                { 2012, 13, 0 },
+                { 2012, 13, 8 },
+        };
+    }
+
+    @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
+    public void test_badDates(final int year, final int month, final int dom) {
+        PaxChronology.INSTANCE.date(year, month, dom);
+    }
+
+    @Test(dataProvider = "PaxEras")
+    public void test_Chronology_eraOf(final Era era, final int eraValue, final String name) {
+        assertEquals(era.getValue(), eraValue, "EraValue");
+        assertEquals(era.toString(), name, "Era Name");
+        assertEquals(era, PaxChronology.INSTANCE.eraOf(eraValue), "PaxChrono.eraOf()");
+        final List<Era> eras = PaxChronology.INSTANCE.eras();
+        assertTrue(eras.contains(era), "Era is not present in PaxChrono.INSTANCE.eras()");
+    }
+
+    @Test
+    public void test_Chronology_eraOf_invalid() {
+        final int[] badEras = { -500, -498, -497, -1, 2, 3, 500 };
+        for (final int badEra : badEras) {
+            try {
+                final Era era = PaxChronology.INSTANCE.eraOf(badEra);
+                fail("PaxChrono.eraOf returned " + era + " + for invalid eraValue " + badEra);
+            } catch (final DateTimeException ex) {
+                assertTrue(true, "Exception caught");
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------
     // with(WithAdjuster)
     // -----------------------------------------------------------------------
     @Test
@@ -116,95 +190,21 @@ public class TestPaxChronology {
         jdate.with(Month.APRIL);
     }
 
-    @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
-    public void test_badDates(final int year, final int month, final int dom) {
-        PaxChronology.INSTANCE.date(year, month, dom);
-    }
-
-    @Test
-    public void testEqualsFalse() {
-        assertFalse(PaxChronology.INSTANCE.equals(IsoChronology.INSTANCE));
-    }
-
-    // -----------------------------------------------------------------------
-    // equals()
-    // -----------------------------------------------------------------------
-    @Test
-    public void test_equals() {
-        assertTrue(PaxChronology.INSTANCE.equals(PaxChronology.INSTANCE));
-    }
-
-    @Test(dataProvider = "samples")
-    public void test_Chronology_date_Temporal(final ChronoLocalDate ddate, final LocalDate iso) {
-        assertEquals(PaxChronology.INSTANCE.date(iso), ddate);
-    }
-
     // -----------------------------------------------------------------------
     // LocalDate.with(PaxDate)
     // -----------------------------------------------------------------------
     @Test
-    public void testLocalDateAdjustToPaxDate() {
+    public void test_LocalDate_adjustToPaxDate() {
         final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
         final LocalDate test = LocalDate.MIN.with(jdate);
         assertEquals(test, LocalDate.of(2014, 6, 29));
     }
 
     @Test
-    public void testLocalDateTimeAdjustToPaxDate() {
+    public void test_LocalDateTime_adjustToPaxDate() {
         final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
         final LocalDateTime test = LocalDateTime.MIN.with(jdate);
         assertEquals(test, LocalDateTime.of(2014, 6, 29, 0, 0));
-    }
-
-    @Test
-    public void test_Chronology_eraOf_invalid() {
-        final int[] badEras = { -500, -498, -497, -1, 2, 3, 500 };
-        for (final int badEra : badEras) {
-            try {
-                final Era era = PaxChronology.INSTANCE.eraOf(badEra);
-                fail("PaxChrono.eraOf returned " + era + " + for invalid eraValue " + badEra);
-            } catch (final DateTimeException ex) {
-                assertTrue(true, "Exception caught");
-            }
-        }
-    }
-
-    @Test(dataProvider = "PaxEras")
-    public void test_Chronology_eraOf(final Era era, final int eraValue, final String name) {
-        assertEquals(era.getValue(), eraValue, "EraValue");
-        assertEquals(era.toString(), name, "Era Name");
-        assertEquals(era, PaxChronology.INSTANCE.eraOf(eraValue), "PaxChrono.eraOf()");
-        final List<Era> eras = PaxChronology.INSTANCE.eras();
-        assertTrue(eras.contains(era), "Era is not present in PaxChrono.INSTANCE.eras()");
-    }
-
-    @Test(dataProvider = "samples")
-    public void test_LocalDate_from_JulianDate(final ChronoLocalDate ddate, final LocalDate iso) {
-        assertEquals(LocalDate.from(ddate), iso);
-    }
-
-    @Test(dataProvider = "toString")
-    public void test_toString(final ChronoLocalDate ddate, final String expected) {
-        assertEquals(ddate.toString(), expected);
-    }
-
-    @DataProvider(name = "badDates")
-    @SuppressWarnings("checkstyle:indentation")
-    Object[][] dataBadDates() {
-        return new Object[][] { { 2012, 0, 1 },
-                { 2012, 1, 0 },
-                { 2012, 0, 0 },
-                { 2012, -1, 1 },
-                { 2012, 0, 1 },
-                { 2012, 15, 1 },
-                { 2012, 16, 1 },
-                { 2012, 1, -1 },
-                { 2012, 1, 0 },
-                { 2012, 1, 29 },
-                { 2012, 13, -1 },
-                { 2012, 13, 0 },
-                { 2012, 13, 8 },
-        };
     }
 
     // -----------------------------------------------------------------------
@@ -216,22 +216,18 @@ public class TestPaxChronology {
         return new Object[][] { { PaxEra.BCE, 0, "BCE" }, { PaxEra.CE, 1, "CE" }, };
     }
 
+
     // -----------------------------------------------------------------------
-    // creation, toLocalDate()
+    // equals()
     // -----------------------------------------------------------------------
-    @DataProvider(name = "samples")
-    @SuppressWarnings("checkstyle:indentation")
-    Object[][] data_samples() {
-        return new Object[][] { { PaxChronology.INSTANCE.date(1, 1, 1), LocalDate.of(0, 12, 31) },
-                { PaxChronology.INSTANCE.date(1, 1, 2), LocalDate.of(1, 1, 1) },
-                { PaxChronology.INSTANCE.date(1, 1, 3), LocalDate.of(1, 1, 2) },
-                { PaxChronology.INSTANCE.date(2, 1, 1), LocalDate.of(1, 12, 30) },
-                { PaxChronology.INSTANCE.date(3, 1, 1), LocalDate.of(2, 12, 29) },
-                { PaxChronology.INSTANCE.date(3, 11, 15), LocalDate.of(3, 10, 25) },
-                { PaxChronology.INSTANCE.date(2014, 3, 5), LocalDate.of(2014, 3, 3) },
-                { PaxChronology.INSTANCE.date(2014, 11, 23), LocalDate.of(2014, 10, 28) },
-                { PaxChronology.INSTANCE.date(2014, 11, 24), LocalDate.of(2014, 10, 29) },
-        };
+    @Test
+    public void test_equals() {
+        assertTrue(PaxChronology.INSTANCE.equals(PaxChronology.INSTANCE));
+    }
+
+    @Test
+    public void testEqualsFalse() {
+        assertFalse(PaxChronology.INSTANCE.equals(IsoChronology.INSTANCE));
     }
 
     // -----------------------------------------------------------------------
@@ -244,6 +240,11 @@ public class TestPaxChronology {
                 { PaxChronology.INSTANCE.date(-8, 1, 28), "Pax BCE 0007-01-28" },
                 { PaxChronology.INSTANCE.date(2012, 13, 4), "Pax CE 2012-13-04" },
                 { PaxChronology.INSTANCE.date(2014, 4, 27), "Pax CE 2014-04-27" }, };
+    }
+
+    @Test(dataProvider = "toString")
+    public void test_toString(final ChronoLocalDate ddate, final String expected) {
+        assertEquals(ddate.toString(), expected);
     }
 
 }
