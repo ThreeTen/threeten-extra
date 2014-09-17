@@ -87,20 +87,41 @@ public class TestPaxChronology {
     // creation, toLocalDate()
     // -----------------------------------------------------------------------
     @DataProvider(name = "samples")
-    @SuppressWarnings("checkstyle:indentation")
     Object[][] data_samples() {
-        return new Object[][] { { PaxChronology.INSTANCE.date(1, 1, 1), LocalDate.of(0, 12, 31) },
-            { PaxChronology.INSTANCE.date(1, 1, 2), LocalDate.of(1, 1, 1) },
-            { PaxChronology.INSTANCE.date(1, 1, 3), LocalDate.of(1, 1, 2) },
-            { PaxChronology.INSTANCE.date(2, 1, 1), LocalDate.of(1, 12, 30) },
-            { PaxChronology.INSTANCE.date(3, 1, 1), LocalDate.of(2, 12, 29) },
-            { PaxChronology.INSTANCE.date(3, 11, 15), LocalDate.of(3, 10, 25) },
-            { PaxChronology.INSTANCE.date(2014, 3, 5), LocalDate.of(2014, 3, 3) },
-            { PaxChronology.INSTANCE.date(2014, 11, 23), LocalDate.of(2014, 10, 28) },
-            { PaxChronology.INSTANCE.date(2014, 11, 24), LocalDate.of(2014, 10, 29) },
+        return new Object[][] {
+            {PaxDate.of(1, 1, 1), LocalDate.of(0, 12, 31) },
+            {PaxDate.of(1, 1, 2), LocalDate.of(1, 1, 1) },
+            {PaxDate.of(1, 1, 3), LocalDate.of(1, 1, 2) },
+
+            {PaxDate.of(1, 1, 28), LocalDate.of(1, 1, 27) },
+            {PaxDate.of(1, 2, 1), LocalDate.of(1, 1, 28) },
+            {PaxDate.of(1, 2, 2), LocalDate.of(1, 1, 29) },
+            {PaxDate.of(1, 2, 3), LocalDate.of(1, 1, 30) },
+
+            {PaxDate.of(6, 13, 6), LocalDate.of(4, 12, 1) },
+            {PaxDate.of(6, 13, 7), LocalDate.of(4, 12, 2) },
+            {PaxDate.of(6, 14, 1), LocalDate.of(6, 12, 3) },
+            {PaxDate.of(6, 14, 2), LocalDate.of(6, 12, 4) },
+            {PaxDate.of(6, 14, 3), LocalDate.of(6, 12, 5) },
+
+            {PaxDate.of(400, 13, 27), LocalDate.of(400, 12, 29) },
+            {PaxDate.of(400, 13, 28), LocalDate.of(400, 12, 30) },
+            {PaxDate.of(401, 1, 1), LocalDate.of(400, 12, 31) },
+            {PaxDate.of(401, 1, 2), LocalDate.of(401, 1, 1) },
+            {PaxDate.of(401, 1, 3), LocalDate.of(401, 1, 2) },
+
+            {PaxDate.of(0, 13, 28), LocalDate.of(0, 12, 30) },
+            {PaxDate.of(0, 13, 27), LocalDate.of(0, 12, 29) },
+
+            {PaxDate.of(1582, 10, 4), LocalDate.of(1582, 9, 9) },
+            {PaxDate.of(1582, 10, 5), LocalDate.of(1582, 9, 10) },
+            {PaxDate.of(1945, 10, 27), LocalDate.of(1945, 10, 6) },
+
+            {PaxDate.of(2012, 6, 22), LocalDate.of(2012, 6, 4) },
+            {PaxDate.of(2012, 6, 23), LocalDate.of(2012, 6, 5) },
         };
     }
-    
+
     @Test(dataProvider = "samples")
     public void test_LocalDate_from_PaxDate(final ChronoLocalDate ddate, final LocalDate iso) {
         assertEquals(LocalDate.from(ddate), iso);
