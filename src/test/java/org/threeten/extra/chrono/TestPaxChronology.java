@@ -47,6 +47,7 @@ import java.time.chrono.IsoChronology;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -59,17 +60,27 @@ import org.testng.annotations.Test;
 public class TestPaxChronology {
 
     // -----------------------------------------------------------------------
-    // Chrono.ofName("Pax") Lookup by name
+    // Chronology.of(String)
     // -----------------------------------------------------------------------
     @Test
     @SuppressWarnings("checkstyle:multiplestringliterals")
     public void test_chronology_of_name() {
-        final Chronology c = PaxChronology.INSTANCE;
-        final Chronology test = Chronology.of("Pax");
-        Assert.assertNotNull(test, "The Pax calendar could not be found byName");
-        Assert.assertEquals(test.getId(), "Pax", "ID mismatch");
-        Assert.assertEquals(test.getCalendarType(), null, "Value provided");
-        Assert.assertEquals(test, c);
+        final Chronology chrono = Chronology.of("Pax");
+        Assert.assertNotNull(chrono);
+        Assert.assertEquals(chrono, PaxChronology.INSTANCE);
+        Assert.assertEquals(chrono.getId(), "Pax");
+        Assert.assertEquals(chrono.getCalendarType(), null);
+    }
+
+    @Test
+    @Ignore
+    // Ignored because no Pax CDML entry.
+    public void test_chronology_of_name_id() {
+        Chronology chrono = Chronology.of("pax");
+        Assert.assertNotNull(chrono);
+        Assert.assertEquals(chrono, PaxChronology.INSTANCE);
+        Assert.assertEquals(chrono.getId(), "Pax");
+        Assert.assertEquals(chrono.getCalendarType(), "pax");
     }
 
     // -----------------------------------------------------------------------
