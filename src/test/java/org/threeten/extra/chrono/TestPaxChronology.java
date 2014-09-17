@@ -191,27 +191,53 @@ public class TestPaxChronology {
     }
 
     @DataProvider(name = "badDates")
-    @SuppressWarnings("checkstyle:indentation")
     Object[][] data_badDates() {
-        return new Object[][] { { 2012, 0, 1 },
-                { 2012, 1, 0 },
-                { 2012, 0, 0 },
-                { 2012, -1, 1 },
-                { 2012, 0, 1 },
-                { 2012, 15, 1 },
-                { 2012, 16, 1 },
-                { 2012, 1, -1 },
-                { 2012, 1, 0 },
-                { 2012, 1, 29 },
-                { 2012, 13, -1 },
-                { 2012, 13, 0 },
-                { 2012, 13, 8 },
+        return new Object[][] {
+            {2012, 0, 0 },
+
+            {2012, 0, 1 },
+            {2012, 1, 1 },
+            {2012, -1, 1 },
+            {2012, 0, 1 },
+            {2012, 15, 1 },
+            {2012, 16, 1 },
+
+            {2012, 1, -1 },
+            {2012, 1, 0 },
+            {2012, 1, 29 },
+
+            {2012, 13, -1 },
+            {2012, 13, 0 },
+            {2012, 13, 8 },
+            {2012, 14, -1 },
+            {2012, 14, 0 },
+            {2012, 14, 29 },
+            {2012, 14, 30 },
+
+            {2011, 13, -1 },
+            {2011, 13, 0 },
+            {2011, 14, 29 },
+            {2011, 14, 30 },
+            {2011, 14, 1 },
+            {2011, 14, 2 },
+
+            {2012, 2, 29 },
+            {2012, 3, 29 },
+            {2012, 4, 29 },
+            {2012, 5, 29 },
+            {2012, 6, 29 },
+            {2012, 7, 29 },
+            {2012, 8, 29 },
+            {2012, 9, 29 },
+            {2012, 10, 29 },
+            {2012, 11, 29 },
+            {2012, 12, 29 },
         };
     }
 
     @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
     public void test_badDates(final int year, final int month, final int dom) {
-        PaxChronology.INSTANCE.date(year, month, dom);
+        PaxDate.of(year, month, dom);
     }
 
     @Test(dataProvider = "PaxEras")
