@@ -123,8 +123,8 @@ public class TestPaxChronology {
     }
 
     @Test(dataProvider = "samples")
-    public void test_LocalDate_from_PaxDate(final ChronoLocalDate ddate, final LocalDate iso) {
-        assertEquals(LocalDate.from(ddate), iso);
+    public void test_LocalDate_from_PaxDate(final PaxDate pax, final LocalDate iso) {
+        assertEquals(LocalDate.from(pax), iso);
     }
 
     @Test(dataProvider = "samples")
