@@ -31,6 +31,7 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -40,6 +41,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.Period;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
@@ -128,8 +130,64 @@ public class TestPaxChronology {
     }
 
     @Test(dataProvider = "samples")
-    public void test_Chronology_date_Temporal(final ChronoLocalDate ddate, final LocalDate iso) {
-        assertEquals(PaxChronology.INSTANCE.date(iso), ddate);
+    public void test_PaxDate_from_LocalDate(PaxDate pax, LocalDate iso) {
+        assertEquals(PaxDate.from(iso), pax);
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_PaxDate_chronology_dateEpochDay(PaxDate pax, LocalDate iso) {
+        assertEquals(PaxChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), pax);
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_PaxDate_toEpochDay(PaxDate pax, LocalDate iso) {
+        assertEquals(pax.toEpochDay(), iso.toEpochDay());
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_PaxDate_until_CoptiDate(PaxDate pax, LocalDate iso) {
+        assertEquals(pax.until(pax), PaxChronology.INSTANCE.period(0, 0, 0));
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_PaxDate_until_LocalDate(PaxDate pax, LocalDate iso) {
+        assertEquals(pax.until(iso), PaxChronology.INSTANCE.period(0, 0, 0));
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_LocalDate_until_CoptiDate(PaxDate pax, LocalDate iso) {
+        assertEquals(iso.until(pax), Period.ZERO);
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_Chronology_date_Temporal(PaxDate pax, LocalDate iso) {
+        assertEquals(PaxChronology.INSTANCE.date(iso), pax);
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_plusDays(PaxDate pax, LocalDate iso) {
+        assertEquals(LocalDate.from(pax.plus(0, DAYS)), iso);
+        assertEquals(LocalDate.from(pax.plus(1, DAYS)), iso.plusDays(1));
+        assertEquals(LocalDate.from(pax.plus(35, DAYS)), iso.plusDays(35));
+        assertEquals(LocalDate.from(pax.plus(-1, DAYS)), iso.plusDays(-1));
+        assertEquals(LocalDate.from(pax.plus(-60, DAYS)), iso.plusDays(-60));
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_minusDays(PaxDate pax, LocalDate iso) {
+        assertEquals(LocalDate.from(pax.minus(0, DAYS)), iso);
+        assertEquals(LocalDate.from(pax.minus(1, DAYS)), iso.minusDays(1));
+        assertEquals(LocalDate.from(pax.minus(35, DAYS)), iso.minusDays(35));
+        assertEquals(LocalDate.from(pax.minus(-1, DAYS)), iso.minusDays(-1));
+        assertEquals(LocalDate.from(pax.minus(-60, DAYS)), iso.minusDays(-60));
+    }
+
+    @Test(dataProvider = "samples")
+    public void test_until_DAYS(PaxDate pax, LocalDate iso) {
+        assertEquals(pax.until(iso.plusDays(0), DAYS), 0);
+        assertEquals(pax.until(iso.plusDays(1), DAYS), 1);
+        assertEquals(pax.until(iso.plusDays(35), DAYS), 35);
+        assertEquals(pax.until(iso.minusDays(40), DAYS), -40);
     }
 
     @DataProvider(name = "badDates")
