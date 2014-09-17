@@ -100,7 +100,7 @@ public class TestPaxChronology {
     // -----------------------------------------------------------------------
     @Test
     @SuppressWarnings("checkstyle:multiplestringliterals")
-    public void testChronoByName() {
+    public void test_chronology_of_name() {
         final Chronology c = PaxChronology.INSTANCE;
         final Chronology test = Chronology.of("Pax");
         Assert.assertNotNull(test, "The Pax calendar could not be found byName");
