@@ -239,6 +239,11 @@ public class TestPaxChronology {
     public void test_badDates(final int year, final int month, final int dom) {
         PaxDate.of(year, month, dom);
     }
+    
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_chronology_dateYearDay_badDate() {
+        PaxChronology.INSTANCE.dateYearDay(2001, 365);
+    }
 
     @Test(dataProvider = "PaxEras")
     public void test_Chronology_eraOf(final Era era, final int eraValue, final String name) {
