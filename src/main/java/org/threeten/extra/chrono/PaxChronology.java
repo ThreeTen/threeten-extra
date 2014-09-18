@@ -151,6 +151,22 @@ public final class PaxChronology extends AbstractChronology implements Serializa
         return PaxDate.ofEpochDay(epochDay);
     }
 
+    /**
+     * Obtains a local date in Pax calendar system from the
+     * era, year-of-era and day-of-year fields.
+     *
+     * @param era the Pax era, not null
+     * @param yearOfEra the year-of-era
+     * @param dayOfYear the day-of-year
+     * @return the Pax local date, not null
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
+     */
+    @Override
+    public PaxDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
+        return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
+    }
+    
     @Override
     public PaxDate dateYearDay(final int prolepticYear, final int dayOfYear) {
         return PaxDate.ofYearDay(prolepticYear, dayOfYear);
