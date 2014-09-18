@@ -380,8 +380,8 @@ public class TestPaxChronology {
     }
 
     public void test_Chronology_eraOf() {
-        assertEquals(PaxChronology.INSTANCE.eraOf(1), JulianEra.AD);
-        assertEquals(PaxChronology.INSTANCE.eraOf(0), JulianEra.BC);
+        assertEquals(PaxChronology.INSTANCE.eraOf(1), PaxEra.CE);
+        assertEquals(PaxChronology.INSTANCE.eraOf(0), PaxEra.BCE);
     }
 
     @Test
