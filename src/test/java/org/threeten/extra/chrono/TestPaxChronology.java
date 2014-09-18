@@ -31,12 +31,17 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -59,6 +64,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -450,6 +456,40 @@ public class TestPaxChronology {
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_range_unsupported() {
         PaxDate.of(2012, 6, 28).range(MINUTE_OF_DAY);
+    }
+
+    // -----------------------------------------------------------------------
+    // PaxDate.getLong
+    // -----------------------------------------------------------------------
+    @DataProvider(name = "getLong")
+    Object[][] data_getLong() {
+        return new Object[][] {
+            {2014, 5, 26, DAY_OF_WEEK, 4},
+            {2014, 5, 26, DAY_OF_MONTH, 26},
+            {2014, 5, 26, DAY_OF_YEAR, 28 + 28 + 28 + 28 + 26},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 4},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 4},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 4},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 20},
+            {2014, 5, 26, MONTH_OF_YEAR, 5},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2014 * 13 + 340 - 3},
+            {2014, 5, 26, YEAR, 2014},
+            {2014, 5, 26, ERA, 1},
+            {1, 6, 8, ERA, 1},
+            {0, 6, 8, ERA, 0},
+
+            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 4},
+        };
+    }
+
+    @Test(dataProvider = "getLong")
+    public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
+        assertEquals(PaxDate.of(year, month, dom).getLong(field), expected);
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_getLong_unsupported() {
+        PaxDate.of(2012, 6, 28).getLong(MINUTE_OF_DAY);
     }
 
     // -----------------------------------------------------------------------
