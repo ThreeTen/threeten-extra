@@ -32,6 +32,7 @@
 package org.threeten.extra.chrono;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
 import java.time.chrono.AbstractChronology;
 import java.time.chrono.Era;
 import java.time.temporal.ChronoField;
@@ -118,6 +119,23 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     private PaxChronology() {
     }
 
+    /**
+     * Obtains a local date in Pax calendar system from the
+     * era, year-of-era, month-of-year and day-of-month fields.
+     *
+     * @param era the Pax era, not null
+     * @param yearOfEra the year-of-era
+     * @param month the month-of-year 
+     * @param dayOfMonth the day-of-month
+     * @return the Pax local date, not null 
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
+     */
+    @Override
+    public PaxDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+        return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
+    }
+    
     @Override
     public PaxDate date(final int prolepticYear, final int month, final int dayOfMonth) {
         return PaxDate.of(prolepticYear, month, dayOfMonth);
