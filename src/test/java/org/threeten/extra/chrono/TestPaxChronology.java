@@ -59,7 +59,7 @@ import org.testng.annotations.Test;
  * @author Clockwork-Muse
  */
 @Test
-@SuppressWarnings({ "static-method", "javadoc", "checkstyle:magicnumber", "checkstyle:javadocmethod", "checkstyle:designforextension" })
+@SuppressWarnings({"static-method", "javadoc", "checkstyle:magicnumber", "checkstyle:javadocmethod", "checkstyle:designforextension"})
 public class TestPaxChronology {
 
     // -----------------------------------------------------------------------
@@ -92,36 +92,36 @@ public class TestPaxChronology {
     @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
-            {PaxDate.of(1, 1, 1), LocalDate.of(0, 12, 31) },
-            {PaxDate.of(1, 1, 2), LocalDate.of(1, 1, 1) },
-            {PaxDate.of(1, 1, 3), LocalDate.of(1, 1, 2) },
+            {PaxDate.of(1, 1, 1), LocalDate.of(0, 12, 31)},
+            {PaxDate.of(1, 1, 2), LocalDate.of(1, 1, 1)},
+            {PaxDate.of(1, 1, 3), LocalDate.of(1, 1, 2)},
 
-            {PaxDate.of(1, 1, 28), LocalDate.of(1, 1, 27) },
-            {PaxDate.of(1, 2, 1), LocalDate.of(1, 1, 28) },
-            {PaxDate.of(1, 2, 2), LocalDate.of(1, 1, 29) },
-            {PaxDate.of(1, 2, 3), LocalDate.of(1, 1, 30) },
+            {PaxDate.of(1, 1, 28), LocalDate.of(1, 1, 27)},
+            {PaxDate.of(1, 2, 1), LocalDate.of(1, 1, 28)},
+            {PaxDate.of(1, 2, 2), LocalDate.of(1, 1, 29)},
+            {PaxDate.of(1, 2, 3), LocalDate.of(1, 1, 30)},
 
-            {PaxDate.of(6, 13, 6), LocalDate.of(4, 12, 1) },
-            {PaxDate.of(6, 13, 7), LocalDate.of(4, 12, 2) },
-            {PaxDate.of(6, 14, 1), LocalDate.of(6, 12, 3) },
-            {PaxDate.of(6, 14, 2), LocalDate.of(6, 12, 4) },
-            {PaxDate.of(6, 14, 3), LocalDate.of(6, 12, 5) },
+            {PaxDate.of(6, 13, 6), LocalDate.of(4, 12, 1)},
+            {PaxDate.of(6, 13, 7), LocalDate.of(4, 12, 2)},
+            {PaxDate.of(6, 14, 1), LocalDate.of(6, 12, 3)},
+            {PaxDate.of(6, 14, 2), LocalDate.of(6, 12, 4)},
+            {PaxDate.of(6, 14, 3), LocalDate.of(6, 12, 5)},
 
-            {PaxDate.of(400, 13, 27), LocalDate.of(400, 12, 29) },
-            {PaxDate.of(400, 13, 28), LocalDate.of(400, 12, 30) },
-            {PaxDate.of(401, 1, 1), LocalDate.of(400, 12, 31) },
-            {PaxDate.of(401, 1, 2), LocalDate.of(401, 1, 1) },
-            {PaxDate.of(401, 1, 3), LocalDate.of(401, 1, 2) },
+            {PaxDate.of(400, 13, 27), LocalDate.of(400, 12, 29)},
+            {PaxDate.of(400, 13, 28), LocalDate.of(400, 12, 30)},
+            {PaxDate.of(401, 1, 1), LocalDate.of(400, 12, 31)},
+            {PaxDate.of(401, 1, 2), LocalDate.of(401, 1, 1)},
+            {PaxDate.of(401, 1, 3), LocalDate.of(401, 1, 2)},
 
-            {PaxDate.of(0, 13, 28), LocalDate.of(0, 12, 30) },
-            {PaxDate.of(0, 13, 27), LocalDate.of(0, 12, 29) },
+            {PaxDate.of(0, 13, 28), LocalDate.of(0, 12, 30)},
+            {PaxDate.of(0, 13, 27), LocalDate.of(0, 12, 29)},
 
-            {PaxDate.of(1582, 10, 4), LocalDate.of(1582, 9, 9) },
-            {PaxDate.of(1582, 10, 5), LocalDate.of(1582, 9, 10) },
-            {PaxDate.of(1945, 10, 27), LocalDate.of(1945, 10, 6) },
+            {PaxDate.of(1582, 10, 4), LocalDate.of(1582, 9, 9)},
+            {PaxDate.of(1582, 10, 5), LocalDate.of(1582, 9, 10)},
+            {PaxDate.of(1945, 10, 27), LocalDate.of(1945, 10, 6)},
 
-            {PaxDate.of(2012, 6, 22), LocalDate.of(2012, 6, 4) },
-            {PaxDate.of(2012, 6, 23), LocalDate.of(2012, 6, 5) },
+            {PaxDate.of(2012, 6, 22), LocalDate.of(2012, 6, 4)},
+            {PaxDate.of(2012, 6, 23), LocalDate.of(2012, 6, 5)},
         };
     }
 
@@ -194,45 +194,45 @@ public class TestPaxChronology {
     @DataProvider(name = "badDates")
     Object[][] data_badDates() {
         return new Object[][] {
-            {2012, 0, 0 },
+            {2012, 0, 0},
 
-            {2012, 0, 1 },
-            {2012, 1, 1 },
-            {2012, -1, 1 },
-            {2012, 0, 1 },
-            {2012, 15, 1 },
-            {2012, 16, 1 },
+            {2012, 0, 1},
+            {2012, 1, 1},
+            {2012, -1, 1},
+            {2012, 0, 1},
+            {2012, 15, 1},
+            {2012, 16, 1},
 
-            {2012, 1, -1 },
-            {2012, 1, 0 },
-            {2012, 1, 29 },
+            {2012, 1, -1},
+            {2012, 1, 0},
+            {2012, 1, 29},
 
-            {2012, 13, -1 },
-            {2012, 13, 0 },
-            {2012, 13, 8 },
-            {2012, 14, -1 },
-            {2012, 14, 0 },
-            {2012, 14, 29 },
-            {2012, 14, 30 },
+            {2012, 13, -1},
+            {2012, 13, 0},
+            {2012, 13, 8},
+            {2012, 14, -1},
+            {2012, 14, 0},
+            {2012, 14, 29},
+            {2012, 14, 30},
 
-            {2011, 13, -1 },
-            {2011, 13, 0 },
-            {2011, 14, 29 },
-            {2011, 14, 30 },
-            {2011, 14, 1 },
-            {2011, 14, 2 },
+            {2011, 13, -1},
+            {2011, 13, 0},
+            {2011, 14, 29},
+            {2011, 14, 30},
+            {2011, 14, 1},
+            {2011, 14, 2},
 
-            {2012, 2, 29 },
-            {2012, 3, 29 },
-            {2012, 4, 29 },
-            {2012, 5, 29 },
-            {2012, 6, 29 },
-            {2012, 7, 29 },
-            {2012, 8, 29 },
-            {2012, 9, 29 },
-            {2012, 10, 29 },
-            {2012, 11, 29 },
-            {2012, 12, 29 },
+            {2012, 2, 29},
+            {2012, 3, 29},
+            {2012, 4, 29},
+            {2012, 5, 29},
+            {2012, 6, 29},
+            {2012, 7, 29},
+            {2012, 8, 29},
+            {2012, 9, 29},
+            {2012, 10, 29},
+            {2012, 11, 29},
+            {2012, 12, 29},
         };
     }
 
@@ -240,15 +240,15 @@ public class TestPaxChronology {
     public void test_badDates(final int year, final int month, final int dom) {
         PaxDate.of(year, month, dom);
     }
-    
-    @Test(expectedExceptions=DateTimeException.class)
+
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_chronology_dateYearDay_badDate() {
         PaxChronology.INSTANCE.dateYearDay(2001, 365);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // isLeapYear()
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_isLeapYear_loop() {
         Predicate<Integer> isLeapYear = year -> {
@@ -330,7 +330,7 @@ public class TestPaxChronology {
 
     @Test
     public void test_Chronology_eraOf_invalid() {
-        final int[] badEras = { -500, -498, -497, -1, 2, 3, 500 };
+        final int[] badEras = {-500, -498, -497, -1, 2, 3, 500};
         for (final int badEra : badEras) {
             try {
                 final Era era = PaxChronology.INSTANCE.eraOf(badEra);
@@ -397,9 +397,8 @@ public class TestPaxChronology {
     // -----------------------------------------------------------------------
     @DataProvider(name = "PaxEras")
     Object[][] dataPaxEras() {
-        return new Object[][] { { PaxEra.BCE, 0, "BCE" }, { PaxEra.CE, 1, "CE" }, };
+        return new Object[][] { {PaxEra.BCE, 0, "BCE"}, {PaxEra.CE, 1, "CE"},};
     }
-
 
     // -----------------------------------------------------------------------
     // equals()
@@ -420,10 +419,10 @@ public class TestPaxChronology {
     @DataProvider(name = "toString")
     @SuppressWarnings("checkstyle:indentation")
     Object[][] data_toString() {
-        return new Object[][] { { PaxChronology.INSTANCE.date(-3, 5, 8), "Pax BCE 0002-05-08" },
-                { PaxChronology.INSTANCE.date(-8, 1, 28), "Pax BCE 0007-01-28" },
-                { PaxChronology.INSTANCE.date(2012, 13, 4), "Pax CE 2012-13-04" },
-                { PaxChronology.INSTANCE.date(2014, 4, 27), "Pax CE 2014-04-27" }, };
+        return new Object[][] { {PaxChronology.INSTANCE.date(-3, 5, 8), "Pax BCE 0002-05-08"},
+            {PaxChronology.INSTANCE.date(-8, 1, 28), "Pax BCE 0007-01-28"},
+            {PaxChronology.INSTANCE.date(2012, 13, 4), "Pax CE 2012-13-04"},
+            {PaxChronology.INSTANCE.date(2014, 4, 27), "Pax CE 2014-04-27"},};
     }
 
     @Test(dataProvider = "toString")
