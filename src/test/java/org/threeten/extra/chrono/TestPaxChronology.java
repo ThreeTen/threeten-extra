@@ -48,6 +48,7 @@ import java.time.chrono.Era;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.junit.Ignore;
 import org.testng.Assert;
@@ -245,6 +246,46 @@ public class TestPaxChronology {
         PaxChronology.INSTANCE.dateYearDay(2001, 365);
     }
 
+    //-----------------------------------------------------------------------
+    // isLeapYear()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_isLeapYear_loop() {
+        Predicate<Integer> isLeapYear = year -> {
+            int lastTwoDigits = year % 100;
+            return (lastTwoDigits == 0 && year % 400 != 0) || lastTwoDigits == 99 || lastTwoDigits % 6 == 0;
+        };
+        for (int year = -500; year < 500; year++) {
+            PaxDate base = PaxDate.of(year, 1, 1);
+            assertEquals(base.isLeapYear(), isLeapYear.test(year));
+            assertEquals(PaxChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year));
+        }
+    }
+
+    @Test
+    public void test_isLeapYear_specific() {
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(400), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(100), true);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(99), true);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(7), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(6), true);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(5), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(4), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(3), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(2), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(1), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(0), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-1), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-2), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-3), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-4), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-5), false);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-6), true);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-99), true);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-100), true);
+        assertEquals(PaxChronology.INSTANCE.isLeapYear(-400), false);
+    }
+    
     @Test(dataProvider = "PaxEras")
     public void test_Chronology_eraOf(final Era era, final int eraValue, final String name) {
         assertEquals(era.getValue(), eraValue, "EraValue");
