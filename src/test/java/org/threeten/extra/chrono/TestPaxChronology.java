@@ -31,6 +31,10 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -50,6 +54,7 @@ import java.time.chrono.Era;
 import java.time.chrono.IsoChronology;
 import java.time.chrono.IsoEra;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.ValueRange;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -388,6 +393,17 @@ public class TestPaxChronology {
         assertEquals(eras.contains(PaxEra.CE), true);
     }
 
+    //-----------------------------------------------------------------------
+    // Chronology.range
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_Chronology_range() {
+        assertEquals(PaxChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(1, 7));
+        assertEquals(PaxChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(1, 7, 28));
+        assertEquals(PaxChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 364, 371));
+        assertEquals(PaxChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(1, 13, 14));
+    }
+    
     // -----------------------------------------------------------------------
     // with(WithAdjuster)
     // -----------------------------------------------------------------------
