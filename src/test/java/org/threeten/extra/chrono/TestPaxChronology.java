@@ -31,6 +31,8 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.YEAR;
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -46,6 +48,7 @@ import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoChronology;
+import java.time.chrono.IsoEra;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.function.Predicate;
@@ -319,26 +322,70 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(year, month, 1).lengthOfMonth(), length);
     }
 
-    @Test(dataProvider = "PaxEras")
-    public void test_Chronology_eraOf(final Era era, final int eraValue, final String name) {
-        assertEquals(era.getValue(), eraValue, "EraValue");
-        assertEquals(era.toString(), name, "Era Name");
-        assertEquals(era, PaxChronology.INSTANCE.eraOf(eraValue), "PaxChrono.eraOf()");
-        final List<Era> eras = PaxChronology.INSTANCE.eras();
-        assertTrue(eras.contains(era), "Era is not present in PaxChrono.INSTANCE.eras()");
+    //-----------------------------------------------------------------------
+    // era, prolepticYear and dateYearDay
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_era_loop() {
+        for (int year = -200; year < 200; year++) {
+            PaxDate base = PaxChronology.INSTANCE.date(year, 1, 1);
+            assertEquals(year, base.get(YEAR));
+            PaxEra era = (year <= 0 ? PaxEra.BCE : PaxEra.CE);
+            assertEquals(era, base.getEra());
+            int yoe = (year <= 0 ? 1 - year : year);
+            assertEquals(yoe, base.get(YEAR_OF_ERA));
+            PaxDate eraBased = PaxChronology.INSTANCE.date(era, yoe, 1, 1);
+            assertEquals(eraBased, base);
+        }
+    }
+
+    @Test
+    public void test_era_yearDay_loop() {
+        for (int year = -200; year < 200; year++) {
+            PaxDate base = PaxChronology.INSTANCE.dateYearDay(year, 1);
+            assertEquals(year, base.get(YEAR));
+            PaxEra era = (year <= 0 ? PaxEra.BCE : PaxEra.CE);
+            assertEquals(era, base.getEra());
+            int yoe = (year <= 0 ? 1 - year : year);
+            assertEquals(yoe, base.get(YEAR_OF_ERA));
+            PaxDate eraBased = PaxChronology.INSTANCE.dateYearDay(era, yoe, 1);
+            assertEquals(eraBased, base);
+        }
+    }
+
+    @Test
+    public void test_prolepticYear_specific() {
+        assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.CE, 4), 4);
+        assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.CE, 3), 3);
+        assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.CE, 2), 2);
+        assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.CE, 1), 1);
+        assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, 1), 0);
+        assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, 2), -1);
+        assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, 3), -2);
+        assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, 4), -3);
+    }
+
+    @Test(expectedExceptions = ClassCastException.class)
+    public void test_prolepticYear_badEra() {
+        PaxChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
+    }
+
+    public void test_Chronology_eraOf() {
+        assertEquals(PaxChronology.INSTANCE.eraOf(1), JulianEra.AD);
+        assertEquals(PaxChronology.INSTANCE.eraOf(0), JulianEra.BC);
     }
 
     @Test
     public void test_Chronology_eraOf_invalid() {
-        final int[] badEras = {-500, -498, -497, -1, 2, 3, 500};
-        for (final int badEra : badEras) {
-            try {
-                final Era era = PaxChronology.INSTANCE.eraOf(badEra);
-                fail("PaxChrono.eraOf returned " + era + " + for invalid eraValue " + badEra);
-            } catch (final DateTimeException ex) {
-                assertTrue(true, "Exception caught");
-            }
-        }
+        PaxChronology.INSTANCE.eraOf(2);
+    }
+
+    @Test
+    public void test_Chronology_eras() {
+        List<Era> eras = PaxChronology.INSTANCE.eras();
+        assertEquals(eras.size(), 2);
+        assertEquals(eras.contains(PaxEra.BCE), true);
+        assertEquals(eras.contains(PaxEra.CE), true);
     }
 
     // -----------------------------------------------------------------------
@@ -389,15 +436,6 @@ public class TestPaxChronology {
         final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
         final LocalDateTime test = LocalDateTime.MIN.with(jdate);
         assertEquals(test, LocalDateTime.of(2014, 6, 29, 0, 0));
-    }
-
-    // -----------------------------------------------------------------------
-    // Check Pax Eras
-    // TODO: Figure out names (if any)
-    // -----------------------------------------------------------------------
-    @DataProvider(name = "PaxEras")
-    Object[][] dataPaxEras() {
-        return new Object[][] { {PaxEra.BCE, 0, "BCE"}, {PaxEra.CE, 1, "CE"},};
     }
 
     // -----------------------------------------------------------------------
