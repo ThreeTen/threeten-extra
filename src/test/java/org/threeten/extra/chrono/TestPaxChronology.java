@@ -536,16 +536,16 @@ public class TestPaxChronology {
     // -----------------------------------------------------------------------
     @Test
     public void test_adjust1() {
-        final ChronoLocalDate base = PaxChronology.INSTANCE.date(2013, 4, 5);
-        final ChronoLocalDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, PaxChronology.INSTANCE.date(2013, 4, 28));
+        PaxDate base = PaxDate.of(2013, 4, 5);
+        PaxDate test = base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, PaxDate.of(2013, 4, 28));
     }
 
     @Test
     public void test_adjust2() {
-        final ChronoLocalDate base = PaxChronology.INSTANCE.date(2012, 13, 2);
-        final ChronoLocalDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, PaxChronology.INSTANCE.date(2012, 13, 7));
+        PaxDate base = PaxDate.of(2012, 13, 2);
+        PaxDate test = base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, PaxDate.of(2012, 13, 7));
     }
 
     // -----------------------------------------------------------------------

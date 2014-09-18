@@ -58,6 +58,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
@@ -781,6 +782,11 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
             }
         }
         return unit.between(this, end);
+    }
+
+    @Override
+    public PaxDate with(TemporalAdjuster adjuster) {
+        return (PaxDate) adjuster.adjustInto(this);
     }
 
     @Override
