@@ -493,6 +493,45 @@ public class TestPaxChronology {
     }
 
     // -----------------------------------------------------------------------
+    // JulianDate.with
+    // -----------------------------------------------------------------------
+    @DataProvider(name = "with")
+    Object[][] data_with() {
+        return new Object[][] {
+            {2014, 5, 26, DAY_OF_WEEK, 3, 2014, 5, 25},
+            {2014, 5, 26, DAY_OF_MONTH, 28, 2014, 5, 28},
+            {2014, 5, 26, DAY_OF_YEAR, 364, 2014, 13, 28},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 5, 25},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 1, 2014, 5, 4},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 2014, 5, 24},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 23, 2014, 6, 19},
+            {2014, 5, 26, MONTH_OF_YEAR, 7, 2014, 7, 26},
+            {2014, 5, 26, PROLEPTIC_MONTH, (2013 * 13 + 340 - 3) - 2, 2013, 3, 26},
+            {2014, 5, 26, YEAR, 2012, 2012, 5, 26},
+            {2014, 5, 26, YEAR_OF_ERA, 2012, 2012, 5, 26},
+            {2014, 5, 26, ERA, 0, -2013, 5, 26},
+
+            {2011, 12, 28, MONTH_OF_YEAR, 13, 2011, 13, 28},
+            {2012, 12, 28, MONTH_OF_YEAR, 13, 2012, 13, 7},
+            {2012, 13, 7, YEAR, 2011, 2011, 13, 7},
+            {-2013, 6, 8, YEAR_OF_ERA, 2012, -2011, 6, 8},
+            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 25},
+        };
+    }
+
+    @Test(dataProvider = "with")
+    public void test_with_TemporalField(int year, int month, int dom,
+            TemporalField field, long value,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(PaxDate.of(year, month, dom).with(field, value), PaxDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_with_TemporalField_unsupported() {
+        PaxDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0);
+    }
+
+    // -----------------------------------------------------------------------
     // with(WithAdjuster)
     // -----------------------------------------------------------------------
     @Test
