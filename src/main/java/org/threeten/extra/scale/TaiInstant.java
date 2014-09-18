@@ -346,13 +346,13 @@ public final class TaiInstant
      * the TAI time-scale. Adding the duration to this instant using {@link #plus}
      * will always result in an instant equal to the specified instant.
      *
-     * @param TaiInstant  the instant to calculate the duration until, not null
+     * @param otherInstant  the instant to calculate the duration until, not null
      * @return the duration until the specified instant, may be negative, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
-    public Duration durationUntil(TaiInstant TaiInstant) {
-        long durSecs = Math.subtractExact(TaiInstant.seconds, seconds);
-        long durNanos = TaiInstant.nanos - nanos;
+    public Duration durationUntil(TaiInstant otherInstant) {
+        long durSecs = Math.subtractExact(otherInstant.seconds, seconds);
+        long durNanos = otherInstant.nanos - nanos;
         return Duration.ofSeconds(durSecs, durNanos);
     }
 

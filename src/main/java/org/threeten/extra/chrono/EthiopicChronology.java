@@ -236,6 +236,7 @@ public final class EthiopicChronology
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
+     * @param zone the zone ID to use, not null
      * @return the current Ethiopic local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */
