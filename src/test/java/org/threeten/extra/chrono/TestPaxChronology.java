@@ -31,9 +31,11 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
@@ -41,7 +43,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -53,7 +54,10 @@ import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoChronology;
 import java.time.chrono.IsoEra;
+import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalField;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.List;
 import java.util.function.Predicate;
@@ -327,9 +331,9 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(year, month, 1).lengthOfMonth(), length);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // era, prolepticYear and dateYearDay
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_era_loop() {
         for (int year = -200; year < 200; year++) {
@@ -393,9 +397,9 @@ public class TestPaxChronology {
         assertEquals(eras.contains(PaxEra.CE), true);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // Chronology.range
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
         assertEquals(PaxChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(1, 7));
@@ -403,7 +407,51 @@ public class TestPaxChronology {
         assertEquals(PaxChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 364, 371));
         assertEquals(PaxChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(1, 13, 14));
     }
-    
+
+    // -----------------------------------------------------------------------
+    // PaxDate.range
+    // -----------------------------------------------------------------------
+    @DataProvider(name = "ranges")
+    Object[][] data_ranges() {
+        return new Object[][] {
+            {2012, 1, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 2, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 3, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 4, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 5, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 6, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 7, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 8, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 9, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 10, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 11, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 12, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 13, 3, DAY_OF_MONTH, 1, 7},
+            {2012, 14, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 1, 23, DAY_OF_YEAR, 1, 371},
+            {2012, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
+            {2012, 12, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
+            {2012, 13, 3, ALIGNED_WEEK_OF_MONTH, 1, 1},
+            {2012, 14, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
+
+            {2014, 13, 23, DAY_OF_MONTH, 1, 28},
+            {2014, 13, 23, DAY_OF_YEAR, 1, 364},
+            {2014, 13, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
+
+            {2014, 2, 23, IsoFields.QUARTER_OF_YEAR, 1, 4},
+        };
+    }
+
+    @Test(dataProvider = "ranges")
+    public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
+        assertEquals(PaxDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_range_unsupported() {
+        PaxDate.of(2012, 6, 28).range(MINUTE_OF_DAY);
+    }
+
     // -----------------------------------------------------------------------
     // with(WithAdjuster)
     // -----------------------------------------------------------------------
