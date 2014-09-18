@@ -285,7 +285,40 @@ public class TestPaxChronology {
         assertEquals(PaxChronology.INSTANCE.isLeapYear(-100), true);
         assertEquals(PaxChronology.INSTANCE.isLeapYear(-400), false);
     }
-    
+
+    @DataProvider(name = "lengthOfMonth")
+    Object[][] data_lengthOfMonth() {
+        return new Object[][] {
+            {2014, 1, 28},
+            {2014, 2, 28},
+            {2014, 3, 28},
+            {2014, 4, 28},
+            {2014, 5, 28},
+            {2014, 6, 28},
+            {2014, 7, 28},
+            {2014, 8, 28},
+            {2014, 9, 28},
+            {2014, 10, 28},
+            {2014, 11, 28},
+            {2014, 12, 28},
+            {2014, 13, 28},
+
+            {2015, 13, 28},
+            {2016, 13, 28},
+            {2017, 13, 28},
+            {2018, 13, 7},
+            {2018, 14, 28},
+            {2100, 13, 7},
+            {2100, 14, 28},
+            {2000, 13, 28},
+        };
+    }
+
+    @Test(dataProvider = "lengthOfMonth")
+    public void test_lengthOfMonth(int year, int month, int length) {
+        assertEquals(PaxDate.of(year, month, 1).lengthOfMonth(), length);
+    }
+
     @Test(dataProvider = "PaxEras")
     public void test_Chronology_eraOf(final Era era, final int eraValue, final String name) {
         assertEquals(era.getValue(), eraValue, "EraValue");
