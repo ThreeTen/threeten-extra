@@ -158,7 +158,7 @@ public final class Temporals {
         if (isPrecise(fromUnit) && isPrecise(toUnit)) {
             long fromNanos = fromUnit.getDuration().toNanos();
             long toNanos = toUnit.getDuration().toNanos();
-            if (fromNanos > toNanos ) {
+            if (fromNanos > toNanos) {
                 long multiple = fromNanos / toNanos;
                 return new long[] {Math.multiplyExact(amount, multiple), 0};
             } else {
@@ -169,7 +169,7 @@ public final class Temporals {
         // month-based
         int fromMonthFactor = monthMonthFactor(fromUnit, fromUnit, toUnit);
         int toMonthFactor = monthMonthFactor(toUnit, fromUnit, toUnit);
-        if (fromMonthFactor > toMonthFactor ) {
+        if (fromMonthFactor > toMonthFactor) {
             long multiple = fromMonthFactor / toMonthFactor;
             return new long[] {Math.multiplyExact(amount, multiple), 0};
         } else {
