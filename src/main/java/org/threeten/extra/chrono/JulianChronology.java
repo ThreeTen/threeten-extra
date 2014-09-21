@@ -255,6 +255,7 @@ public final class JulianChronology extends AbstractChronology implements Serial
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
+     * @param zone the zone ID to use, not null
      * @return the current Julian local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */

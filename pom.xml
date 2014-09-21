@@ -50,6 +50,10 @@
       <name>Christian Heinemann</name>
       <url>https://github.com/cheinema</url>
     </contributor>
+    <contributor>
+      <name>Stephen A. Imhoff</name>
+      <url>https://github.com/Clockwork-Muse</url>
+    </contributor>
   </contributors>
 
   <!-- ==================================================================== -->
@@ -343,6 +347,11 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${maven-checkstyle-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -422,6 +431,18 @@
           <reportSet>
             <reports>
               <report>jxr</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven-checkstyle-plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
             </reports>
           </reportSet>
         </reportSets>
@@ -553,6 +574,7 @@
     <maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>2.16</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>1.0</maven-toolchains-plugin.version>
+    <maven-checkstyle-plugin.version>2.12.1</maven-checkstyle-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -565,6 +587,8 @@
     <author>false</author>
     <notimestamp>true</notimestamp>
     <additionalparam>-Xdoclint:none</additionalparam>
+    <!-- Properties for maven-checkstyle-plugin -->
+    <checkstyle.config.location>${project.basedir}/src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <!-- Other properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
