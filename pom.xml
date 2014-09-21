@@ -435,7 +435,8 @@
           </reportSet>
         </reportSets>
       </plugin>
-      <plugin>
+      <!-- Checkstyle disabled until properly release for Java SE 8 -->
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${maven-checkstyle-plugin.version}</version>
@@ -446,7 +447,7 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
+      </plugin-->
     </plugins>
   </reporting>
 
