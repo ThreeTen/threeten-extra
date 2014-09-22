@@ -370,8 +370,8 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      */
     @Override
     public int getDayOfYear() {
-        return (getMonthValue() - 1) * DAYS_IN_MONTH
-                - (getMonthValue() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH + DAYS_IN_WEEK : 0) + getDayOfMonth();
+        return (getMonth() - 1) * DAYS_IN_MONTH
+                - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH + DAYS_IN_WEEK : 0) + getDayOfMonth();
     }
 
     @Override
@@ -396,7 +396,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
                 case ALIGNED_WEEK_OF_YEAR:
                     return ((getDayOfYear() - 1) / DAYS_IN_WEEK) + 1;
                 case MONTH_OF_YEAR:
-                    return getMonthValue();
+                    return getMonth();
                 case YEAR_OF_ERA:
                     return getYear() >= 1 ? getYear() : 1 - getYear();
                 case YEAR:
@@ -418,9 +418,9 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * This method returns the month as an {@code int} from 1 to 14.
      *
      * @return the month-of-year, from 1 to 14
-     * @see #getMonth()
      */
-    public int getMonthValue() {
+    @Override
+    public int getMonth() {
         return month;
     }
 
@@ -660,8 +660,8 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         }
         final int newYear = YEAR.checkValidIntValue(getYear() + yearsToAdd);
         // Retain actual month (not index) in the case where a leap month is to be inserted.
-        if (getMonthValue() == MONTHS_IN_YEAR && !isLeapYear() && PaxChronology.INSTANCE.isLeapYear(newYear)) {
-            return of(newYear, getMonthValue() + 1, getDayOfMonth());
+        if (getMonth() == MONTHS_IN_YEAR && !isLeapYear() && PaxChronology.INSTANCE.isLeapYear(newYear)) {
+            return of(newYear, getMonth() + 1, getDayOfMonth());
         }
         // Otherwise, one of the following is true:
         // 1 - Before the leap month, nothing to do (most common)
@@ -698,9 +698,9 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     public long toEpochDay() {
-        final long days = getYear() * DAYS_IN_YEAR + getLeapYearsBefore(getYear()) * DAYS_IN_WEEK + (getMonthValue() - 1) * DAYS_IN_MONTH + getDayOfMonth() - 1;
+        final long days = getYear() * DAYS_IN_YEAR + getLeapYearsBefore(getYear()) * DAYS_IN_WEEK + (getMonth() - 1) * DAYS_IN_MONTH + getDayOfMonth() - 1;
         // Adjust for short leap month if after, then rebase to ISO 1970.
-        return days - (getMonthValue() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH - DAYS_IN_WEEK : 0) - DAYS_PAX_0000_TO_ISO_1970;
+        return days - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH - DAYS_IN_WEEK : 0) - DAYS_PAX_0000_TO_ISO_1970;
     }
 
     @Override
@@ -801,7 +801,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         if (getDayOfMonth() == newDayOfMonth) {
             return this;
         }
-        return of(getYear(), getMonthValue(), newDayOfMonth);
+        return of(getYear(), getMonth(), newDayOfMonth);
     }
 
     /**
@@ -832,7 +832,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @throws DateTimeException if the month-of-year value is invalid
      */
     public PaxDate withMonth(final int newMonth) {
-        if (getMonthValue() == newMonth) {
+        if (getMonth() == newMonth) {
             return this;
         }
         PaxChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR).checkValidValue(newMonth, ChronoField.MONTH_OF_YEAR);
@@ -853,7 +853,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
             return this;
         }
         YEAR.checkValidValue(newYear);
-        return resolvePreviousValid(newYear, getMonthValue(), getDayOfMonth());
+        return resolvePreviousValid(newYear, getMonth(), getDayOfMonth());
     }
 
     /**
@@ -873,7 +873,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      */
     @Override
     long getProlepticMonth() {
-        return getYear() * MONTHS_IN_YEAR + getLeapYearsBefore(getYear()) + getMonthValue() - 1;
+        return getYear() * MONTHS_IN_YEAR + getLeapYearsBefore(getYear()) + getMonth() - 1;
     }
 
     /**
@@ -900,8 +900,8 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         // TODO: Correct this to deal with moving from/into leap months (!)
         // Multiplying by the (maximum) months-in-year (+1) makes the propleptic count a "place" (ie, the 10's place).
         // This means that if the starting date is before, it moves the count to the prior unit (24 - 8 = 16, and we only care about the 10's place).
-        final long startYear = getYear() * (MONTHS_IN_YEAR + 1 + 1) + getMonthValue();
-        final long endYear = end.getYear() * (MONTHS_IN_YEAR + 1 + 1) + end.getMonthValue();
+        final long startYear = getYear() * (MONTHS_IN_YEAR + 1 + 1) + getMonth();
+        final long endYear = end.getYear() * (MONTHS_IN_YEAR + 1 + 1) + end.getMonth();
         return (endYear - startYear) / (MONTHS_IN_YEAR + 1 + 1);
     }
 
@@ -931,12 +931,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     int getProlepticYear() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    int getMonth() {
         // TODO Auto-generated method stub
         return 0;
     }

@@ -93,7 +93,7 @@ public class TestPaxDate {
         final PaxDate constructed = PaxDate.of(expectedYear, expectedMonth, expectedDay);
         Assert.assertNotNull(constructed, "Date not returned");
         Assert.assertEquals(constructed.getYear(), expectedYear, "Year not same as expected");
-        Assert.assertEquals(constructed.getMonthValue(), expectedMonth, "Month not same as expected");
+        Assert.assertEquals(constructed.getMonth(), expectedMonth, "Month not same as expected");
         Assert.assertEquals(constructed.getDayOfMonth(), expectedDay, "Day not same as expected");
     }
 
