@@ -34,8 +34,11 @@ package org.threeten.extra.chrono;
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Era;
 import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
@@ -251,6 +254,46 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     @Override
     public PaxDate dateYearDay(final int prolepticYear, final int dayOfYear) {
         return PaxDate.ofYearDay(prolepticYear, dayOfYear);
+    }
+
+    /**
+     * Obtains a Pax local date-time from another date-time object.
+     *
+     * @param temporal the date-time object to convert, not null
+     * @return the Pax local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<PaxDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<PaxDate>) super.localDateTime(temporal);
+    }
+
+    /**
+     * Obtains a Pax zoned date-time from another date-time object.
+     *
+     * @param temporal the date-time object to convert, not null
+     * @return the Pax zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<PaxDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(temporal);
+    }
+
+    /**
+     * Obtains a Pax zoned date-time in this chronology from an {@code Instant}.
+     *
+     * @param instant the instant to create the date-time from, not null
+     * @param zone the time-zone, not null
+     * @return the Pax zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<PaxDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(instant, zone);
     }
 
     @Override
