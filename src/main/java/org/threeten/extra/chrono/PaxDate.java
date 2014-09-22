@@ -81,7 +81,7 @@ import java.util.Objects;
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the identity hash code or use the distinction between equals() and ==.
  */
-public final class PaxDate implements ChronoLocalDate, Serializable {
+public final class PaxDate extends AbstractDate implements ChronoLocalDate, Serializable {
 
     /**
      *
@@ -358,6 +358,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      *
      * @return the day-of-month, from 1 to 28
      */
+    @Override
     public int getDayOfMonth() {
         return day;
     }
@@ -367,6 +368,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      *
      * @return The day of the year, from 1 to 371.
      */
+    @Override
     public int getDayOfYear() {
         return (getMonthValue() - 1) * DAYS_IN_MONTH
                 - (getMonthValue() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH + DAYS_IN_WEEK : 0) + getDayOfMonth();
@@ -574,6 +576,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * @return a {@code PaxDate} based on this date with the days added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
+    @Override
     public PaxDate plusDays(final long daysToAdd) {
         if (daysToAdd == 0) {
             return this;
@@ -600,6 +603,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * @return a {@code PaxDate} based on this date with the months added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
+    @Override
     public PaxDate plusMonths(final long monthsToAdd) {
         if (monthsToAdd == 0) {
             return this;
@@ -649,6 +653,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * @return a {@code PaxDate} based on this date with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
+    @Override
     public PaxDate plusYears(final long yearsToAdd) {
         if (yearsToAdd == 0) {
             return this;
@@ -809,6 +814,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year
      */
+    @Override
     public PaxDate withDayOfYear(final int dayOfYear) {
         if (this.getDayOfYear() == dayOfYear) {
             return this;
@@ -865,7 +871,8 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      *
      * @return The proleptic month.
      */
-    private long getProlepticMonth() {
+    @Override
+    long getProlepticMonth() {
         return getYear() * MONTHS_IN_YEAR + getLeapYearsBefore(getYear()) + getMonthValue() - 1;
     }
 
@@ -896,6 +903,54 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
         final long startYear = getYear() * (MONTHS_IN_YEAR + 1 + 1) + getMonthValue();
         final long endYear = end.getYear() * (MONTHS_IN_YEAR + 1 + 1) + end.getMonthValue();
         return (endYear - startYear) / (MONTHS_IN_YEAR + 1 + 1);
+    }
+
+    @Override
+    public boolean isSupported(TemporalUnit arg0) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isSupported(TemporalField arg0) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public Temporal adjustInto(Temporal arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int compareTo(ChronoLocalDate arg0) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    int getProlepticYear() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    int getMonth() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    ValueRange rangeAlignedWeekOfMonth() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    AbstractDate resolvePrevious(int newYear, int newMonth, int dayOfMonth) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
