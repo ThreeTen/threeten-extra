@@ -136,16 +136,40 @@ public final class PaxChronology extends AbstractChronology implements Serializa
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
     
+    /**
+     * Obtains a local date in Pax calendar system from the
+     * proleptic-year, month-of-year and day-of-month fields.
+     *
+     * @param prolepticYear  the proleptic-year
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
+     * @return the Pax local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
     public PaxDate date(final int prolepticYear, final int month, final int dayOfMonth) {
         return PaxDate.of(prolepticYear, month, dayOfMonth);
     }
 
+    /**
+     * Obtains a Pax local date from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Pax local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
     public PaxDate date(final TemporalAccessor temporal) {
         return PaxDate.from(temporal);
     }
 
+    /**
+     * Obtains a local date in the Pax calendar system from the epoch-day.
+     *
+     * @param epochDay  the epoch day
+     * @return the Pax local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
     public PaxDate dateEpochDay(final long epochDay) {
         return PaxDate.ofEpochDay(epochDay);
@@ -167,6 +191,15 @@ public final class PaxChronology extends AbstractChronology implements Serializa
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
     
+    /**
+     * Obtains a local date in Pax calendar system from the
+     * proleptic-year and day-of-year fields.
+     *
+     * @param prolepticYear  the proleptic-year
+     * @param dayOfYear  the day-of-year
+     * @return the Pax local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
     public PaxDate dateYearDay(final int prolepticYear, final int dayOfYear) {
         return PaxDate.ofYearDay(prolepticYear, dayOfYear);
@@ -182,11 +215,30 @@ public final class PaxChronology extends AbstractChronology implements Serializa
         return Arrays.<Era> asList(PaxEra.values());
     }
 
+    /**
+     * Gets the calendar type of the underlying calendar system - 'pax'.
+     * <p>
+     * The <em>Unicode Locale Data Markup Language (LDML)</em> specification
+     * does not define an identifier for the Pax calendar, but were it to
+     * do so, 'pax' is highly likely to be chosen.
+     *
+     * @return the calendar system type - 'pax'
+     * @see #getId()
+     */
     @Override
     public String getCalendarType() {
-        return null;
+        return "pax";
     }
 
+    /**
+     * Gets the ID of the chronology - 'Pax'.
+     * <p>
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     *
+     * @return the chronology ID - 'Pax'
+     * @see #getCalendarType()
+     */
     @Override
     public String getId() {
         return "Pax";
