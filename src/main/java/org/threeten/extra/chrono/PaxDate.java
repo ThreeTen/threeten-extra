@@ -70,20 +70,16 @@ import java.util.Objects;
 /**
  * /** A date without a time-zone in the Pax calendar system, such as {@code 2007-12-03}.
  * <p>
- * {@code PaxDate} is an immutable date-time object that represents a date, often viewed as year-month-day. Other date fields, such as day-of-year, day-of-week
- * and week-of-year, can also be accessed.
+ * {@code PaxDate} is an immutable date-time object that represents a date, often viewed as year-month-day. Other date fields, such as day-of-year, day-of-week and week-of-year, can also be accessed.
  * <p>
- * This class does not store or represent a time or time-zone. Instead, it is a description of the date, as used for birthdays. It cannot represent an instant
- * on the time-line without additional information such as an offset or time-zone.
+ * This class does not store or represent a time or time-zone. Instead, it is a description of the date, as used for birthdays. It cannot represent an instant on the time-line without additional
+ * information such as an offset or time-zone.
  * <p>
- * The Pax calendar system is a proposed reform calendar system, and is not in common use. More information is available in the <a
- * href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
- **
- * <h3>Implementation Requirements</h3>
- * This class is immutable and thread-safe.
+ * The Pax calendar system is a proposed reform calendar system, and is not in common use. More information is available in the <a href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a>
+ * Wikipedia article.
+ * <h3>Implementation Requirements</h3> This class is immutable and thread-safe.
  * <p>
- * This class must be treated as a value type. Do not synchronize, rely on the
- * identity hash code or use the distinction between equals() and ==.
+ * This class must be treated as a value type. Do not synchronize, rely on the identity hash code or use the distinction between equals() and ==.
  */
 public final class PaxDate implements ChronoLocalDate, Serializable {
 
@@ -135,12 +131,9 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Constructor, previously validated.
      *
-     * @param year
-     *            the year to represent
-     * @param month
-     *            the month-of-year to represent, from 1 to 14
-     * @param dayOfMonth
-     *            the day-of-month to represent, valid for year-month, from 1 to 28
+     * @param year the year to represent
+     * @param month the month-of-year to represent, from 1 to 14
+     * @param dayOfMonth the day-of-month to represent, valid for year-month, from 1 to 28
      */
     private PaxDate(final int year, final int month, final int dayOfMonth) {
         this.year = year;
@@ -151,19 +144,15 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Obtains an instance of {@code PaxDate} from a temporal object.
      * <p>
-     * A {@code TemporalAccessor} represents some form of date and time information. This factory converts the arbitrary temporal object to an instance of
-     * {@code PaxDate}.
+     * A {@code TemporalAccessor} represents some form of date and time information. This factory converts the arbitrary temporal object to an instance of {@code PaxDate}.
      * <p>
      * The conversion uses the {@link TemporalQueries#localDate()} query, which relies on extracting the {@link ChronoField#EPOCH_DAY EPOCH_DAY} field.
      * <p>
-     * This method matches the signature of the functional interface {@link TemporalQuery} allowing it to be used as a query via method reference,
-     * {@code PaxDate::from}.
+     * This method matches the signature of the functional interface {@link TemporalQuery} allowing it to be used as a query via method reference, {@code PaxDate::from}.
      *
-     * @param temporal
-     *            the temporal object to convert, not null
+     * @param temporal the temporal object to convert, not null
      * @return the local date, not null
-     * @throws DateTimeException
-     *             if unable to convert to a {@code PaxDate}
+     * @throws DateTimeException if unable to convert to a {@code PaxDate}
      */
     public static PaxDate from(final TemporalAccessor temporal) {
         final LocalDate date = temporal.query(TemporalQueries.localDate());
@@ -190,11 +179,10 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Obtains the current date from the specified clock.
      * <p>
-     * This will query the specified clock to obtain the current date - today. Using this method allows the use of an alternate clock for testing. The alternate
-     * clock may be introduced using {@link Clock dependency injection}.
+     * This will query the specified clock to obtain the current date - today. Using this method allows the use of an alternate clock for testing. The alternate clock may be introduced using
+     * {@link Clock dependency injection}.
      *
-     * @param clock
-     *            the clock to use, not null
+     * @param clock the clock to use, not null
      * @return the current date, not null
      */
     public static PaxDate now(final Clock clock) {
@@ -210,13 +198,11 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Obtains the current date from the system clock in the specified time-zone.
      * <p>
-     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default
-     * time-zone.
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default time-zone.
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
      *
-     * @param zone
-     *            the zone ID to use, not null
+     * @param zone the zone ID to use, not null
      * @return the current date using the system clock, not null
      */
     public static PaxDate now(final ZoneId zone) {
@@ -228,17 +214,12 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <p>
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
-     * @param prolepticYear
-     *            the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month
-     *            the month-of-year to represent, from 1 to 14
-     * @param dayOfMonth
-     *            the day-of-month to represent, from 1 to 28
+     * @param prolepticYear the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month the month-of-year to represent, from 1 to 14
+     * @param dayOfMonth the day-of-month to represent, from 1 to 28
      * @return the local date, not null
-     * @throws DateTimeException
-     *             if the value of any field is out of range
-     * @throws DateTimeException
-     *             if the day-of-month is invalid for the month-year
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     public static PaxDate of(final int prolepticYear, final int month, final int dayOfMonth) {
         YEAR.checkValidValue(prolepticYear);
@@ -267,15 +248,11 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <p>
      * The day-of-year must be valid for the year, otherwise an exception will be thrown.
      *
-     * @param prolepticYear
-     *            the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param dayOfYear
-     *            the day-of-year to represent, from 1 to 371
+     * @param prolepticYear the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param dayOfYear the day-of-year to represent, from 1 to 371
      * @return the local date, not null
-     * @throws DateTimeException
-     *             if the value of any field is out of range
-     * @throws DateTimeException
-     *             if the day-of-year is invalid for the month-year
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-year is invalid for the month-year
      */
     public static PaxDate ofYearDay(final int prolepticYear, final int dayOfYear) {
         YEAR.checkValidValue(prolepticYear);
@@ -309,8 +286,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * The Pax day-of-week is aligned to Sunday, not Monday as in the ISO calendar.
      *
-     * @param dayOfWeek
-     *            The Pax day-of-week, where 1 is Sunday and 7 is Saturday.
+     * @param dayOfWeek The Pax day-of-week, where 1 is Sunday and 7 is Saturday.
      * @return The ISO day-of-week, where 1 is Monday and 7 is Sunday.
      */
     private static long getISODayOfWeek(final int dayOfWeek) {
@@ -322,8 +298,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <p>
      * This number is negative if the month is prior to Pax year 0.
      *
-     * @param prolepticMonth
-     *            The month.
+     * @param prolepticMonth The month.
      * @return The number of leap months since proleptic month 0.
      */
     @SuppressWarnings("checkstyle:magicnumber")
@@ -342,8 +317,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <p>
      * This number is negative if the year is prior to Pax year 0.
      *
-     * @param prolepticYear
-     *            The year.
+     * @param prolepticYear The year.
      * @return The number of leap years since Pax year 0.
      */
     @SuppressWarnings("checkstyle:magicnumber")
@@ -361,12 +335,9 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Resolves the date, resolving days past the end of month, or non-existent months.
      *
-     * @param year
-     *            the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param month
-     *            the month-of-year to represent, validated from 1 to 14
-     * @param day
-     *            the day-of-month to represent, validated from 1 to 28
+     * @param year the year to represent, validated from MIN_YEAR to MAX_YEAR
+     * @param month the month-of-year to represent, validated from 1 to 14
+     * @param day the day-of-month to represent, validated from 1 to 28
      * @return the resolved date, not null
      */
     private static PaxDate resolvePreviousValid(final int year, final int month, final int day) {
@@ -477,18 +448,16 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Returns a copy of this {@code PaxDate} with the specified number of days subtracted.
      * <p>
-     * This method subtracts the specified amount from the days field decrementing the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
+     * This method subtracts the specified amount from the days field decrementing the month and year fields as necessary to ensure the result remains valid. The result is only invalid if the
+     * maximum/minimum year is exceeded.
      * <p>
      * For example, 2009-01-01 minus one day would result in 2008-13-28.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param daysToSubtract
-     *            the days to subtract, may be negative
+     * @param daysToSubtract the days to subtract, may be negative
      * @return a {@code PaxDate} based on this date with the days subtracted, not null
-     * @throws DateTimeException
-     *             if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public PaxDate minusDays(final long daysToSubtract) {
         return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
@@ -504,16 +473,14 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * </ol>
      * <p>
-     * For example, 2006-14-09 minus one month would result in the invalid date 2006-13-09. Instead of returning an invalid result, the last valid day of the
-     * leap week, 2006-13-07, is selected instead.
+     * For example, 2006-14-09 minus one month would result in the invalid date 2006-13-09. Instead of returning an invalid result, the last valid day of the leap week, 2006-13-07, is selected
+     * instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthsToSubtract
-     *            the months to subtract, may be negative
+     * @param monthsToSubtract the months to subtract, may be negative
      * @return a {@code PaxDate} based on this date with the months subtracted, not null
-     * @throws DateTimeException
-     *             if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public PaxDate minusMonths(final long monthsToSubtract) {
         return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
@@ -522,18 +489,16 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Returns a copy of this {@code PaxDate} with the specified period in weeks subtracted.
      * <p>
-     * This method subtracts the specified amount in weeks from the days field decrementing the month and year fields as necessary to ensure the result remains
-     * valid. The result is only invalid if the maximum/minimum year is exceeded.
+     * This method subtracts the specified amount in weeks from the days field decrementing the month and year fields as necessary to ensure the result remains valid. The result is only invalid if the
+     * maximum/minimum year is exceeded.
      * <p>
      * For example, 2009-01-07 minus one week would result in 2008-13-28.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeksToSubtract
-     *            the weeks to subtract, may be negative
+     * @param weeksToSubtract the weeks to subtract, may be negative
      * @return a {@code PaxDate} based on this date with the weeks subtracted, not null
-     * @throws DateTimeException
-     *             if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public PaxDate minusWeeks(final long weeksToSubtract) {
         return (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
@@ -548,19 +513,15 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <li>If necessary, shift the index to account for the inserted/deleted leap-month.</li>
      * </ol>
      * <p>
-     * In the Pax Calendar, the month of December is 13th in non-leap-years, and 14th in leap years. Shifting the index of the month thus means the month would
-     * still be the same.
+     * In the Pax Calendar, the month of December is 13th in non-leap-years, and 14th in leap years. Shifting the index of the month thus means the month would still be the same.
      * <p>
-     * In the case of moving from the inserted leap-month (destination year is non-leap), the month index is retained. This has the effect of retaining the same
-     * day-of-year.
+     * In the case of moving from the inserted leap-month (destination year is non-leap), the month index is retained. This has the effect of retaining the same day-of-year.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearsToSubtract
-     *            the years to subtract, may be negative
+     * @param yearsToSubtract the years to subtract, may be negative
      * @return a {@code PaxDate} based on this date with the years subtracted, not null
-     * @throws DateTimeException
-     *             if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public PaxDate minusYears(final long yearsToSubtract) {
         return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
@@ -602,18 +563,16 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Returns a copy of this {@code PaxDate} with the specified number of days added.
      * <p>
-     * This method adds the specified amount to the days field incrementing the month and year fields as necessary to ensure the result remains valid. The
-     * result is only invalid if the maximum/minimum year is exceeded.
+     * This method adds the specified amount to the days field incrementing the month and year fields as necessary to ensure the result remains valid. The result is only invalid if the maximum/minimum
+     * year is exceeded.
      * <p>
      * For example, 2008-13-28 plus one day would result in 2009-01-01.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param daysToAdd
-     *            the days to add, may be negative
+     * @param daysToAdd the days to add, may be negative
      * @return a {@code PaxDate} based on this date with the days added, not null
-     * @throws DateTimeException
-     *             if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public PaxDate plusDays(final long daysToAdd) {
         if (daysToAdd == 0) {
@@ -633,16 +592,13 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * </ol>
      * <p>
-     * For example, 2006-12-13 plus one month would result in the invalid date 2006-13-13. Instead of returning an invalid result, the last valid day of the
-     * month, 2006-13-07, is selected instead.
+     * For example, 2006-12-13 plus one month would result in the invalid date 2006-13-13. Instead of returning an invalid result, the last valid day of the month, 2006-13-07, is selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthsToAdd
-     *            the months to add, may be negative
+     * @param monthsToAdd the months to add, may be negative
      * @return a {@code PaxDate} based on this date with the months added, not null
-     * @throws DateTimeException
-     *             if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public PaxDate plusMonths(final long monthsToAdd) {
         if (monthsToAdd == 0) {
@@ -659,18 +615,16 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Returns a copy of this {@code PaxDate} with the specified period in weeks added.
      * <p>
-     * This method adds the specified amount in weeks to the days field incrementing the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
+     * This method adds the specified amount in weeks to the days field incrementing the month and year fields as necessary to ensure the result remains valid. The result is only invalid if the
+     * maximum/minimum year is exceeded.
      * <p>
      * For example, 2008-12-28 plus one week would result in 2009-01-07.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeksToAdd
-     *            the weeks to add, may be negative
+     * @param weeksToAdd the weeks to add, may be negative
      * @return a {@code PaxDate} based on this date with the weeks added, not null
-     * @throws DateTimeException
-     *             if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public PaxDate plusWeeks(final long weeksToAdd) {
         return plusDays(Math.multiplyExact(weeksToAdd, DAYS_IN_WEEK));
@@ -685,19 +639,15 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <li>If necessary, shift the index to account for the inserted/deleted leap-month.</li>
      * </ol>
      * <p>
-     * In the Pax Calendar, the month of December is 13th in non-leap-years, and 14th in leap years. Shifting the index of the month thus means the month would
-     * still be the same.
+     * In the Pax Calendar, the month of December is 13th in non-leap-years, and 14th in leap years. Shifting the index of the month thus means the month would still be the same.
      * <p>
-     * In the case of moving from the inserted leap-month (destination year is non-leap), the month index is retained. This has the effect of retaining the same
-     * day-of-year.
+     * In the case of moving from the inserted leap-month (destination year is non-leap), the month index is retained. This has the effect of retaining the same day-of-year.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearsToAdd
-     *            the years to add, may be negative
+     * @param yearsToAdd the years to add, may be negative
      * @return a {@code PaxDate} based on this date with the years added, not null
-     * @throws DateTimeException
-     *             if the result exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public PaxDate plusYears(final long yearsToAdd) {
         if (yearsToAdd == 0) {
@@ -837,13 +787,10 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param newDayOfMonth
-     *            the day-of-month to set in the result, from 1 to 7 or 28
+     * @param newDayOfMonth the day-of-month to set in the result, from 1 to 7 or 28
      * @return a {@code PaxDate} based on this date with the requested day, not null
-     * @throws DateTimeException
-     *             if the day-of-month value is invalid
-     * @throws DateTimeException
-     *             if the day-of-month is invalid for the month-year
+     * @throws DateTimeException if the day-of-month value is invalid
+     * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     public PaxDate withDayOfMonth(final int newDayOfMonth) {
         if (getDayOfMonth() == newDayOfMonth) {
@@ -857,13 +804,10 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear
-     *            the day-of-year to set in the result, from 1 to 364 or 371
+     * @param dayOfYear the day-of-year to set in the result, from 1 to 364 or 371
      * @return a {@code PaxDate} based on this date with the requested day, not null
-     * @throws DateTimeException
-     *             if the day-of-year value is invalid
-     * @throws DateTimeException
-     *             if the day-of-year is invalid for the year
+     * @throws DateTimeException if the day-of-year value is invalid
+     * @throws DateTimeException if the day-of-year is invalid for the year
      */
     public PaxDate withDayOfYear(final int dayOfYear) {
         if (this.getDayOfYear() == dayOfYear) {
@@ -873,16 +817,13 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     }
 
     /**
-     * Returns a copy of this date with the month-of-year altered. If the day-of-month is invalid for the year, it will be changed to the last valid day of the
-     * month.
+     * Returns a copy of this date with the month-of-year altered. If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param newMonth
-     *            the month-of-year to set in the result, from 1 to 14
+     * @param newMonth the month-of-year to set in the result, from 1 to 14
      * @return a {@code PaxDate} based on this date with the requested month, not null
-     * @throws DateTimeException
-     *             if the month-of-year value is invalid
+     * @throws DateTimeException if the month-of-year value is invalid
      */
     public PaxDate withMonth(final int newMonth) {
         if (getMonthValue() == newMonth) {
@@ -893,16 +834,13 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     }
 
     /**
-     * Returns a copy of this date with the year altered. If the month or day-of-month is invalid for the year, it will be changed to the last valid month or
-     * day of the month.
+     * Returns a copy of this date with the year altered. If the month or day-of-month is invalid for the year, it will be changed to the last valid month or day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param newYear
-     *            the year to set in the result, from MIN_YEAR to MAX_YEAR
+     * @param newYear the year to set in the result, from MIN_YEAR to MAX_YEAR
      * @return a {@code PaxDate} based on this date with the requested year, not null
-     * @throws DateTimeException
-     *             if the year value is invalid
+     * @throws DateTimeException if the year value is invalid
      */
     public PaxDate withYear(final int newYear) {
         if (getYear() == newYear) {
@@ -915,8 +853,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Get the number of days from this date to the given day.
      *
-     * @param end
-     *            The end date.
+     * @param end The end date.
      * @return The number of days from this date to the given day.
      */
     private long daysUntil(final PaxDate end) {
@@ -935,8 +872,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Get the number of months from this date to the given day.
      *
-     * @param end
-     *            The end date.
+     * @param end The end date.
      * @return The number of months from this date to the given day.
      */
     private long monthsUntil(final PaxDate end) {
@@ -950,8 +886,7 @@ public final class PaxDate implements ChronoLocalDate, Serializable {
     /**
      * Get the number of years from this date to the given day.
      *
-     * @param end
-     *            The end date.
+     * @param end The end date.
      * @return The number of years from this date to the given day.
      */
     private long yearsUntil(final PaxDate end) {
