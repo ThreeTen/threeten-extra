@@ -54,8 +54,6 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -65,7 +63,6 @@ import java.time.Period;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
-import java.time.chrono.IsoChronology;
 import java.time.chrono.IsoEra;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
@@ -739,20 +736,29 @@ public class TestPaxChronology {
     // equals()
     // -----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        assertTrue(PaxChronology.INSTANCE.equals(PaxChronology.INSTANCE));
-    }
+    void test_equals() {
+        PaxDate a1 = PaxDate.of(2000, 1, 3);
+        PaxDate a2 = PaxDate.of(2000, 1, 3);
+        PaxDate b = PaxDate.of(2000, 1, 4);
+        PaxDate c = PaxDate.of(2000, 2, 3);
+        PaxDate d = PaxDate.of(2001, 1, 3);
 
-    @Test
-    public void testEqualsFalse() {
-        assertFalse(PaxChronology.INSTANCE.equals(IsoChronology.INSTANCE));
+        assertEquals(a1.equals(a1), true);
+        assertEquals(a1.equals(a2), true);
+        assertEquals(a1.equals(b), false);
+        assertEquals(a1.equals(c), false);
+        assertEquals(a1.equals(d), false);
+
+        assertEquals(a1.equals(null), false);
+        assertEquals(a1.equals(""), false);
+
+        assertEquals(a1.hashCode(), a2.hashCode());
     }
 
     // -----------------------------------------------------------------------
     // toString()
     // -----------------------------------------------------------------------
     @DataProvider(name = "toString")
-    @SuppressWarnings("checkstyle:indentation")
     Object[][] data_toString() {
         return new Object[][] { {PaxChronology.INSTANCE.date(-3, 5, 8), "Pax BCE 0002-05-08"},
             {PaxChronology.INSTANCE.date(-8, 1, 28), "Pax BCE 0007-01-28"},
@@ -761,8 +767,8 @@ public class TestPaxChronology {
     }
 
     @Test(dataProvider = "toString")
-    public void test_toString(final ChronoLocalDate ddate, final String expected) {
-        assertEquals(ddate.toString(), expected);
+    public void test_toString(final PaxDate pax, final String expected) {
+        assertEquals(pax.toString(), expected);
     }
 
 }
