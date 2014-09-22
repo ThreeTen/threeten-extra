@@ -37,11 +37,14 @@ import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
 import java.time.chrono.Era;
+import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * /** The ISO calendar system.
@@ -331,6 +334,11 @@ public final class PaxChronology extends AbstractChronology implements Serializa
             default:
                 return field.range();
         }
+    }
+
+    @Override
+    public PaxDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+        return (PaxDate) super.resolveDate(fieldValues, resolverStyle);
     }
 
     /**
