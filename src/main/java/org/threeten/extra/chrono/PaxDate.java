@@ -374,44 +374,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
                 - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH + DAYS_IN_WEEK : 0) + getDayOfMonth();
     }
 
-    @Override
-    @SuppressWarnings("checkstyle:cyclomaticcomplexity")
-    public long getLong(final TemporalField field) {
-        if (field instanceof ChronoField) {
-            switch ((ChronoField) field) {
-                case DAY_OF_WEEK:
-                    return getISODayOfWeek(((getDayOfMonth() - 1) % DAYS_IN_WEEK) + 1);
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    // Fall-through
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    return ((getDayOfMonth() - 1) % DAYS_IN_WEEK) + 1;
-                case DAY_OF_MONTH:
-                    return getDayOfMonth();
-                case DAY_OF_YEAR:
-                    return getDayOfYear();
-                case EPOCH_DAY:
-                    return toEpochDay();
-                case ALIGNED_WEEK_OF_MONTH:
-                    return ((getDayOfMonth() - 1) / DAYS_IN_WEEK) + 1;
-                case ALIGNED_WEEK_OF_YEAR:
-                    return ((getDayOfYear() - 1) / DAYS_IN_WEEK) + 1;
-                case MONTH_OF_YEAR:
-                    return getMonth();
-                case YEAR_OF_ERA:
-                    return getYear() >= 1 ? getYear() : 1 - getYear();
-                case YEAR:
-                    return getYear();
-                case ERA:
-                    return (getYear() >= 1 ? PaxEra.CE : PaxEra.BCE).getValue();
-                case PROLEPTIC_MONTH:
-                    return getProlepticMonth();
-                default:
-                    throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-            }
-        }
-        return field.getFrom(this);
-    }
-
     /**
      * Gets the month-of-year field from 1 to 14.
      * <p>
