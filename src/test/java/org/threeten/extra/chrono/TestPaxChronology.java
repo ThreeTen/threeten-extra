@@ -74,7 +74,6 @@ import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.junit.Ignore;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -96,12 +95,10 @@ public class TestPaxChronology {
         Assert.assertNotNull(chrono);
         Assert.assertEquals(chrono, PaxChronology.INSTANCE);
         Assert.assertEquals(chrono.getId(), "Pax");
-        Assert.assertEquals(chrono.getCalendarType(), null);
+        Assert.assertEquals(chrono.getCalendarType(), "pax");
     }
 
     @Test
-    @Ignore
-    // Ignored because no Pax CDML entry.
     public void test_chronology_of_name_id() {
         Chronology chrono = Chronology.of("pax");
         Assert.assertNotNull(chrono);
