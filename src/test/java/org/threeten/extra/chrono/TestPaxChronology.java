@@ -44,7 +44,15 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.DECADES;
+import static java.time.temporal.ChronoUnit.ERAS;
+import static java.time.temporal.ChronoUnit.MILLENNIA;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.WEEKS;
+import static java.time.temporal.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -62,6 +70,7 @@ import java.time.chrono.IsoEra;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
@@ -579,6 +588,66 @@ public class TestPaxChronology {
         final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
         final LocalDateTime test = LocalDateTime.MIN.with(jdate);
         assertEquals(test, LocalDateTime.of(2014, 6, 29, 0, 0));
+    }
+
+    // -----------------------------------------------------------------------
+    // PaxDate.plus
+    // -----------------------------------------------------------------------
+    @DataProvider(name = "plus")
+    Object[][] data_plus() {
+        return new Object[][] {
+            {2014, 5, 26, 0, DAYS, 2014, 5, 26},
+            {2014, 5, 26, 8, DAYS, 2014, 6, 6},
+            {2014, 5, 26, -3, DAYS, 2014, 5, 23},
+            {2014, 5, 26, 0, WEEKS, 2014, 5, 26},
+            {2014, 5, 26, 3, WEEKS, 2014, 6, 19},
+            {2014, 5, 26, -5, WEEKS, 2014, 4, 19},
+            {2014, 5, 26, 0, MONTHS, 2014, 5, 26},
+            {2014, 5, 26, 3, MONTHS, 2014, 8, 26},
+            {2014, 5, 26, -5, MONTHS, 2013, 13, 26},
+            {2014, 5, 26, 0, YEARS, 2014, 5, 26},
+            {2014, 5, 26, 3, YEARS, 2017, 5, 26},
+            {2014, 5, 26, -5, YEARS, 2009, 5, 26},
+            {2014, 5, 26, 0, DECADES, 2014, 5, 26},
+            {2014, 5, 26, 3, DECADES, 2044, 5, 26},
+            {2014, 5, 26, -5, DECADES, 1964, 5, 26},
+            {2014, 5, 26, 0, CENTURIES, 2014, 5, 26},
+            {2014, 5, 26, 3, CENTURIES, 2314, 5, 26},
+            {2014, 5, 26, -5, CENTURIES, 1514, 5, 26},
+            {2014, 5, 26, 0, MILLENNIA, 2014, 5, 26},
+            {2014, 5, 26, 3, MILLENNIA, 5014, 5, 26},
+            {2014, 5, 26, -5, MILLENNIA, 2014 - 5000, 5, 26},
+            {2014, 5, 26, -1, ERAS, -2013, 5, 26},
+
+            {2012, 12, 26, 1, MONTHS, 2012, 13, 7},
+            {2012, 13, 6, 3, MONTHS, 2013, 2, 6},
+            {2014, 14, 26, -1, MONTHS, 2014, 13, 7},
+            {2011, 13, 26, 1, YEARS, 2012, 14, 26},
+            {2012, 13, 6, 3, YEARS, 2015, 13, 6},
+            {2014, 13, 26, -2, YEARS, 2012, 14, 26},
+            {2012, 14, 26, -6, YEARS, 2006, 14, 26},
+            {2012, 13, 6, -6, YEARS, 2006, 13, 6},
+        };
+    }
+
+    @Test(dataProvider = "plus")
+    public void test_plus_TemporalUnit(int year, int month, int dom,
+            long amount, TemporalUnit unit,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(PaxDate.of(year, month, dom).plus(amount, unit), PaxDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(dataProvider = "plus")
+    public void test_minus_TemporalUnit(
+            int expectedYear, int expectedMonth, int expectedDom,
+            long amount, TemporalUnit unit,
+            int year, int month, int dom) {
+        assertEquals(PaxDate.of(year, month, dom).minus(amount, unit), PaxDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_plus_TemporalUnit_unsupported() {
+        PaxDate.of(2012, 6, 10).plus(0, MINUTES);
     }
 
     // -----------------------------------------------------------------------
