@@ -502,7 +502,7 @@ public class TestPaxChronology {
     }
 
     // -----------------------------------------------------------------------
-    // JulianDate.with
+    // PaxDate.with
     // -----------------------------------------------------------------------
     @DataProvider(name = "with")
     Object[][] data_with() {
@@ -648,6 +648,64 @@ public class TestPaxChronology {
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_plus_TemporalUnit_unsupported() {
         PaxDate.of(2012, 6, 10).plus(0, MINUTES);
+    }
+
+    // -----------------------------------------------------------------------
+    // PaxDate.until
+    // -----------------------------------------------------------------------
+    @DataProvider(name = "until")
+    Object[][] data_until() {
+        return new Object[][] {
+            {2014, 5, 26, 2014, 5, 26, DAYS, 0},
+            {2014, 5, 26, 2014, 6, 1, DAYS, 6},
+            {2014, 5, 26, 2014, 5, 20, DAYS, -6},
+            {2014, 5, 26, 2014, 5, 26, WEEKS, 0},
+            {2014, 5, 26, 2014, 6, 1, WEEKS, 0},
+            {2014, 5, 26, 2014, 6, 2, WEEKS, 1},
+            {2014, 5, 26, 2014, 5, 26, MONTHS, 0},
+            {2014, 5, 26, 2014, 6, 25, MONTHS, 0},
+            {2014, 5, 26, 2014, 6, 26, MONTHS, 1},
+            {2014, 5, 26, 2014, 5, 26, YEARS, 0},
+            {2014, 5, 26, 2015, 5, 25, YEARS, 0},
+            {2014, 5, 26, 2015, 5, 26, YEARS, 1},
+            {2014, 5, 26, 2014, 5, 26, DECADES, 0},
+            {2014, 5, 26, 2024, 5, 25, DECADES, 0},
+            {2014, 5, 26, 2024, 5, 26, DECADES, 1},
+            {2014, 5, 26, 2014, 5, 26, CENTURIES, 0},
+            {2014, 5, 26, 2114, 5, 25, CENTURIES, 0},
+            {2014, 5, 26, 2114, 5, 26, CENTURIES, 1},
+            {2014, 5, 26, 2014, 5, 26, MILLENNIA, 0},
+            {2014, 5, 26, 3014, 5, 25, MILLENNIA, 0},
+            {2014, 5, 26, 3014, 5, 26, MILLENNIA, 1},
+            {-2013, 5, 26, 0, 5, 26, ERAS, 0},
+            {-2013, 5, 26, 2014, 5, 26, ERAS, 1},
+
+            {2011, 13, 26, 2013, 13, 26, YEARS, 2},
+            {2011, 13, 26, 2012, 14, 26, YEARS, 1},
+            {2012, 14, 26, 2011, 13, 26, YEARS, -1},
+            {2012, 14, 26, 2013, 13, 26, YEARS, 1},
+            {2011, 13, 6, 2012, 13, 6, YEARS, 0},
+            {2013, 13, 6, 2012, 13, 6, YEARS, 0},
+            {2012, 13, 6, 2011, 13, 6, YEARS, -1},
+            {2012, 13, 6, 2013, 13, 6, YEARS, 1},
+        };
+    }
+
+    @Test(dataProvider = "until")
+    public void test_until_TemporalUnit(
+            int year1, int month1, int dom1,
+            int year2, int month2, int dom2,
+            TemporalUnit unit, long expected) {
+        PaxDate start = PaxDate.of(year1, month1, dom1);
+        PaxDate end = PaxDate.of(year2, month2, dom2);
+        assertEquals(start.until(end, unit), expected);
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_until_TemporalUnit_unsupported() {
+        PaxDate start = PaxDate.of(2012, 6, 30);
+        PaxDate end = PaxDate.of(2012, 7, 1);
+        start.until(end, MINUTES);
     }
 
     // -----------------------------------------------------------------------
