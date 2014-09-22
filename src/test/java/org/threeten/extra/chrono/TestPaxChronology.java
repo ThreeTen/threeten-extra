@@ -709,6 +709,33 @@ public class TestPaxChronology {
     }
 
     // -----------------------------------------------------------------------
+    @Test
+    public void test_plus_Period() {
+        assertEquals(PaxDate.of(2014, 5, 26).plus(PaxChronology.INSTANCE.period(0, 2, 2)), PaxDate.of(2014, 7, 28));
+        assertEquals(PaxDate.of(2011, 13, 26).plus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2013, 2, 28));
+        assertEquals(PaxDate.of(2012, 13, 6).plus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2014, 2, 8));
+        assertEquals(PaxDate.of(2012, 12, 6).plus(PaxChronology.INSTANCE.period(0, 1, 2)), PaxDate.of(2012, 14, 1));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_plus_Period_ISO() {
+        assertEquals(PaxDate.of(2014, 5, 26).plus(Period.ofMonths(2)), PaxDate.of(2014, 7, 26));
+    }
+
+    @Test
+    public void test_minus_Period() {
+        assertEquals(PaxDate.of(2014, 5, 26).minus(PaxChronology.INSTANCE.period(0, 2, 3)), PaxDate.of(2014, 3, 23));
+        assertEquals(PaxDate.of(2012, 14, 26).minus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2013, 11, 24));
+        assertEquals(PaxDate.of(2012, 13, 6).minus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2014, 11, 4));
+        assertEquals(PaxDate.of(2012, 14, 1).minus(PaxChronology.INSTANCE.period(0, 1, 2)), PaxDate.of(2012, 12, 27));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_minus_Period_ISO() {
+        assertEquals(PaxDate.of(2014, 5, 26).minus(Period.ofMonths(2)), PaxDate.of(2014, 3, 26));
+    }
+
+    // -----------------------------------------------------------------------
     // equals()
     // -----------------------------------------------------------------------
     @Test
