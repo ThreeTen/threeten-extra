@@ -78,9 +78,12 @@ import java.util.Objects;
  * <p>
  * The Pax calendar system is a proposed reform calendar system, and is not in common use. More information is available in the <a
  * href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
- * <h3>Specification for implementors</h3> This class is immutable and thread-safe.
- *
- * @author Clockwork-Muse
+ **
+ * <h3>Implementation Requirements</h3>
+ * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class PaxDate implements ChronoLocalDate, Serializable {
 
