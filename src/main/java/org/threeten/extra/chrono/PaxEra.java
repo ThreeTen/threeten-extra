@@ -39,34 +39,42 @@ import java.time.chrono.Era;
 /**
  * An era in the Pax calendar system.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code PaxEra}. Use {@code getValue()} instead.</b>
- * <h3>Specification for implementors</h3> This is an immutable and thread-safe enum.
- *
- * @author Clockwork-Muse
+ * The Pax calendar system has two eras. 
+ * The current era, for years from 1 onwards, is known as 'Current Era'. 
+ * All previous years, zero or earlier in the proleptic count or one and greater in the
+ * year-of-era count, are part of the 'Before Current' era.
+ * <p>
+ * The start of the Pax epoch {@code 0001-01-01 (Pax)} is {@code 0000-12-31 (ISO)}.
+ * <p>
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code PaxEra}. 
+ * Use {@code getValue()} instead.</b>
+ * <h3>Specification for implementors</h3> 
+ * This is an immutable and thread-safe enum.
  */
 public enum PaxEra implements Serializable, Era {
 
     /**
-     * The singleton instance for the era BCE, 'Before Current Era'. The 'Pax' part of the name emphasizes that this differs from the BCE era in the Gregorian
-     * calendar system. This has the numeric value of {@code 0}.
+     * The singleton instance for the era BCE, 'Before Current Era'.
+     * The 'Pax' part of the name emphasizes that this differs from the BCE era in the Gregorian calendar system.
+     * This has the numeric value of {@code 0}.
      */
     BCE,
     /**
-     * The singleton instance for the era CE, 'Current Era'. The 'Pax' part of the name emphasizes that this differs from the CE era in the Gregorian calendar
-     * system. This has the numeric value of {@code 1}.
+     * The singleton instance for the era CE, 'Current Era'.
+     * The 'Pax' part of the name emphasizes that this differs from the CE era in the Gregorian calendar system.
+     * This has the numeric value of {@code 1}.
      */
     CE;
 
     /**
      * Obtains an instance of {@code PaxEra} from an {@code int} value.
      * <p>
-     * {@code PaxEra} is an enum representing the Pax eras of BCE/CE. This factory allows the enum to be obtained from the {@code int} value.
+     * {@code PaxEra} is an enum representing the Pax eras of BCE/CE. 
+     * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param era
-     *            the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
+     * @param era the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
      * @return the era singleton, not null
-     * @throws DateTimeException
-     *             if the value is invalid
+     * @throws DateTimeException if the value is invalid
      */
     public static PaxEra of(final int era) {
         switch (era) {
@@ -87,7 +95,6 @@ public enum PaxEra implements Serializable, Era {
      *
      * @return the era value, from 0 (BCE) to 1 (CE)
      */
-    @Override
     public int getValue() {
         return ordinal();
     }
