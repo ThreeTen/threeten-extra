@@ -52,14 +52,12 @@ import java.util.List;
  * <p>
  * <ul>
  * <li>era - There are two eras, 'Current Era' (CE) and 'Before Current Era' (BCE).
- * <li>year-of-era - The year-of-era is the same as the proleptic-year for the current CE era. For the BCE era before the Pax epoch the year increases from 1
- * upwards as time goes backwards.
+ * <li>year-of-era - The year-of-era is the same as the proleptic-year for the current CE era. For the BCE era before the Pax epoch the year increases from 1 upwards as time goes backwards.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the current era. For the previous era, years have zero, then negative values.
  * <li>month-of-year - There are 13 or 14 months in a Pax year, numbered from 1 to 13 (or 14).
  * <li>day-of-month - There are 28 days in each Pax month, numbered from 1 to 28. In a leap year a one-week month ('Pax') is inserted between months 12 and 13.
  * <li>day-of-year - There are 364 days in a standard Pax year and 371 in a leap year. The days are numbered from 1 to 364 or 1 to 371.
- * <li>leap-year - Leap years occur in every year whose last two digits are divisible by {@code 6}, are {@code 99}, or are {@code 00} and the year is <b>not</b>
- * divisible by 400
+ * <li>leap-year - Leap years occur in every year whose last two digits are divisible by {@code 6}, are {@code 99}, or are {@code 00} and the year is <b>not</b> divisible by 400
  * </ul>
  * <p>
  * For more information, please read the <a href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
@@ -127,9 +125,9 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      *
      * @param era the Pax era, not null
      * @param yearOfEra the year-of-era
-     * @param month the month-of-year 
+     * @param month the month-of-year
      * @param dayOfMonth the day-of-month
-     * @return the Pax local date, not null 
+     * @return the Pax local date, not null
      * @throws DateTimeException if unable to create the date
      * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
      */
@@ -137,14 +135,14 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     public PaxDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
-    
+
     /**
      * Obtains a local date in Pax calendar system from the
      * proleptic-year, month-of-year and day-of-month fields.
      *
-     * @param prolepticYear  the proleptic-year
-     * @param month  the month-of-year
-     * @param dayOfMonth  the day-of-month
+     * @param prolepticYear the proleptic-year
+     * @param month the month-of-year
+     * @param dayOfMonth the day-of-month
      * @return the Pax local date, not null
      * @throws DateTimeException if unable to create the date
      */
@@ -156,11 +154,9 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * Obtains the current Pax local date from the system clock in the default time-zone.
      * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current date.
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default time-zone to obtain the current date.
      * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
+     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
      *
      * @return the current Pax local date using the system clock and default time-zone, not null
      * @throws DateTimeException if unable to create the date
@@ -173,11 +169,9 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * Obtains the current Pax local date from the system clock in the specified time-zone.
      * <p>
-     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
-     * Specifying the time-zone avoids dependence on the default time-zone.
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default time-zone.
      * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
+     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
      *
      * @return the current Pax local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
@@ -190,11 +184,10 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * Obtains the current Pax local date from the specified clock.
      * <p>
-     * This will query the specified clock to obtain the current date - today.
-     * Using this method allows the use of an alternate clock for testing.
-     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     * This will query the specified clock to obtain the current date - today. Using this method allows the use of an alternate clock for testing. The alternate clock may be introduced using
+     * {@link Clock dependency injection}.
      *
-     * @param clock  the clock to use, not null
+     * @param clock the clock to use, not null
      * @return the current Pax local date, not null
      * @throws DateTimeException if unable to create the date
      */
@@ -206,7 +199,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * Obtains a Pax local date from another date-time object.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal the date-time object to convert, not null
      * @return the Pax local date, not null
      * @throws DateTimeException if unable to create the date
      */
@@ -218,7 +211,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * Obtains a local date in the Pax calendar system from the epoch-day.
      *
-     * @param epochDay  the epoch day
+     * @param epochDay the epoch day
      * @return the Pax local date, not null
      * @throws DateTimeException if unable to create the date
      */
@@ -242,13 +235,13 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     public PaxDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
-    
+
     /**
      * Obtains a local date in Pax calendar system from the
      * proleptic-year and day-of-year fields.
      *
-     * @param prolepticYear  the proleptic-year
-     * @param dayOfYear  the day-of-year
+     * @param prolepticYear the proleptic-year
+     * @param dayOfYear the day-of-year
      * @return the Pax local date, not null
      * @throws DateTimeException if unable to create the date
      */
@@ -264,15 +257,13 @@ public final class PaxChronology extends AbstractChronology implements Serializa
 
     @Override
     public List<Era> eras() {
-        return Arrays.<Era> asList(PaxEra.values());
+        return Arrays.<Era>asList(PaxEra.values());
     }
 
     /**
      * Gets the calendar type of the underlying calendar system - 'pax'.
      * <p>
-     * The <em>Unicode Locale Data Markup Language (LDML)</em> specification
-     * does not define an identifier for the Pax calendar, but were it to
-     * do so, 'pax' is highly likely to be chosen.
+     * The <em>Unicode Locale Data Markup Language (LDML)</em> specification does not define an identifier for the Pax calendar, but were it to do so, 'pax' is highly likely to be chosen.
      *
      * @return the calendar system type - 'pax'
      * @see #getId()
@@ -285,8 +276,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * Gets the ID of the chronology - 'Pax'.
      * <p>
-     * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * The ID uniquely identifies the {@code Chronology}. It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      *
      * @return the chronology ID - 'Pax'
      * @see #getCalendarType()
@@ -299,16 +289,15 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * Checks if the year is a leap year, according to the Pax proleptic calendar system rules.
      * <p>
-     * This method applies the current rules for leap years across the whole time-line. In general, a year is a leap year if the last two digits are divisible
-     * by 6 without remainder, or are 99. Years with the last two digits of 00 are also leap years, with the exception of years divisible by 400 which are not.
+     * This method applies the current rules for leap years across the whole time-line. In general, a year is a leap year if the last two digits are divisible by 6 without remainder, or are 99. Years
+     * with the last two digits of 00 are also leap years, with the exception of years divisible by 400 which are not.
      * <p>
-     * For example, 2012 is a leap year becuase the last two digits (12) are divisible by 6. 1999 is a leap year as the last two digits are both 9's (99). 1900
-     * is a leap year as the last two digits are both 0's (00), however 2000 was not a leap year as it is divisible by 400. The year 0 is not a leap year.
+     * For example, 2012 is a leap year becuase the last two digits (12) are divisible by 6. 1999 is a leap year as the last two digits are both 9's (99). 1900 is a leap year as the last two digits
+     * are both 0's (00), however 2000 was not a leap year as it is divisible by 400. The year 0 is not a leap year.
      * <p>
      * The calculation is proleptic - applying the same rules into the far future and far past.
      *
-     * @param prolepticYear
-     *            the Pax proleptic year to check
+     * @param prolepticYear the Pax proleptic year to check
      * @return true if the year is leap, false otherwise
      */
     @Override
