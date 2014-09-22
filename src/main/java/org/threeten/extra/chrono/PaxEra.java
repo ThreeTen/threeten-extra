@@ -32,7 +32,6 @@
 
 package org.threeten.extra.chrono;
 
-import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.chrono.Era;
 
@@ -51,7 +50,7 @@ import java.time.chrono.Era;
  * <h3>Specification for implementors</h3> 
  * This is an immutable and thread-safe enum.
  */
-public enum PaxEra implements Serializable, Era {
+public enum PaxEra implements Era {
 
     /**
      * The singleton instance for the era BCE, 'Before Current Era'.
