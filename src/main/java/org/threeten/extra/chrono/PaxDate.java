@@ -31,13 +31,7 @@
  */
 package org.threeten.extra.chrono;
 
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.ERA;
-import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_MONTH;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_WEEK;
@@ -677,43 +671,11 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     @Override
-    @SuppressWarnings("checkstyle:cyclomaticcomplexity")
     public PaxDate with(final TemporalField field, final long newValue) {
-        if (field instanceof ChronoField) {
-            final ChronoField f = (ChronoField) field;
-            PaxChronology.INSTANCE.range(f).checkValidValue(newValue, field);
-            switch (f) {
-                case DAY_OF_WEEK:
-                    return plusDays(newValue - getLong(DAY_OF_WEEK));
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH));
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
-                case DAY_OF_MONTH:
-                    return withDayOfMonth((int) newValue);
-                case DAY_OF_YEAR:
-                    return withDayOfYear((int) newValue);
-                case EPOCH_DAY:
-                    return PaxDate.ofEpochDay(newValue);
-                case ALIGNED_WEEK_OF_MONTH:
-                    return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_MONTH));
-                case ALIGNED_WEEK_OF_YEAR:
-                    return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_YEAR));
-                case MONTH_OF_YEAR:
-                    return withMonth((int) newValue);
-                case PROLEPTIC_MONTH:
-                    return plusMonths(newValue - getLong(PROLEPTIC_MONTH));
-                case YEAR_OF_ERA:
-                    return withYear((int) (year >= 1 ? newValue : 1 - newValue));
-                case YEAR:
-                    return withYear((int) newValue);
-                case ERA:
-                    return (getLong(ERA) == newValue ? this : withYear(1 - year));
-                default:
-                    throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-            }
+        if (field == ChronoField.YEAR) {
+            return plusYears(newValue - getYear());
         }
-        return field.adjustInto(this, newValue);
+        return (PaxDate) super.with(field, newValue);
     }
 
     /**
