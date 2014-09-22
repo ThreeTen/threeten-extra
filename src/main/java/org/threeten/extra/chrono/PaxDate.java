@@ -53,6 +53,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
@@ -593,6 +594,26 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         // 4 - Source in leap month, but destination year not leap. Retain month index, preserving day-of-year.
         // 5 - Source after leap month, but destination year not leap. Move month index back.
         return resolvePreviousValid(newYear, month, day);
+    }
+
+    @Override
+    public PaxDate plus(TemporalAmount amount) {
+        return (PaxDate) amount.addTo(this);
+    }
+
+    @Override
+    public PaxDate plus(long amountToAdd, TemporalUnit unit) {
+        return (PaxDate) super.plus(amountToAdd, unit);
+    }
+
+    @Override
+    public PaxDate minus(TemporalAmount amount) {
+        return (PaxDate) amount.subtractFrom(this);
+    }
+
+    @Override
+    public PaxDate minus(long amountToSubtract, TemporalUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     @Override
