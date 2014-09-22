@@ -714,40 +714,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     /**
-     * Returns a copy of this date with the month-of-year altered. If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param newMonth the month-of-year to set in the result, from 1 to 14
-     * @return a {@code PaxDate} based on this date with the requested month, not null
-     * @throws DateTimeException if the month-of-year value is invalid
-     */
-    public PaxDate withMonth(final int newMonth) {
-        if (getMonth() == newMonth) {
-            return this;
-        }
-        PaxChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR).checkValidValue(newMonth, ChronoField.MONTH_OF_YEAR);
-        return resolvePreviousValid(getYear(), newMonth, getDayOfMonth());
-    }
-
-    /**
-     * Returns a copy of this date with the year altered. If the month or day-of-month is invalid for the year, it will be changed to the last valid month or day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param newYear the year to set in the result, from MIN_YEAR to MAX_YEAR
-     * @return a {@code PaxDate} based on this date with the requested year, not null
-     * @throws DateTimeException if the year value is invalid
-     */
-    public PaxDate withYear(final int newYear) {
-        if (getYear() == newYear) {
-            return this;
-        }
-        YEAR.checkValidValue(newYear);
-        return resolvePreviousValid(newYear, getMonth(), getDayOfMonth());
-    }
-
-    /**
      * Get the number of days from this date to the given day.
      *
      * @param end The end date.
