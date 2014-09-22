@@ -529,39 +529,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.time.temporal.Temporal#plus(long, java.time.temporal.TemporalUnit)
-     */
-    @Override
-    public PaxDate plus(final long amountToAdd, final TemporalUnit unit) {
-        if (unit instanceof ChronoUnit) {
-            switch ((ChronoUnit) unit) {
-                case DAYS:
-                    return plusDays(amountToAdd);
-                case WEEKS:
-                    return plusWeeks(amountToAdd);
-                case MONTHS:
-                    return plusMonths(amountToAdd);
-                case YEARS:
-                    return plusYears(amountToAdd);
-                case DECADES:
-                    return plusYears(Math.multiplyExact(amountToAdd, YEARS_IN_DECADE));
-                case CENTURIES:
-                    return plusYears(Math.multiplyExact(amountToAdd, YEARS_IN_CENTURY));
-                case MILLENNIA:
-                    return plusYears(Math.multiplyExact(amountToAdd, YEARS_IN_MILLENNIUM));
-                case ERAS:
-                    return with(ERA, Math.addExact(getLong(ERA), amountToAdd));
-                default:
-                    throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
-
-            }
-
-        }
-        return unit.addTo(this, amountToAdd);
-    }
-
     /**
      * Returns a copy of this {@code PaxDate} with the specified number of days added.
      * <p>
