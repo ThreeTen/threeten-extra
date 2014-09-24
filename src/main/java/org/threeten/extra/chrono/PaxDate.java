@@ -626,4 +626,8 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         return resolvePreviousValid(newYear, newMonth, dayOfMonth);
     }
 
+    @Override
+    int lengthOfYearInMonths() {
+        return MONTHS_IN_YEAR + (isLeapYear() ? 1 : 0);
+    }
 }
