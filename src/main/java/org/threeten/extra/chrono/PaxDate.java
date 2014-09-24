@@ -282,16 +282,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     /**
-     * The Pax day-of-week is aligned to Sunday, not Monday as in the ISO calendar.
-     *
-     * @param dayOfWeek The Pax day-of-week, where 1 is Sunday and 7 is Saturday.
-     * @return The ISO day-of-week, where 1 is Monday and 7 is Sunday.
-     */
-    private static long getISODayOfWeek(final int dayOfWeek) {
-        return dayOfWeek == 1 ? DAYS_IN_WEEK : dayOfWeek - 1;
-    }
-
-    /**
      * Get the count of leap months since proleptic month 0.
      * <p>
      * This number is negative if the month is prior to Pax year 0.
