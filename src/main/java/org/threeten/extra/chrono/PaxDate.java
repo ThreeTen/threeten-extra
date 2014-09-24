@@ -449,7 +449,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         final int newYear = YEAR.checkValidIntValue(getProlepticYear() + yearsToAdd);
         // Retain actual month (not index) in the case where a leap month is to be inserted.
         if (getMonth() == MONTHS_IN_YEAR && !isLeapYear() && PaxChronology.INSTANCE.isLeapYear(newYear)) {
-            return of(newYear, getMonth() + 1, getDayOfMonth());
+            return of(newYear, MONTHS_IN_YEAR + 1, getDayOfMonth());
         }
         // Otherwise, one of the following is true:
         // 1 - Before the leap month, nothing to do (most common)
