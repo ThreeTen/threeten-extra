@@ -403,29 +403,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     /**
-     * Returns a copy of this {@code PaxDate} with the specified number of days added.
-     * <p>
-     * This method adds the specified amount to the days field incrementing the month and year fields as necessary to ensure the result remains valid. The result is only invalid if the maximum/minimum
-     * year is exceeded.
-     * <p>
-     * For example, 2008-13-28 plus one day would result in 2009-01-01.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param daysToAdd the days to add, may be negative
-     * @return a {@code PaxDate} based on this date with the days added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    @Override
-    public PaxDate plusDays(final long daysToAdd) {
-        if (daysToAdd == 0) {
-            return this;
-        }
-        final long epochOffset = Math.addExact(toEpochDay(), daysToAdd);
-        return PaxDate.ofEpochDay(epochOffset);
-    }
-
-    /**
      * Returns a copy of this {@code PaxDate} with the specified period in months added.
      * <p>
      * This method adds the specified amount to the months field in three steps:
@@ -454,24 +431,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         final int newYear = YEAR.checkValidIntValue(Math.floorDiv(monthsRegularized, MONTHS_IN_YEAR));
         final int newMonth = (int) calcMonths - (newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear));
         return resolvePreviousValid(newYear, newMonth, getDayOfMonth());
-    }
-
-    /**
-     * Returns a copy of this {@code PaxDate} with the specified period in weeks added.
-     * <p>
-     * This method adds the specified amount in weeks to the days field incrementing the month and year fields as necessary to ensure the result remains valid. The result is only invalid if the
-     * maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-28 plus one week would result in 2009-01-07.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeksToAdd the weeks to add, may be negative
-     * @return a {@code PaxDate} based on this date with the weeks added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public PaxDate plusWeeks(final long weeksToAdd) {
-        return plusDays(Math.multiplyExact(weeksToAdd, DAYS_IN_WEEK));
     }
 
     /**
