@@ -31,7 +31,6 @@
  */
 package org.threeten.extra.chrono;
 
-import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.YEAR;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_MONTH;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_WEEK;
@@ -59,7 +58,6 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
-import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
 
@@ -649,12 +647,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         final PaxDate end = PaxDate.from(endExclusive);
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
-                case DAYS:
-                    return daysUntil(end);
-                case WEEKS:
-                    return daysUntil(end) / DAYS_IN_WEEK;
-                case MONTHS:
-                    return monthsUntil(end);
                 case YEARS:
                     return yearsUntil(end);
                 case DECADES:
@@ -663,13 +655,11 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
                     return yearsUntil(end) / YEARS_IN_CENTURY;
                 case MILLENNIA:
                     return yearsUntil(end) / YEARS_IN_MILLENNIUM;
-                case ERAS:
-                    return end.getLong(ERA) - getLong(ERA);
                 default:
-                    throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
+                    break;
             }
         }
-        return unit.between(this, end);
+        return super.until(end, unit);
     }
 
     @Override
