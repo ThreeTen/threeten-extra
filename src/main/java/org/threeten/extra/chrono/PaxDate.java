@@ -352,7 +352,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @return the day-of-month, from 1 to 28
      */
     @Override
-    public int getDayOfMonth() {
+    int getDayOfMonth() {
         return day;
     }
 
@@ -362,7 +362,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @return The day of the year, from 1 to 371.
      */
     @Override
-    public int getDayOfYear() {
+    int getDayOfYear() {
         return (getMonth() - 1) * DAYS_IN_MONTH
                 - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH + DAYS_IN_WEEK : 0) + getDayOfMonth();
     }
@@ -375,7 +375,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @return the month-of-year, from 1 to 14
      */
     @Override
-    public int getMonth() {
+    int getMonth() {
         return month;
     }
 
@@ -388,7 +388,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      *
      * @return the year
      */
-    public int getYear() {
+    int getYear() {
         return year;
     }
 
