@@ -82,7 +82,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * The leap-month of Pax is only one week long.
      */
-    private static final int WEEKS_IN_LEAP_MONTH = 1;
+    static final int WEEKS_IN_LEAP_MONTH = 1;
 
     /**
      * Standard 7-day week.
@@ -92,7 +92,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * In all months (except Pax), there are 4 complete weeks.
      */
-    private static final int WEEKS_IN_MONTH = 4;
+    static final int WEEKS_IN_MONTH = 4;
 
     /**
      * There are 13 months in a (non-leap) year.

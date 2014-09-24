@@ -36,6 +36,8 @@ import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_MONTH;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_WEEK;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_YEAR;
 import static org.threeten.extra.chrono.PaxChronology.MONTHS_IN_YEAR;
+import static org.threeten.extra.chrono.PaxChronology.WEEKS_IN_LEAP_MONTH;
+import static org.threeten.extra.chrono.PaxChronology.WEEKS_IN_MONTH;
 import static org.threeten.extra.chrono.PaxChronology.WEEKS_IN_YEAR;
 
 import java.io.Serializable;
@@ -616,8 +618,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     ValueRange rangeAlignedWeekOfMonth() {
-        // TODO Auto-generated method stub
-        return null;
+        return ValueRange.of(1, getMonth() == MONTHS_IN_YEAR && isLeapYear() ? WEEKS_IN_LEAP_MONTH : WEEKS_IN_MONTH);
     }
 
     @Override
