@@ -721,16 +721,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     /**
-     * Get the number of days from this date to the given day.
-     *
-     * @param end The end date.
-     * @return The number of days from this date to the given day.
-     */
-    private long daysUntil(final PaxDate end) {
-        return end.toEpochDay() - toEpochDay();
-    }
-
-    /**
      * Get the proleptic month from the start of the epoch (Pax 0000).
      *
      * @return The proleptic month.
@@ -738,20 +728,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     @Override
     long getProlepticMonth() {
         return getYear() * MONTHS_IN_YEAR + getLeapYearsBefore(getYear()) + getMonth() - 1;
-    }
-
-    /**
-     * Get the number of months from this date to the given day.
-     *
-     * @param end The end date.
-     * @return The number of months from this date to the given day.
-     */
-    private long monthsUntil(final PaxDate end) {
-        // Multiplying by the days-in-month (+1) makes the propleptic count a "place" (ie, the 10's place).
-        // This means that if the starting date is before, it moves the count to the prior unit (24 - 8 = 16, and we only care about the 10's place).
-        final long startMonth = getProlepticMonth() * (DAYS_IN_MONTH + 1) + getDayOfMonth();
-        final long endMonth = end.getProlepticMonth() * (DAYS_IN_MONTH + 1) + end.getDayOfMonth();
-        return (endMonth - startMonth) / (DAYS_IN_MONTH + 1);
     }
 
     /**
