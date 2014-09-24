@@ -587,7 +587,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      */
     @Override
     long getProlepticMonth() {
-        return getProlepticYear() * MONTHS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) + getMonth() - 1;
+        return ((long) getProlepticYear()) * MONTHS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) + getMonth() - 1;
     }
 
     /**
