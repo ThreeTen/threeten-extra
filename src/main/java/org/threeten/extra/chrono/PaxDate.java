@@ -492,9 +492,9 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     public long toEpochDay() {
-        final long days = getProlepticYear() * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + (getMonth() - 1) * DAYS_IN_MONTH + getDayOfMonth() - 1;
-        // Adjust for short leap month if after, then rebase to ISO 1970.
-        return days - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH - DAYS_IN_WEEK : 0) - DAYS_PAX_0000_TO_ISO_1970;
+        final long days = ((long) getProlepticYear()) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
+        // Rebase to ISO 1970.
+        return days - DAYS_PAX_0000_TO_ISO_1970;
     }
 
     @Override
