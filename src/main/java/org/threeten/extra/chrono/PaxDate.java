@@ -151,6 +151,9 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @throws DateTimeException if unable to convert to a {@code PaxDate}
      */
     public static PaxDate from(final TemporalAccessor temporal) {
+        if (temporal instanceof PaxDate) {
+            return (PaxDate) temporal;
+        }
         final LocalDate date = temporal.query(TemporalQueries.localDate());
         if (date == null) {
             throw new DateTimeException("Unable to obtain LocalDate from TemporalAccessor: "
