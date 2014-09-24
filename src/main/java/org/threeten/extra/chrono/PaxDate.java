@@ -316,15 +316,15 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @return The number of leap years since Pax year 0.
      */
     @SuppressWarnings("checkstyle:magicnumber")
-    private static int getLeapYearsBefore(final int prolepticYear) {
+    private static long getLeapYearsBefore(final long prolepticYear) {
         // need to return a non-negative number.
-        final int absYear = Math.abs(prolepticYear);
+        final long absYear = Math.abs(prolepticYear);
         // Calculation is like this:
         // - In every century (years X00 - X99), there are 17 leap years (multiples of 6 and at 99).
         // - Every century is a leap year...
         // - ... except every 400 years.
         // - Count the elapsed multiples of 6 since the start of the century.
-        return Integer.signum(prolepticYear) * (17 * (absYear / 100) + ((absYear - 1) / 100) - ((absYear - 1) / 400) + ((absYear % 100) / 6));
+        return Long.signum(prolepticYear) * (17 * (absYear / 100) + ((absYear - 1) / 100) - ((absYear - 1) / 400) + ((absYear % 100) / 6));
     }
 
     /**
@@ -418,7 +418,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         // "Regularize" the month count, as if years were all 13 months long.
         final long monthsRegularized = calcMonths - getLeapMonthsBefore(calcMonths);
         final int newYear = YEAR.checkValidIntValue(Math.floorDiv(monthsRegularized, MONTHS_IN_YEAR));
-        final int newMonth = (int) calcMonths - (newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear));
+        final int newMonth = (int) (calcMonths - (newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear)));
         return resolvePreviousValid(newYear, newMonth, getDayOfMonth());
     }
 
