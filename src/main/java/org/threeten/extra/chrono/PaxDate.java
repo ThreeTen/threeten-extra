@@ -784,30 +784,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     @Override
-    public boolean isSupported(TemporalUnit arg0) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isSupported(TemporalField arg0) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public Temporal adjustInto(Temporal arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public int compareTo(ChronoLocalDate arg0) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     int getProlepticYear() {
         // TODO Auto-generated method stub
         return 0;
