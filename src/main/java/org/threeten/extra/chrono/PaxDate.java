@@ -234,7 +234,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         return new PaxDate(prolepticYear, month, dayOfMonth);
     }
 
-    public static PaxDate ofEpochDay(final long epochDay) {
+    static PaxDate ofEpochDay(final long epochDay) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -250,7 +250,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @throws DateTimeException if the value of any field is out of range
      * @throws DateTimeException if the day-of-year is invalid for the month-year
      */
-    public static PaxDate ofYearDay(final int prolepticYear, final int dayOfYear) {
+    static PaxDate ofYearDay(final int prolepticYear, final int dayOfYear) {
         YEAR.checkValidValue(prolepticYear);
         if (dayOfYear < 1 || dayOfYear > DAYS_IN_YEAR + DAYS_IN_WEEK) {
             throw new DateTimeException("Inavlid date 'DayOfYear " + dayOfYear + "'");
