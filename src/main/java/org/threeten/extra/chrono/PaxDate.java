@@ -421,7 +421,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @throws DateTimeException if the result exceeds the supported date range
      */
     @Override
-    public PaxDate plusMonths(final long monthsToAdd) {
+    PaxDate plusMonths(final long monthsToAdd) {
         if (monthsToAdd == 0) {
             return this;
         }
@@ -453,7 +453,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @throws DateTimeException if the result exceeds the supported date range
      */
     @Override
-    public PaxDate plusYears(final long yearsToAdd) {
+    PaxDate plusYears(final long yearsToAdd) {
         if (yearsToAdd == 0) {
             return this;
         }
