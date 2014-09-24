@@ -112,7 +112,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     /**
      * There are 52 weeks in a (non-leap) year.
      */
-    private static final int WEEKS_IN_YEAR = DAYS_IN_YEAR / DAYS_IN_WEEK;
+    static final int WEEKS_IN_YEAR = DAYS_IN_YEAR / DAYS_IN_WEEK;
 
     /**
      * Serialization version.

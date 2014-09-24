@@ -37,6 +37,7 @@ import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_MONTH;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_WEEK;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_YEAR;
 import static org.threeten.extra.chrono.PaxChronology.MONTHS_IN_YEAR;
+import static org.threeten.extra.chrono.PaxChronology.WEEKS_IN_YEAR;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -618,26 +619,12 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     public ValueRange range(final TemporalField field) {
-        if (field instanceof ChronoField) {
-            if (isSupported(field)) {
-                switch ((ChronoField) field) {
-                    case ALIGNED_WEEK_OF_MONTH:
-                        return ValueRange.of(1, (lengthOfMonth() - 1) / DAYS_IN_WEEK);
-                    case ALIGNED_WEEK_OF_YEAR:
-                        return ValueRange.of(1, (lengthOfYear() - 1) / DAYS_IN_WEEK);
-                    case DAY_OF_MONTH:
-                        return ValueRange.of(1, lengthOfMonth());
-                    case DAY_OF_YEAR:
-                        return ValueRange.of(1, lengthOfYear());
-                    case MONTH_OF_YEAR:
-                        return ValueRange.of(1, MONTHS_IN_YEAR + (isLeapYear() ? 1 : 0));
-                    default:
-                        return field.range();
-                }
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+        if (field == ChronoField.ALIGNED_WEEK_OF_YEAR) {
+            return ValueRange.of(1, WEEKS_IN_YEAR + (isLeapYear() ? 1 : 0));
+        } else if (field == ChronoField.MONTH_OF_YEAR) {
+            return ValueRange.of(1, MONTHS_IN_YEAR + (isLeapYear() ? 1 : 0));
         }
-        return field.rangeRefinedBy(this);
+        return super.range(field);
     }
 
     @Override
