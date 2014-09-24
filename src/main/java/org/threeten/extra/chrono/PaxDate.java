@@ -379,19 +379,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         return month;
     }
 
-    /**
-     * Gets the year field.
-     * <p>
-     * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * The year returned by this method is proleptic as per {@code get(YEAR)}. To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
-     *
-     * @return the year
-     */
-    int getYear() {
-        return year;
-    }
-
     @Override
     public int lengthOfMonth() {
         return month == MONTHS_IN_YEAR && isLeapYear() ? DAYS_IN_WEEK : DAYS_IN_MONTH;
@@ -457,7 +444,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         if (yearsToAdd == 0) {
             return this;
         }
-        final int newYear = YEAR.checkValidIntValue(getYear() + yearsToAdd);
+        final int newYear = YEAR.checkValidIntValue(getProlepticYear() + yearsToAdd);
         // Retain actual month (not index) in the case where a leap month is to be inserted.
         if (getMonth() == MONTHS_IN_YEAR && !isLeapYear() && PaxChronology.INSTANCE.isLeapYear(newYear)) {
             return of(newYear, getMonth() + 1, getDayOfMonth());
@@ -503,7 +490,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     public long toEpochDay() {
-        final long days = getYear() * DAYS_IN_YEAR + getLeapYearsBefore(getYear()) * DAYS_IN_WEEK + (getMonth() - 1) * DAYS_IN_MONTH + getDayOfMonth() - 1;
+        final long days = getProlepticYear() * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + (getMonth() - 1) * DAYS_IN_MONTH + getDayOfMonth() - 1;
         // Adjust for short leap month if after, then rebase to ISO 1970.
         return days - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH - DAYS_IN_WEEK : 0) - DAYS_PAX_0000_TO_ISO_1970;
     }
@@ -547,7 +534,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     @Override
     public PaxDate with(final TemporalField field, final long newValue) {
         if (field == ChronoField.YEAR) {
-            return plusYears(newValue - getYear());
+            return plusYears(newValue - getProlepticYear());
         }
         return (PaxDate) super.with(field, newValue);
     }
@@ -566,7 +553,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         if (getDayOfMonth() == newDayOfMonth) {
             return this;
         }
-        return of(getYear(), getMonth(), newDayOfMonth);
+        return of(getProlepticYear(), getMonth(), newDayOfMonth);
     }
 
     /**
@@ -594,7 +581,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      */
     @Override
     long getProlepticMonth() {
-        return getYear() * MONTHS_IN_YEAR + getLeapYearsBefore(getYear()) + getMonth() - 1;
+        return getProlepticYear() * MONTHS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) + getMonth() - 1;
     }
 
     /**
@@ -607,15 +594,23 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         // TODO: Correct this to deal with moving from/into leap months (!)
         // Multiplying by the (maximum) months-in-year (+1) makes the propleptic count a "place" (ie, the 10's place).
         // This means that if the starting date is before, it moves the count to the prior unit (24 - 8 = 16, and we only care about the 10's place).
-        final long startYear = getYear() * (MONTHS_IN_YEAR + 1 + 1) + getMonth();
-        final long endYear = end.getYear() * (MONTHS_IN_YEAR + 1 + 1) + end.getMonth();
+        final long startYear = getProlepticYear() * (MONTHS_IN_YEAR + 1 + 1) + getMonth();
+        final long endYear = end.getProlepticYear() * (MONTHS_IN_YEAR + 1 + 1) + end.getMonth();
         return (endYear - startYear) / (MONTHS_IN_YEAR + 1 + 1);
     }
 
+    /**
+     * Gets the year field.
+     * <p>
+     * This method returns the primitive {@code int} value for the year.
+     * <p>
+     * The year returned by this method is proleptic as per {@code get(YEAR)}. To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
+     *
+     * @return the year
+     */
     @Override
     int getProlepticYear() {
-        // TODO Auto-generated method stub
-        return 0;
+        return year;
     }
 
     @Override
