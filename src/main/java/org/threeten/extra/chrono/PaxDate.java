@@ -625,9 +625,8 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     @Override
-    AbstractDate resolvePrevious(int newYear, int newMonth, int dayOfMonth) {
-        // TODO Auto-generated method stub
-        return null;
+    PaxDate resolvePrevious(int newYear, int newMonth, int dayOfMonth) {
+        return resolvePreviousValid(newYear, newMonth, dayOfMonth);
     }
 
 }
