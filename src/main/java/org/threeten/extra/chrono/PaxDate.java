@@ -603,7 +603,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @param end The end date.
      * @return The number of years from this date to the given day.
      */
-    private long yearsUntil(final PaxDate end) {
+    long yearsUntil(final PaxDate end) {
         // TODO: Correct this to deal with moving from/into leap months (!)
         // Multiplying by the (maximum) months-in-year (+1) makes the propleptic count a "place" (ie, the 10's place).
         // This means that if the starting date is before, it moves the count to the prior unit (24 - 8 = 16, and we only care about the 10's place).
