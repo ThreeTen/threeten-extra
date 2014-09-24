@@ -533,6 +533,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     public PaxDate with(final TemporalField field, final long newValue) {
+        // Evaluate years as a special case, to deal with inserted leap months.
         if (field == ChronoField.YEAR) {
             return plusYears(newValue - getProlepticYear());
         }
