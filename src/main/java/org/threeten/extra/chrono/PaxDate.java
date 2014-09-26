@@ -536,23 +536,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     /**
-     * Returns a copy of this date with the day-of-month altered. If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param newDayOfMonth the day-of-month to set in the result, from 1 to 7 or 28
-     * @return a {@code PaxDate} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-month value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public PaxDate withDayOfMonth(final int newDayOfMonth) {
-        if (getDayOfMonth() == newDayOfMonth) {
-            return this;
-        }
-        return of(getProlepticYear(), getMonth(), newDayOfMonth);
-    }
-
-    /**
      * Returns a copy of this date with the day-of-year altered. If the resulting date is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
