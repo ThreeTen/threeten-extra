@@ -407,11 +407,11 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         if (monthsToAdd == 0) {
             return this;
         }
-        final long calcMonths = getProlepticMonth() + monthsToAdd;
+        final long calcMonths = Math.addExact(getProlepticMonth(), monthsToAdd);
         // "Regularize" the month count, as if years were all 13 months long.
         final long monthsRegularized = calcMonths - getLeapMonthsBefore(calcMonths);
         final int newYear = YEAR.checkValidIntValue(Math.floorDiv(monthsRegularized, MONTHS_IN_YEAR));
-        final int newMonth = (int) (calcMonths - (newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear)));
+        final int newMonth = Math.toIntExact(calcMonths - (newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear)) + 1);
         return resolvePreviousValid(newYear, newMonth, getDayOfMonth());
     }
 
