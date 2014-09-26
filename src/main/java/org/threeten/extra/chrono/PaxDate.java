@@ -308,16 +308,17 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @param prolepticYear The year.
      * @return The number of leap years since Pax year 0.
      */
-    @SuppressWarnings("checkstyle:magicnumber")
     private static long getLeapYearsBefore(final long prolepticYear) {
-        // need to return a non-negative number.
-        final long absYear = Math.abs(prolepticYear);
-        // Calculation is like this:
-        // - In every century (years X00 - X99), there are 17 leap years (multiples of 6 and at 99).
-        // - Every century is a leap year...
-        // - ... except every 400 years.
-        // - Count the elapsed multiples of 6 since the start of the century.
-        return Long.signum(prolepticYear) * (17 * (absYear / 100) + ((absYear - 1) / 100) - ((absYear - 1) / 400) + ((absYear % 100) / 6));
+        // Some explanations are in order:
+        // - First, because this calculates "leap years from 0 to the start of the year",
+        // The 'current' year must be counted when the year is negative (hence Math.floorDiv(...)).
+        // - However, this means that there's a negative count which must be offset for the in-century years,
+        // which still occur at the "last two digits divisible by 6" (or 99) point.
+        // - Math.floorMod(...) returns a nicely positive result for negative years, counting 'down', but
+        // thus needs to be offset to make sure the first leap year is -6, and not -4...
+        return 18 * Math.floorDiv(prolepticYear - 1, 100) - Math.floorDiv(prolepticYear - 1, 400) +
+                Math.abs(Math.floorDiv((prolepticYear - 1) % 100, 99)) +
+                Math.floorDiv(Math.floorMod(prolepticYear - 1, 100) + (prolepticYear <= 0 ? 2 : 0), 6);
     }
 
     /**
