@@ -350,7 +350,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     @SuppressWarnings("checkstyle:magicnumber")
     public boolean isLeapYear(final long prolepticYear) {
         final long lastTwoDigits = prolepticYear % 100;
-        return lastTwoDigits == 99 || (lastTwoDigits % 6 == 0) || (lastTwoDigits == 0 && prolepticYear % 400 != 0);
+        return Math.abs(lastTwoDigits) == 99 || (lastTwoDigits % 6 == 0) || (lastTwoDigits == 0 && prolepticYear % 400 != 0);
     }
 
     @Override
