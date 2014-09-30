@@ -318,7 +318,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         // thus needs to be offset to make sure the first leap year is -6, and not -4...
         return 18 * Math.floorDiv(prolepticYear - 1, 100) - Math.floorDiv(prolepticYear - 1, 400) +
                 Math.abs(Math.floorDiv((prolepticYear - 1) % 100, 99)) +
-                Math.floorDiv(Math.floorMod(prolepticYear - 1, 100) + (prolepticYear <= 0 ? 2 : 0), 6);
+                ((Math.floorMod(prolepticYear - 1, 100) + (prolepticYear <= 0 ? 2 : 0)) / 6);
     }
 
     /**
