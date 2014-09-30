@@ -285,19 +285,24 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * Get the count of leap months since proleptic month 0.
      * <p>
      * This number is negative if the month is prior to Pax year 0.
+     ** <p>
+     * Remember that if using this for things like turning months into days, you must first subtract this number from the proleptic month count.
      *
      * @param prolepticMonth The month.
      * @return The number of leap months since proleptic month 0.
      */
-    @SuppressWarnings("checkstyle:magicnumber")
     private static long getLeapMonthsBefore(final long prolepticMonth) {
-        // need to return a non-negative number.
-        final long absMonth = Math.abs(prolepticMonth);
-        // See getLeapYearsBefore for the reasoning behind the calculation.
-        // return Long.signum(prolepticMonth) * (17 * (absMonth / (100 * MONTHS_IN_YEAR + getLeapYearsbefore(100))) + ((absMonth - 1) / (100 * MONTHS_IN_YEAR +
-        // getLeapYearsbefore(100))) - ((absMonth - 1) / (400 * MONTHS_IN_YEAR + getLeapYearsbefore(400)))
-        // + ((absMonth % (100 * MONTHS_IN_YEAR + getLeapYearsbefore(100))) / (6 * MONTHS_IN_YEAR + 1)));
-        return Long.signum(prolepticMonth) * (17 * (absMonth / 1317) + ((absMonth - 1) / 1317) - ((absMonth - 1) / 5271) + ((absMonth % 1317) / 79));
+        final long offsetMonth = prolepticMonth - (prolepticMonth <= 0 ? 13 : 13 - 1);
+        // First, see getLeapYearsBefore(...) for explanations.
+        // return 18 * Math.floorDiv(offsetMonth, 100 * MONTHS_IN_YEAR + (getLeapYearsBefore(100) + 1))
+        // - Math.floorDiv(offsetMonth, 400 * MONTHS_IN_YEAR + (getLeapYearsBefore(400) + 1))
+        // + (((Math.floorMod(offsetMonth, 100 * MONTHS_IN_YEAR + (getLeapYearsBefore(100) + 1)) - (offsetMonth <= 0 ? 100 * MONTHS_IN_YEAR + getLeapYearsBefore(100) : 0))
+        // / (99 * MONTHS_IN_YEAR + (getLeapYearsBefore(99) + 1))) + (offsetMonth <= 0 ? 1 : 0))
+        // + (Math.floorMod(offsetMonth, 100 * MONTHS_IN_YEAR + (getLeapYearsBefore(100) + 1)) + (offsetMonth <= 0 ? 2 * MONTHS_IN_YEAR - 1 : 0)) / (6 * MONTHS_IN_YEAR + 1);
+        return 18 * Math.floorDiv(offsetMonth, 1318)
+                - Math.floorDiv(offsetMonth, 5272)
+                + (((Math.floorMod(offsetMonth, 1318) - (offsetMonth <= 0 ? 1317 : 0)) / 1304) + (offsetMonth <= 0 ? 1 : 0))
+                + (Math.floorMod(offsetMonth, 1318) + (offsetMonth <= 0 ? 25 : 0)) / 79;
     }
 
     /**
