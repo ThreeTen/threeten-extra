@@ -316,8 +316,9 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         // which still occur at the "last two digits divisible by 6" (or 99) point.
         // - Math.floorMod(...) returns a nicely positive result for negative years, counting 'down', but
         // thus needs to be offset to make sure the first leap year is -6, and not -4...
+        // The second line, which calculates the '99 occurrences, runs "backwards", so must first be reversed, then the results flipped.
         return 18 * Math.floorDiv(prolepticYear - 1, 100) - Math.floorDiv(prolepticYear - 1, 400) +
-                Math.abs(Math.floorDiv((prolepticYear - 1) % 100, 99)) +
+                (Math.floorMod(prolepticYear - 1, 100) - (prolepticYear <= 0 ? 99 : 0)) / 99 + (prolepticYear <= 0 ? 1 : 0) +
                 ((Math.floorMod(prolepticYear - 1, 100) + (prolepticYear <= 0 ? 2 : 0)) / 6);
     }
 
