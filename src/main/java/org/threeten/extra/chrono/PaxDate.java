@@ -90,6 +90,16 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     private static final int DAYS_PAX_0001_TO_ISO_1970 = 719163;
 
     /**
+     * Count of days in a long cycle (400 years).
+     */
+    private static final long DAYS_PER_LONG_CYCLE = 400 * DAYS_IN_YEAR + getLeapYearsBefore(400) * DAYS_IN_WEEK;
+
+    /**
+     * Count of days in a cycle (100 years).
+     */
+    private static final long DAYS_PER_CYCLE = 100 * DAYS_IN_YEAR + getLeapYearsBefore(100) * DAYS_IN_WEEK;
+
+    /**
      * Number of seconds in a day.
      */
     private static final long SECONDS_PER_DAY = 86400;
