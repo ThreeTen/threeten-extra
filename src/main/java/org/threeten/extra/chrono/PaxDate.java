@@ -87,7 +87,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     /**
      * Count of days from the start of the Pax Epoch to ISO 1970-01-01.
      */
-    private static final int DAYS_PAX_0000_TO_ISO_1970 = 719527;
+    private static final int DAYS_PAX_0001_TO_ISO_1970 = 719163;
 
     /**
      * Number of seconds in a day.
@@ -492,9 +492,9 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     public long toEpochDay() {
-        final long days = ((long) getProlepticYear()) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
+        final long days = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear() - 1) * DAYS_IN_WEEK + getDayOfYear() - 1;
         // Rebase to ISO 1970.
-        return days - DAYS_PAX_0000_TO_ISO_1970;
+        return days - DAYS_PAX_0001_TO_ISO_1970;
     }
 
     @Override
