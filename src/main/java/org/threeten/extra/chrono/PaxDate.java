@@ -587,12 +587,10 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @return The number of years from this date to the given day.
      */
     long yearsUntil(final PaxDate end) {
-        // TODO: Correct this to deal with moving from/into leap months (!)
-        // Multiplying by the (maximum) months-in-year (+1) makes the propleptic count a "place" (ie, the 10's place).
-        // This means that if the starting date is before, it moves the count to the prior unit (24 - 8 = 16, and we only care about the 10's place).
-        final long startYear = getProlepticYear() * (MONTHS_IN_YEAR + 1 + 1) + getMonth();
-        final long endYear = end.getProlepticYear() * (MONTHS_IN_YEAR + 1 + 1) + end.getMonth();
-        return (endYear - startYear) / (MONTHS_IN_YEAR + 1 + 1);
+        // // If either date is after the inserted leap month, and the other year isn't leap, remove the effect of the inserted month.
+        final long startYear = getProlepticYear() * 512L + getDayOfYear() - (getMonth() == MONTHS_IN_YEAR + 1 && JulianChronology.INSTANCE.isLeapYear(end.getProlepticYear()) ? DAYS_IN_WEEK : 0);
+        final long endYear = end.getProlepticYear() * 512L + end.getDayOfYear() - (end.getMonth() == MONTHS_IN_YEAR + 1 && JulianChronology.INSTANCE.isLeapYear(getProlepticYear()) ? DAYS_IN_WEEK : 0);
+        return (endYear - startYear) / 512L;
     }
 
     /**
