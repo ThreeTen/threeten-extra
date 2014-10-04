@@ -283,7 +283,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
             // Otherwise, part of the regular 6-year cycle.
             long sixCycle = dayOfCycle / DAYS_PER_SIX_CYCLE;
             long dayOfSixCycle = dayOfCycle % DAYS_PER_SIX_CYCLE;
-            int year = (int) (sixCycle / DAYS_IN_YEAR);
+            int year = (int) (sixCycle / DAYS_IN_YEAR) + 1;
             int dayOfYear = (int) (dayOfSixCycle % DAYS_IN_YEAR) + 1;
             if (year == 7) {
                 year--;
@@ -299,7 +299,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
             long offsetCycle = dayOfCycle + 2 * DAYS_IN_YEAR;
             long sixCycle = offsetCycle / DAYS_PER_SIX_CYCLE;
             long dayOfSixCycle = offsetCycle % DAYS_PER_SIX_CYCLE;
-            int year = (int) (sixCycle / DAYS_IN_YEAR);
+            int year = (int) (sixCycle / DAYS_IN_YEAR) + 1;
             int dayOfYear = (int) (dayOfSixCycle % DAYS_IN_YEAR) + 1;
             if (year == 7) {
                 year--;
