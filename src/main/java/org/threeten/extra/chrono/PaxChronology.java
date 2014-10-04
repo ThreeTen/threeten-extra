@@ -347,10 +347,9 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @return true if the year is leap, false otherwise
      */
     @Override
-    @SuppressWarnings("checkstyle:magicnumber")
     public boolean isLeapYear(final long prolepticYear) {
         final long lastTwoDigits = prolepticYear % 100;
-        return Math.abs(lastTwoDigits) == 99 || (lastTwoDigits % 6 == 0) || (lastTwoDigits == 0 && prolepticYear % 400 != 0);
+        return Math.abs(lastTwoDigits) == 99 || (prolepticYear % 400 != 0 && (lastTwoDigits == 0 || lastTwoDigits % 6 == 0));
     }
 
     @Override
