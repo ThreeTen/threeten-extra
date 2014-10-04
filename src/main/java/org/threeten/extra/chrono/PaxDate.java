@@ -264,30 +264,32 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);
         // use of Pax 0001 makes non-leap century at end of (long) cycle.
         long paxEpochDay = epochDay + DAYS_PAX_0001_TO_ISO_1970;
-        long longCycle = paxEpochDay / DAYS_PER_LONG_CYCLE;
+        long longCycle = Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
         long cycle = (paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE;
+        long dayOfCycle = Math.floorMod(paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
+        if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
+            // Is in the century year
+            int dayOfYear = Math.toIntExact(dayOfCycle - DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK + 1);
+            return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + 100, dayOfYear);
+        }
+
         // For negative years, the cycle of leap years runs the other direction for 99s and 6s.
         if (paxEpochDay >= 0) {
-            long dayOfCycle = paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE - cycle * DAYS_PER_CYCLE;
-            if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
-                // Is in the century year
-                int dayOfYear = Math.toIntExact(dayOfCycle - DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK);
-                return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + 100, dayOfYear);
-            } else if (dayOfCycle >= DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) {
+            if (dayOfCycle >= DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) {
                 // Is in the '99 year
-                int dayOfYear = Math.toIntExact(dayOfCycle - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK);
+                int dayOfYear = Math.toIntExact(dayOfCycle - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK + 1);
                 return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + 99, dayOfYear);
             }
             // Otherwise, part of the regular 6-year cycle.
             long sixCycle = dayOfCycle / DAYS_PER_SIX_CYCLE;
             long dayOfSixCycle = dayOfCycle % DAYS_PER_SIX_CYCLE;
             int year = (int) (sixCycle / DAYS_IN_YEAR);
-            int dayOfYear = (int) (dayOfSixCycle % DAYS_IN_YEAR);
+            int dayOfYear = (int) (dayOfSixCycle % DAYS_IN_YEAR) + 1;
             if (year == 7) {
                 year--;
                 dayOfYear += DAYS_IN_YEAR;
             }
-            return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + year, dayOfYear);
+            return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100 + sixCycle * 6) + year, dayOfYear);
         }
 
         return null;
