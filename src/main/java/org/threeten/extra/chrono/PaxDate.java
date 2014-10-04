@@ -290,9 +290,24 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
                 dayOfYear += DAYS_IN_YEAR;
             }
             return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100 + sixCycle * 6) + year, dayOfYear);
-        }
+        } else {
+            if (dayOfCycle < DAYS_IN_YEAR + DAYS_IN_WEEK) {
+                // -'99 year is at _start_ of cycle (first year encountered).
+                return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + (100 - 99), Math.toIntExact(dayOfCycle) + 1);
+            }
+            // Otherwise, part of the regular 6-year cycle, but offset to -'101 first.
+            long offsetCycle = dayOfCycle + 2 * DAYS_IN_YEAR;
+            long sixCycle = offsetCycle / DAYS_PER_SIX_CYCLE;
+            long dayOfSixCycle = offsetCycle % DAYS_PER_SIX_CYCLE;
+            int year = (int) (sixCycle / DAYS_IN_YEAR);
+            int dayOfYear = (int) (dayOfSixCycle % DAYS_IN_YEAR) + 1;
+            if (year == 7) {
+                year--;
+                dayOfYear += DAYS_IN_YEAR;
+            }
+            return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100 + (100 - (99 + 2 - (sixCycle * 6 + year)))), dayOfYear);
 
-        return null;
+        }
     }
 
     /**
