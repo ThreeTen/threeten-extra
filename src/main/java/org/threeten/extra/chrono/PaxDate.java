@@ -331,7 +331,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
             throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
         }
 
-        int month = ((dayOfYear - 1) / MONTHS_IN_YEAR) + 1;
+        int month = ((dayOfYear - 1) / DAYS_IN_MONTH) + 1;
 
         // In leap years, the leap-month is shorter than the following month, so needs to be adjusted.
         if (leap && month == MONTHS_IN_YEAR && dayOfYear >= (DAYS_IN_YEAR + DAYS_IN_WEEK) - DAYS_IN_MONTH + 1) {
