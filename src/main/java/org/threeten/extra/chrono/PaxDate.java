@@ -93,17 +93,17 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     /**
      * Count of days in a long cycle (400 years).
      */
-    private static final long DAYS_PER_LONG_CYCLE = 400 * DAYS_IN_YEAR + getLeapYearsBefore(400) * DAYS_IN_WEEK;
+    private static final long DAYS_PER_LONG_CYCLE = 400 * DAYS_IN_YEAR + getLeapYearsBefore(400 + 1) * DAYS_IN_WEEK;
 
     /**
      * Count of days in a cycle (100 years).
      */
-    private static final long DAYS_PER_CYCLE = 100 * DAYS_IN_YEAR + getLeapYearsBefore(100) * DAYS_IN_WEEK;
+    private static final long DAYS_PER_CYCLE = 100 * DAYS_IN_YEAR + getLeapYearsBefore(100 + 1) * DAYS_IN_WEEK;
 
     /**
      * Count of days in the six-year cycle.
      */
-    private static final long DAYS_PER_SIX_CYCLE = (6 - 1) * DAYS_IN_YEAR + getLeapYearsBefore(6) * DAYS_IN_WEEK;
+    private static final long DAYS_PER_SIX_CYCLE = 6 * DAYS_IN_YEAR + getLeapYearsBefore(6 + 1) * DAYS_IN_WEEK;
 
     /**
      * Number of seconds in a day.
@@ -269,7 +269,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         long dayOfCycle = Math.floorMod(paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
         if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
             // Is in the century year
-            int dayOfYear = Math.toIntExact(dayOfCycle - DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK + 1);
+            int dayOfYear = Math.toIntExact(dayOfCycle - (DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) + 1);
             return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + 100, dayOfYear);
         }
 
@@ -283,7 +283,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
             // Otherwise, part of the regular 6-year cycle.
             long sixCycle = dayOfCycle / DAYS_PER_SIX_CYCLE;
             long dayOfSixCycle = dayOfCycle % DAYS_PER_SIX_CYCLE;
-            int year = (int) (sixCycle / DAYS_IN_YEAR) + 1;
+            int year = (int) (dayOfSixCycle / DAYS_IN_YEAR) + 1;
             int dayOfYear = (int) (dayOfSixCycle % DAYS_IN_YEAR) + 1;
             if (year == 7) {
                 year--;
