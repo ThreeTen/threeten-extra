@@ -717,8 +717,8 @@ public class TestPaxChronology {
     @Test
     public void test_minus_Period() {
         assertEquals(PaxDate.of(2014, 5, 26).minus(PaxChronology.INSTANCE.period(0, 2, 3)), PaxDate.of(2014, 3, 23));
-        assertEquals(PaxDate.of(2012, 14, 26).minus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2013, 11, 24));
-        assertEquals(PaxDate.of(2012, 13, 6).minus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2014, 11, 4));
+        assertEquals(PaxDate.of(2012, 14, 26).minus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2011, 11, 24));
+        assertEquals(PaxDate.of(2012, 13, 6).minus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2011, 11, 4));
         assertEquals(PaxDate.of(2012, 14, 1).minus(PaxChronology.INSTANCE.period(0, 1, 2)), PaxDate.of(2012, 12, 27));
     }
 
