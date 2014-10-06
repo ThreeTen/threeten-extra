@@ -271,13 +271,13 @@ public class TestPaxChronology {
     @Test
     public void test_isLeapYear_loop() {
         Predicate<Integer> isLeapYear = year -> {
-            int lastTwoDigits = year % 100;
-            return (lastTwoDigits == 0 && year % 400 != 0) || lastTwoDigits == 99 || lastTwoDigits % 6 == 0;
+            int lastTwoDigits = Math.abs(year % 100);
+            return (year % 400 != 0 && (lastTwoDigits == 0 || lastTwoDigits % 6 == 0)) || lastTwoDigits == 99;
         };
         for (int year = -500; year < 500; year++) {
             PaxDate base = PaxDate.of(year, 1, 1);
-            assertEquals(base.isLeapYear(), isLeapYear.test(year));
-            assertEquals(PaxChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year));
+            assertEquals(base.isLeapYear(), isLeapYear.test(year), "Year " + year + " is failing");
+            assertEquals(PaxChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year), "Year " + year + " is failing");
         }
     }
 
