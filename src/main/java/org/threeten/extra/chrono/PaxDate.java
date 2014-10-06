@@ -46,7 +46,6 @@ import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDate;
@@ -573,7 +572,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         final PaxDate sameYearEnd = end.plusYears(years);
         final int months = (int) monthsUntil(sameYearEnd);
         final int days = (int) daysUntil(sameYearEnd.plusMonths(months));
-        return Period.of(Math.toIntExact(years), months, days);
+        return getChronology().period(Math.toIntExact(years), months, days);
     }
 
     @Override
