@@ -755,8 +755,8 @@ public class TestPaxChronology {
     // -----------------------------------------------------------------------
     @DataProvider(name = "toString")
     Object[][] data_toString() {
-        return new Object[][] { {PaxChronology.INSTANCE.date(-3, 5, 8), "Pax BCE 0002-05-08"},
-            {PaxChronology.INSTANCE.date(-8, 1, 28), "Pax BCE 0007-01-28"},
+        return new Object[][] { {PaxChronology.INSTANCE.date(-3, 5, 8), "Pax BCE 4-05-08"},
+            {PaxChronology.INSTANCE.date(-8, 1, 28), "Pax BCE 9-01-28"},
             {PaxChronology.INSTANCE.date(2012, 13, 4), "Pax CE 2012-13-04"},
             {PaxChronology.INSTANCE.date(2014, 4, 27), "Pax CE 2014-04-27"},};
     }
