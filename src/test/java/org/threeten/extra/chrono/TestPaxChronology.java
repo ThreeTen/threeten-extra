@@ -392,7 +392,7 @@ public class TestPaxChronology {
         assertEquals(PaxChronology.INSTANCE.eraOf(0), PaxEra.BCE);
     }
 
-    @Test
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_Chronology_eraOf_invalid() {
         PaxChronology.INSTANCE.eraOf(2);
     }
