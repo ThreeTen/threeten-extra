@@ -577,17 +577,22 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     public long until(final Temporal endExclusive, final TemporalUnit unit) {
-        final PaxDate end = PaxDate.from(endExclusive);
+        return until(JulianDate.from(endExclusive), unit);
+    }
+
+    @Override
+    long until(AbstractDate end, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
+            final PaxDate paxEnd = PaxDate.from(end);
             switch ((ChronoUnit) unit) {
                 case YEARS:
-                    return yearsUntil(end);
+                    return yearsUntil(paxEnd);
                 case DECADES:
-                    return yearsUntil(end) / YEARS_IN_DECADE;
+                    return yearsUntil(paxEnd) / YEARS_IN_DECADE;
                 case CENTURIES:
-                    return yearsUntil(end) / YEARS_IN_CENTURY;
+                    return yearsUntil(paxEnd) / YEARS_IN_CENTURY;
                 case MILLENNIA:
-                    return yearsUntil(end) / YEARS_IN_MILLENNIUM;
+                    return yearsUntil(paxEnd) / YEARS_IN_MILLENNIUM;
                 default:
                     break;
             }
