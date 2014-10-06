@@ -120,14 +120,14 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     private static final long serialVersionUID = -7021464635577802085L;
 
     /**
-     * Restricted constructor.
+     * Private constructor, that is public to satisfy the {@code ServiceLoader}. 
+     * Use the singleton {@link #INSTANCE} instead.
      */
-    private PaxChronology() {
+    public PaxChronology() {
     }
 
     /**
-     * Obtains a local date in Pax calendar system from the
-     * era, year-of-era, month-of-year and day-of-month fields.
+     * Obtains a local date in Pax calendar system from the era, year-of-era, month-of-year and day-of-month fields.
      *
      * @param era the Pax era, not null
      * @param yearOfEra the year-of-era
@@ -143,8 +143,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     /**
-     * Obtains a local date in Pax calendar system from the
-     * proleptic-year, month-of-year and day-of-month fields.
+     * Obtains a local date in Pax calendar system from the proleptic-year, month-of-year and day-of-month fields.
      *
      * @param prolepticYear the proleptic-year
      * @param month the month-of-year
@@ -227,8 +226,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     /**
-     * Obtains a local date in Pax calendar system from the
-     * era, year-of-era and day-of-year fields.
+     * Obtains a local date in Pax calendar system from the era, year-of-era and day-of-year fields.
      *
      * @param era the Pax era, not null
      * @param yearOfEra the year-of-era
@@ -243,8 +241,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     /**
-     * Obtains a local date in Pax calendar system from the
-     * proleptic-year and day-of-year fields.
+     * Obtains a local date in Pax calendar system from the proleptic-year and day-of-year fields.
      *
      * @param prolepticYear the proleptic-year
      * @param dayOfYear the day-of-year
