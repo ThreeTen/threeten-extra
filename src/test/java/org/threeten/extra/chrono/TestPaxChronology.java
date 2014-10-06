@@ -573,14 +573,14 @@ public class TestPaxChronology {
     public void test_LocalDate_adjustToPaxDate() {
         final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
         final LocalDate test = LocalDate.MIN.with(jdate);
-        assertEquals(test, LocalDate.of(2014, 6, 29));
+        assertEquals(test, LocalDate.of(2014, 6, 2));
     }
 
     @Test
     public void test_LocalDateTime_adjustToPaxDate() {
         final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
         final LocalDateTime test = LocalDateTime.MIN.with(jdate);
-        assertEquals(test, LocalDateTime.of(2014, 6, 29, 0, 0));
+        assertEquals(test, LocalDateTime.of(2014, 6, 2, 0, 0));
     }
 
     // -----------------------------------------------------------------------
