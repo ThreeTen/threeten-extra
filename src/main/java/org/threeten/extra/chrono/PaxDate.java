@@ -434,7 +434,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     @Override
     int getDayOfYear() {
         return (getMonth() - 1) * DAYS_IN_MONTH
-                - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH + DAYS_IN_WEEK : 0) + getDayOfMonth();
+                - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH - DAYS_IN_WEEK : 0) + getDayOfMonth();
     }
 
     /**
@@ -560,7 +560,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
 
     @Override
     public long toEpochDay() {
-        final long days = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear() - 1) * DAYS_IN_WEEK + getDayOfYear() - 1;
+        final long days = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
         // Rebase to ISO 1970.
         return days - DAYS_PAX_0001_TO_ISO_1970;
     }
