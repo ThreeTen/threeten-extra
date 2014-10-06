@@ -611,14 +611,29 @@ public class TestPaxChronology {
             {2014, 5, 26, -5, MILLENNIA, 2014 - 5000, 5, 26},
             {2014, 5, 26, -1, ERAS, -2013, 5, 26},
 
-            {2012, 12, 26, 1, MONTHS, 2012, 13, 7},
             {2012, 13, 6, 3, MONTHS, 2013, 2, 6},
-            {2012, 14, 26, -1, MONTHS, 2012, 13, 7},
             {2011, 13, 26, 1, YEARS, 2012, 14, 26},
-            {2012, 13, 6, 3, YEARS, 2015, 13, 6},
             {2014, 13, 26, -2, YEARS, 2012, 14, 26},
             {2012, 14, 26, -6, YEARS, 2006, 14, 26},
             {2012, 13, 6, -6, YEARS, 2006, 13, 6},
+        };
+    }
+
+    @DataProvider(name = "plusLeap")
+    Object[][] data_plus_leap() {
+        return new Object[][] {
+            {2012, 12, 26, 1, MONTHS, 2012, 13, 7},
+            {2012, 14, 26, -1, MONTHS, 2012, 13, 7},
+            {2012, 13, 6, 3, YEARS, 2015, 13, 6},
+        };
+    }
+
+    @DataProvider(name = "minusLeap")
+    Object[][] data_minus_leap() {
+        return new Object[][] {
+            {2012, 13, 7, -1, MONTHS, 2012, 12, 26},
+            {2012, 13, 7, 1, MONTHS, 2012, 14, 26},
+            {2012, 14, 6, 3, YEARS, 2015, 13, 6},
         };
     }
 
@@ -629,12 +644,26 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(year, month, dom).plus(amount, unit), PaxDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
+    @Test(dataProvider = "plusLeap")
+    public void test_plus_leap_TemporalUnit(int year, int month, int dom,
+            long amount, TemporalUnit unit,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        test_plus_TemporalUnit(year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
+    }
+
     @Test(dataProvider = "plus")
     public void test_minus_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
         assertEquals(PaxDate.of(year, month, dom).minus(amount, unit), PaxDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(dataProvider = "minusLeap")
+    public void test_minus_leap_TemporalUnit(int year, int month, int dom,
+            long amount, TemporalUnit unit,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        test_minus_TemporalUnit(year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
