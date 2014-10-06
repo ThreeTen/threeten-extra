@@ -166,7 +166,7 @@ public class TestPaxChronology {
     }
 
     @Test(dataProvider = "samples")
-    public void test_PaxDate_until_CoptiDate(PaxDate pax, LocalDate iso) {
+    public void test_PaxDate_until_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(pax.until(pax), PaxChronology.INSTANCE.period(0, 0, 0));
     }
 
@@ -176,7 +176,7 @@ public class TestPaxChronology {
     }
 
     @Test(dataProvider = "samples")
-    public void test_LocalDate_until_CoptiDate(PaxDate pax, LocalDate iso) {
+    public void test_LocalDate_until_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(iso.until(pax), Period.ZERO);
     }
 
