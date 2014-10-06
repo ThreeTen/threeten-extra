@@ -217,7 +217,6 @@ public class TestPaxChronology {
             {2012, 0, 0},
 
             {2012, 0, 1},
-            {2012, 1, 1},
             {2012, -1, 1},
             {2012, 0, 1},
             {2012, 15, 1},
@@ -530,7 +529,7 @@ public class TestPaxChronology {
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_with_TemporalField_unsupported() {
-        PaxDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0);
+        PaxDate.of(2012, 6, 28).with(MINUTE_OF_DAY, 0);
     }
 
     // -----------------------------------------------------------------------
@@ -696,7 +695,7 @@ public class TestPaxChronology {
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_until_TemporalUnit_unsupported() {
-        PaxDate start = PaxDate.of(2012, 6, 30);
+        PaxDate start = PaxDate.of(2012, 6, 28);
         PaxDate end = PaxDate.of(2012, 7, 1);
         start.until(end, MINUTES);
     }
