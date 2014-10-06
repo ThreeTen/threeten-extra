@@ -89,7 +89,6 @@ public class TestPaxChronology {
     // Chronology.of(String)
     // -----------------------------------------------------------------------
     @Test
-    @SuppressWarnings("checkstyle:multiplestringliterals")
     public void test_chronology_of_name() {
         final Chronology chrono = Chronology.of("Pax");
         Assert.assertNotNull(chrono);
