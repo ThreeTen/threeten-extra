@@ -554,9 +554,9 @@ public class TestPaxChronology {
     // -----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
-        final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2200, 4, 3);
-        final ChronoLocalDate test = jdate.with(LocalDate.of(2014, 6, 29));
-        assertEquals(test, PaxChronology.INSTANCE.date(2014, 6, 16));
+        final PaxDate jdate = PaxChronology.INSTANCE.date(2200, 4, 3);
+        final PaxDate test = jdate.with(LocalDate.of(2014, 6, 29));
+        assertEquals(test, PaxChronology.INSTANCE.date(2014, 7, 15));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
