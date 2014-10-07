@@ -126,7 +126,16 @@ public class TestPaxChronology {
             {PaxDate.of(6, 14, 1), LocalDate.of(6, 12, 3)},
             {PaxDate.of(6, 14, 2), LocalDate.of(6, 12, 4)},
             {PaxDate.of(6, 14, 3), LocalDate.of(6, 12, 5)},
+            {PaxDate.of(6, 14, 27), LocalDate.of(6, 12, 29)},
+            {PaxDate.of(6, 14, 28), LocalDate.of(6, 12, 30)},
+            {PaxDate.of(7, 1, 1), LocalDate.of(6, 12, 31)},
+            {PaxDate.of(7, 1, 2), LocalDate.of(7, 1, 1)},
 
+            {PaxDate.of(399, 13, 6), LocalDate.of(399, 12, 3)},
+            {PaxDate.of(399, 13, 7), LocalDate.of(399, 12, 4)},
+            {PaxDate.of(399, 14, 1), LocalDate.of(399, 12, 5)},
+            {PaxDate.of(399, 14, 2), LocalDate.of(399, 12, 6)},
+            {PaxDate.of(399, 14, 3), LocalDate.of(399, 12, 7)},
             {PaxDate.of(400, 13, 27), LocalDate.of(400, 12, 29)},
             {PaxDate.of(400, 13, 28), LocalDate.of(400, 12, 30)},
             {PaxDate.of(401, 1, 1), LocalDate.of(400, 12, 31)},
@@ -148,6 +157,10 @@ public class TestPaxChronology {
             {PaxDate.of(-6, 13, 7), LocalDate.of(-6, 12, 10)},
             {PaxDate.of(-6, 14, 1), LocalDate.of(-6, 12, 11)},
             {PaxDate.of(-6, 14, 2), LocalDate.of(-6, 12, 12)},
+            {PaxDate.of(-6, 14, 27), LocalDate.of(-5, 1, 6)},
+            {PaxDate.of(-6, 14, 28), LocalDate.of(-5, 1, 7)},
+            {PaxDate.of(-5, 1, 1), LocalDate.of(-5, 1, 8)},
+            {PaxDate.of(-5, 1, 2), LocalDate.of(-5, 1, 9)},
             {PaxDate.of(-99, 1, 1), LocalDate.of(-99, 1, 6)},
             {PaxDate.of(-99, 13, 6), LocalDate.of(-99, 12, 13)},
             {PaxDate.of(-99, 13, 7), LocalDate.of(-99, 12, 14)},
@@ -632,6 +645,10 @@ public class TestPaxChronology {
             {2014, 13, 26, -2, YEARS, 2012, 14, 26},
             {2012, 14, 26, -6, YEARS, 2006, 14, 26},
             {2012, 13, 6, -6, YEARS, 2006, 13, 6},
+
+            {-2014, 5, 26, 0, MONTHS, -2014, 5, 26},
+            {-2014, 5, 26, 3, MONTHS, -2014, 8, 26},
+            {-2014, 5, 26, -5, MONTHS, -2015, 13, 26},
         };
     }
 
