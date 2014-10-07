@@ -31,6 +31,9 @@
  */
 package org.threeten.extra.chrono;
 
+import java.time.chrono.Chronology;
+
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -38,5 +41,26 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDiscordianChronology {
+
+    // -----------------------------------------------------------------------
+    // Chronology.of(String)
+    // -----------------------------------------------------------------------
+    @Test
+    public void test_chronology_of_name() {
+        Chronology chrono = Chronology.of("Discordian");
+        Assert.assertNotNull(chrono);
+        Assert.assertEquals(chrono, DiscordianChronology.INSTANCE);
+        Assert.assertEquals(chrono.getId(), "Discordian");
+        Assert.assertEquals(chrono.getCalendarType(), "discordian");
+    }
+
+    @Test
+    public void test_chronology_of_name_id() {
+        Chronology chrono = Chronology.of("discordian");
+        Assert.assertNotNull(chrono);
+        Assert.assertEquals(chrono, DiscordianChronology.INSTANCE);
+        Assert.assertEquals(chrono.getId(), "Discordian");
+        Assert.assertEquals(chrono.getCalendarType(), "discordian");
+    }
 
 }
