@@ -649,9 +649,9 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      * @return The number of years from this date to the given day.
      */
     long yearsUntil(final PaxDate end) {
-        // // If either date is after the inserted leap month, and the other year isn't leap, remove the effect of the inserted month.
-        final long startYear = getProlepticYear() * 512L + getDayOfYear() - (getMonth() == MONTHS_IN_YEAR + 1 && JulianChronology.INSTANCE.isLeapYear(end.getProlepticYear()) ? DAYS_IN_WEEK : 0);
-        final long endYear = end.getProlepticYear() * 512L + end.getDayOfYear() - (end.getMonth() == MONTHS_IN_YEAR + 1 && JulianChronology.INSTANCE.isLeapYear(getProlepticYear()) ? DAYS_IN_WEEK : 0);
+        // If either date is after the inserted leap month, and the other year isn't leap, simulate the effect of the inserted month.
+        final long startYear = getProlepticYear() * 512L + getDayOfYear() + (this.getMonth() == MONTHS_IN_YEAR && !this.isLeapYear() && end.isLeapYear() ? DAYS_IN_WEEK : 0);
+        final long endYear = end.getProlepticYear() * 512L + end.getDayOfYear() + (end.getMonth() == MONTHS_IN_YEAR && !end.isLeapYear() && this.isLeapYear() ? DAYS_IN_WEEK : 0);
         return (endYear - startYear) / 512L;
     }
 
