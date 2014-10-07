@@ -92,37 +92,37 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     /**
      * Count of days in a long cycle (400 years).
      */
-    private static final long DAYS_PER_LONG_CYCLE = 400 * DAYS_IN_YEAR + getLeapYearsBefore(400 + 1) * DAYS_IN_WEEK;
+    private static final int DAYS_PER_LONG_CYCLE = 400 * DAYS_IN_YEAR + (int) getLeapYearsBefore(400 + 1) * DAYS_IN_WEEK;
 
     /**
      * Count of days in a cycle (100 years).
      */
-    private static final long DAYS_PER_CYCLE = 100 * DAYS_IN_YEAR + getLeapYearsBefore(100 + 1) * DAYS_IN_WEEK;
+    private static final int DAYS_PER_CYCLE = 100 * DAYS_IN_YEAR + (int) getLeapYearsBefore(100 + 1) * DAYS_IN_WEEK;
 
     /**
      * Count of days in the six-year cycle.
      */
-    private static final long DAYS_PER_SIX_CYCLE = 6 * DAYS_IN_YEAR + getLeapYearsBefore(6 + 1) * DAYS_IN_WEEK;
+    private static final int DAYS_PER_SIX_CYCLE = 6 * DAYS_IN_YEAR + (int) getLeapYearsBefore(6 + 1) * DAYS_IN_WEEK;
 
     /**
      * Number of seconds in a day.
      */
-    private static final long SECONDS_PER_DAY = 86400;
+    private static final int SECONDS_PER_DAY = 86400;
 
     /**
      * Number of years in a decade.
      */
-    private static final long YEARS_IN_DECADE = 10;
+    private static final int YEARS_IN_DECADE = 10;
 
     /**
      * Number of years in a century.
      */
-    private static final long YEARS_IN_CENTURY = 100;
+    private static final int YEARS_IN_CENTURY = 100;
 
     /**
      * Number of years in a millennium.
      */
-    private static final long YEARS_IN_MILLENNIUM = 1000;
+    private static final int YEARS_IN_MILLENNIUM = 1000;
 
     /**
      * The year.
@@ -270,7 +270,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         // + (((Math.floorMod(offsetMonth, 100 * MONTHS_IN_YEAR + (getLeapYearsBefore(100) + 1)) - (offsetMonth <= 0 ? 100 * MONTHS_IN_YEAR + getLeapYearsBefore(100) : 0))
         // / (99 * MONTHS_IN_YEAR + (getLeapYearsBefore(99) + 1))) + (offsetMonth <= 0 ? 1 : 0))
         // + (Math.floorMod(offsetMonth, 100 * MONTHS_IN_YEAR + (getLeapYearsBefore(100) + 1)) + (offsetMonth <= 0 ? 2 * MONTHS_IN_YEAR - 1 : 0)) / (6 * MONTHS_IN_YEAR + 1);
-        return 18 * Math.floorDiv(offsetMonth, 1318)
+        return 18L * Math.floorDiv(offsetMonth, 1318)
                 - Math.floorDiv(offsetMonth, 5272)
                 + (((Math.floorMod(offsetMonth, 1318) - (offsetMonth <= 0 ? 1317 : 0)) / 1304) + (offsetMonth <= 0 ? 1 : 0))
                 + (Math.floorMod(offsetMonth, 1318) + (offsetMonth <= 0 ? 25 : 0)) / 79;
@@ -293,7 +293,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         // - Math.floorMod(...) returns a nicely positive result for negative years, counting 'down', but
         // thus needs to be offset to make sure the first leap year is -6, and not -4...
         // The second line, which calculates the '99 occurrences, runs "backwards", so must first be reversed, then the results flipped.
-        return 18 * Math.floorDiv(prolepticYear - 1, 100) - Math.floorDiv(prolepticYear - 1, 400) +
+        return 18L * Math.floorDiv(prolepticYear - 1, 100) - Math.floorDiv(prolepticYear - 1, 400) +
                 (Math.floorMod(prolepticYear - 1, 100) - (prolepticYear <= 0 ? 99 : 0)) / 99 + (prolepticYear <= 0 ? 1 : 0) +
                 ((Math.floorMod(prolepticYear - 1, 100) + (prolepticYear <= 0 ? 2 : 0)) / 6);
     }
@@ -323,48 +323,48 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);
         // use of Pax 0001 makes non-leap century at end of (long) cycle.
         final long paxEpochDay = epochDay + DAYS_PAX_0001_TO_ISO_1970;
-        final long longCycle = Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
-        final long cycle = (paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE;
-        final long dayOfCycle = Math.floorMod(paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
+        final int longCycle = (int) Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
+        final int cycle = (int) (paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE;
+        final int dayOfCycle = (int) Math.floorMod(paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
         if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
             // Is in the century year
-            final int dayOfYear = Math.toIntExact(dayOfCycle - (DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) + 1);
-            return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + 100, dayOfYear);
+            final int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) + 1;
+            return ofYearDay(longCycle * 400 + cycle * 100 + 100, dayOfYear);
         }
 
         // For negative years, the cycle of leap years runs the other direction for 99s and 6s.
         if (paxEpochDay >= 0) {
             if (dayOfCycle >= DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) {
                 // Is in the '99 year
-                final int dayOfYear = Math.toIntExact(dayOfCycle - (DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) + 1);
-                return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + 99, dayOfYear);
+                final int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) + 1;
+                return ofYearDay(longCycle * 400 + cycle * 100 + 99, dayOfYear);
             }
             // Otherwise, part of the regular 6-year cycle.
-            final long sixCycle = dayOfCycle / DAYS_PER_SIX_CYCLE;
-            final long dayOfSixCycle = dayOfCycle % DAYS_PER_SIX_CYCLE;
-            int year = (int) (dayOfSixCycle / DAYS_IN_YEAR) + 1;
-            int dayOfYear = (int) (dayOfSixCycle % DAYS_IN_YEAR) + 1;
+            final int sixCycle = dayOfCycle / DAYS_PER_SIX_CYCLE;
+            final int dayOfSixCycle = dayOfCycle % DAYS_PER_SIX_CYCLE;
+            int year = dayOfSixCycle / DAYS_IN_YEAR + 1;
+            int dayOfYear = dayOfSixCycle % DAYS_IN_YEAR + 1;
             if (year == 7) {
                 year--;
                 dayOfYear += DAYS_IN_YEAR;
             }
-            return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100 + sixCycle * 6) + year, dayOfYear);
+            return ofYearDay(longCycle * 400 + cycle * 100 + sixCycle * 6 + year, dayOfYear);
         } else {
             if (dayOfCycle < DAYS_IN_YEAR + DAYS_IN_WEEK) {
                 // -'99 year is at _start_ of cycle (first year encountered).
-                return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + (100 - 99), Math.toIntExact(dayOfCycle) + 1);
+                return ofYearDay(longCycle * 400 + cycle * 100 + (100 - 99), dayOfCycle + 1);
             }
             // Otherwise, part of the regular 6-year cycle, but offset -'96 to be end of six-year-cycle first.
-            final long offsetCycle = dayOfCycle + 2 * DAYS_IN_YEAR - DAYS_IN_WEEK;
-            final long sixCycle = offsetCycle / DAYS_PER_SIX_CYCLE;
-            final long dayOfSixCycle = offsetCycle % DAYS_PER_SIX_CYCLE;
-            int year = (int) (dayOfSixCycle / DAYS_IN_YEAR) + 1;
-            int dayOfYear = (int) (dayOfSixCycle % DAYS_IN_YEAR) + 1;
+            final int offsetCycle = dayOfCycle + 2 * DAYS_IN_YEAR - DAYS_IN_WEEK;
+            final int sixCycle = offsetCycle / DAYS_PER_SIX_CYCLE;
+            final int dayOfSixCycle = offsetCycle % DAYS_PER_SIX_CYCLE;
+            int year = dayOfSixCycle / DAYS_IN_YEAR + 1;
+            int dayOfYear = dayOfSixCycle % DAYS_IN_YEAR + 1;
             if (year == 7) {
                 year--;
                 dayOfYear += DAYS_IN_YEAR;
             }
-            return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100 + (100 - (99 + 3 - (sixCycle * 6 + year)))), dayOfYear);
+            return ofYearDay(longCycle * 400 + cycle * 100 + (100 - (99 + 3 - (sixCycle * 6 + year))), dayOfYear);
 
         }
     }
@@ -463,12 +463,12 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     @Override
     public ChronoPeriod until(final ChronoLocalDate endDate) {
         final PaxDate end = PaxDate.from(endDate);
-        final long years = yearsUntil(end);
+        final int years = Math.toIntExact(yearsUntil(end));
         // Get to the same "whole" year.
         final PaxDate sameYearEnd = end.plusYears(years);
         final int months = (int) monthsUntil(sameYearEnd);
         final int days = (int) daysUntil(sameYearEnd.plusMonths(months));
-        return getChronology().period(Math.toIntExact(years), months, days);
+        return getChronology().period(years, months, days);
     }
 
     @Override
