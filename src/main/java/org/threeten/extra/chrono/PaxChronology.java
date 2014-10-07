@@ -69,8 +69,6 @@ import java.util.Map;
  * For more information, please read the <a href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
  * <p>
  * <h3>Specification for implementors</h3> This class is immutable and thread-safe.
- *
- * @author Clockwork-Muse
  */
 public final class PaxChronology extends AbstractChronology implements Serializable {
 
@@ -138,7 +136,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
      */
     @Override
-    public PaxDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+    public PaxDate date(final Era era, final int yearOfEra, final int month, final int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -154,51 +152,6 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     @Override
     public PaxDate date(final int prolepticYear, final int month, final int dayOfMonth) {
         return PaxDate.of(prolepticYear, month, dayOfMonth);
-    }
-
-    /**
-     * Obtains the current Pax local date from the system clock in the default time-zone.
-     * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default time-zone to obtain the current date.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
-     *
-     * @return the current Pax local date using the system clock and default time-zone, not null
-     * @throws DateTimeException if unable to create the date
-     */
-    @Override
-    public PaxDate dateNow() {
-        return PaxDate.now();
-    }
-
-    /**
-     * Obtains the current Pax local date from the system clock in the specified time-zone.
-     * <p>
-     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default time-zone.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
-     *
-     * @return the current Pax local date using the system clock, not null
-     * @throws DateTimeException if unable to create the date
-     */
-    @Override
-    public PaxDate dateNow(ZoneId zone) {
-        return PaxDate.now(zone);
-    }
-
-    /**
-     * Obtains the current Pax local date from the specified clock.
-     * <p>
-     * This will query the specified clock to obtain the current date - today. Using this method allows the use of an alternate clock for testing. The alternate clock may be introduced using
-     * {@link Clock dependency injection}.
-     *
-     * @param clock the clock to use, not null
-     * @return the current Pax local date, not null
-     * @throws DateTimeException if unable to create the date
-     */
-    @Override
-    public PaxDate dateNow(Clock clock) {
-        return PaxDate.now(clock);
     }
 
     /**
@@ -226,6 +179,52 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     /**
+     * Obtains the current Pax local date from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
+     *
+     * @return the current Pax local date using the system clock and default time-zone, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override
+    public PaxDate dateNow() {
+        return PaxDate.now();
+    }
+
+    /**
+     * Obtains the current Pax local date from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today. Using this method allows the use of an alternate clock for testing. The alternate clock may be introduced using
+     * {@link Clock dependency injection}.
+     *
+     * @param clock the clock to use, not null
+     * @return the current Pax local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override
+    public PaxDate dateNow(final Clock clock) {
+        return PaxDate.now(clock);
+    }
+
+    /**
+     * Obtains the current Pax local date from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
+     *
+     * @param zone the ZoneId to use, not null
+     * @return the current Pax local date using the system clock, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override
+    public PaxDate dateNow(final ZoneId zone) {
+        return PaxDate.now(zone);
+    }
+
+    /**
      * Obtains a local date in Pax calendar system from the era, year-of-era and day-of-year fields.
      *
      * @param era the Pax era, not null
@@ -236,7 +235,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
      */
     @Override
-    public PaxDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
+    public PaxDate dateYearDay(final Era era, final int yearOfEra, final int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -251,46 +250,6 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     @Override
     public PaxDate dateYearDay(final int prolepticYear, final int dayOfYear) {
         return PaxDate.ofYearDay(prolepticYear, dayOfYear);
-    }
-
-    /**
-     * Obtains a Pax local date-time from another date-time object.
-     *
-     * @param temporal the date-time object to convert, not null
-     * @return the Pax local date-time, not null
-     * @throws DateTimeException if unable to create the date-time
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ChronoLocalDateTime<PaxDate> localDateTime(TemporalAccessor temporal) {
-        return (ChronoLocalDateTime<PaxDate>) super.localDateTime(temporal);
-    }
-
-    /**
-     * Obtains a Pax zoned date-time from another date-time object.
-     *
-     * @param temporal the date-time object to convert, not null
-     * @return the Pax zoned date-time, not null
-     * @throws DateTimeException if unable to create the date-time
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ChronoZonedDateTime<PaxDate> zonedDateTime(TemporalAccessor temporal) {
-        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(temporal);
-    }
-
-    /**
-     * Obtains a Pax zoned date-time in this chronology from an {@code Instant}.
-     *
-     * @param instant the instant to create the date-time from, not null
-     * @param zone the time-zone, not null
-     * @return the Pax zoned date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ChronoZonedDateTime<PaxDate> zonedDateTime(Instant instant, ZoneId zone) {
-        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(instant, zone);
     }
 
     @Override
@@ -349,6 +308,19 @@ public final class PaxChronology extends AbstractChronology implements Serializa
         return Math.abs(lastTwoDigits) == 99 || (prolepticYear % 400 != 0 && (lastTwoDigits == 0 || lastTwoDigits % 6 == 0));
     }
 
+    /**
+     * Obtains a Pax local date-time from another date-time object.
+     *
+     * @param temporal the date-time object to convert, not null
+     * @return the Pax local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<PaxDate> localDateTime(final TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<PaxDate>) super.localDateTime(temporal);
+    }
+
     @Override
     public int prolepticYear(final Era era, final int yearOfEra) {
         if (!(era instanceof PaxEra)) {
@@ -376,8 +348,35 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     @Override
-    public PaxDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    public PaxDate resolveDate(final Map<TemporalField, Long> fieldValues, final ResolverStyle resolverStyle) {
         return (PaxDate) super.resolveDate(fieldValues, resolverStyle);
+    }
+
+    /**
+     * Obtains a Pax zoned date-time in this chronology from an {@code Instant}.
+     *
+     * @param instant the instant to create the date-time from, not null
+     * @param zone the time-zone, not null
+     * @return the Pax zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<PaxDate> zonedDateTime(final Instant instant, final ZoneId zone) {
+        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(instant, zone);
+    }
+
+    /**
+     * Obtains a Pax zoned date-time from another date-time object.
+     *
+     * @param temporal the date-time object to convert, not null
+     * @return the Pax zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<PaxDate> zonedDateTime(final TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(temporal);
     }
 
     /**
@@ -385,6 +384,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      *
      * @return the singleton instance, not null
      */
+    @SuppressWarnings("static-method")
     private Object readResolve() {
         return INSTANCE;
     }
