@@ -37,11 +37,11 @@ import java.time.chrono.Era;
 /**
  * An era in the Discordian calendar system.
  * <p>
- * The Discordian calendar system has two eras.
+ * The Discordian calendar system has one era.
  * The current era, for years from 1 onwards, is known as the 'Year of Our Lady of Discord'.
  * No other eras are supported.
  * <p>
- * The start of the Discordian epoch {@code 0001-01-01 (Discordian)} is {@code -1166-01-01 (ISO)}.
+ * The start of the Discordian epoch {@code 0001-01-01 (Discordian)} is {@code -1165-01-01 (ISO)}.
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code DiscordianEra}.
  * Use {@code getValue()} instead.</b>
