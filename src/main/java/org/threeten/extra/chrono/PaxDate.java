@@ -285,7 +285,7 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         if (paxEpochDay >= 0) {
             if (dayOfCycle >= DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) {
                 // Is in the '99 year
-                int dayOfYear = Math.toIntExact(dayOfCycle - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK + 1);
+                int dayOfYear = Math.toIntExact(dayOfCycle - (DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) + 1);
                 return ofYearDay(Math.toIntExact(longCycle * 400 + cycle * 100) + 99, dayOfYear);
             }
             // Otherwise, part of the regular 6-year cycle.
