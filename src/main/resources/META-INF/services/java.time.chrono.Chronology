@@ -2,3 +2,4 @@ org.threeten.extra.chrono.CopticChronology
 org.threeten.extra.chrono.EthiopicChronology
 org.threeten.extra.chrono.JulianChronology
 org.threeten.extra.chrono.PaxChronology
+org.threeten.extra.chrono.DiscordianChronology
