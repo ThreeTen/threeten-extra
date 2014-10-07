@@ -122,16 +122,33 @@ public final class DiscordianChronology extends AbstractChronology implements Se
         return null;
     }
 
+    /**
+     * Gets the calendar type of the underlying calendar system - 'discordian'.
+     * <p>
+     * The <em>Unicode Locale Data Markup Language (LDML)</em> specification
+     * does not define an identifier for the Discordian calendar, but were it to
+     * do so, 'discordian' is highly likely to be chosen.
+     *
+     * @return the calendar system type - 'discordian'
+     * @see #getId()
+     */
     @Override
     public String getCalendarType() {
-        // TODO Auto-generated method stub
-        return null;
+        return "discordian";
     }
 
+    /**
+     * Gets the ID of the chronology - 'Discordian'.
+     * <p>
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     *
+     * @return the chronology ID - 'Discordian'
+     * @see #getCalendarType()
+     */
     @Override
     public String getId() {
-        // TODO Auto-generated method stub
-        return null;
+        return "Discordian";
     }
 
     @Override
