@@ -142,6 +142,22 @@ public class TestPaxChronology {
 
             {PaxDate.of(2012, 6, 23), LocalDate.of(2012, 6, 4)},
             {PaxDate.of(2012, 6, 24), LocalDate.of(2012, 6, 5)},
+
+            {PaxDate.of(-6, 1, 1), LocalDate.of(-6, 1, 2)},
+            {PaxDate.of(-6, 13, 6), LocalDate.of(-6, 12, 9)},
+            {PaxDate.of(-6, 13, 7), LocalDate.of(-6, 12, 10)},
+            {PaxDate.of(-6, 14, 1), LocalDate.of(-6, 12, 11)},
+            {PaxDate.of(-6, 14, 2), LocalDate.of(-6, 12, 12)},
+            {PaxDate.of(-99, 1, 1), LocalDate.of(-99, 1, 6)},
+            {PaxDate.of(-99, 13, 6), LocalDate.of(-99, 12, 13)},
+            {PaxDate.of(-99, 13, 7), LocalDate.of(-99, 12, 14)},
+            {PaxDate.of(-99, 14, 1), LocalDate.of(-99, 12, 15)},
+            {PaxDate.of(-99, 14, 2), LocalDate.of(-99, 12, 16)},
+            {PaxDate.of(-100, 1, 1), LocalDate.of(-101, 12, 31)},
+            {PaxDate.of(-100, 13, 6), LocalDate.of(-100, 12, 7)},
+            {PaxDate.of(-100, 13, 7), LocalDate.of(-100, 12, 8)},
+            {PaxDate.of(-100, 14, 1), LocalDate.of(-100, 12, 9)},
+            {PaxDate.of(-100, 14, 2), LocalDate.of(-100, 12, 10)},
         };
     }
 
