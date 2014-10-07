@@ -163,7 +163,7 @@ public class TestJulianChronology {
     }
 
     @Test(dataProvider="samples")
-    public void test_JulianDate_until_CoptiDate(JulianDate julian, LocalDate iso) {
+    public void test_JulianDate_until_JulianDate(JulianDate julian, LocalDate iso) {
         assertEquals(julian.until(julian), JulianChronology.INSTANCE.period(0, 0, 0));
     }
 
@@ -173,7 +173,7 @@ public class TestJulianChronology {
     }
 
     @Test(dataProvider="samples")
-    public void test_LocalDate_until_CoptiDate(JulianDate julian, LocalDate iso) {
+    public void test_LocalDate_until_JulianDate(JulianDate julian, LocalDate iso) {
         assertEquals(iso.until(julian), Period.ZERO);
     }
 
