@@ -153,6 +153,15 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     /**
+     * Validates the object.
+     *
+     * @return the resolved date, not null
+     */
+    private Object readResolve() {
+        return PaxDate.of(year, month, day);
+    }
+
+    /**
      * Obtains an instance of {@code PaxDate} from a temporal object.
      * <p>
      * A {@code TemporalAccessor} represents some form of date and time information. This factory converts the arbitrary temporal object to an instance of {@code PaxDate}.
