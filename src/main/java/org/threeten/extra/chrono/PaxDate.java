@@ -226,12 +226,7 @@ public final class PaxDate
         if (temporal instanceof PaxDate) {
             return (PaxDate) temporal;
         }
-        LocalDate date = temporal.query(TemporalQueries.localDate());
-        if (date == null) {
-            throw new DateTimeException("Unable to obtain LocalDate from TemporalAccessor: "
-                    + temporal + ", type " + temporal.getClass().getName());
-        }
-        return ofEpochDay(date.toEpochDay());
+        return PaxDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -431,11 +426,8 @@ public final class PaxDate
     }
 
     @Override
-    public PaxDate withDayOfYear(int dayOfYear) {
-        if (this.getDayOfYear() == dayOfYear) {
-            return this;
-        }
-        return ofYearDay(prolepticYear, dayOfYear);
+    AbstractDate withDayOfYear(int value) {
+        return plusDays(value - getDayOfYear());
     }
 
     @Override
@@ -496,7 +488,12 @@ public final class PaxDate
      */
     @Override
     public int lengthOfMonth() {
-        return month == MONTHS_IN_YEAR && isLeapYear() ? DAYS_IN_WEEK : DAYS_IN_MONTH;
+        switch (month) {
+            case 13:
+                return (isLeapYear() ? DAYS_IN_WEEK : DAYS_IN_MONTH);
+            default:
+                return DAYS_IN_MONTH;
+        }
     }
 
     @Override
