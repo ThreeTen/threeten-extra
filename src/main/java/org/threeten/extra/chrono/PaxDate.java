@@ -140,44 +140,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     private final short day;
 
     /**
-     * Constructor, previously validated.
-     *
-     * @param year the year to represent
-     * @param month the month-of-year to represent, from 1 to 14
-     * @param dayOfMonth the day-of-month to represent, valid for year-month, from 1 to 28
-     */
-    private PaxDate(final int year, final int month, final int dayOfMonth) {
-        this.year = year;
-        this.month = (short) month;
-        this.day = (short) dayOfMonth;
-    }
-
-    /**
-     * Obtains an instance of {@code PaxDate} from a temporal object.
-     * <p>
-     * A {@code TemporalAccessor} represents some form of date and time information. This factory converts the arbitrary temporal object to an instance of {@code PaxDate}.
-     * <p>
-     * The conversion uses the {@link TemporalQueries#localDate()} query, which relies on extracting the {@link ChronoField#EPOCH_DAY EPOCH_DAY} field.
-     * <p>
-     * This method matches the signature of the functional interface {@link TemporalQuery} allowing it to be used as a query via method reference, {@code PaxDate::from}.
-     *
-     * @param temporal the temporal object to convert, not null
-     * @return the local date, not null
-     * @throws DateTimeException if unable to convert to a {@code PaxDate}
-     */
-    public static PaxDate from(final TemporalAccessor temporal) {
-        if (temporal instanceof PaxDate) {
-            return (PaxDate) temporal;
-        }
-        final LocalDate date = temporal.query(TemporalQueries.localDate());
-        if (date == null) {
-            throw new DateTimeException("Unable to obtain LocalDate from TemporalAccessor: "
-                    + temporal + ", type " + temporal.getClass().getName());
-        }
-        return ofEpochDay(date.toEpochDay());
-    }
-
-    /**
      * Obtains the current date from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default time-zone to obtain the current date.
@@ -188,6 +150,20 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      */
     public static PaxDate now() {
         return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains the current date from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
+     *
+     * @param zone the zone ID to use, not null
+     * @return the current date using the system clock, not null
+     */
+    public static PaxDate now(final ZoneId zone) {
+        return now(Clock.system(zone));
     }
 
     /**
@@ -207,20 +183,6 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         final long epochSec = now.getEpochSecond() + offset.getTotalSeconds();
         final long epochDay = Math.floorDiv(epochSec, SECONDS_PER_DAY);
         return ofEpochDay(epochDay);
-    }
-
-    /**
-     * Obtains the current date from the system clock in the specified time-zone.
-     * <p>
-     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default time-zone.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
-     *
-     * @param zone the zone ID to use, not null
-     * @return the current date using the system clock, not null
-     */
-    public static PaxDate now(final ZoneId zone) {
-        return now(Clock.system(zone));
     }
 
     /**
@@ -250,6 +212,141 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         }
 
         return new PaxDate(prolepticYear, month, dayOfMonth);
+    }
+
+    /**
+     * Obtains an instance of {@code PaxDate} from a temporal object.
+     * <p>
+     * A {@code TemporalAccessor} represents some form of date and time information. This factory converts the arbitrary temporal object to an instance of {@code PaxDate}.
+     * <p>
+     * The conversion uses the {@link TemporalQueries#localDate()} query, which relies on extracting the {@link ChronoField#EPOCH_DAY EPOCH_DAY} field.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery} allowing it to be used as a query via method reference, {@code PaxDate::from}.
+     *
+     * @param temporal the temporal object to convert, not null
+     * @return the local date, not null
+     * @throws DateTimeException if unable to convert to a {@code PaxDate}
+     */
+    public static PaxDate from(final TemporalAccessor temporal) {
+        if (temporal instanceof PaxDate) {
+            return (PaxDate) temporal;
+        }
+        final LocalDate date = temporal.query(TemporalQueries.localDate());
+        if (date == null) {
+            throw new DateTimeException("Unable to obtain LocalDate from TemporalAccessor: "
+                    + temporal + ", type " + temporal.getClass().getName());
+        }
+        return ofEpochDay(date.toEpochDay());
+    }
+
+    /**
+     * Obtains an instance of {@code PaxDate} from a year and day-of-year.
+     * <p>
+     * The day-of-year must be valid for the year, otherwise an exception will be thrown.
+     *
+     * @param prolepticYear the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param dayOfYear the day-of-year to represent, from 1 to 371
+     * @return the local date, not null
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-year is invalid for the month-year
+     */
+    static PaxDate ofYearDay(final int prolepticYear, final int dayOfYear) {
+        YEAR.checkValidValue(prolepticYear);
+        if (dayOfYear < 1 || dayOfYear > DAYS_IN_YEAR + DAYS_IN_WEEK) {
+            throw new DateTimeException("Inavlid date 'DayOfYear " + dayOfYear + "'");
+        }
+        final boolean leap = PaxChronology.INSTANCE.isLeapYear(prolepticYear);
+        if (dayOfYear > DAYS_IN_YEAR && !leap) {
+            throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
+        }
+    
+        int month = ((dayOfYear - 1) / DAYS_IN_MONTH) + 1;
+    
+        // In leap years, the leap-month is shorter than the following month, so needs to be adjusted.
+        if (leap && month == MONTHS_IN_YEAR && dayOfYear >= (DAYS_IN_YEAR + DAYS_IN_WEEK) - DAYS_IN_MONTH + 1) {
+            month++;
+        }
+    
+        // Subtract days-at-start-of-month from days in year
+        int dayOfMonth = dayOfYear - (month - 1) * DAYS_IN_MONTH;
+    
+        // Adjust for shorter inserted leap-month.
+        if (month == MONTHS_IN_YEAR + 1) {
+            dayOfMonth += (DAYS_IN_MONTH - DAYS_IN_WEEK);
+        }
+    
+        return of(prolepticYear, month, dayOfMonth);
+    }
+
+    /**
+     * Obtains a {@code PaxDate} representing a date in the Pax calendar system from the epoch-day.
+     *
+     * @param epochDay the epoch day to convert based on 1970-01-01 (ISO)
+     * @return the date in Pax calendar system, not null
+     * @throws DateTimeException if the epoch-day is out of range
+     */
+    static PaxDate ofEpochDay(final long epochDay) {
+        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);
+        // use of Pax 0001 makes non-leap century at end of (long) cycle.
+        final long paxEpochDay = epochDay + DAYS_PAX_0001_TO_ISO_1970;
+        final int longCycle = (int) Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
+        final int cycle = (int) (paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE;
+        final int dayOfCycle = (int) Math.floorMod(paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
+        if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
+            // Is in the century year
+            final int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) + 1;
+            return ofYearDay(longCycle * 400 + cycle * 100 + 100, dayOfYear);
+        }
+    
+        // For negative years, the cycle of leap years runs the other direction for 99s and 6s.
+        if (paxEpochDay >= 0) {
+            if (dayOfCycle >= DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) {
+                // Is in the '99 year
+                final int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) + 1;
+                return ofYearDay(longCycle * 400 + cycle * 100 + 99, dayOfYear);
+            }
+            // Otherwise, part of the regular 6-year cycle.
+            final int sixCycle = dayOfCycle / DAYS_PER_SIX_CYCLE;
+            final int dayOfSixCycle = dayOfCycle % DAYS_PER_SIX_CYCLE;
+            int year = dayOfSixCycle / DAYS_IN_YEAR + 1;
+            int dayOfYear = dayOfSixCycle % DAYS_IN_YEAR + 1;
+            if (year == 7) {
+                year--;
+                dayOfYear += DAYS_IN_YEAR;
+            }
+            return ofYearDay(longCycle * 400 + cycle * 100 + sixCycle * 6 + year, dayOfYear);
+        } else {
+            if (dayOfCycle < DAYS_IN_YEAR + DAYS_IN_WEEK) {
+                // -'99 year is at _start_ of cycle (first year encountered).
+                return ofYearDay(longCycle * 400 + cycle * 100 + (100 - 99), dayOfCycle + 1);
+            }
+            // Otherwise, part of the regular 6-year cycle, but offset -'96 to be end of six-year-cycle first.
+            final int offsetCycle = dayOfCycle + 2 * DAYS_IN_YEAR - DAYS_IN_WEEK;
+            final int sixCycle = offsetCycle / DAYS_PER_SIX_CYCLE;
+            final int dayOfSixCycle = offsetCycle % DAYS_PER_SIX_CYCLE;
+            int year = dayOfSixCycle / DAYS_IN_YEAR + 1;
+            int dayOfYear = dayOfSixCycle % DAYS_IN_YEAR + 1;
+            if (year == 7) {
+                year--;
+                dayOfYear += DAYS_IN_YEAR;
+            }
+            return ofYearDay(longCycle * 400 + cycle * 100 + (100 - (99 + 3 - (sixCycle * 6 + year))), dayOfYear);
+    
+        }
+    }
+
+    /**
+     * Resolves the date, resolving days past the end of month, or non-existent months.
+     *
+     * @param year the year to represent, validated from MIN_YEAR to MAX_YEAR
+     * @param month the month-of-year to represent, validated from 1 to 14
+     * @param day the day-of-month to represent, validated from 1 to 28
+     * @return the resolved date, not null
+     */
+    private static PaxDate resolvePreviousValid(final int year, final int month, final int day) {
+        final int monthR = Math.min(month, MONTHS_IN_YEAR + (PaxChronology.INSTANCE.isLeapYear(year) ? 1 : 0));
+        final int dayR = Math.min(day, month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(year) ? DAYS_IN_WEEK : DAYS_IN_MONTH);
+        return PaxDate.of(year, monthR, dayR);
     }
 
     /**
@@ -299,213 +396,16 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     /**
-     * Resolves the date, resolving days past the end of month, or non-existent months.
+     * Constructor, previously validated.
      *
-     * @param year the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param month the month-of-year to represent, validated from 1 to 14
-     * @param day the day-of-month to represent, validated from 1 to 28
-     * @return the resolved date, not null
+     * @param year the year to represent
+     * @param month the month-of-year to represent, from 1 to 14
+     * @param dayOfMonth the day-of-month to represent, valid for year-month, from 1 to 28
      */
-    private static PaxDate resolvePreviousValid(final int year, final int month, final int day) {
-        final int monthR = Math.min(month, MONTHS_IN_YEAR + (PaxChronology.INSTANCE.isLeapYear(year) ? 1 : 0));
-        final int dayR = Math.min(day, month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(year) ? DAYS_IN_WEEK : DAYS_IN_MONTH);
-        return PaxDate.of(year, monthR, dayR);
-    }
-
-    /**
-     * Obtains a {@code PaxDate} representing a date in the Pax calendar system from the epoch-day.
-     *
-     * @param epochDay the epoch day to convert based on 1970-01-01 (ISO)
-     * @return the date in Pax calendar system, not null
-     * @throws DateTimeException if the epoch-day is out of range
-     */
-    static PaxDate ofEpochDay(final long epochDay) {
-        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);
-        // use of Pax 0001 makes non-leap century at end of (long) cycle.
-        final long paxEpochDay = epochDay + DAYS_PAX_0001_TO_ISO_1970;
-        final int longCycle = (int) Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
-        final int cycle = (int) (paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE;
-        final int dayOfCycle = (int) Math.floorMod(paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
-        if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
-            // Is in the century year
-            final int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) + 1;
-            return ofYearDay(longCycle * 400 + cycle * 100 + 100, dayOfYear);
-        }
-
-        // For negative years, the cycle of leap years runs the other direction for 99s and 6s.
-        if (paxEpochDay >= 0) {
-            if (dayOfCycle >= DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) {
-                // Is in the '99 year
-                final int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) + 1;
-                return ofYearDay(longCycle * 400 + cycle * 100 + 99, dayOfYear);
-            }
-            // Otherwise, part of the regular 6-year cycle.
-            final int sixCycle = dayOfCycle / DAYS_PER_SIX_CYCLE;
-            final int dayOfSixCycle = dayOfCycle % DAYS_PER_SIX_CYCLE;
-            int year = dayOfSixCycle / DAYS_IN_YEAR + 1;
-            int dayOfYear = dayOfSixCycle % DAYS_IN_YEAR + 1;
-            if (year == 7) {
-                year--;
-                dayOfYear += DAYS_IN_YEAR;
-            }
-            return ofYearDay(longCycle * 400 + cycle * 100 + sixCycle * 6 + year, dayOfYear);
-        } else {
-            if (dayOfCycle < DAYS_IN_YEAR + DAYS_IN_WEEK) {
-                // -'99 year is at _start_ of cycle (first year encountered).
-                return ofYearDay(longCycle * 400 + cycle * 100 + (100 - 99), dayOfCycle + 1);
-            }
-            // Otherwise, part of the regular 6-year cycle, but offset -'96 to be end of six-year-cycle first.
-            final int offsetCycle = dayOfCycle + 2 * DAYS_IN_YEAR - DAYS_IN_WEEK;
-            final int sixCycle = offsetCycle / DAYS_PER_SIX_CYCLE;
-            final int dayOfSixCycle = offsetCycle % DAYS_PER_SIX_CYCLE;
-            int year = dayOfSixCycle / DAYS_IN_YEAR + 1;
-            int dayOfYear = dayOfSixCycle % DAYS_IN_YEAR + 1;
-            if (year == 7) {
-                year--;
-                dayOfYear += DAYS_IN_YEAR;
-            }
-            return ofYearDay(longCycle * 400 + cycle * 100 + (100 - (99 + 3 - (sixCycle * 6 + year))), dayOfYear);
-
-        }
-    }
-
-    /**
-     * Obtains an instance of {@code PaxDate} from a year and day-of-year.
-     * <p>
-     * The day-of-year must be valid for the year, otherwise an exception will be thrown.
-     *
-     * @param prolepticYear the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param dayOfYear the day-of-year to represent, from 1 to 371
-     * @return the local date, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-year is invalid for the month-year
-     */
-    static PaxDate ofYearDay(final int prolepticYear, final int dayOfYear) {
-        YEAR.checkValidValue(prolepticYear);
-        if (dayOfYear < 1 || dayOfYear > DAYS_IN_YEAR + DAYS_IN_WEEK) {
-            throw new DateTimeException("Inavlid date 'DayOfYear " + dayOfYear + "'");
-        }
-        final boolean leap = PaxChronology.INSTANCE.isLeapYear(prolepticYear);
-        if (dayOfYear > DAYS_IN_YEAR && !leap) {
-            throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
-        }
-
-        int month = ((dayOfYear - 1) / DAYS_IN_MONTH) + 1;
-
-        // In leap years, the leap-month is shorter than the following month, so needs to be adjusted.
-        if (leap && month == MONTHS_IN_YEAR && dayOfYear >= (DAYS_IN_YEAR + DAYS_IN_WEEK) - DAYS_IN_MONTH + 1) {
-            month++;
-        }
-
-        // Subtract days-at-start-of-month from days in year
-        int dayOfMonth = dayOfYear - (month - 1) * DAYS_IN_MONTH;
-
-        // Adjust for shorter inserted leap-month.
-        if (month == MONTHS_IN_YEAR + 1) {
-            dayOfMonth += (DAYS_IN_MONTH - DAYS_IN_WEEK);
-        }
-
-        return of(prolepticYear, month, dayOfMonth);
-    }
-
-    @Override
-    public PaxChronology getChronology() {
-        return PaxChronology.INSTANCE;
-    }
-
-    @Override
-    public int lengthOfMonth() {
-        return month == MONTHS_IN_YEAR && isLeapYear() ? DAYS_IN_WEEK : DAYS_IN_MONTH;
-    }
-
-    @Override
-    public int lengthOfYear() {
-        return DAYS_IN_YEAR + (isLeapYear() ? DAYS_IN_WEEK : 0);
-    }
-
-    @Override
-    public PaxDate minus(final long amountToSubtract, final TemporalUnit unit) {
-        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
-    }
-
-    @Override
-    public PaxDate minus(final TemporalAmount amount) {
-        return (PaxDate) amount.subtractFrom(this);
-    }
-
-    @Override
-    public PaxDate plus(final long amountToAdd, final TemporalUnit unit) {
-        return (PaxDate) super.plus(amountToAdd, unit);
-    }
-
-    @Override
-    public PaxDate plus(final TemporalAmount amount) {
-        return (PaxDate) amount.addTo(this);
-    }
-
-    @Override
-    public ValueRange range(final TemporalField field) {
-        if (field == ChronoField.ALIGNED_WEEK_OF_YEAR) {
-            return ValueRange.of(1, WEEKS_IN_YEAR + (isLeapYear() ? 1 : 0));
-        } else if (field == ChronoField.MONTH_OF_YEAR) {
-            return ValueRange.of(1, MONTHS_IN_YEAR + (isLeapYear() ? 1 : 0));
-        }
-        return super.range(field);
-    }
-
-    @Override
-    public long toEpochDay() {
-        final long days = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
-        // Rebase to ISO 1970.
-        return days - DAYS_PAX_0001_TO_ISO_1970;
-    }
-
-    @Override
-    public ChronoPeriod until(final ChronoLocalDate endDate) {
-        final PaxDate end = PaxDate.from(endDate);
-        final int years = Math.toIntExact(yearsUntil(end));
-        // Get to the same "whole" year.
-        final PaxDate sameYearEnd = end.plusYears(years);
-        final int months = (int) monthsUntil(sameYearEnd);
-        final int days = (int) daysUntil(sameYearEnd.plusMonths(months));
-        return getChronology().period(years, months, days);
-    }
-
-    @Override
-    public long until(final Temporal endExclusive, final TemporalUnit unit) {
-        return until(JulianDate.from(endExclusive), unit);
-    }
-
-    @Override
-    public PaxDate with(final TemporalAdjuster adjuster) {
-        return (PaxDate) adjuster.adjustInto(this);
-    }
-
-    @Override
-    public PaxDate with(final TemporalField field, final long newValue) {
-        // Evaluate years as a special case, to deal with inserted leap months.
-        if (field == ChronoField.YEAR) {
-            return plusYears(newValue - getProlepticYear());
-        }
-        return (PaxDate) super.with(field, newValue);
-    }
-
-    /**
-     * Returns a copy of this date with the day-of-year altered. If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear the day-of-year to set in the result, from 1 to 364 or 371
-     * @return a {@code PaxDate} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-year value is invalid
-     * @throws DateTimeException if the day-of-year is invalid for the year
-     */
-    @Override
-    public PaxDate withDayOfYear(final int dayOfYear) {
-        if (this.getDayOfYear() == dayOfYear) {
-            return this;
-        }
-        return ofYearDay(year, dayOfYear);
+    private PaxDate(final int year, final int month, final int dayOfMonth) {
+        this.year = year;
+        this.month = (short) month;
+        this.day = (short) dayOfMonth;
     }
 
     /**
@@ -515,6 +415,32 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
      */
     private Object readResolve() {
         return PaxDate.of(year, month, day);
+    }
+
+    /**
+     * Gets the year field.
+     * <p>
+     * This method returns the primitive {@code int} value for the year.
+     * <p>
+     * The year returned by this method is proleptic as per {@code get(YEAR)}. To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
+     *
+     * @return the year
+     */
+    @Override
+    int getProlepticYear() {
+        return year;
+    }
+
+    /**
+     * Gets the month-of-year field from 1 to 14.
+     * <p>
+     * This method returns the month as an {@code int} from 1 to 14.
+     *
+     * @return the month-of-year, from 1 to 14
+     */
+    @Override
+    int getMonth() {
+        return month;
     }
 
     /**
@@ -541,15 +467,46 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
     }
 
     /**
-     * Gets the month-of-year field from 1 to 14.
+     * Returns a copy of this date with the day-of-year altered. If the resulting date is invalid, an exception is thrown.
      * <p>
-     * This method returns the month as an {@code int} from 1 to 14.
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return the month-of-year, from 1 to 14
+     * @param dayOfYear the day-of-year to set in the result, from 1 to 364 or 371
+     * @return a {@code PaxDate} based on this date with the requested day, not null
+     * @throws DateTimeException if the day-of-year value is invalid
+     * @throws DateTimeException if the day-of-year is invalid for the year
      */
     @Override
-    int getMonth() {
-        return month;
+    public PaxDate withDayOfYear(final int dayOfYear) {
+        if (this.getDayOfYear() == dayOfYear) {
+            return this;
+        }
+        return ofYearDay(year, dayOfYear);
+    }
+
+    @Override
+    int lengthOfYearInMonths() {
+        return MONTHS_IN_YEAR + (isLeapYear() ? 1 : 0);
+    }
+
+    @Override
+    ValueRange rangeAlignedWeekOfMonth() {
+        return ValueRange.of(1, getMonth() == MONTHS_IN_YEAR && isLeapYear() ? WEEKS_IN_LEAP_MONTH : WEEKS_IN_MONTH);
+    }
+
+    @Override
+    PaxDate resolvePrevious(final int newYear, final int newMonth, final int dayOfMonth) {
+        return resolvePreviousValid(newYear, newMonth, dayOfMonth);
+    }
+
+    @Override
+    public ValueRange range(final TemporalField field) {
+        if (field == ChronoField.ALIGNED_WEEK_OF_YEAR) {
+            return ValueRange.of(1, WEEKS_IN_YEAR + (isLeapYear() ? 1 : 0));
+        } else if (field == ChronoField.MONTH_OF_YEAR) {
+            return ValueRange.of(1, MONTHS_IN_YEAR + (isLeapYear() ? 1 : 0));
+        }
+        return super.range(field);
     }
 
     /**
@@ -562,54 +519,43 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         return ((long) getProlepticYear()) * MONTHS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) + getMonth() - 1;
     }
 
-    /**
-     * Gets the year field.
-     * <p>
-     * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * The year returned by this method is proleptic as per {@code get(YEAR)}. To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
-     *
-     * @return the year
-     */
     @Override
-    int getProlepticYear() {
-        return year;
+    public PaxChronology getChronology() {
+        return PaxChronology.INSTANCE;
     }
 
     @Override
-    int lengthOfYearInMonths() {
-        return MONTHS_IN_YEAR + (isLeapYear() ? 1 : 0);
+    public int lengthOfMonth() {
+        return month == MONTHS_IN_YEAR && isLeapYear() ? DAYS_IN_WEEK : DAYS_IN_MONTH;
     }
 
-    /**
-     * Returns a copy of this {@code PaxDate} with the specified period in months added.
-     * <p>
-     * This method adds the specified amount to the months field in three steps:
-     * <ol>
-     * <li>Add the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2006-12-13 plus one month would result in the invalid date 2006-13-13. Instead of returning an invalid result, the last valid day of the month, 2006-13-07, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthsToAdd the months to add, may be negative
-     * @return a {@code PaxDate} based on this date with the months added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
     @Override
-    PaxDate plusMonths(final long monthsToAdd) {
-        if (monthsToAdd == 0) {
-            return this;
+    public int lengthOfYear() {
+        return DAYS_IN_YEAR + (isLeapYear() ? DAYS_IN_WEEK : 0);
+    }
+
+    @Override
+    public PaxDate with(final TemporalAdjuster adjuster) {
+        return (PaxDate) adjuster.adjustInto(this);
+    }
+
+    @Override
+    public PaxDate with(final TemporalField field, final long newValue) {
+        // Evaluate years as a special case, to deal with inserted leap months.
+        if (field == ChronoField.YEAR) {
+            return plusYears(newValue - getProlepticYear());
         }
-        final long calcMonths = Math.addExact(getProlepticMonth(), monthsToAdd);
-        // "Regularize" the month count, as if years were all 13 months long.
-        final long monthsRegularized = calcMonths - getLeapMonthsBefore(calcMonths);
-        final int newYear = YEAR.checkValidIntValue(Math.floorDiv(monthsRegularized, MONTHS_IN_YEAR));
-        final int newMonth = Math.toIntExact(calcMonths - (newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear)) + 1);
-        return resolvePreviousValid(newYear, newMonth, getDayOfMonth());
+        return (PaxDate) super.with(field, newValue);
+    }
+
+    @Override
+    public PaxDate plus(final TemporalAmount amount) {
+        return (PaxDate) amount.addTo(this);
+    }
+
+    @Override
+    public PaxDate plus(final long amountToAdd, final TemporalUnit unit) {
+        return (PaxDate) super.plus(amountToAdd, unit);
     }
 
     /**
@@ -650,14 +596,50 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         return resolvePreviousValid(newYear, month, day);
     }
 
+    /**
+     * Returns a copy of this {@code PaxDate} with the specified period in months added.
+     * <p>
+     * This method adds the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Add the input months to the month-of-year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day-of-month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2006-12-13 plus one month would result in the invalid date 2006-13-13. Instead of returning an invalid result, the last valid day of the month, 2006-13-07, is selected instead.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthsToAdd the months to add, may be negative
+     * @return a {@code PaxDate} based on this date with the months added, not null
+     * @throws DateTimeException if the result exceeds the supported date range
+     */
     @Override
-    ValueRange rangeAlignedWeekOfMonth() {
-        return ValueRange.of(1, getMonth() == MONTHS_IN_YEAR && isLeapYear() ? WEEKS_IN_LEAP_MONTH : WEEKS_IN_MONTH);
+    PaxDate plusMonths(final long monthsToAdd) {
+        if (monthsToAdd == 0) {
+            return this;
+        }
+        final long calcMonths = Math.addExact(getProlepticMonth(), monthsToAdd);
+        // "Regularize" the month count, as if years were all 13 months long.
+        final long monthsRegularized = calcMonths - getLeapMonthsBefore(calcMonths);
+        final int newYear = YEAR.checkValidIntValue(Math.floorDiv(monthsRegularized, MONTHS_IN_YEAR));
+        final int newMonth = Math.toIntExact(calcMonths - (newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear)) + 1);
+        return resolvePreviousValid(newYear, newMonth, getDayOfMonth());
     }
 
     @Override
-    PaxDate resolvePrevious(final int newYear, final int newMonth, final int dayOfMonth) {
-        return resolvePreviousValid(newYear, newMonth, dayOfMonth);
+    public PaxDate minus(final TemporalAmount amount) {
+        return (PaxDate) amount.subtractFrom(this);
+    }
+
+    @Override
+    public PaxDate minus(final long amountToSubtract, final TemporalUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
+    }
+
+    @Override
+    public long until(final Temporal endExclusive, final TemporalUnit unit) {
+        return until(JulianDate.from(endExclusive), unit);
     }
 
     @Override
@@ -691,5 +673,23 @@ public final class PaxDate extends AbstractDate implements ChronoLocalDate, Seri
         final long startYear = getProlepticYear() * 512L + getDayOfYear() + (this.getMonth() == MONTHS_IN_YEAR && !this.isLeapYear() && end.isLeapYear() ? DAYS_IN_WEEK : 0);
         final long endYear = end.getProlepticYear() * 512L + end.getDayOfYear() + (end.getMonth() == MONTHS_IN_YEAR && !end.isLeapYear() && this.isLeapYear() ? DAYS_IN_WEEK : 0);
         return (endYear - startYear) / 512L;
+    }
+
+    @Override
+    public ChronoPeriod until(final ChronoLocalDate endDate) {
+        final PaxDate end = PaxDate.from(endDate);
+        final int years = Math.toIntExact(yearsUntil(end));
+        // Get to the same "whole" year.
+        final PaxDate sameYearEnd = end.plusYears(years);
+        final int months = (int) monthsUntil(sameYearEnd);
+        final int days = (int) daysUntil(sameYearEnd.plusMonths(months));
+        return getChronology().period(years, months, days);
+    }
+
+    @Override
+    public long toEpochDay() {
+        final long days = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
+        // Rebase to ISO 1970.
+        return days - DAYS_PAX_0001_TO_ISO_1970;
     }
 }
