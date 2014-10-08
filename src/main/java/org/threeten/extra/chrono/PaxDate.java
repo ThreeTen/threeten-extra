@@ -94,15 +94,15 @@ public final class PaxDate
     /**
      * The days per 400 year cycle.
      */
-    private static final int DAYS_PER_LONG_CYCLE = 400 * DAYS_IN_YEAR + (int) getLeapYearsBefore(400 + 1) * DAYS_IN_WEEK;
+    private static final int DAYS_PER_LONG_CYCLE = (DAYS_IN_YEAR * 400) + (DAYS_IN_WEEK * 71);
     /**
      * The days per 100 year cycle.
      */
-    private static final int DAYS_PER_CYCLE = 100 * DAYS_IN_YEAR + (int) getLeapYearsBefore(100 + 1) * DAYS_IN_WEEK;
+    private static final int DAYS_PER_CYCLE = (DAYS_IN_YEAR * 100) + (DAYS_IN_WEEK * 18);
     /**
      * The days per 6 year cycle.
      */
-    private static final int DAYS_PER_SIX_CYCLE = 6 * DAYS_IN_YEAR + (int) getLeapYearsBefore(6 + 1) * DAYS_IN_WEEK;
+    private static final int DAYS_PER_SIX_CYCLE = (DAYS_IN_YEAR * 6) + (DAYS_IN_WEEK * 1);
     /**
      * Number of seconds in a day.
      */
