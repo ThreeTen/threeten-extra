@@ -146,6 +146,42 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     /**
+     * Resolve singleton.
+     *
+     * @return the singleton instance, not null
+     */
+    @SuppressWarnings("static-method")
+    private Object readResolve() {
+        return INSTANCE;
+    }
+
+    /**
+     * Gets the ID of the chronology - 'Pax'.
+     * <p>
+     * The ID uniquely identifies the {@code Chronology}. It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     *
+     * @return the chronology ID - 'Pax'
+     * @see #getCalendarType()
+     */
+    @Override
+    public String getId() {
+        return "Pax";
+    }
+
+    /**
+     * Gets the calendar type of the underlying calendar system - 'pax'.
+     * <p>
+     * The <em>Unicode Locale Data Markup Language (LDML)</em> specification does not define an identifier for the Pax calendar, but were it to do so, 'pax' is highly likely to be chosen.
+     *
+     * @return the calendar system type - 'pax'
+     * @see #getId()
+     */
+    @Override
+    public String getCalendarType() {
+        return "pax";
+    }
+
+    /**
      * Obtains a local date in Pax calendar system from the era, year-of-era, month-of-year and day-of-month fields.
      *
      * @param era the Pax era, not null
@@ -176,15 +212,31 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     /**
-     * Obtains a Pax local date from another date-time object.
+     * Obtains a local date in Pax calendar system from the era, year-of-era and day-of-year fields.
      *
-     * @param temporal the date-time object to convert, not null
+     * @param era the Pax era, not null
+     * @param yearOfEra the year-of-era
+     * @param dayOfYear the day-of-year
+     * @return the Pax local date, not null
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
+     */
+    @Override
+    public PaxDate dateYearDay(final Era era, final int yearOfEra, final int dayOfYear) {
+        return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
+    }
+
+    /**
+     * Obtains a local date in Pax calendar system from the proleptic-year and day-of-year fields.
+     *
+     * @param prolepticYear the proleptic-year
+     * @param dayOfYear the day-of-year
      * @return the Pax local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public PaxDate date(final TemporalAccessor temporal) {
-        return PaxDate.from(temporal);
+    public PaxDate dateYearDay(final int prolepticYear, final int dayOfYear) {
+        return PaxDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     /**
@@ -215,21 +267,6 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     /**
-     * Obtains the current Pax local date from the specified clock.
-     * <p>
-     * This will query the specified clock to obtain the current date - today. Using this method allows the use of an alternate clock for testing. The alternate clock may be introduced using
-     * {@link Clock dependency injection}.
-     *
-     * @param clock the clock to use, not null
-     * @return the current Pax local date, not null
-     * @throws DateTimeException if unable to create the date
-     */
-    @Override
-    public PaxDate dateNow(final Clock clock) {
-        return PaxDate.now(clock);
-    }
-
-    /**
      * Obtains the current Pax local date from the system clock in the specified time-zone.
      * <p>
      * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default time-zone.
@@ -246,67 +283,70 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     /**
-     * Obtains a local date in Pax calendar system from the era, year-of-era and day-of-year fields.
+     * Obtains the current Pax local date from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today. Using this method allows the use of an alternate clock for testing. The alternate clock may be introduced using
+     * {@link Clock dependency injection}.
      *
-     * @param era the Pax era, not null
-     * @param yearOfEra the year-of-era
-     * @param dayOfYear the day-of-year
-     * @return the Pax local date, not null
-     * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
-     */
-    @Override
-    public PaxDate dateYearDay(final Era era, final int yearOfEra, final int dayOfYear) {
-        return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
-    }
-
-    /**
-     * Obtains a local date in Pax calendar system from the proleptic-year and day-of-year fields.
-     *
-     * @param prolepticYear the proleptic-year
-     * @param dayOfYear the day-of-year
-     * @return the Pax local date, not null
+     * @param clock the clock to use, not null
+     * @return the current Pax local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public PaxDate dateYearDay(final int prolepticYear, final int dayOfYear) {
-        return PaxDate.ofYearDay(prolepticYear, dayOfYear);
-    }
-
-    @Override
-    public PaxEra eraOf(final int era) {
-        return PaxEra.of(era);
-    }
-
-    @Override
-    public List<Era> eras() {
-        return Arrays.<Era>asList(PaxEra.values());
+    public PaxDate dateNow(final Clock clock) {
+        return PaxDate.now(clock);
     }
 
     /**
-     * Gets the calendar type of the underlying calendar system - 'pax'.
-     * <p>
-     * The <em>Unicode Locale Data Markup Language (LDML)</em> specification does not define an identifier for the Pax calendar, but were it to do so, 'pax' is highly likely to be chosen.
+     * Obtains a Pax local date from another date-time object.
      *
-     * @return the calendar system type - 'pax'
-     * @see #getId()
+     * @param temporal the date-time object to convert, not null
+     * @return the Pax local date, not null
+     * @throws DateTimeException if unable to create the date
      */
     @Override
-    public String getCalendarType() {
-        return "pax";
+    public PaxDate date(final TemporalAccessor temporal) {
+        return PaxDate.from(temporal);
     }
 
     /**
-     * Gets the ID of the chronology - 'Pax'.
-     * <p>
-     * The ID uniquely identifies the {@code Chronology}. It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * Obtains a Pax local date-time from another date-time object.
      *
-     * @return the chronology ID - 'Pax'
-     * @see #getCalendarType()
+     * @param temporal the date-time object to convert, not null
+     * @return the Pax local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
      */
     @Override
-    public String getId() {
-        return "Pax";
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<PaxDate> localDateTime(final TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<PaxDate>) super.localDateTime(temporal);
+    }
+
+    /**
+     * Obtains a Pax zoned date-time from another date-time object.
+     *
+     * @param temporal the date-time object to convert, not null
+     * @return the Pax zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<PaxDate> zonedDateTime(final TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(temporal);
+    }
+
+    /**
+     * Obtains a Pax zoned date-time in this chronology from an {@code Instant}.
+     *
+     * @param instant the instant to create the date-time from, not null
+     * @param zone the time-zone, not null
+     * @return the Pax zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<PaxDate> zonedDateTime(final Instant instant, final ZoneId zone) {
+        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(instant, zone);
     }
 
     /**
@@ -329,25 +369,22 @@ public final class PaxChronology extends AbstractChronology implements Serializa
         return Math.abs(lastTwoDigits) == 99 || (prolepticYear % 400 != 0 && (lastTwoDigits == 0 || lastTwoDigits % 6 == 0));
     }
 
-    /**
-     * Obtains a Pax local date-time from another date-time object.
-     *
-     * @param temporal the date-time object to convert, not null
-     * @return the Pax local date-time, not null
-     * @throws DateTimeException if unable to create the date-time
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ChronoLocalDateTime<PaxDate> localDateTime(final TemporalAccessor temporal) {
-        return (ChronoLocalDateTime<PaxDate>) super.localDateTime(temporal);
-    }
-
     @Override
     public int prolepticYear(final Era era, final int yearOfEra) {
         if (!(era instanceof PaxEra)) {
             throw new ClassCastException("Era must be PaxEra");
         }
         return (era == PaxEra.CE ? yearOfEra : 1 - yearOfEra);
+    }
+
+    @Override
+    public PaxEra eraOf(final int era) {
+        return PaxEra.of(era);
+    }
+
+    @Override
+    public List<Era> eras() {
+        return Arrays.<Era>asList(PaxEra.values());
     }
 
     @Override
@@ -371,43 +408,6 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     @Override
     public PaxDate resolveDate(final Map<TemporalField, Long> fieldValues, final ResolverStyle resolverStyle) {
         return (PaxDate) super.resolveDate(fieldValues, resolverStyle);
-    }
-
-    /**
-     * Obtains a Pax zoned date-time in this chronology from an {@code Instant}.
-     *
-     * @param instant the instant to create the date-time from, not null
-     * @param zone the time-zone, not null
-     * @return the Pax zoned date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ChronoZonedDateTime<PaxDate> zonedDateTime(final Instant instant, final ZoneId zone) {
-        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(instant, zone);
-    }
-
-    /**
-     * Obtains a Pax zoned date-time from another date-time object.
-     *
-     * @param temporal the date-time object to convert, not null
-     * @return the Pax zoned date-time, not null
-     * @throws DateTimeException if unable to create the date-time
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ChronoZonedDateTime<PaxDate> zonedDateTime(final TemporalAccessor temporal) {
-        return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(temporal);
-    }
-
-    /**
-     * Resolve singleton.
-     *
-     * @return the singleton instance, not null
-     */
-    @SuppressWarnings("static-method")
-    private Object readResolve() {
-        return INSTANCE;
     }
 
 }
