@@ -81,7 +81,7 @@ import org.testng.annotations.Test;
  * Test.
  */
 @Test
-@SuppressWarnings({"static-method", "javadoc", "checkstyle:magicnumber", "checkstyle:javadocmethod", "checkstyle:designforextension"})
+@SuppressWarnings({"static-method", "javadoc"})
 public class TestPaxChronology {
 
     //-----------------------------------------------------------------------
