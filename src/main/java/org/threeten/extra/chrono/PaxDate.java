@@ -31,7 +31,10 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_MONTH;
 import static org.threeten.extra.chrono.PaxChronology.DAYS_IN_WEEK;
@@ -190,15 +193,13 @@ public final class PaxDate
      */
     public static PaxDate of(int prolepticYear, int month, int dayOfMonth) {
         YEAR.checkValidValue(prolepticYear);
-        if (month < 1 || month > MONTHS_IN_YEAR + 1) {
-            throw new DateTimeException("Invalid month " + month);
-        } else if (month == MONTHS_IN_YEAR + 1 && !PaxChronology.INSTANCE.isLeapYear(prolepticYear)) {
+        PaxChronology.MONTH_OF_YEAR_RANGE.checkValidValue(month, MONTH_OF_YEAR);
+        PaxChronology.DAY_OF_MONTH_RANGE.checkValidValue(dayOfMonth, DAY_OF_MONTH);
+        if (month == MONTHS_IN_YEAR + 1 && !PaxChronology.INSTANCE.isLeapYear(prolepticYear)) {
             throw new DateTimeException("Invalid month 14 as " + prolepticYear + "is not a leap year");
         }
 
-        if (dayOfMonth < 1 || dayOfMonth > DAYS_IN_MONTH) {
-            throw new DateTimeException("Invalid day-of-month " + dayOfMonth);
-        } else if (dayOfMonth > DAYS_IN_WEEK && month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(prolepticYear)) {
+        if (dayOfMonth > DAYS_IN_WEEK && month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(prolepticYear)) {
             throw new DateTimeException("Invalid date during Pax as " + prolepticYear + " is a leap year");
         }
 
@@ -245,9 +246,7 @@ public final class PaxDate
      */
     static PaxDate ofYearDay(int prolepticYear, int dayOfYear) {
         YEAR.checkValidValue(prolepticYear);
-        if (dayOfYear < 1 || dayOfYear > DAYS_IN_YEAR + DAYS_IN_WEEK) {
-            throw new DateTimeException("Inavlid date 'DayOfYear " + dayOfYear + "'");
-        }
+        PaxChronology.DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, DAY_OF_YEAR);
         boolean leap = PaxChronology.INSTANCE.isLeapYear(prolepticYear);
         if (dayOfYear > DAYS_IN_YEAR && !leap) {
             throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
