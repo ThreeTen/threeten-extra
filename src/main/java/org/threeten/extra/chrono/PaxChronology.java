@@ -202,7 +202,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
      */
     @Override
-    public PaxDate date(final Era era, final int yearOfEra, final int month, final int dayOfMonth) {
+    public PaxDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -217,7 +217,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public PaxDate date(final int prolepticYear, final int month, final int dayOfMonth) {
+    public PaxDate date(int prolepticYear, int month, int dayOfMonth) {
         return PaxDate.of(prolepticYear, month, dayOfMonth);
     }
 
@@ -233,7 +233,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws ClassCastException if the {@code era} is not a {@code PaxEra}
      */
     @Override
-    public PaxDate dateYearDay(final Era era, final int yearOfEra, final int dayOfYear) {
+    public PaxDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -247,7 +247,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public PaxDate dateYearDay(final int prolepticYear, final int dayOfYear) {
+    public PaxDate dateYearDay(int prolepticYear, int dayOfYear) {
         return PaxDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
@@ -259,7 +259,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public PaxDate dateEpochDay(final long epochDay) {
+    public PaxDate dateEpochDay(long epochDay) {
         return PaxDate.ofEpochDay(epochDay);
     }
 
@@ -295,7 +295,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public PaxDate dateNow(final ZoneId zone) {
+    public PaxDate dateNow(ZoneId zone) {
         return PaxDate.now(zone);
     }
 
@@ -311,7 +311,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public PaxDate dateNow(final Clock clock) {
+    public PaxDate dateNow(Clock clock) {
         return PaxDate.now(clock);
     }
 
@@ -324,7 +324,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public PaxDate date(final TemporalAccessor temporal) {
+    public PaxDate date(TemporalAccessor temporal) {
         return PaxDate.from(temporal);
     }
 
@@ -337,7 +337,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ChronoLocalDateTime<PaxDate> localDateTime(final TemporalAccessor temporal) {
+    public ChronoLocalDateTime<PaxDate> localDateTime(TemporalAccessor temporal) {
         return (ChronoLocalDateTime<PaxDate>) super.localDateTime(temporal);
     }
 
@@ -350,7 +350,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ChronoZonedDateTime<PaxDate> zonedDateTime(final TemporalAccessor temporal) {
+    public ChronoZonedDateTime<PaxDate> zonedDateTime(TemporalAccessor temporal) {
         return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(temporal);
     }
 
@@ -364,7 +364,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ChronoZonedDateTime<PaxDate> zonedDateTime(final Instant instant, final ZoneId zone) {
+    public ChronoZonedDateTime<PaxDate> zonedDateTime(Instant instant, ZoneId zone) {
         return (ChronoZonedDateTime<PaxDate>) super.zonedDateTime(instant, zone);
     }
 
@@ -384,13 +384,13 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * @return true if the year is a leap year
      */
     @Override
-    public boolean isLeapYear(final long prolepticYear) {
-        final long lastTwoDigits = prolepticYear % 100;
+    public boolean isLeapYear(long prolepticYear) {
+        long lastTwoDigits = prolepticYear % 100;
         return Math.abs(lastTwoDigits) == 99 || (prolepticYear % 400 != 0 && (lastTwoDigits == 0 || lastTwoDigits % 6 == 0));
     }
 
     @Override
-    public int prolepticYear(final Era era, final int yearOfEra) {
+    public int prolepticYear(Era era, int yearOfEra) {
         if (!(era instanceof PaxEra)) {
             throw new ClassCastException("Era must be PaxEra");
         }
@@ -398,7 +398,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     }
 
     @Override
-    public PaxEra eraOf(final int era) {
+    public PaxEra eraOf(int era) {
         return PaxEra.of(era);
     }
 
@@ -409,7 +409,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
 
     //-----------------------------------------------------------------------
     @Override
-    public ValueRange range(final ChronoField field) {
+    public ValueRange range(ChronoField field) {
         switch (field) {
             case ALIGNED_WEEK_OF_MONTH:
                 return ALIGNED_WEEK_OF_MONTH_RANGE;
@@ -428,7 +428,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
 
     //-----------------------------------------------------------------------
     @Override
-    public PaxDate resolveDate(final Map<TemporalField, Long> fieldValues, final ResolverStyle resolverStyle) {
+    public PaxDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (PaxDate) super.resolveDate(fieldValues, resolverStyle);
     }
 
