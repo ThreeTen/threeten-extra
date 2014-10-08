@@ -44,10 +44,8 @@ import static org.threeten.extra.chrono.PaxChronology.WEEKS_IN_YEAR;
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
@@ -61,7 +59,6 @@ import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
-import java.util.Objects;
 
 /**
  * A date in the Pax calendar system.
@@ -103,10 +100,6 @@ public final class PaxDate
      * The days per 6 year cycle.
      */
     private static final int DAYS_PER_SIX_CYCLE = (DAYS_IN_YEAR * 6) + (DAYS_IN_WEEK * 1);
-    /**
-     * Number of seconds in a day.
-     */
-    private static final int SECONDS_PER_DAY = 86400;
     /**
      * Number of years in a decade.
      */
@@ -177,13 +170,8 @@ public final class PaxDate
      * @throws DateTimeException if the current date cannot be obtained
      */
     public static PaxDate now(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
-        // Called once, so the instant and it's offset will use the same value
-        Instant now = clock.instant();
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long epochSec = now.getEpochSecond() + offset.getTotalSeconds();
-        long epochDay = Math.floorDiv(epochSec, SECONDS_PER_DAY);
-        return ofEpochDay(epochDay);
+        LocalDate now = LocalDate.now(clock);
+        return PaxDate.ofEpochDay(now.toEpochDay());
     }
 
     /**
