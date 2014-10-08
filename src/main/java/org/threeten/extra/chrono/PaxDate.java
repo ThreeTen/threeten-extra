@@ -64,18 +64,20 @@ import java.time.temporal.ValueRange;
 import java.util.Objects;
 
 /**
- * /** A date without a time-zone in the Pax calendar system, such as {@code 2007-12-03}.
+ * A date in the Pax calendar system.
  * <p>
- * {@code PaxDate} is an immutable date-time object that represents a date, often viewed as year-month-day. Other date fields, such as day-of-year, day-of-week and week-of-year, can also be accessed.
+ * This date operates using the {@linkplain PaxChronology Pax calendar}.
+ * This calendar system is a proposed reform calendar system, and is not in common use.
+ * The Pax differs from the Gregorian in terms of month count and length, and the leap year rule.
+ * Dates are aligned such that {@code 0001-01-01 (Pax)} is {@code 0000-12-31 (ISO)}.
  * <p>
- * This class does not store or represent a time or time-zone. Instead, it is a description of the date, as used for birthdays. It cannot represent an instant on the time-line without additional
- * information such as an offset or time-zone.
+ * More information is available in the <a href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
+ * 
+ * <h3>Implementation Requirements</h3>
+ * This class is immutable and thread-safe.
  * <p>
- * The Pax calendar system is a proposed reform calendar system, and is not in common use. More information is available in the <a href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a>
- * Wikipedia article.
- * <h3>Implementation Requirements</h3> This class is immutable and thread-safe.
- * <p>
- * This class must be treated as a value type. Do not synchronize, rely on the identity hash code or use the distinction between equals() and ==.
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class PaxDate
         extends AbstractDate
