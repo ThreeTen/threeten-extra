@@ -123,7 +123,7 @@ public final class PaxDate
     /**
      * The proleptic year.
      */
-    private final int year;
+    private final int prolepticYear;
     /**
      * The month.
      */
@@ -406,7 +406,7 @@ public final class PaxDate
      * @param dayOfMonth  the Pax day-of-month, from 1 to 28
      */
     private PaxDate(int prolepticYear, int month, int dayOfMonth) {
-        this.year = prolepticYear;
+        this.prolepticYear = prolepticYear;
         this.month = (short) month;
         this.day = (short) dayOfMonth;
     }
@@ -417,13 +417,13 @@ public final class PaxDate
      * @return the resolved date, not null
      */
     private Object readResolve() {
-        return PaxDate.of(year, month, day);
+        return PaxDate.of(prolepticYear, month, day);
     }
 
     //-----------------------------------------------------------------------
     @Override
     int getProlepticYear() {
-        return year;
+        return prolepticYear;
     }
 
     @Override
@@ -447,7 +447,7 @@ public final class PaxDate
         if (this.getDayOfYear() == dayOfYear) {
             return this;
         }
-        return ofYearDay(year, dayOfYear);
+        return ofYearDay(prolepticYear, dayOfYear);
     }
 
     @Override
