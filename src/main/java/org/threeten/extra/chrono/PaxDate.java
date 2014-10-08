@@ -290,7 +290,7 @@ public final class PaxDate
         if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
             // Is in the century year
             int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) + 1;
-            return ofYearDay(longCycle * 400 + cycle * 100 + 100, dayOfYear);
+            return ofYearDay(longCycle * (4 * YEARS_IN_CENTURY) + cycle * YEARS_IN_CENTURY + YEARS_IN_CENTURY, dayOfYear);
         }
 
         // For negative years, the cycle of leap years runs the other direction for 99s and 6s.
@@ -298,7 +298,7 @@ public final class PaxDate
             if (dayOfCycle >= DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) {
                 // Is in the '99 year
                 int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) + 1;
-                return ofYearDay(longCycle * 400 + cycle * 100 + 99, dayOfYear);
+                return ofYearDay(longCycle * (4 * YEARS_IN_CENTURY) + cycle * YEARS_IN_CENTURY + (YEARS_IN_CENTURY - 1), dayOfYear);
             }
             // Otherwise, part of the regular 6-year cycle.
             int sixCycle = dayOfCycle / DAYS_PER_SIX_CYCLE;
@@ -309,11 +309,11 @@ public final class PaxDate
                 year--;
                 dayOfYear += DAYS_IN_YEAR;
             }
-            return ofYearDay(longCycle * 400 + cycle * 100 + sixCycle * 6 + year, dayOfYear);
+            return ofYearDay(longCycle * (4 * YEARS_IN_CENTURY) + cycle * YEARS_IN_CENTURY + sixCycle * 6 + year, dayOfYear);
         } else {
             if (dayOfCycle < DAYS_IN_YEAR + DAYS_IN_WEEK) {
                 // -'99 year is at _start_ of cycle (first year encountered).
-                return ofYearDay(longCycle * 400 + cycle * 100 + (100 - 99), dayOfCycle + 1);
+                return ofYearDay(longCycle * (4 * YEARS_IN_CENTURY) + cycle * YEARS_IN_CENTURY + 1, dayOfCycle + 1);
             }
             // Otherwise, part of the regular 6-year cycle, but offset -'96 to be end of six-year-cycle first.
             int offsetCycle = dayOfCycle + 2 * DAYS_IN_YEAR - DAYS_IN_WEEK;
@@ -325,7 +325,7 @@ public final class PaxDate
                 year--;
                 dayOfYear += DAYS_IN_YEAR;
             }
-            return ofYearDay(longCycle * 400 + cycle * 100 + (100 - (99 + 3 - (sixCycle * 6 + year))), dayOfYear);
+            return ofYearDay(longCycle * (4 * YEARS_IN_CENTURY) + cycle * YEARS_IN_CENTURY - 2 + (sixCycle * 6 + year), dayOfYear);
         }
     }
 
