@@ -609,7 +609,7 @@ public final class PaxDate
         // "Regularize" the month count, as if years were all 13 months long.
         long monthsRegularized = calcMonths - getLeapMonthsBefore(calcMonths);
         int newYear = YEAR.checkValidIntValue(Math.floorDiv(monthsRegularized, MONTHS_IN_YEAR));
-        int newMonth = Math.toIntExact(calcMonths - (newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear)) + 1);
+        int newMonth = Math.toIntExact(calcMonths - ((long) newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear)) + 1);
         return resolvePreviousValid(newYear, newMonth, getDayOfMonth());
     }
 
@@ -622,7 +622,7 @@ public final class PaxDate
     public PaxDate minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
-    
+
     //-------------------------------------------------------------------------
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
