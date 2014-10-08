@@ -118,7 +118,28 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     private static final long serialVersionUID = -7021464635577802085L;
 
     /**
-     * Private constructor, that is public to satisfy the {@code ServiceLoader}. 
+     * Range of aligned week of month.
+     */
+    static final ValueRange ALIGNED_WEEK_OF_MONTH_RANGE = ValueRange.of(1, WEEKS_IN_LEAP_MONTH, WEEKS_IN_MONTH);
+    /**
+     * Range of aligned week of year.
+     */
+    static final ValueRange ALIGNED_WEEK_OF_YEAR_RANGE = ValueRange.of(1, WEEKS_IN_YEAR, WEEKS_IN_YEAR + 1);
+    /**
+     * Range of day of month.
+     */
+    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(1, DAYS_IN_WEEK, DAYS_IN_MONTH);
+    /**
+     * Range of day of year.
+     */
+    static final ValueRange DAY_OF_YEAR_RANGE = ValueRange.of(1, DAYS_IN_YEAR, DAYS_IN_YEAR + DAYS_IN_WEEK);
+    /**
+     * Range of month of year.
+     */
+    static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(1, MONTHS_IN_YEAR, MONTHS_IN_YEAR + 1);
+
+    /**
+     * Private constructor, that is public to satisfy the {@code ServiceLoader}.
      * Use the singleton {@link #INSTANCE} instead.
      */
     public PaxChronology() {
@@ -333,15 +354,15 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     public ValueRange range(final ChronoField field) {
         switch (field) {
             case ALIGNED_WEEK_OF_MONTH:
-                return ValueRange.of(1, WEEKS_IN_LEAP_MONTH, WEEKS_IN_MONTH);
+                return ALIGNED_WEEK_OF_MONTH_RANGE;
             case ALIGNED_WEEK_OF_YEAR:
-                return ValueRange.of(1, WEEKS_IN_YEAR, WEEKS_IN_YEAR + 1);
+                return ALIGNED_WEEK_OF_YEAR_RANGE;
             case DAY_OF_MONTH:
-                return ValueRange.of(1, DAYS_IN_WEEK, DAYS_IN_MONTH);
+                return DAY_OF_MONTH_RANGE;
             case DAY_OF_YEAR:
-                return ValueRange.of(1, DAYS_IN_YEAR, DAYS_IN_YEAR + DAYS_IN_WEEK);
+                return DAY_OF_YEAR_RANGE;
             case MONTH_OF_YEAR:
-                return ValueRange.of(1, MONTHS_IN_YEAR, MONTHS_IN_YEAR + 1);
+                return MONTH_OF_YEAR_RANGE;
             default:
                 return field.range();
         }
