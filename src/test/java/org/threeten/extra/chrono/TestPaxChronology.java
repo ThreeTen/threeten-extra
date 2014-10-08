@@ -90,7 +90,7 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_chronology_of_name() {
-        final Chronology chrono = Chronology.of("Pax");
+        Chronology chrono = Chronology.of("Pax");
         Assert.assertNotNull(chrono);
         Assert.assertEquals(chrono, PaxChronology.INSTANCE);
         Assert.assertEquals(chrono.getId(), "Pax");
@@ -175,7 +175,7 @@ public class TestPaxChronology {
     }
 
     @Test(dataProvider="samples")
-    public void test_LocalDate_from_PaxDate(final PaxDate pax, final LocalDate iso) {
+    public void test_LocalDate_from_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(LocalDate.from(pax), iso);
     }
 
@@ -285,7 +285,7 @@ public class TestPaxChronology {
     }
 
     @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
-    public void test_badDates(final int year, final int month, final int dom) {
+    public void test_badDates(int year, int month, int dom) {
         PaxDate.of(year, month, dom);
     }
 
@@ -583,14 +583,14 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
-        final PaxDate jdate = PaxChronology.INSTANCE.date(2200, 4, 3);
-        final PaxDate test = jdate.with(LocalDate.of(2014, 6, 29));
+        PaxDate jdate = PaxChronology.INSTANCE.date(2200, 4, 3);
+        PaxDate test = jdate.with(LocalDate.of(2014, 6, 29));
         assertEquals(test, PaxChronology.INSTANCE.date(2014, 7, 15));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
-        final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 2, 4);
+        ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 2, 4);
         jdate.with(Month.APRIL);
     }
 
@@ -599,15 +599,15 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToPaxDate() {
-        final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
-        final LocalDate test = LocalDate.MIN.with(jdate);
+        ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
+        LocalDate test = LocalDate.MIN.with(jdate);
         assertEquals(test, LocalDate.of(2014, 6, 2));
     }
 
     @Test
     public void test_LocalDateTime_adjustToPaxDate() {
-        final ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
-        final LocalDateTime test = LocalDateTime.MIN.with(jdate);
+        ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
+        LocalDateTime test = LocalDateTime.MIN.with(jdate);
         assertEquals(test, LocalDateTime.of(2014, 6, 2, 0, 0));
     }
 
@@ -829,7 +829,7 @@ public class TestPaxChronology {
     }
 
     @Test(dataProvider="toString")
-    public void test_toString(final PaxDate pax, final String expected) {
+    public void test_toString(PaxDate pax, String expected) {
         assertEquals(pax.toString(), expected);
     }
 
