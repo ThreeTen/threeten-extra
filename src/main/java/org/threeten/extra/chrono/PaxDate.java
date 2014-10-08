@@ -77,7 +77,9 @@ import java.util.Objects;
  * <p>
  * This class must be treated as a value type. Do not synchronize, rely on the identity hash code or use the distinction between equals() and ==.
  */
-public final class PaxDate extends AbstractDate implements ChronoLocalDate, Serializable {
+public final class PaxDate
+        extends AbstractDate
+        implements ChronoLocalDate, Serializable {
 
     /**
      *
