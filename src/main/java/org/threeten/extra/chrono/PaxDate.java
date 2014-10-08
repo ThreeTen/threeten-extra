@@ -525,7 +525,7 @@ public final class PaxDate
     public PaxDate with(TemporalField field, long newValue) {
         // Evaluate years as a special case, to deal with inserted leap months.
         if (field == ChronoField.YEAR) {
-            return plusYears(newValue - getProlepticYear());
+            return plusYears(Math.subtractExact(newValue, getProlepticYear()));
         }
         return (PaxDate) super.with(field, newValue);
     }
