@@ -82,27 +82,27 @@ public final class PaxDate
         implements ChronoLocalDate, Serializable {
 
     /**
-     *
+     * Serialization version.
      */
     private static final long serialVersionUID = -2229133057743750072L;
 
     /**
-     * Count of days from the start of the Pax Epoch to ISO 1970-01-01.
+     * The difference between the ISO and Pax epoch day count (Pax 0001-01-01 to ISO 1970-01-01).
      */
-    private static final int DAYS_PAX_0001_TO_ISO_1970 = 719163;
+    private static final int PAX_0001_TO_ISO_1970 = 719163;
 
     /**
-     * Count of days in a long cycle (400 years).
+     * The days per 400 year cycle.
      */
     private static final int DAYS_PER_LONG_CYCLE = 400 * DAYS_IN_YEAR + (int) getLeapYearsBefore(400 + 1) * DAYS_IN_WEEK;
 
     /**
-     * Count of days in a cycle (100 years).
+     * The days per 100 year cycle.
      */
     private static final int DAYS_PER_CYCLE = 100 * DAYS_IN_YEAR + (int) getLeapYearsBefore(100 + 1) * DAYS_IN_WEEK;
 
     /**
-     * Count of days in the six-year cycle.
+     * The days per 6 year cycle.
      */
     private static final int DAYS_PER_SIX_CYCLE = 6 * DAYS_IN_YEAR + (int) getLeapYearsBefore(6 + 1) * DAYS_IN_WEEK;
 
@@ -261,22 +261,22 @@ public final class PaxDate
         if (dayOfYear > DAYS_IN_YEAR && !leap) {
             throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
         }
-    
+
         int month = ((dayOfYear - 1) / DAYS_IN_MONTH) + 1;
-    
+
         // In leap years, the leap-month is shorter than the following month, so needs to be adjusted.
         if (leap && month == MONTHS_IN_YEAR && dayOfYear >= (DAYS_IN_YEAR + DAYS_IN_WEEK) - DAYS_IN_MONTH + 1) {
             month++;
         }
-    
+
         // Subtract days-at-start-of-month from days in year
         int dayOfMonth = dayOfYear - (month - 1) * DAYS_IN_MONTH;
-    
+
         // Adjust for shorter inserted leap-month.
         if (month == MONTHS_IN_YEAR + 1) {
             dayOfMonth += (DAYS_IN_MONTH - DAYS_IN_WEEK);
         }
-    
+
         return of(prolepticYear, month, dayOfMonth);
     }
 
@@ -290,7 +290,7 @@ public final class PaxDate
     static PaxDate ofEpochDay(long epochDay) {
         EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);
         // use of Pax 0001 makes non-leap century at end of (long) cycle.
-        long paxEpochDay = epochDay + DAYS_PAX_0001_TO_ISO_1970;
+        long paxEpochDay = epochDay + PAX_0001_TO_ISO_1970;
         int longCycle = (int) Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
         int cycle = (int) (paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE;
         int dayOfCycle = (int) Math.floorMod(paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
@@ -299,7 +299,7 @@ public final class PaxDate
             int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) + 1;
             return ofYearDay(longCycle * 400 + cycle * 100 + 100, dayOfYear);
         }
-    
+
         // For negative years, the cycle of leap years runs the other direction for 99s and 6s.
         if (paxEpochDay >= 0) {
             if (dayOfCycle >= DAYS_PER_CYCLE - 2 * DAYS_IN_YEAR - 2 * DAYS_IN_WEEK) {
@@ -333,7 +333,7 @@ public final class PaxDate
                 dayOfYear += DAYS_IN_YEAR;
             }
             return ofYearDay(longCycle * 400 + cycle * 100 + (100 - (99 + 3 - (sixCycle * 6 + year))), dayOfYear);
-    
+
         }
     }
 
@@ -692,6 +692,6 @@ public final class PaxDate
     public long toEpochDay() {
         long days = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
         // Rebase to ISO 1970.
-        return days - DAYS_PAX_0001_TO_ISO_1970;
+        return days - PAX_0001_TO_ISO_1970;
     }
 }
