@@ -329,10 +329,10 @@ public final class PaxDate
         }
     }
 
-    private static PaxDate resolvePreviousValid(int year, int month, int day) {
-        int monthR = Math.min(month, MONTHS_IN_YEAR + (PaxChronology.INSTANCE.isLeapYear(year) ? 1 : 0));
-        int dayR = Math.min(day, month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(year) ? DAYS_IN_WEEK : DAYS_IN_MONTH);
-        return PaxDate.of(year, monthR, dayR);
+    private static PaxDate resolvePreviousValid(int prolepticYear, int month, int day) {
+        int monthR = Math.min(month, MONTHS_IN_YEAR + (PaxChronology.INSTANCE.isLeapYear(prolepticYear) ? 1 : 0));
+        int dayR = Math.min(day, month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(prolepticYear) ? DAYS_IN_WEEK : DAYS_IN_MONTH);
+        return PaxDate.of(prolepticYear, monthR, dayR);
     }
 
     /**
