@@ -242,44 +242,47 @@ public class TestPaxChronology {
     @DataProvider(name="badDates")
     Object[][] data_badDates() {
         return new Object[][] {
-            {2012, 0, 0},
+            {1900, 0, 0},
 
-            {2012, 0, 1},
-            {2012, -1, 1},
-            {2012, 0, 1},
-            {2012, 15, 1},
-            {2012, 16, 1},
+            {1900, -1, 1},
+            {1900, 0, 1},
+            {1900, 15, 1},
+            {1900, 16, 1},
 
-            {2012, 1, -1},
-            {2012, 1, 0},
-            {2012, 1, 29},
+            {1900, 1, -1},
+            {1900, 1, 0},
+            {1900, 1, 29},
 
-            {2012, 13, -1},
-            {2012, 13, 0},
-            {2012, 13, 8},
-            {2012, 14, -1},
-            {2012, 14, 0},
-            {2012, 14, 29},
-            {2012, 14, 30},
+            {1900, 13, -1},
+            {1900, 13, 0},
+            {1900, 13, 8},
+            {1900, 14, -1},
+            {1900, 14, 0},
+            {1900, 14, 29},
+            {1900, 14, 30},
 
-            {2011, 13, -1},
-            {2011, 13, 0},
-            {2011, 14, 29},
-            {2011, 14, 30},
-            {2011, 14, 1},
-            {2011, 14, 2},
+            {1898, 13, -1},
+            {1898, 13, 0},
+            {1898, 14, 29},
+            {1898, 14, 30},
+            {1898, 14, 1},
+            {1898, 14, 2},
 
-            {2012, 2, 29},
-            {2012, 3, 29},
-            {2012, 4, 29},
-            {2012, 5, 29},
-            {2012, 6, 29},
-            {2012, 7, 29},
-            {2012, 8, 29},
-            {2012, 9, 29},
-            {2012, 10, 29},
-            {2012, 11, 29},
-            {2012, 12, 29},
+            {1900, 14, -1},
+            {1900, 14, 0},
+            {1900, 14, 29},
+
+            {1900, 2, 29},
+            {1900, 3, 29},
+            {1900, 4, 29},
+            {1900, 5, 29},
+            {1900, 6, 29},
+            {1900, 7, 29},
+            {1900, 8, 29},
+            {1900, 9, 29},
+            {1900, 10, 29},
+            {1900, 11, 29},
+            {1900, 12, 29},
         };
     }
 
@@ -336,28 +339,29 @@ public class TestPaxChronology {
     @DataProvider(name="lengthOfMonth")
     Object[][] data_lengthOfMonth() {
         return new Object[][] {
-            {2014, 1, 28},
-            {2014, 2, 28},
-            {2014, 3, 28},
-            {2014, 4, 28},
-            {2014, 5, 28},
-            {2014, 6, 28},
-            {2014, 7, 28},
-            {2014, 8, 28},
-            {2014, 9, 28},
-            {2014, 10, 28},
-            {2014, 11, 28},
-            {2014, 12, 28},
-            {2014, 13, 28},
+            {1900, 1, 28},
+            {1900, 2, 28},
+            {1900, 3, 28},
+            {1900, 4, 28},
+            {1900, 5, 28},
+            {1900, 6, 28},
+            {1900, 7, 28},
+            {1900, 8, 28},
+            {1900, 9, 28},
+            {1900, 10, 28},
+            {1900, 11, 28},
+            {1900, 12, 28},
+            {1900, 13, 7},
+            {1900, 14, 28},
 
-            {2015, 13, 28},
-            {2016, 13, 28},
-            {2017, 13, 28},
-            {2018, 13, 7},
-            {2018, 14, 28},
-            {2100, 13, 7},
-            {2100, 14, 28},
+            {1901, 13, 28},
+            {1902, 13, 28},
+            {1903, 13, 28},
+            {1904, 13, 28},
+            {1905, 13, 28},
+            {1906, 13, 7},
             {2000, 13, 28},
+            {2100, 13, 7},
         };
     }
 
@@ -450,6 +454,7 @@ public class TestPaxChronology {
     @DataProvider(name = "ranges")
     Object[][] data_ranges() {
         return new Object[][] {
+            {2012, 1, 23, DAY_OF_MONTH, 1, 28},
             {2012, 2, 23, DAY_OF_MONTH, 1, 28},
             {2012, 3, 23, DAY_OF_MONTH, 1, 28},
             {2012, 4, 23, DAY_OF_MONTH, 1, 28},
@@ -465,15 +470,14 @@ public class TestPaxChronology {
             {2012, 14, 23, DAY_OF_MONTH, 1, 28},
             {2012, 1, 23, DAY_OF_YEAR, 1, 371},
             {2012, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
-            {2012, 12, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
             {2012, 13, 3, ALIGNED_WEEK_OF_MONTH, 1, 1},
             {2012, 14, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
 
-            {2014, 13, 23, DAY_OF_MONTH, 1, 28},
-            {2014, 13, 23, DAY_OF_YEAR, 1, 364},
-            {2014, 13, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
+            {2011, 13, 23, DAY_OF_MONTH, 1, 28},
+            {2011, 13, 23, DAY_OF_YEAR, 1, 364},
+            {2011, 13, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
 
-            {2014, 2, 23, IsoFields.QUARTER_OF_YEAR, 1, 4},
+            {2011, 2, 23, IsoFields.QUARTER_OF_YEAR, 1, 4},
         };
     }
 
@@ -540,8 +544,9 @@ public class TestPaxChronology {
             {2014, 5, 26, YEAR_OF_ERA, 2012, 2012, 5, 26},
             {2014, 5, 26, ERA, 0, -2013, 5, 26},
 
-            {2011, 12, 28, MONTH_OF_YEAR, 13, 2011, 13, 28},
-            {2012, 12, 28, MONTH_OF_YEAR, 13, 2012, 13, 7},
+            {2011, 3, 28, MONTH_OF_YEAR, 13, 2011, 13, 28},
+            {2012, 3, 28, MONTH_OF_YEAR, 13, 2012, 13, 7},
+            {2012, 3, 28, MONTH_OF_YEAR, 6, 2012, 6, 28},
             {2012, 13, 7, YEAR, 2011, 2011, 13, 7},
             {-2013, 6, 8, YEAR_OF_ERA, 2012, -2011, 6, 8},
             {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 25},
@@ -565,9 +570,9 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust1() {
-        PaxDate base = PaxDate.of(2013, 4, 5);
+        PaxDate base = PaxDate.of(2012, 6, 23);
         PaxDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, PaxDate.of(2013, 4, 28));
+        assertEquals(test, PaxDate.of(2012, 6, 28));
     }
 
     @Test
@@ -582,15 +587,15 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
-        PaxDate jdate = PaxChronology.INSTANCE.date(2200, 4, 3);
-        PaxDate test = jdate.with(LocalDate.of(2014, 6, 29));
-        assertEquals(test, PaxChronology.INSTANCE.date(2014, 7, 15));
+        PaxDate pax = PaxDate.of(2000, 1, 4);
+        PaxDate test = pax.with(LocalDate.of(2012, 7, 6));
+        assertEquals(test, PaxDate.of(2012, 7, 27));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
-        PaxDate jdate = PaxChronology.INSTANCE.date(2014, 2, 4);
-        jdate.with(Month.APRIL);
+        PaxDate pax = PaxDate.of(2000, 1, 4);
+        pax.with(Month.APRIL);
     }
 
     //-----------------------------------------------------------------------
@@ -598,16 +603,16 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToPaxDate() {
-        PaxDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
-        LocalDate test = LocalDate.MIN.with(jdate);
-        assertEquals(test, LocalDate.of(2014, 6, 2));
+        PaxDate pax = PaxDate.of(2012, 6, 23);
+        LocalDate test = LocalDate.MIN.with(pax);
+        assertEquals(test, LocalDate.of(2012, 6, 4));
     }
 
     @Test
     public void test_LocalDateTime_adjustToPaxDate() {
-        PaxDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
-        LocalDateTime test = LocalDateTime.MIN.with(jdate);
-        assertEquals(test, LocalDateTime.of(2014, 6, 2, 0, 0));
+        PaxDate pax = PaxDate.of(2012, 6, 23);
+        LocalDateTime test = LocalDateTime.MIN.with(pax);
+        assertEquals(test, LocalDateTime.of(2012, 6, 4, 0, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -769,9 +774,6 @@ public class TestPaxChronology {
     @Test
     public void test_plus_Period() {
         assertEquals(PaxDate.of(2014, 5, 26).plus(PaxChronology.INSTANCE.period(0, 2, 2)), PaxDate.of(2014, 7, 28));
-        assertEquals(PaxDate.of(2011, 13, 26).plus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2013, 2, 28));
-        assertEquals(PaxDate.of(2012, 13, 6).plus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2014, 2, 8));
-        assertEquals(PaxDate.of(2012, 12, 6).plus(PaxChronology.INSTANCE.period(0, 1, 2)), PaxDate.of(2012, 14, 1));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -782,9 +784,6 @@ public class TestPaxChronology {
     @Test
     public void test_minus_Period() {
         assertEquals(PaxDate.of(2014, 5, 26).minus(PaxChronology.INSTANCE.period(0, 2, 3)), PaxDate.of(2014, 3, 23));
-        assertEquals(PaxDate.of(2012, 14, 26).minus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2011, 11, 24));
-        assertEquals(PaxDate.of(2012, 13, 6).minus(PaxChronology.INSTANCE.period(1, 2, 2)), PaxDate.of(2011, 11, 4));
-        assertEquals(PaxDate.of(2012, 14, 1).minus(PaxChronology.INSTANCE.period(0, 1, 2)), PaxDate.of(2012, 12, 27));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
