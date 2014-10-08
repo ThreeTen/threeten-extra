@@ -87,68 +87,61 @@ public final class PaxDate
      * Serialization version.
      */
     private static final long serialVersionUID = -2229133057743750072L;
-
     /**
      * The difference between the ISO and Pax epoch day count (Pax 0001-01-01 to ISO 1970-01-01).
      */
     private static final int PAX_0001_TO_ISO_1970 = 719163;
-
     /**
      * The days per 400 year cycle.
      */
     private static final int DAYS_PER_LONG_CYCLE = 400 * DAYS_IN_YEAR + (int) getLeapYearsBefore(400 + 1) * DAYS_IN_WEEK;
-
     /**
      * The days per 100 year cycle.
      */
     private static final int DAYS_PER_CYCLE = 100 * DAYS_IN_YEAR + (int) getLeapYearsBefore(100 + 1) * DAYS_IN_WEEK;
-
     /**
      * The days per 6 year cycle.
      */
     private static final int DAYS_PER_SIX_CYCLE = 6 * DAYS_IN_YEAR + (int) getLeapYearsBefore(6 + 1) * DAYS_IN_WEEK;
-
     /**
      * Number of seconds in a day.
      */
     private static final int SECONDS_PER_DAY = 86400;
-
     /**
      * Number of years in a decade.
      */
     private static final int YEARS_IN_DECADE = 10;
-
     /**
      * Number of years in a century.
      */
     private static final int YEARS_IN_CENTURY = 100;
-
     /**
      * Number of years in a millennium.
      */
     private static final int YEARS_IN_MILLENNIUM = 1000;
 
     /**
-     * The year.
+     * The proleptic year.
      */
     private final int year;
-
     /**
-     * The month-of-year.
+     * The month.
      */
     private final short month;
-
     /**
-     * The day-of-month.
+     * The day.
      */
     private final short day;
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains the current date from the system clock in the default time-zone.
+     * Obtains the current {@code PaxDate} from the system clock in the default time-zone.
      * <p>
-     * This will query the {@link Clock#systemDefaultZone() system clock} in the default time-zone to obtain the current date.
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
      * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
      *
      * @return the current date using the system clock and default time-zone, not null
      */
@@ -157,13 +150,15 @@ public final class PaxDate
     }
 
     /**
-     * Obtains the current date from the system clock in the specified time-zone.
+     * Obtains the current {@code PaxDate} from the system clock in the specified time-zone.
      * <p>
-     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date. Specifying the time-zone avoids dependence on the default time-zone.
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
      * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing because the clock is hard-coded.
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
      *
-     * @param zone the zone ID to use, not null
+     * @param zone  the zone ID to use, not null
      * @return the current date using the system clock, not null
      */
     public static PaxDate now(ZoneId zone) {
@@ -171,13 +166,15 @@ public final class PaxDate
     }
 
     /**
-     * Obtains the current date from the specified clock.
+     * Obtains the current {@code PaxDate} from the specified clock.
      * <p>
-     * This will query the specified clock to obtain the current date - today. Using this method allows the use of an alternate clock for testing. The alternate clock may be introduced using
-     * {@link Clock dependency injection}.
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@linkplain Clock dependency injection}.
      *
-     * @param clock the clock to use, not null
+     * @param clock  the clock to use, not null
      * @return the current date, not null
+     * @throws DateTimeException if the current date cannot be obtained
      */
     public static PaxDate now(Clock clock) {
         Objects.requireNonNull(clock, "clock");
@@ -190,16 +187,18 @@ public final class PaxDate
     }
 
     /**
-     * Obtains an instance of {@code PaxDate} from a year, month and day.
+     * Obtains a {@code PaxDate} representing a date in the Pax calendar
+     * system from the proleptic-year, month-of-year and day-of-month fields.
      * <p>
+     * This returns a {@code PaxDate} with the specified fields.
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
-     * @param prolepticYear the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month the month-of-year to represent, from 1 to 14
-     * @param dayOfMonth the day-of-month to represent, from 1 to 28
-     * @return the local date, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
+     * @param prolepticYear  the Pax proleptic-year
+     * @param month  the Pax month-of-year, from 1 to 14
+     * @param dayOfMonth  the Pax day-of-month, from 1 to 28
+     * @return the date in Pax calendar system, not null
+     * @throws DateTimeException if the value of any field is out of range,
+     *  or if the day-of-month is invalid for the month-year
      */
     public static PaxDate of(int prolepticYear, int month, int dayOfMonth) {
         YEAR.checkValidValue(prolepticYear);
@@ -219,16 +218,20 @@ public final class PaxDate
     }
 
     /**
-     * Obtains an instance of {@code PaxDate} from a temporal object.
+     * Obtains a {@code PaxDate} from a temporal object.
      * <p>
-     * A {@code TemporalAccessor} represents some form of date and time information. This factory converts the arbitrary temporal object to an instance of {@code PaxDate}.
+     * This obtains a date in the Pax calendar system based on the specified temporal.
+     * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
+     * which this factory converts to an instance of {@code PaxDate}.
      * <p>
-     * The conversion uses the {@link TemporalQueries#localDate()} query, which relies on extracting the {@link ChronoField#EPOCH_DAY EPOCH_DAY} field.
+     * The conversion typically uses the {@link ChronoField#EPOCH_DAY EPOCH_DAY}
+     * field, which is standardized across calendar systems.
      * <p>
-     * This method matches the signature of the functional interface {@link TemporalQuery} allowing it to be used as a query via method reference, {@code PaxDate::from}.
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used as a query via method reference, {@code PaxDate::from}.
      *
-     * @param temporal the temporal object to convert, not null
-     * @return the local date, not null
+     * @param temporal  the temporal object to convert, not null
+     * @return the date in the Pax calendar system, not null
      * @throws DateTimeException if unable to convert to a {@code PaxDate}
      */
     public static PaxDate from(TemporalAccessor temporal) {
@@ -243,16 +246,19 @@ public final class PaxDate
         return ofEpochDay(date.toEpochDay());
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code PaxDate} from a year and day-of-year.
+     * Obtains a {@code PaxDate} representing a date in the Pax calendar
+     * system from the proleptic-year and day-of-year fields.
      * <p>
-     * The day-of-year must be valid for the year, otherwise an exception will be thrown.
+     * This returns a {@code PaxDate} with the specified fields.
+     * The day must be valid for the year, otherwise an exception will be thrown.
      *
-     * @param prolepticYear the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param dayOfYear the day-of-year to represent, from 1 to 371
-     * @return the local date, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-year is invalid for the month-year
+     * @param prolepticYear  the Pax proleptic-year
+     * @param dayOfYear  the Pax day-of-year, from 1 to 371
+     * @return the date in Pax calendar system, not null
+     * @throws DateTimeException if the value of any field is out of range,
+     *  or if the day-of-year is invalid for the year
      */
     static PaxDate ofYearDay(int prolepticYear, int dayOfYear) {
         YEAR.checkValidValue(prolepticYear);
@@ -283,9 +289,10 @@ public final class PaxDate
     }
 
     /**
-     * Obtains a {@code PaxDate} representing a date in the Pax calendar system from the epoch-day.
+     * Obtains a {@code PaxDate} representing a date in the Pax calendar
+     * system from the epoch-day.
      *
-     * @param epochDay the epoch day to convert based on 1970-01-01 (ISO)
+     * @param epochDay  the epoch day to convert based on 1970-01-01 (ISO)
      * @return the date in Pax calendar system, not null
      * @throws DateTimeException if the epoch-day is out of range
      */
@@ -335,18 +342,9 @@ public final class PaxDate
                 dayOfYear += DAYS_IN_YEAR;
             }
             return ofYearDay(longCycle * 400 + cycle * 100 + (100 - (99 + 3 - (sixCycle * 6 + year))), dayOfYear);
-
         }
     }
 
-    /**
-     * Resolves the date, resolving days past the end of month, or non-existent months.
-     *
-     * @param year the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param month the month-of-year to represent, validated from 1 to 14
-     * @param day the day-of-month to represent, validated from 1 to 28
-     * @return the resolved date, not null
-     */
     private static PaxDate resolvePreviousValid(int year, int month, int day) {
         int monthR = Math.min(month, MONTHS_IN_YEAR + (PaxChronology.INSTANCE.isLeapYear(year) ? 1 : 0));
         int dayR = Math.min(day, month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(year) ? DAYS_IN_WEEK : DAYS_IN_MONTH);
@@ -399,15 +397,16 @@ public final class PaxDate
                 ((Math.floorMod(prolepticYear - 1, 100) + (prolepticYear <= 0 ? 2 : 0)) / 6);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Constructor, previously validated.
+     * Creates an instance from validated data.
      *
-     * @param year the year to represent
-     * @param month the month-of-year to represent, from 1 to 14
-     * @param dayOfMonth the day-of-month to represent, valid for year-month, from 1 to 28
+     * @param prolepticYear  the Pax proleptic-year
+     * @param month  the Pax month, from 1 to 14
+     * @param dayOfMonth  the Pax day-of-month, from 1 to 28
      */
-    private PaxDate(int year, int month, int dayOfMonth) {
-        this.year = year;
+    private PaxDate(int prolepticYear, int month, int dayOfMonth) {
+        this.year = prolepticYear;
         this.month = (short) month;
         this.day = (short) dayOfMonth;
     }
@@ -421,65 +420,28 @@ public final class PaxDate
         return PaxDate.of(year, month, day);
     }
 
-    /**
-     * Gets the year field.
-     * <p>
-     * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * The year returned by this method is proleptic as per {@code get(YEAR)}. To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
-     *
-     * @return the year
-     */
+    //-----------------------------------------------------------------------
     @Override
     int getProlepticYear() {
         return year;
     }
 
-    /**
-     * Gets the month-of-year field from 1 to 14.
-     * <p>
-     * This method returns the month as an {@code int} from 1 to 14.
-     *
-     * @return the month-of-year, from 1 to 14
-     */
     @Override
     int getMonth() {
         return month;
     }
 
-    /**
-     * Gets the day-of-month field.
-     * <p>
-     * This method returns the primitive {@code int} value for the day-of-month.
-     *
-     * @return the day-of-month, from 1 to 28
-     */
     @Override
     int getDayOfMonth() {
         return day;
     }
 
-    /**
-     * Get the day of the year.
-     *
-     * @return The day of the year, from 1 to 371.
-     */
     @Override
     int getDayOfYear() {
         return (getMonth() - 1) * DAYS_IN_MONTH
                 - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH - DAYS_IN_WEEK : 0) + getDayOfMonth();
     }
 
-    /**
-     * Returns a copy of this date with the day-of-year altered. If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear the day-of-year to set in the result, from 1 to 364 or 371
-     * @return a {@code PaxDate} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-year value is invalid
-     * @throws DateTimeException if the day-of-year is invalid for the year
-     */
     @Override
     public PaxDate withDayOfYear(int dayOfYear) {
         if (this.getDayOfYear() == dayOfYear) {
@@ -522,12 +484,28 @@ public final class PaxDate
     long getProlepticMonth() {
         return ((long) getProlepticYear()) * MONTHS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) + getMonth() - 1;
     }
-
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the chronology of this date, which is the Pax calendar system.
+     * <p>
+     * The {@code Chronology} represents the calendar system in use.
+     * The era and other fields in {@link ChronoField} are defined by the chronology.
+     *
+     * @return the Pax chronology, not null
+     */
     @Override
     public PaxChronology getChronology() {
         return PaxChronology.INSTANCE;
     }
 
+    /**
+     * Returns the length of the month represented by this date.
+     * <p>
+     * This returns the length of the month in days.
+     * Month lengths do not match those of the ISO calendar system.
+     *
+     * @return the length of the month in days, from 7 to 28
+     */
     @Override
     public int lengthOfMonth() {
         return month == MONTHS_IN_YEAR && isLeapYear() ? DAYS_IN_WEEK : DAYS_IN_MONTH;
@@ -538,6 +516,7 @@ public final class PaxDate
         return DAYS_IN_YEAR + (isLeapYear() ? DAYS_IN_WEEK : 0);
     }
 
+    //-------------------------------------------------------------------------
     @Override
     public PaxDate with(TemporalAdjuster adjuster) {
         return (PaxDate) adjuster.adjustInto(this);
@@ -552,6 +531,7 @@ public final class PaxDate
         return (PaxDate) super.with(field, newValue);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public PaxDate plus(TemporalAmount amount) {
         return (PaxDate) amount.addTo(this);
@@ -571,13 +551,15 @@ public final class PaxDate
      * <li>If necessary, shift the index to account for the inserted/deleted leap-month.</li>
      * </ol>
      * <p>
-     * In the Pax Calendar, the month of December is 13th in non-leap-years, and 14th in leap years. Shifting the index of the month thus means the month would still be the same.
+     * In the Pax Calendar, the month of December is 13 in non-leap-years, and 14 in leap years.
+     * Shifting the index of the month thus means the month would still be the same.
      * <p>
-     * In the case of moving from the inserted leap-month (destination year is non-leap), the month index is retained. This has the effect of retaining the same day-of-year.
+     * In the case of moving from the inserted leap-month (destination year is non-leap), the month index is retained.
+     * This has the effect of retaining the same day-of-year.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearsToAdd the years to add, may be negative
+     * @param yearsToAdd  the years to add, may be negative
      * @return a {@code PaxDate} based on this date with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
@@ -610,11 +592,12 @@ public final class PaxDate
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * </ol>
      * <p>
-     * For example, 2006-12-13 plus one month would result in the invalid date 2006-13-13. Instead of returning an invalid result, the last valid day of the month, 2006-13-07, is selected instead.
+     * For example, 2006-12-13 plus one month would result in the invalid date 2006-13-13.
+     * Instead of returning an invalid result, the last valid day of the month, 2006-13-07, is selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthsToAdd the months to add, may be negative
+     * @param monthsToAdd  the months to add, may be negative
      * @return a {@code PaxDate} based on this date with the months added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
@@ -640,7 +623,8 @@ public final class PaxDate
     public PaxDate minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
-
+    
+    //-------------------------------------------------------------------------
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
         return until(JulianDate.from(endExclusive), unit);
@@ -690,10 +674,12 @@ public final class PaxDate
         return getChronology().period(years, months, days);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
         long days = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
         // Rebase to ISO 1970.
         return days - PAX_0001_TO_ISO_1970;
     }
+
 }
