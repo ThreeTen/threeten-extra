@@ -60,7 +60,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Period;
-import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
@@ -590,7 +589,7 @@ public class TestPaxChronology {
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
-        ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 2, 4);
+        PaxDate jdate = PaxChronology.INSTANCE.date(2014, 2, 4);
         jdate.with(Month.APRIL);
     }
 
@@ -599,14 +598,14 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToPaxDate() {
-        ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
+        PaxDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
         LocalDate test = LocalDate.MIN.with(jdate);
         assertEquals(test, LocalDate.of(2014, 6, 2));
     }
 
     @Test
     public void test_LocalDateTime_adjustToPaxDate() {
-        ChronoLocalDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
+        PaxDate jdate = PaxChronology.INSTANCE.date(2014, 6, 16);
         LocalDateTime test = LocalDateTime.MIN.with(jdate);
         assertEquals(test, LocalDateTime.of(2014, 6, 2, 0, 0));
     }
