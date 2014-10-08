@@ -376,7 +376,7 @@ public final class PaxDate
         // - Math.floorMod(...) returns a nicely positive result for negative years, counting 'down', but
         // thus needs to be offset to make sure the first leap year is -6, and not -4...
         // The second line, which calculates the '99 occurrences, runs "backwards", so must first be reversed, then the results flipped.
-        return 18L * Math.floorDiv(prolepticYear - 1, 100) - Math.floorDiv(prolepticYear - 1, 400) +
+        return 18L * Math.floorDiv(prolepticYear - 1, YEARS_IN_CENTURY) - Math.floorDiv(prolepticYear - 1, 4 * YEARS_IN_CENTURY) +
                 (Math.floorMod(prolepticYear - 1, 100) - (prolepticYear <= 0 ? 99 : 0)) / 99 + (prolepticYear <= 0 ? 1 : 0) +
                 ((Math.floorMod(prolepticYear - 1, 100) + (prolepticYear <= 0 ? 2 : 0)) / 6);
     }
@@ -422,8 +422,8 @@ public final class PaxDate
 
     @Override
     int getDayOfYear() {
-        return (getMonth() - 1) * DAYS_IN_MONTH
-                - (getMonth() == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH - DAYS_IN_WEEK : 0) + getDayOfMonth();
+        return (month - 1) * DAYS_IN_MONTH
+                - (month == MONTHS_IN_YEAR + 1 ? DAYS_IN_MONTH - DAYS_IN_WEEK : 0) + getDayOfMonth();
     }
 
     @Override
@@ -438,7 +438,7 @@ public final class PaxDate
 
     @Override
     ValueRange rangeAlignedWeekOfMonth() {
-        return ValueRange.of(1, getMonth() == MONTHS_IN_YEAR && isLeapYear() ? WEEKS_IN_LEAP_MONTH : WEEKS_IN_MONTH);
+        return ValueRange.of(1, month == MONTHS_IN_YEAR && isLeapYear() ? WEEKS_IN_LEAP_MONTH : WEEKS_IN_MONTH);
     }
 
     @Override
@@ -463,7 +463,7 @@ public final class PaxDate
      */
     @Override
     long getProlepticMonth() {
-        return ((long) getProlepticYear()) * MONTHS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) + getMonth() - 1;
+        return ((long) getProlepticYear()) * MONTHS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) + month - 1;
     }
     //-----------------------------------------------------------------------
     /**
@@ -569,7 +569,7 @@ public final class PaxDate
         }
         int newYear = YEAR.checkValidIntValue(getProlepticYear() + yearsToAdd);
         // Retain actual month (not index) in the case where a leap month is to be inserted.
-        if (getMonth() == MONTHS_IN_YEAR && !isLeapYear() && PaxChronology.INSTANCE.isLeapYear(newYear)) {
+        if (month == MONTHS_IN_YEAR && !isLeapYear() && PaxChronology.INSTANCE.isLeapYear(newYear)) {
             return of(newYear, MONTHS_IN_YEAR + 1, getDayOfMonth());
         }
         // Otherwise, one of the following is true:
@@ -663,14 +663,14 @@ public final class PaxDate
      */
     long yearsUntil(PaxDate end) {
         // If either date is after the inserted leap month, and the other year isn't leap, simulate the effect of the inserted month.
-        long startYear = getProlepticYear() * 512L + getDayOfYear() + (this.getMonth() == MONTHS_IN_YEAR && !this.isLeapYear() && end.isLeapYear() ? DAYS_IN_WEEK : 0);
-        long endYear = end.getProlepticYear() * 512L + end.getDayOfYear() + (end.getMonth() == MONTHS_IN_YEAR && !end.isLeapYear() && this.isLeapYear() ? DAYS_IN_WEEK : 0);
+        long startYear = getProlepticYear() * 512L + getDayOfYear() + (this.month == MONTHS_IN_YEAR && !this.isLeapYear() && end.isLeapYear() ? DAYS_IN_WEEK : 0);
+        long endYear = end.getProlepticYear() * 512L + end.getDayOfYear() + (end.month == MONTHS_IN_YEAR && !end.isLeapYear() && this.isLeapYear() ? DAYS_IN_WEEK : 0);
         return (endYear - startYear) / 512L;
     }
 
     @Override
-    public ChronoPeriod until(ChronoLocalDate endDate) {
-        PaxDate end = PaxDate.from(endDate);
+    public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
+        PaxDate end = PaxDate.from(endDateExclusive);
         int years = Math.toIntExact(yearsUntil(end));
         // Get to the same "whole" year.
         PaxDate sameYearEnd = end.plusYears(years);
@@ -682,9 +682,8 @@ public final class PaxDate
     //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
-        long days = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
-        // Rebase to ISO 1970.
-        return days - PAX_0001_TO_ISO_1970;
+        long paxEpochDay = ((long) getProlepticYear() - 1) * DAYS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) * DAYS_IN_WEEK + getDayOfYear() - 1;
+        return paxEpochDay - PAX_0001_TO_ISO_1970;
     }
 
 }
