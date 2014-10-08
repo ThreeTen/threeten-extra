@@ -48,8 +48,10 @@ import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -478,6 +480,19 @@ public final class PaxDate
     }
 
     /**
+     * Gets the era applicable at this date.
+     * <p>
+     * The Pax calendar system has two eras, 'CE' and 'BCE',
+     * defined by {@link PaxEra}.
+     *
+     * @return the era applicable at this date, not null
+     */
+    @Override
+    public PaxEra getEra() {
+        return (prolepticYear >= 1 ? PaxEra.CE : PaxEra.BCE);
+    }
+
+    /**
      * Returns the length of the month represented by this date.
      * <p>
      * This returns the length of the month in days.
@@ -609,9 +624,15 @@ public final class PaxDate
     }
     
     //-------------------------------------------------------------------------
+    @Override  // for covariant return type
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<PaxDate> atTime(LocalTime localTime) {
+        return (ChronoLocalDateTime<PaxDate>) ChronoLocalDate.super.atTime(localTime);
+    }
+
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
-        return until(JulianDate.from(endExclusive), unit);
+        return until(PaxDate.from(endExclusive), unit);
     }
 
     @Override
