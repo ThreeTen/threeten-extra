@@ -822,10 +822,9 @@ public class TestPaxChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {PaxChronology.INSTANCE.date(-3, 5, 8), "Pax BCE 4-05-08"},
-            {PaxChronology.INSTANCE.date(-8, 1, 28), "Pax BCE 9-01-28"},
-            {PaxChronology.INSTANCE.date(2012, 13, 4), "Pax CE 2012-13-04"},
-            {PaxChronology.INSTANCE.date(2014, 4, 27), "Pax CE 2014-04-27"},};
+            {PaxDate.of(1, 1, 1), "Pax CE 1-01-01"},
+            {PaxDate.of(2012, 6, 23), "Pax CE 2012-06-23"},
+        };
     }
 
     @Test(dataProvider="toString")
