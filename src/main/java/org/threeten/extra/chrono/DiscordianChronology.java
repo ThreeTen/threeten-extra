@@ -32,12 +32,13 @@
 package org.threeten.extra.chrono;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
 import java.time.chrono.AbstractChronology;
-import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Era;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.ValueRange;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -98,6 +99,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     public DiscordianChronology() {
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the ID of the chronology - 'Discordian'.
      * <p>
@@ -127,30 +129,72 @@ public final class DiscordianChronology extends AbstractChronology implements Se
         return "discordian";
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains a local date in Discordian calendar system from the
+     * proleptic-year, month-of-year and day-of-month fields.
+     *
+     * @param prolepticYear  the proleptic-year
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
+     * @return the Discordian local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
-    public ChronoLocalDate date(int arg0, int arg1, int arg2) {
-        // TODO Auto-generated method stub
-        return null;
+    public DiscordianDate date(int prolepticYear, int month, int dayOfMonth) {
+        return DiscordianDate.of(prolepticYear, month, dayOfMonth);
     }
 
+    /**
+     * Obtains a local date in the Discordian calendar system from the
+     * proleptic-year and day-of-year fields.
+     *
+     * @param prolepticYear  the proleptic-year
+     * @param dayOfYear  the day-of-year
+     * @return the Discordian local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
-    public ChronoLocalDate dateYearDay(int arg0, int arg1) {
-        // TODO Auto-generated method stub
-        return null;
+    public DiscordianDate dateYearDay(int prolepticYear, int dayOfYear) {
+        return DiscordianDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
-    @Override
-    public ChronoLocalDate dateEpochDay(long arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Obtains a local date in the Discordian calendar system from the epoch-day.
+     *
+     * @param epochDay  the epoch day
+     * @return the Discordian local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override // override with covariant return type
+    public DiscordianDate dateEpochDay(long epochDay) {
+        return DiscordianDate.ofEpochDay(epochDay);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Obtains a Discordian local date from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Discordian local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
-    public ChronoLocalDate date(TemporalAccessor arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public DiscordianDate date(TemporalAccessor temporal) {
+        return DiscordianDate.from(temporal);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified year is a leap year.
+     * <p>
+     * A Julian proleptic-year is leap if the remainder after division by four equals zero.
+     * This method does not validate the year passed in, and only has a
+     * well-defined result for years in the supported range.
+     *
+     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @return true if the year is a leap year
+     */
     @Override
     public boolean isLeapYear(long prolepticYear) {
         long offsetYear = prolepticYear - 1266;
@@ -158,26 +202,26 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     }
 
     @Override
-    public int prolepticYear(Era arg0, int arg1) {
-        // TODO Auto-generated method stub
-        return 0;
+    public int prolepticYear(Era era, int yearOfEra) {
+        if (!DiscordianEra.YOLD.equals(era)) {
+            throw new ClassCastException("Era must be DiscordianEra.YOLD");
+        }
+        return YEAR_RANGE.checkValidIntValue(yearOfEra, ChronoField.YEAR_OF_ERA);
     }
 
     @Override
-    public Era eraOf(int arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public DiscordianEra eraOf(int era) {
+        return DiscordianEra.of(era);
     }
 
     @Override
     public List<Era> eras() {
-        // TODO Auto-generated method stub
-        return null;
+        return Arrays.<Era>asList(DiscordianEra.values());
     }
 
+    //-----------------------------------------------------------------------
     @Override
-    public ValueRange range(ChronoField arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public ValueRange range(ChronoField field) {
+        return field.range();
     }
 }
