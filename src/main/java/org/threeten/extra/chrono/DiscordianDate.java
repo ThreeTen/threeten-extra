@@ -31,7 +31,10 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.YEAR;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -211,8 +214,16 @@ public final class DiscordianDate
     }
 
     private static DiscordianDate resolvePreviousValid(int prolepticYear, int month, int day) {
-        // TODO Auto-generated method stub
-        return null;
+        if (month == 0 && day != 0) {
+            day = 0;
+        } else if (day == 0) {
+            if (month == 1 && DiscordianChronology.INSTANCE.isLeapYear(prolepticYear)) {
+                month = 0;
+            } else {
+                day = 60;
+            }
+        }
+        return new DiscordianDate(prolepticYear, month, day);
     }
 
     private static long getLeapYearsBefore(long year) {
@@ -231,8 +242,19 @@ public final class DiscordianDate
      *  or if the day-of-year is invalid for the month-year
      */
     static DiscordianDate create(int prolepticYear, int month, int dayOfMonth) {
-        // TODO Auto-generated method stub
-        return null;
+        DiscordianChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
+        DiscordianChronology.MONTH_OF_YEAR_RANGE.checkValidValue(month, MONTH_OF_YEAR);
+        DiscordianChronology.DAY_OF_MONTH_RANGE.checkValidValue(dayOfMonth, DAY_OF_MONTH);
+
+        if (month == 0 || dayOfMonth == 0) {
+            if (month != 0 || dayOfMonth != 0) {
+                throw new DateTimeException("Invalid date '" + month + " " + dayOfMonth + "' as St. Tib's Day is the only special day inserted in a nonexistant month.");
+            } else if (!DiscordianChronology.INSTANCE.isLeapYear(prolepticYear)) {
+                throw new DateTimeException("Invalid date 'St. Tibs Day' as '" + prolepticYear + "' is not a leap year");
+            }
+        }
+
+        return new DiscordianDate(prolepticYear, month, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

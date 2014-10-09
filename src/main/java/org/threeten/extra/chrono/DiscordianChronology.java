@@ -73,6 +73,18 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * Serialization version.
      */
     private static final long serialVersionUID = 1075529146344250850L;
+    /**
+     * Range of proleptic-year.
+     */
+    static final ValueRange YEAR_RANGE = ValueRange.of(1, 999_999);
+    /**
+     * Range of month-of-year.
+     */
+    static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(0, 1, 5, 5);
+    /**
+     * Range of day-of-month.
+     */
+    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, 73, 73);
 
     /**
      * Singleton instance for the Julian chronology.
