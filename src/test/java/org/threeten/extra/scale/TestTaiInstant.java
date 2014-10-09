@@ -76,48 +76,6 @@ public class TestTaiInstant {
         assertEquals(TaiInstant.ofTaiSeconds(2, 3), ser);
     }
 
-//    //-----------------------------------------------------------------------
-//    // nowClock()
-//    //-----------------------------------------------------------------------
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void now_Clock_nullClock() {
-//        TaiInstant.now(null);
-//    }
-//
-//    public void now_TimeSource_allSecsInDay_utc() {
-//        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-//            TaiInstant expected = TaiInstant.ofEpochSecond(i).plusNanos(123456789L);
-//            TimeSource clock = TimeSource.fixed(expected);
-//            TaiInstant test = TaiInstant.now(clock);
-//            assertEquals(test, expected);
-//        }
-//    }
-//
-//    public void now_TimeSource_allSecsInDay_beforeEpoch() {
-//        for (int i =-1; i >= -(24 * 60 * 60); i--) {
-//            TaiInstant expected = TaiInstant.ofEpochSecond(i).plusNanos(123456789L);
-//            TimeSource clock = TimeSource.fixed(expected);
-//            TaiInstant test = TaiInstant.now(clock);
-//            assertEquals(test, expected);
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // nowSystemClock()
-//    //-----------------------------------------------------------------------
-//    public void nowSystemClock() {
-//        TaiInstant expected = TaiInstant.now(TimeSource.system());
-//        TaiInstant test = TaiInstant.nowSystemClock();
-//        BigInteger diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
-//        if (diff.compareTo(BigInteger.valueOf(100000000)) >= 0) {
-//            // may be date change
-//            expected = TaiInstant.now(TimeSource.system());
-//            test = TaiInstant.nowSystemClock();
-//            diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
-//        }
-//        assertTrue(diff.compareTo(BigInteger.valueOf(100000000)) < 0);  // less than 0.1 secs
-//    }
-
     //-----------------------------------------------------------------------
     // ofTaiSeconds(long,long)
     //-----------------------------------------------------------------------

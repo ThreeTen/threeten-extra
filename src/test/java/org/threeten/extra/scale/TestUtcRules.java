@@ -259,7 +259,6 @@ public class TestUtcRules {
     private static final long TAI_SECS_UTC1980 = (MJD_1980 - MJD_1958) * SECS_PER_DAY + 19;
     private static final long TAI_SECS_UTC2100 = (MJD_2100 - MJD_1958) * SECS_PER_DAY + CURRENT_TAI_OFFSET;
     private static final long TAI_SECS_UTC2100_EXTRA_NEGATIVE_LEAP = (MJD_2100 - MJD_1958) * SECS_PER_DAY + CURRENT_TAI_OFFSET - 1;
-//    private static final long TAI_SECS_UTC2100_EXTRA_DOUBLE_LEAP = (MJD_2100 - MJD_1958) * SECS_PER_DAY + CURRENT_TAI_OFFSET + 2;
 
     public void test_convertToUtc_TaiInstant_startUtcPeriod() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1980, 0);  // 1980-01-01 (19 leap secs added)
