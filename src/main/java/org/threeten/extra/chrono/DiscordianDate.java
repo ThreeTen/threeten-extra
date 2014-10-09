@@ -250,7 +250,7 @@ public final class DiscordianDate
         long daysInLongCycle = Math.floorMod(discordianEpochDay, DAYS_PER_LONG_CYCLE);
         if (daysInLongCycle == DAYS_PER_LONG_CYCLE) {
             int year = (int) (longCycle * 400) + 400;
-            return ofYearDay(year, 366); 
+            return ofYearDay(year + 1166, 366); 
         }
         
         int cycle = (int) daysInLongCycle / DAYS_PER_CYCLE;
@@ -260,13 +260,13 @@ public final class DiscordianDate
         
         if (dayInShortCycle == DAYS_PER_SHORT_CYCLE - 1) {
             int year = (int) (longCycle * 400) + (cycle * 100) + (shortCycle * 4) + 4;
-            return ofYearDay(year, 366);
+            return ofYearDay(year + 1166, 366);
         }
         
         int year = (int) (longCycle * 400) + (cycle * 100) + (shortCycle * 4) + (dayInShortCycle / 365) + 1;
         int dayOfYear = (dayInShortCycle % 365) + 1;
         
-        return ofYearDay(year, dayOfYear);
+        return ofYearDay(year + 1166, dayOfYear);
     }
 
     private static DiscordianDate resolvePreviousValid(int prolepticYear, int month, int day) {
