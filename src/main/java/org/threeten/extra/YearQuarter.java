@@ -106,11 +106,11 @@ public final class YearQuarter
      * Parser.
      */
     private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-        .appendLiteral('-')
-        .appendLiteral('Q')
-        .appendValue(QUARTER_OF_YEAR, 1)
-        .toFormatter();
+            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendLiteral('-')
+            .appendLiteral('Q')
+            .appendValue(QUARTER_OF_YEAR, 1)
+            .toFormatter();
 
     /**
      * The year.

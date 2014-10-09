@@ -147,12 +147,12 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_of_int_tooLow() {
         DayOfMonth.of(0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_of_int_tooHigh() {
         DayOfMonth.of(32);
     }
@@ -228,12 +228,12 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_from_TemporalAccessor_noDerive() {
         DayOfMonth.from(LocalTime.NOON);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         DayOfMonth.from((TemporalAccessor) null);
     }
@@ -425,21 +425,21 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_adjustInto_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.of(31);
         test.adjustInto(base);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_adjustInto_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);
         test.adjustInto(base);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_adjustInto_null() {
         TEST.adjustInto((Temporal) null);
     }
@@ -481,7 +481,7 @@ public class TestDayOfMonth {
         assertEquals(test.atMonth(DECEMBER), MonthDay.of(12, 28));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_atMonth_null() {
         TEST.atMonth((Month) null);
     }
@@ -523,12 +523,12 @@ public class TestDayOfMonth {
         assertEquals(test.atMonth(12), MonthDay.of(12, 28));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_atMonth_tooLow() {
         TEST.atMonth(0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_atMonth_tooHigh() {
         TEST.atMonth(13);
     }
@@ -571,7 +571,7 @@ public class TestDayOfMonth {
         assertEquals(test.atYearMonth(YearMonth.of(2012, 12)), LocalDate.of(2012, 12, 28));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_atYearMonth_null() {
         TEST.atYearMonth((YearMonth) null);
     }
@@ -598,7 +598,7 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_compareTo_nullDayOfMonth() {
         DayOfMonth doy = null;
         DayOfMonth test = DayOfMonth.of(1);

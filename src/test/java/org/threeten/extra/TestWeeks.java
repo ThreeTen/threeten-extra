@@ -142,17 +142,17 @@ public class TestWeeks {
     @DataProvider(name = "parseInvalid")
     Object[][] data_invalid() {
         return new Object[][] {
-                {"P3Y"},
-                {"P3M"},
-                {"P3D"},
-                
-                {"3"},
-                {"-3"},
-                {"3Y"},
-                {"-3Y"},
-                {"P3"},
-                {"P-3"},
-                {"PY"},
+            {"P3Y"},
+            {"P3M"},
+            {"P3D"},
+
+            {"3"},
+            {"-3"},
+            {"3Y"},
+            {"-3Y"},
+            {"P3"},
+            {"P-3"},
+            {"PY"},
         };
     }
 

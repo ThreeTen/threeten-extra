@@ -108,12 +108,12 @@ public class TestAmPm {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_of_int_valueTooLow() {
         AmPm.of(-1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_of_int_valueTooHigh() {
         AmPm.of(2);
     }
@@ -131,12 +131,12 @@ public class TestAmPm {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_ofHour_int_valueTooLow() {
         AmPm.ofHour(-1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_ofHour_int_valueTooHigh() {
         AmPm.ofHour(24);
     }
@@ -150,12 +150,12 @@ public class TestAmPm {
         assertEquals(AmPm.from(LocalTime.of(17, 30)), AmPm.PM);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_from_TemporalAccessor_invalid_noDerive() {
         AmPm.from(LocalDate.of(2007, 7, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         AmPm.from((TemporalAccessor) null);
     }

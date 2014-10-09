@@ -137,7 +137,7 @@ public final class Weeks
                 long[] converted = Temporals.convertAmount(value, unit, WEEKS);
                 if (converted[1] != 0) {
                     throw new DateTimeException(
-                        "Amount could not be converted to a whole number of weeks: " + value + " " + unit);
+                            "Amount could not be converted to a whole number of weeks: " + value + " " + unit);
                 }
                 weeks = Math.addExact(weeks, Math.toIntExact(converted[0]));
             }
@@ -484,6 +484,7 @@ public final class Weeks
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(Weeks otherAmount) {
         int thisValue = this.weeks;
         int otherValue = otherAmount.weeks;

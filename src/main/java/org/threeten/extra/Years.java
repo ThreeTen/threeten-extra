@@ -137,7 +137,7 @@ public final class Years
                 long[] converted = Temporals.convertAmount(value, unit, YEARS);
                 if (converted[1] != 0) {
                     throw new DateTimeException(
-                        "Amount could not be converted to a whole number of years: " + value + " " + unit);
+                            "Amount could not be converted to a whole number of years: " + value + " " + unit);
                 }
                 years = Math.addExact(years, Math.toIntExact(converted[0]));
             }
@@ -484,6 +484,7 @@ public final class Years
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(Years otherAmount) {
         int thisValue = this.years;
         int otherValue = otherAmount.years;

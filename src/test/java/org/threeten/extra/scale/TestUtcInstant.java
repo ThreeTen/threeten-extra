@@ -86,48 +86,6 @@ public class TestUtcInstant {
         assertEquals(UtcInstant.ofModifiedJulianDay(2, 3), ser);
     }
 
-//    //-----------------------------------------------------------------------
-//    // nowClock()
-//    //-----------------------------------------------------------------------
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void now_Clock_nullClock() {
-//        TaiInstant.now(null);
-//    }
-//
-//    public void now_TimeSource_allSecsInDay_utc() {
-//        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-//            TaiInstant expected = TaiInstant.ofEpochSecond(i).plusNanos(123456789L);
-//            TimeSource clock = TimeSource.fixed(expected);
-//            TaiInstant test = TaiInstant.now(clock);
-//            assertEquals(test, expected);
-//        }
-//    }
-//
-//    public void now_TimeSource_allSecsInDay_beforeEpoch() {
-//        for (int i =-1; i >= -(24 * 60 * 60); i--) {
-//            TaiInstant expected = TaiInstant.ofEpochSecond(i).plusNanos(123456789L);
-//            TimeSource clock = TimeSource.fixed(expected);
-//            TaiInstant test = TaiInstant.now(clock);
-//            assertEquals(test, expected);
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // nowSystemClock()
-//    //-----------------------------------------------------------------------
-//    public void nowSystemClock() {
-//        TaiInstant expected = TaiInstant.now(TimeSource.system());
-//        TaiInstant test = TaiInstant.nowSystemClock();
-//        BigInteger diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
-//        if (diff.compareTo(BigInteger.valueOf(100000000)) >= 0) {
-//            // may be date change
-//            expected = TaiInstant.now(TimeSource.system());
-//            test = TaiInstant.nowSystemClock();
-//            diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
-//        }
-//        assertTrue(diff.compareTo(BigInteger.valueOf(100000000)) < 0);  // less than 0.1 secs
-//    }
-
     //-----------------------------------------------------------------------
     // ofModififiedJulianDay(long,long)
     //-----------------------------------------------------------------------
@@ -157,17 +115,17 @@ public class TestUtcInstant {
         assertEquals(t.getNanoOfDay(), NANOS_PER_LEAP_DAY - 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void factory_ofModifiedJulianDay_long_long_nanosNegative() {
         UtcInstant.ofModifiedJulianDay(MJD_1973_01_01, -1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void factory_ofModifiedJulianDay_long_long_nanosTooBig_notLeap() {
         UtcInstant.ofModifiedJulianDay(MJD_1973_01_01, NANOS_PER_DAY);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void factory_ofModifiedJulianDay_long_long_nanosTooBig_leap() {
         UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_LEAP_DAY);
     }
@@ -182,7 +140,7 @@ public class TestUtcInstant {
         assertEquals(test.getNanoOfDay(), 2);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void factory_of_Instant_null() {
         UtcInstant.of((Instant) null);
     }
@@ -201,7 +159,7 @@ public class TestUtcInstant {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void factory_of_TaiInstant_null() {
         UtcInstant.of((TaiInstant) null);
     }
@@ -215,7 +173,7 @@ public class TestUtcInstant {
         assertEquals(UtcInstant.parse("1972-12-31T23:59:60Z"), UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_DAY));
     }
 
-    @DataProvider(name="BadParse")
+    @DataProvider(name = "BadParse")
     Object[][] provider_badParse() {
         return new Object[][] {
             {""},
@@ -224,17 +182,17 @@ public class TestUtcInstant {
         };
     }
 
-    @Test(dataProvider="BadParse", expectedExceptions=DateTimeParseException.class)
+    @Test(dataProvider = "BadParse", expectedExceptions = DateTimeParseException.class)
     public void factory_parse_CharSequence_invalid(String str) {
         UtcInstant.parse(str);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void factory_parse_CharSequence_invalidLeapSecond() {
         UtcInstant.parse("1972-11-11T23:59:60Z");  // leap second but not leap day
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void factory_parse_CharSequence_null() {
         UtcInstant.parse((String) null);
     }
@@ -242,23 +200,23 @@ public class TestUtcInstant {
     //-----------------------------------------------------------------------
     // withModifiedJulianDay()
     //-----------------------------------------------------------------------
-    @DataProvider(name="WithModifiedJulianDay")
+    @DataProvider(name = "WithModifiedJulianDay")
     Object[][] provider_withModifiedJulianDay() {
         return new Object[][] {
-            {0L, 12345L,  1L, 1L, 12345L},
-            {0L, 12345L,  -1L, -1L, 12345L},
-            {7L, 12345L,  2L, 2L, 12345L},
-            {7L, 12345L,  -2L, -2L, 12345L},
-            {-99L, 12345L,  3L, 3L, 12345L},
-            {-99L, 12345L,  -3L, -3L, 12345L},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY,  MJD_1972_12_30, null, null},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY,  MJD_1972_12_31_LEAP, MJD_1972_12_31_LEAP, NANOS_PER_DAY},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY,  MJD_1973_01_01, null, null},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY,  MJD_1973_12_31_LEAP, MJD_1973_12_31_LEAP, NANOS_PER_DAY},
-       };
+            {0L, 12345L, 1L, 1L, 12345L},
+            {0L, 12345L, -1L, -1L, 12345L},
+            {7L, 12345L, 2L, 2L, 12345L},
+            {7L, 12345L, -2L, -2L, 12345L},
+            {-99L, 12345L, 3L, 3L, 12345L},
+            {-99L, 12345L, -3L, -3L, 12345L},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1972_12_30, null, null},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1972_12_31_LEAP, MJD_1972_12_31_LEAP, NANOS_PER_DAY},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1973_01_01, null, null},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1973_12_31_LEAP, MJD_1973_12_31_LEAP, NANOS_PER_DAY},
+        };
     }
 
-    @Test(dataProvider="WithModifiedJulianDay")
+    @Test(dataProvider = "WithModifiedJulianDay")
     public void test_withModifiedJulianDay(long mjd, long nanos, long newMjd, Long expectedMjd, Long expectedNanos) {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos);
         if (expectedMjd != null) {
@@ -273,34 +231,34 @@ public class TestUtcInstant {
                 // expected
             }
         }
-     }
+    }
 
     //-----------------------------------------------------------------------
     // withNanoOfDay()
     //-----------------------------------------------------------------------
-    @DataProvider(name="WithNanoOfDay")
+    @DataProvider(name = "WithNanoOfDay")
     Object[][] provider_withNanoOfDay() {
         return new Object[][] {
-            {0L, 12345L,  1L, 0L, 1L},
-            {0L, 12345L,  -1L, null, null},
-            {7L, 12345L,  2L, 7L, 2L},
-            {-99L, 12345L,  3L, -99L, 3L},
-            {MJD_1972_12_30, NANOS_PER_DAY - 1,  NANOS_PER_DAY - 1, MJD_1972_12_30, NANOS_PER_DAY - 1},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1,  NANOS_PER_DAY - 1, MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1},
-            {MJD_1973_01_01, NANOS_PER_DAY - 1,  NANOS_PER_DAY - 1, MJD_1973_01_01, NANOS_PER_DAY - 1},
-            {MJD_1972_12_30, NANOS_PER_DAY - 1,  NANOS_PER_DAY, null, null},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1,  NANOS_PER_DAY, MJD_1972_12_31_LEAP, NANOS_PER_DAY},
-            {MJD_1973_01_01, NANOS_PER_DAY - 1,  NANOS_PER_DAY, null, null},
-            {MJD_1972_12_30, NANOS_PER_DAY - 1,  NANOS_PER_LEAP_DAY - 1, null, null},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1,  NANOS_PER_LEAP_DAY - 1, MJD_1972_12_31_LEAP, NANOS_PER_LEAP_DAY - 1},
-            {MJD_1973_01_01, NANOS_PER_DAY - 1,  NANOS_PER_LEAP_DAY - 1, null, null},
-            {MJD_1972_12_30, NANOS_PER_DAY - 1,  NANOS_PER_LEAP_DAY, null, null},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1,  NANOS_PER_LEAP_DAY, null, null},
-            {MJD_1973_01_01, NANOS_PER_DAY - 1,  NANOS_PER_LEAP_DAY, null, null},
-       };
+            {0L, 12345L, 1L, 0L, 1L},
+            {0L, 12345L, -1L, null, null},
+            {7L, 12345L, 2L, 7L, 2L},
+            {-99L, 12345L, 3L, -99L, 3L},
+            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_DAY - 1, MJD_1972_12_30, NANOS_PER_DAY - 1},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_DAY - 1, MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1},
+            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_DAY - 1, MJD_1973_01_01, NANOS_PER_DAY - 1},
+            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_DAY, null, null},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_DAY, MJD_1972_12_31_LEAP, NANOS_PER_DAY},
+            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_DAY, null, null},
+            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY - 1, null, null},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY - 1, MJD_1972_12_31_LEAP, NANOS_PER_LEAP_DAY - 1},
+            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY - 1, null, null},
+            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, null},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, null},
+            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, null},
+        };
     }
 
-    @Test(dataProvider="WithNanoOfDay")
+    @Test(dataProvider = "WithNanoOfDay")
     public void test_withNanoOfDay(long mjd, long nanos, long newNanoOfDay, Long expectedMjd, Long expectedNanos) {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos);
         if (expectedMjd != null) {
@@ -315,12 +273,12 @@ public class TestUtcInstant {
                 // expected
             }
         }
-     }
+    }
 
     //-----------------------------------------------------------------------
     // plus(Duration)
     //-----------------------------------------------------------------------
-    @DataProvider(name="Plus")
+    @DataProvider(name = "Plus")
     Object[][] provider_plus() {
         return new Object[][] {
             {0, 0,  -2 * SECS_PER_DAY, 5, -2, 5},
@@ -352,32 +310,32 @@ public class TestUtcInstant {
             {1, 0,  1 * SECS_PER_DAY, 0,  2, 0},
             {1, 0,  1 * SECS_PER_DAY, 1,  2, 1},
             {1, 0,  2 * SECS_PER_DAY, 5,  3, 5},
-       };
+        };
     }
 
-    @Test(dataProvider="Plus")
+    @Test(dataProvider = "Plus")
     public void test_plus(long mjd, long nanos, long plusSeconds, int plusNanos, long expectedMjd, long expectedNanos) {
-       UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
-       assertEquals(i.getModifiedJulianDay(), expectedMjd);
-       assertEquals(i.getNanoOfDay(), expectedNanos);
+        UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
+        assertEquals(i.getModifiedJulianDay(), expectedMjd);
+        assertEquals(i.getNanoOfDay(), expectedNanos);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions = ArithmeticException.class)
     public void test_plus_overflowTooBig() {
-       UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, NANOS_PER_DAY - 1);
-       i.plus(Duration.ofNanos(1));
+        UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, NANOS_PER_DAY - 1);
+        i.plus(Duration.ofNanos(1));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions = ArithmeticException.class)
     public void test_plus_overflowTooSmall() {
-       UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0);
-       i.plus(Duration.ofNanos(-1));
+        UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0);
+        i.plus(Duration.ofNanos(-1));
     }
 
     //-----------------------------------------------------------------------
     // minus(Duration)
     //-----------------------------------------------------------------------
-    @DataProvider(name="Minus")
+    @DataProvider(name = "Minus")
     Object[][] provider_minus() {
         return new Object[][] {
             {0, 0,  2 * SECS_PER_DAY, -5, -2, 5},
@@ -409,26 +367,26 @@ public class TestUtcInstant {
             {1, 0,  -1 * SECS_PER_DAY, 0,  2, 0},
             {1, 0,  -1 * SECS_PER_DAY, -1,  2, 1},
             {1, 0,  -2 * SECS_PER_DAY, -5,  3, 5},
-       };
+        };
     }
 
-    @Test(dataProvider="Minus")
+    @Test(dataProvider = "Minus")
     public void test_minus(long mjd, long nanos, long minusSeconds, int minusNanos, long expectedMjd, long expectedNanos) {
-       UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
-       assertEquals(i.getModifiedJulianDay(), expectedMjd);
-       assertEquals(i.getNanoOfDay(), expectedNanos);
+        UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
+        assertEquals(i.getModifiedJulianDay(), expectedMjd);
+        assertEquals(i.getNanoOfDay(), expectedNanos);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions = ArithmeticException.class)
     public void test_minus_overflowTooSmall() {
-       UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0);
-       i.minus(Duration.ofNanos(1));
+        UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0);
+        i.minus(Duration.ofNanos(1));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions = ArithmeticException.class)
     public void test_minus_overflowTooBig() {
-       UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, NANOS_PER_DAY - 1);
-       i.minus(Duration.ofNanos(-1));
+        UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, NANOS_PER_DAY - 1);
+        i.minus(Duration.ofNanos(-1));
     }
 
     //-----------------------------------------------------------------------
@@ -537,17 +495,17 @@ public class TestUtcInstant {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_compareTo_ObjectNull() {
         UtcInstant a = UtcInstant.ofModifiedJulianDay(0L, 0);
         a.compareTo(null);
     }
 
-    @Test(expectedExceptions=ClassCastException.class)
+    @Test(expectedExceptions = ClassCastException.class)
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareToNonUtcInstant() {
-       Comparable c = UtcInstant.ofModifiedJulianDay(0L, 2);
-       c.compareTo(new Object());
+        Comparable c = UtcInstant.ofModifiedJulianDay(0L, 2);
+        c.compareTo(new Object());
     }
 
     //-----------------------------------------------------------------------
@@ -614,7 +572,7 @@ public class TestUtcInstant {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="ToString")
+    @DataProvider(name = "ToString")
     Object[][] provider_toString() {
         return new Object[][] {
             {40587, 0, "1970-01-01T00:00:00Z"},

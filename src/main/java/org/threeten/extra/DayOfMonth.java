@@ -491,6 +491,7 @@ public final class DayOfMonth
      * @param other  the other day-of-month instance, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(DayOfMonth other) {
         return day - other.day;
     }

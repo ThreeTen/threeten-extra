@@ -93,6 +93,7 @@ public enum CopticEra implements Era {
      *
      * @return the era value, from 0 (BEFORE_AM) to 1 (AM)
      */
+    @Override
     public int getValue() {
         return ordinal();
     }

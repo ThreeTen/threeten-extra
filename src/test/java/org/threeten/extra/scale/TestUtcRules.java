@@ -96,7 +96,7 @@ public class TestUtcRules {
     //-----------------------------------------------------------------------
     // getLeapSecond()
     //-----------------------------------------------------------------------
-    @DataProvider(name="LeapSeconds")
+    @DataProvider(name = "LeapSeconds")
     Object[][] leapSeconds() {
         return new Object[][] {
             {-1, 0, 10, "1858-11-16"},
@@ -229,7 +229,7 @@ public class TestUtcRules {
         };
     }
 
-    @Test(dataProvider="LeapSeconds")
+    @Test(dataProvider = "LeapSeconds")
     public void test_leapSeconds(long mjd, int adjust, int offset, String checkDate) {
         assertEquals(mjd, LocalDate.parse(checkDate).getLong(JulianFields.MODIFIED_JULIAN_DAY), "Invalid test");
 
@@ -259,7 +259,6 @@ public class TestUtcRules {
     private static final long TAI_SECS_UTC1980 = (MJD_1980 - MJD_1958) * SECS_PER_DAY + 19;
     private static final long TAI_SECS_UTC2100 = (MJD_2100 - MJD_1958) * SECS_PER_DAY + CURRENT_TAI_OFFSET;
     private static final long TAI_SECS_UTC2100_EXTRA_NEGATIVE_LEAP = (MJD_2100 - MJD_1958) * SECS_PER_DAY + CURRENT_TAI_OFFSET - 1;
-//    private static final long TAI_SECS_UTC2100_EXTRA_DOUBLE_LEAP = (MJD_2100 - MJD_1958) * SECS_PER_DAY + CURRENT_TAI_OFFSET + 2;
 
     public void test_convertToUtc_TaiInstant_startUtcPeriod() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1980, 0);  // 1980-01-01 (19 leap secs added)
@@ -332,12 +331,12 @@ public class TestUtcRules {
         assertEquals(rules.convertToTai(expected), tai); // check reverse
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_convertToUtc_TaiInstant_null() {
         rules.convertToUtc((TaiInstant) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_convertToTai_UtcInstant_null() {
         rules.convertToTai((UtcInstant) null);
     }
@@ -488,7 +487,7 @@ public class TestUtcRules {
         assertEquals(rules.getLeapSecondAdjustment(mjd), adj);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registerLeapSecond_equalLastDate_differentLeap() {
         long[] dates = rules.getLeapSecondDates();
         long mjd = dates[dates.length - 1];
@@ -496,7 +495,7 @@ public class TestUtcRules {
         rules.register(mjd, -adj);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registerLeapSecond_equalEarlierDate_differentLeap() {
         long[] dates = rules.getLeapSecondDates();
         long mjd = dates[dates.length - 2];
@@ -504,24 +503,24 @@ public class TestUtcRules {
         rules.register(mjd, -adj);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registerLeapSecond_beforeLastDate() {
         long[] dates = rules.getLeapSecondDates();
         long mjd = dates[dates.length - 1] - 1;
         rules.register(mjd, 1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registerLeapSecond_invalidAdjustment_zero() {
         rules.register(MJD_2100, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registerLeapSecond_invalidAdjustment_minusTwo() {
         rules.register(MJD_2100, -2);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registerLeapSecond_invalidAdjustment_three() {
         rules.register(MJD_2100, 3);
     }

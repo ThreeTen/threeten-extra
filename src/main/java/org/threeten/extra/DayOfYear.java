@@ -474,6 +474,7 @@ public final class DayOfYear
      * @param other  the other day-of-year instance, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(DayOfYear other) {
         return day - other.day;
     }

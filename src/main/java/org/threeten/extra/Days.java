@@ -87,8 +87,8 @@ public final class Days
      */
     private static final Pattern PATTERN =
             Pattern.compile("([-+]?)P"
-                            + "(?:([-+]?[0-9]+)W)?"
-                            + "(?:([-+]?[0-9]+)D)?", Pattern.CASE_INSENSITIVE);
+                    + "(?:([-+]?[0-9]+)W)?"
+                    + "(?:([-+]?[0-9]+)D)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of days.
@@ -160,7 +160,7 @@ public final class Days
                 long[] converted = Temporals.convertAmount(value, unit, DAYS);
                 if (converted[1] != 0) {
                     throw new DateTimeException(
-                        "Amount could not be converted to a whole number of days: " + value + " " + unit);
+                            "Amount could not be converted to a whole number of days: " + value + " " + unit);
                 }
                 days = Math.addExact(days, Math.toIntExact(converted[0]));
             }
@@ -528,6 +528,7 @@ public final class Days
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(Days otherAmount) {
         int thisValue = this.days;
         int otherValue = otherAmount.days;
