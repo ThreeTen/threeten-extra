@@ -409,6 +409,7 @@ public final class UtcInstant
      * @param otherInstant  the other instant to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(UtcInstant otherInstant) {
         int cmp = Long.compare(mjDay, otherInstant.mjDay);
         if (cmp != 0) {

@@ -484,6 +484,7 @@ public final class Weeks
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(Weeks otherAmount) {
         int thisValue = this.weeks;
         int otherValue = otherAmount.weeks;

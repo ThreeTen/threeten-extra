@@ -93,6 +93,7 @@ public enum EthiopicEra implements Era {
      *
      * @return the era value, from 0 (BEFORE_INCARNATION) to 1 (INCARNATION)
      */
+    @Override
     public int getValue() {
         return ordinal();
     }

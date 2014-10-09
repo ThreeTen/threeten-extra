@@ -93,6 +93,7 @@ public enum JulianEra implements Era {
      *
      * @return the era value, from 0 (BC) to 1 (AD)
      */
+    @Override
     public int getValue() {
         return ordinal();
     }

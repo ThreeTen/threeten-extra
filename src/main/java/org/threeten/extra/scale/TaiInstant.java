@@ -401,6 +401,7 @@ public final class TaiInstant
      * @param otherInstant  the other instant to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(TaiInstant otherInstant) {
         int cmp = Long.compare(seconds, otherInstant.seconds);
         if (cmp != 0) {

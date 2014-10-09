@@ -528,6 +528,7 @@ public final class Days
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(Days otherAmount) {
         int thisValue = this.days;
         int otherValue = otherAmount.days;

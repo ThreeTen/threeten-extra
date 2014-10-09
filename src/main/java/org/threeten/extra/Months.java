@@ -528,6 +528,7 @@ public final class Months
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(Months otherAmount) {
         int thisValue = this.months;
         int otherValue = otherAmount.months;

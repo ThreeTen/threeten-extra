@@ -484,6 +484,7 @@ public final class Years
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(Years otherAmount) {
         int thisValue = this.years;
         int otherValue = otherAmount.years;
