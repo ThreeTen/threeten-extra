@@ -86,6 +86,7 @@ public enum DiscordianEra implements Era {
      *
      * @return the era value, 1 for YOLD
      */
+    @Override
     public int getValue() {
         return ordinal();
     }
