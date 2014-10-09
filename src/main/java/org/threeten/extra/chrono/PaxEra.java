@@ -93,6 +93,7 @@ public enum PaxEra implements Era {
      *
      * @return the era value, from 0 (BCE) to 1 (CE)
      */
+    @Override
     public int getValue() {
         return ordinal();
     }
