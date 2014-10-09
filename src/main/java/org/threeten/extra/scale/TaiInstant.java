@@ -424,7 +424,7 @@ public final class TaiInstant
         if (otherInstant instanceof TaiInstant) {
             TaiInstant other = (TaiInstant) otherInstant;
             return this.seconds == other.seconds &&
-                   this.nanos == other.nanos;
+                    this.nanos == other.nanos;
         }
         return false;
     }

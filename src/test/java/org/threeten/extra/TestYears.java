@@ -146,17 +146,17 @@ public class TestYears {
     @DataProvider(name = "parseInvalid")
     Object[][] data_invalid() {
         return new Object[][] {
-                {"P3M"},
-                {"P3W"},
-                {"P3D"},
-                
-                {"3"},
-                {"-3"},
-                {"3Y"},
-                {"-3Y"},
-                {"P3"},
-                {"P-3"},
-                {"PY"},
+            {"P3M"},
+            {"P3W"},
+            {"P3D"},
+
+            {"3"},
+            {"-3"},
+            {"3Y"},
+            {"-3Y"},
+            {"P3"},
+            {"P-3"},
+            {"PY"},
         };
     }
 

@@ -434,7 +434,7 @@ public final class UtcInstant
         if (otherInstant instanceof UtcInstant) {
             UtcInstant other = (UtcInstant) otherInstant;
             return this.mjDay == other.mjDay &&
-                   this.nanoOfDay == other.nanoOfDay;
+                    this.nanoOfDay == other.nanoOfDay;
         }
         return false;
     }
@@ -474,9 +474,9 @@ public final class UtcInstant
             secondValue = 60;
         }
         buf.append(date).append('T')
-            .append(hourValue < 10 ? "0" : "").append(hourValue)
-            .append(minuteValue < 10 ? ":0" : ":").append(minuteValue)
-            .append(secondValue < 10 ? ":0" : ":").append(secondValue);
+                .append(hourValue < 10 ? "0" : "").append(hourValue)
+                .append(minuteValue < 10 ? ":0" : ":").append(minuteValue)
+                .append(secondValue < 10 ? ":0" : ":").append(secondValue);
         if (nanoValue > 0) {
             buf.append('.');
             if (nanoValue % 1000_000 == 0) {

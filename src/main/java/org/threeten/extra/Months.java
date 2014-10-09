@@ -87,8 +87,8 @@ public final class Months
      */
     private static final Pattern PATTERN =
             Pattern.compile("([-+]?)P"
-                            + "(?:([-+]?[0-9]+)Y)?"
-                            + "(?:([-+]?[0-9]+)M)?", Pattern.CASE_INSENSITIVE);
+                    + "(?:([-+]?[0-9]+)Y)?"
+                    + "(?:([-+]?[0-9]+)M)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of months.
@@ -160,7 +160,7 @@ public final class Months
                 long[] converted = Temporals.convertAmount(value, unit, MONTHS);
                 if (converted[1] != 0) {
                     throw new DateTimeException(
-                        "Amount could not be converted to a whole number of months: " + value + " " + unit);
+                            "Amount could not be converted to a whole number of months: " + value + " " + unit);
                 }
                 months = Math.addExact(months, Math.toIntExact(converted[0]));
             }

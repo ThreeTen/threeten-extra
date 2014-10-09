@@ -106,7 +106,7 @@ public class TestJulianChronology {
     //-----------------------------------------------------------------------
     // creation, toLocalDate()
     //-----------------------------------------------------------------------
-    @DataProvider(name="samples")
+    @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
             {JulianDate.of(1, 1, 1), LocalDate.of(0, 12, 30)},
@@ -142,47 +142,47 @@ public class TestJulianChronology {
         };
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_LocalDate_from_JulianDate(JulianDate julian, LocalDate iso) {
         assertEquals(LocalDate.from(julian), iso);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_JulianDate_from_LocalDate(JulianDate julian, LocalDate iso) {
         assertEquals(JulianDate.from(iso), julian);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_JulianDate_chronology_dateEpochDay(JulianDate julian, LocalDate iso) {
         assertEquals(JulianChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), julian);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_JulianDate_toEpochDay(JulianDate julian, LocalDate iso) {
         assertEquals(julian.toEpochDay(), iso.toEpochDay());
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_JulianDate_until_JulianDate(JulianDate julian, LocalDate iso) {
         assertEquals(julian.until(julian), JulianChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_JulianDate_until_LocalDate(JulianDate julian, LocalDate iso) {
         assertEquals(julian.until(iso), JulianChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_LocalDate_until_JulianDate(JulianDate julian, LocalDate iso) {
         assertEquals(iso.until(julian), Period.ZERO);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_Chronology_date_Temporal(JulianDate julian, LocalDate iso) {
         assertEquals(JulianChronology.INSTANCE.date(iso), julian);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_plusDays(JulianDate julian, LocalDate iso) {
         assertEquals(LocalDate.from(julian.plus(0, DAYS)), iso);
         assertEquals(LocalDate.from(julian.plus(1, DAYS)), iso.plusDays(1));
@@ -191,7 +191,7 @@ public class TestJulianChronology {
         assertEquals(LocalDate.from(julian.plus(-60, DAYS)), iso.plusDays(-60));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_minusDays(JulianDate julian, LocalDate iso) {
         assertEquals(LocalDate.from(julian.minus(0, DAYS)), iso);
         assertEquals(LocalDate.from(julian.minus(1, DAYS)), iso.minusDays(1));
@@ -200,7 +200,7 @@ public class TestJulianChronology {
         assertEquals(LocalDate.from(julian.minus(-60, DAYS)), iso.minusDays(-60));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_until_DAYS(JulianDate julian, LocalDate iso) {
         assertEquals(julian.until(iso.plusDays(0), DAYS), 0);
         assertEquals(julian.until(iso.plusDays(1), DAYS), 1);
@@ -208,7 +208,7 @@ public class TestJulianChronology {
         assertEquals(julian.until(iso.minusDays(40), DAYS), -40);
     }
 
-    @DataProvider(name="badDates")
+    @DataProvider(name = "badDates")
     Object[][] data_badDates() {
         return new Object[][] {
             {1900, 0, 0},
@@ -251,12 +251,12 @@ public class TestJulianChronology {
         };
     }
 
-    @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
+    @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         JulianDate.of(year, month, dom);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_chronology_dateYearDay_badDate() {
         JulianChronology.INSTANCE.dateYearDay(2001, 366);
     }
@@ -269,7 +269,7 @@ public class TestJulianChronology {
         for (int year = -200; year < 200; year++) {
             JulianDate base = JulianDate.of(year, 1, 1);
             assertEquals(base.isLeapYear(), (year % 4) == 0);
-            assertEquals(JulianChronology.INSTANCE.isLeapYear(year), (year  % 4) == 0);
+            assertEquals(JulianChronology.INSTANCE.isLeapYear(year), (year % 4) == 0);
         }
     }
 
@@ -292,7 +292,7 @@ public class TestJulianChronology {
         assertEquals(JulianChronology.INSTANCE.isLeapYear(-6), false);
     }
 
-    @DataProvider(name="lengthOfMonth")
+    @DataProvider(name = "lengthOfMonth")
     Object[][] data_lengthOfMonth() {
         return new Object[][] {
             {1900, 1, 31},
@@ -317,7 +317,7 @@ public class TestJulianChronology {
         };
     }
 
-    @Test(dataProvider="lengthOfMonth")
+    @Test(dataProvider = "lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(JulianDate.of(year, month, 1).lengthOfMonth(), length);
     }
@@ -406,28 +406,28 @@ public class TestJulianChronology {
     @DataProvider(name = "ranges")
     Object[][] data_ranges() {
         return new Object[][] {
-                {2012, 1, 23, DAY_OF_MONTH, 1, 31},
-                {2012, 2, 23, DAY_OF_MONTH, 1, 29},
-                {2012, 3, 23, DAY_OF_MONTH, 1, 31},
-                {2012, 4, 23, DAY_OF_MONTH, 1, 30},
-                {2012, 5, 23, DAY_OF_MONTH, 1, 31},
-                {2012, 6, 23, DAY_OF_MONTH, 1, 30},
-                {2012, 7, 23, DAY_OF_MONTH, 1, 31},
-                {2012, 8, 23, DAY_OF_MONTH, 1, 31},
-                {2012, 9, 23, DAY_OF_MONTH, 1, 30},
-                {2012, 10, 23, DAY_OF_MONTH, 1, 31},
-                {2012, 11, 23, DAY_OF_MONTH, 1, 30},
-                {2012, 12, 23, DAY_OF_MONTH, 1, 31},
-                {2012, 1, 23, DAY_OF_YEAR, 1, 366},
-                {2012, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
-                {2012, 2, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
-                {2012, 3, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
-                
-                {2011, 2, 23, DAY_OF_MONTH, 1, 28},
-                {2011, 2, 23, DAY_OF_YEAR, 1, 365},
-                {2011, 2, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
-                
-                {2011, 2, 23, IsoFields.QUARTER_OF_YEAR, 1, 4},
+            {2012, 1, 23, DAY_OF_MONTH, 1, 31},
+            {2012, 2, 23, DAY_OF_MONTH, 1, 29},
+            {2012, 3, 23, DAY_OF_MONTH, 1, 31},
+            {2012, 4, 23, DAY_OF_MONTH, 1, 30},
+            {2012, 5, 23, DAY_OF_MONTH, 1, 31},
+            {2012, 6, 23, DAY_OF_MONTH, 1, 30},
+            {2012, 7, 23, DAY_OF_MONTH, 1, 31},
+            {2012, 8, 23, DAY_OF_MONTH, 1, 31},
+            {2012, 9, 23, DAY_OF_MONTH, 1, 30},
+            {2012, 10, 23, DAY_OF_MONTH, 1, 31},
+            {2012, 11, 23, DAY_OF_MONTH, 1, 30},
+            {2012, 12, 23, DAY_OF_MONTH, 1, 31},
+            {2012, 1, 23, DAY_OF_YEAR, 1, 366},
+            {2012, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
+            {2012, 2, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
+            {2012, 3, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
+
+            {2011, 2, 23, DAY_OF_MONTH, 1, 28},
+            {2011, 2, 23, DAY_OF_YEAR, 1, 365},
+            {2011, 2, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
+
+            {2011, 2, 23, IsoFields.QUARTER_OF_YEAR, 1, 4},
         };
     }
 
@@ -447,21 +447,21 @@ public class TestJulianChronology {
     @DataProvider(name = "getLong")
     Object[][] data_getLong() {
         return new Object[][] {
-                {2014, 5, 26, DAY_OF_WEEK, 7},
-                {2014, 5, 26, DAY_OF_MONTH, 26},
-                {2014, 5, 26, DAY_OF_YEAR, 31 + 28 + 31 + 30 + 26},
-                {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5},
-                {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 4},
-                {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 6},
-                {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 21},
-                {2014, 5, 26, MONTH_OF_YEAR, 5},
-                {2014, 5, 26, PROLEPTIC_MONTH, 2014 * 12 + 5 - 1},
-                {2014, 5, 26, YEAR, 2014},
-                {2014, 5, 26, ERA, 1},
-                {1, 6, 8, ERA, 1},
-                {0, 6, 8, ERA, 0},
-                
-                {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 7},
+            {2014, 5, 26, DAY_OF_WEEK, 7},
+            {2014, 5, 26, DAY_OF_MONTH, 26},
+            {2014, 5, 26, DAY_OF_YEAR, 31 + 28 + 31 + 30 + 26},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 4},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 6},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 21},
+            {2014, 5, 26, MONTH_OF_YEAR, 5},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2014 * 12 + 5 - 1},
+            {2014, 5, 26, YEAR, 2014},
+            {2014, 5, 26, ERA, 1},
+            {1, 6, 8, ERA, 1},
+            {0, 6, 8, ERA, 0},
+
+            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 7},
         };
     }
 
@@ -481,25 +481,25 @@ public class TestJulianChronology {
     @DataProvider(name = "with")
     Object[][] data_with() {
         return new Object[][] {
-                {2014, 5, 26, DAY_OF_WEEK, 3, 2014, 5, 22},
-                {2014, 5, 26, DAY_OF_MONTH, 31, 2014, 5, 31},
-                {2014, 5, 26, DAY_OF_YEAR, 365, 2014, 12, 31},
-                {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 5, 24},
-                {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 1, 2014, 5, 5},
-                {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 2014, 5, 22},
-                {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 23, 2014, 6, 9},
-                {2014, 5, 26, MONTH_OF_YEAR, 7, 2014, 7, 26},
-                {2014, 5, 26, PROLEPTIC_MONTH, 2013 * 12 + 3 - 1, 2013, 3, 26},
-                {2014, 5, 26, YEAR, 2012, 2012, 5, 26},
-                {2014, 5, 26, YEAR_OF_ERA, 2012, 2012, 5, 26},
-                {2014, 5, 26, ERA, 0, -2013, 5, 26},
-                
-                {2011, 3, 31, MONTH_OF_YEAR, 2, 2011, 2, 28},
-                {2012, 3, 31, MONTH_OF_YEAR, 2, 2012, 2, 29},
-                {2012, 3, 31, MONTH_OF_YEAR, 6, 2012, 6, 30},
-                {2012, 2, 29, YEAR, 2011, 2011, 2, 28},
-                {-2013, 6, 8, YEAR_OF_ERA, 2012, -2011, 6, 8},
-                {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 22},
+            {2014, 5, 26, DAY_OF_WEEK, 3, 2014, 5, 22},
+            {2014, 5, 26, DAY_OF_MONTH, 31, 2014, 5, 31},
+            {2014, 5, 26, DAY_OF_YEAR, 365, 2014, 12, 31},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 5, 24},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 1, 2014, 5, 5},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 2014, 5, 22},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 23, 2014, 6, 9},
+            {2014, 5, 26, MONTH_OF_YEAR, 7, 2014, 7, 26},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2013 * 12 + 3 - 1, 2013, 3, 26},
+            {2014, 5, 26, YEAR, 2012, 2012, 5, 26},
+            {2014, 5, 26, YEAR_OF_ERA, 2012, 2012, 5, 26},
+            {2014, 5, 26, ERA, 0, -2013, 5, 26},
+
+            {2011, 3, 31, MONTH_OF_YEAR, 2, 2011, 2, 28},
+            {2012, 3, 31, MONTH_OF_YEAR, 2, 2012, 2, 29},
+            {2012, 3, 31, MONTH_OF_YEAR, 6, 2012, 6, 30},
+            {2012, 2, 29, YEAR, 2011, 2011, 2, 28},
+            {-2013, 6, 8, YEAR_OF_ERA, 2012, -2011, 6, 8},
+            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 22},
         };
     }
 
@@ -542,7 +542,7 @@ public class TestJulianChronology {
         assertEquals(test, JulianDate.of(2012, 6, 23));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_adjust_toMonth() {
         JulianDate julian = JulianDate.of(2000, 1, 4);
         julian.with(Month.APRIL);
@@ -571,28 +571,28 @@ public class TestJulianChronology {
     @DataProvider(name = "plus")
     Object[][] data_plus() {
         return new Object[][] {
-                {2014, 5, 26, 0, DAYS, 2014, 5, 26},
-                {2014, 5, 26, 8, DAYS, 2014, 6, 3},
-                {2014, 5, 26, -3, DAYS, 2014, 5, 23},
-                {2014, 5, 26, 0, WEEKS, 2014, 5, 26},
-                {2014, 5, 26, 3, WEEKS, 2014, 6, 16},
-                {2014, 5, 26, -5, WEEKS, 2014, 4, 21},
-                {2014, 5, 26, 0, MONTHS, 2014, 5, 26},
-                {2014, 5, 26, 3, MONTHS, 2014, 8, 26},
-                {2014, 5, 26, -5, MONTHS, 2013, 12, 26},
-                {2014, 5, 26, 0, YEARS, 2014, 5, 26},
-                {2014, 5, 26, 3, YEARS, 2017, 5, 26},
-                {2014, 5, 26, -5, YEARS, 2009, 5, 26},
-                {2014, 5, 26, 0, DECADES, 2014, 5, 26},
-                {2014, 5, 26, 3, DECADES, 2044, 5, 26},
-                {2014, 5, 26, -5, DECADES, 1964, 5, 26},
-                {2014, 5, 26, 0, CENTURIES, 2014, 5, 26},
-                {2014, 5, 26, 3, CENTURIES, 2314, 5, 26},
-                {2014, 5, 26, -5, CENTURIES, 1514, 5, 26},
-                {2014, 5, 26, 0, MILLENNIA, 2014, 5, 26},
-                {2014, 5, 26, 3, MILLENNIA, 5014, 5, 26},
-                {2014, 5, 26, -5, MILLENNIA, 2014 - 5000, 5, 26},
-                {2014, 5, 26, -1, ERAS, -2013, 5, 26},
+            {2014, 5, 26, 0, DAYS, 2014, 5, 26},
+            {2014, 5, 26, 8, DAYS, 2014, 6, 3},
+            {2014, 5, 26, -3, DAYS, 2014, 5, 23},
+            {2014, 5, 26, 0, WEEKS, 2014, 5, 26},
+            {2014, 5, 26, 3, WEEKS, 2014, 6, 16},
+            {2014, 5, 26, -5, WEEKS, 2014, 4, 21},
+            {2014, 5, 26, 0, MONTHS, 2014, 5, 26},
+            {2014, 5, 26, 3, MONTHS, 2014, 8, 26},
+            {2014, 5, 26, -5, MONTHS, 2013, 12, 26},
+            {2014, 5, 26, 0, YEARS, 2014, 5, 26},
+            {2014, 5, 26, 3, YEARS, 2017, 5, 26},
+            {2014, 5, 26, -5, YEARS, 2009, 5, 26},
+            {2014, 5, 26, 0, DECADES, 2014, 5, 26},
+            {2014, 5, 26, 3, DECADES, 2044, 5, 26},
+            {2014, 5, 26, -5, DECADES, 1964, 5, 26},
+            {2014, 5, 26, 0, CENTURIES, 2014, 5, 26},
+            {2014, 5, 26, 3, CENTURIES, 2314, 5, 26},
+            {2014, 5, 26, -5, CENTURIES, 1514, 5, 26},
+            {2014, 5, 26, 0, MILLENNIA, 2014, 5, 26},
+            {2014, 5, 26, 3, MILLENNIA, 5014, 5, 26},
+            {2014, 5, 26, -5, MILLENNIA, 2014 - 5000, 5, 26},
+            {2014, 5, 26, -1, ERAS, -2013, 5, 26},
         };
     }
 
@@ -622,29 +622,29 @@ public class TestJulianChronology {
     @DataProvider(name = "until")
     Object[][] data_until() {
         return new Object[][] {
-                {2014, 5, 26, 2014, 5, 26, DAYS, 0},
-                {2014, 5, 26, 2014, 6, 1, DAYS, 6},
-                {2014, 5, 26, 2014, 5, 20, DAYS, -6},
-                {2014, 5, 26, 2014, 5, 26, WEEKS, 0},
-                {2014, 5, 26, 2014, 6, 1, WEEKS, 0},
-                {2014, 5, 26, 2014, 6, 2, WEEKS, 1},
-                {2014, 5, 26, 2014, 5, 26, MONTHS, 0},
-                {2014, 5, 26, 2014, 6, 25, MONTHS, 0},
-                {2014, 5, 26, 2014, 6, 26, MONTHS, 1},
-                {2014, 5, 26, 2014, 5, 26, YEARS, 0},
-                {2014, 5, 26, 2015, 5, 25, YEARS, 0},
-                {2014, 5, 26, 2015, 5, 26, YEARS, 1},
-                {2014, 5, 26, 2014, 5, 26, DECADES, 0},
-                {2014, 5, 26, 2024, 5, 25, DECADES, 0},
-                {2014, 5, 26, 2024, 5, 26, DECADES, 1},
-                {2014, 5, 26, 2014, 5, 26, CENTURIES, 0},
-                {2014, 5, 26, 2114, 5, 25, CENTURIES, 0},
-                {2014, 5, 26, 2114, 5, 26, CENTURIES, 1},
-                {2014, 5, 26, 2014, 5, 26, MILLENNIA, 0},
-                {2014, 5, 26, 3014, 5, 25, MILLENNIA, 0},
-                {2014, 5, 26, 3014, 5, 26, MILLENNIA, 1},
-                {-2013, 5, 26, 0, 5, 26, ERAS, 0},
-                {-2013, 5, 26, 2014, 5, 26, ERAS, 1},
+            {2014, 5, 26, 2014, 5, 26, DAYS, 0},
+            {2014, 5, 26, 2014, 6, 1, DAYS, 6},
+            {2014, 5, 26, 2014, 5, 20, DAYS, -6},
+            {2014, 5, 26, 2014, 5, 26, WEEKS, 0},
+            {2014, 5, 26, 2014, 6, 1, WEEKS, 0},
+            {2014, 5, 26, 2014, 6, 2, WEEKS, 1},
+            {2014, 5, 26, 2014, 5, 26, MONTHS, 0},
+            {2014, 5, 26, 2014, 6, 25, MONTHS, 0},
+            {2014, 5, 26, 2014, 6, 26, MONTHS, 1},
+            {2014, 5, 26, 2014, 5, 26, YEARS, 0},
+            {2014, 5, 26, 2015, 5, 25, YEARS, 0},
+            {2014, 5, 26, 2015, 5, 26, YEARS, 1},
+            {2014, 5, 26, 2014, 5, 26, DECADES, 0},
+            {2014, 5, 26, 2024, 5, 25, DECADES, 0},
+            {2014, 5, 26, 2024, 5, 26, DECADES, 1},
+            {2014, 5, 26, 2014, 5, 26, CENTURIES, 0},
+            {2014, 5, 26, 2114, 5, 25, CENTURIES, 0},
+            {2014, 5, 26, 2114, 5, 26, CENTURIES, 1},
+            {2014, 5, 26, 2014, 5, 26, MILLENNIA, 0},
+            {2014, 5, 26, 3014, 5, 25, MILLENNIA, 0},
+            {2014, 5, 26, 3014, 5, 26, MILLENNIA, 1},
+            {-2013, 5, 26, 0, 5, 26, ERAS, 0},
+            {-2013, 5, 26, 2014, 5, 26, ERAS, 1},
         };
     }
 
@@ -696,23 +696,23 @@ public class TestJulianChronology {
         JulianDate b = JulianDate.of(2000, 1, 4);
         JulianDate c = JulianDate.of(2000, 2, 3);
         JulianDate d = JulianDate.of(2001, 1, 3);
-        
+
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
         assertEquals(a1.equals(b), false);
         assertEquals(a1.equals(c), false);
         assertEquals(a1.equals(d), false);
-        
+
         assertEquals(a1.equals(null), false);
         assertEquals(a1.equals(""), false);
-        
+
         assertEquals(a1.hashCode(), a2.hashCode());
     }
 
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="toString")
+    @DataProvider(name = "toString")
     Object[][] data_toString() {
         return new Object[][] {
             {JulianDate.of(1, 1, 1), "Julian AD 1-01-01"},
@@ -720,7 +720,7 @@ public class TestJulianChronology {
         };
     }
 
-    @Test(dataProvider="toString")
+    @Test(dataProvider = "toString")
     public void test_toString(JulianDate julian, String expected) {
         assertEquals(julian.toString(), expected);
     }

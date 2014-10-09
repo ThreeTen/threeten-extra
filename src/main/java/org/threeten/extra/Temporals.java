@@ -207,7 +207,7 @@ public final class Temporals {
                     return 12000;
                 default:
                     throw new DateTimeException(
-                        String.format("Unable to convert between units: %s to %s", fromUnit, toUnit));
+                            String.format("Unable to convert between units: %s to %s", fromUnit, toUnit));
             }
         }
         return 3;  // quarters

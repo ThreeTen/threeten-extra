@@ -104,7 +104,7 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     // creation, toLocalDate()
     //-----------------------------------------------------------------------
-    @DataProvider(name="samples")
+    @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
             {CopticDate.of(-1, 13, 6), LocalDate.of(283, 8, 29)},
@@ -132,47 +132,47 @@ public class TestCopticChronology {
         };
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_LocalDate_from_CopticDate(CopticDate coptic, LocalDate iso) {
         assertEquals(LocalDate.from(coptic), iso);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_CopticDate_from_LocalDate(CopticDate coptic, LocalDate iso) {
         assertEquals(CopticDate.from(iso), coptic);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_CopticDate_chronology_dateEpochDay(CopticDate coptic, LocalDate iso) {
         assertEquals(CopticChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), coptic);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_CopticDate_toEpochDay(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic.toEpochDay(), iso.toEpochDay());
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_CopticDate_until_CopticDate(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic.until(coptic), CopticChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_CopticDate_until_LocalDate(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic.until(iso), CopticChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_LocalDate_until_CopticDate(CopticDate coptic, LocalDate iso) {
         assertEquals(iso.until(coptic), Period.ZERO);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_Chronology_date_Temporal(CopticDate coptic, LocalDate iso) {
         assertEquals(CopticChronology.INSTANCE.date(iso), coptic);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_plusDays(CopticDate coptic, LocalDate iso) {
         assertEquals(LocalDate.from(coptic.plus(0, DAYS)), iso);
         assertEquals(LocalDate.from(coptic.plus(1, DAYS)), iso.plusDays(1));
@@ -181,7 +181,7 @@ public class TestCopticChronology {
         assertEquals(LocalDate.from(coptic.plus(-60, DAYS)), iso.plusDays(-60));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_minusDays(CopticDate coptic, LocalDate iso) {
         assertEquals(LocalDate.from(coptic.minus(0, DAYS)), iso);
         assertEquals(LocalDate.from(coptic.minus(1, DAYS)), iso.minusDays(1));
@@ -190,7 +190,7 @@ public class TestCopticChronology {
         assertEquals(LocalDate.from(coptic.minus(-60, DAYS)), iso.minusDays(-60));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_until_DAYS(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic.until(iso.plusDays(0), DAYS), 0);
         assertEquals(coptic.until(iso.plusDays(1), DAYS), 1);
@@ -198,7 +198,7 @@ public class TestCopticChronology {
         assertEquals(coptic.until(iso.minusDays(40), DAYS), -40);
     }
 
-    @DataProvider(name="badDates")
+    @DataProvider(name = "badDates")
     Object[][] data_badDates() {
         return new Object[][] {
             {1728, 0, 0},
@@ -230,12 +230,12 @@ public class TestCopticChronology {
         };
     }
 
-    @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
+    @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         CopticDate.of(year, month, dom);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_chronology_dateYearDay_badDate() {
         CopticChronology.INSTANCE.dateYearDay(1728, 366);
     }
@@ -271,7 +271,7 @@ public class TestCopticChronology {
         assertEquals(CopticChronology.INSTANCE.isLeapYear(-6), false);
     }
 
-    @DataProvider(name="lengthOfMonth")
+    @DataProvider(name = "lengthOfMonth")
     Object[][] data_lengthOfMonth() {
         return new Object[][] {
             {1726, 1, 30},
@@ -291,7 +291,7 @@ public class TestCopticChronology {
         };
     }
 
-    @Test(dataProvider="lengthOfMonth")
+    @Test(dataProvider = "lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(CopticDate.of(year, month, 1).lengthOfMonth(), length);
     }
@@ -375,29 +375,29 @@ public class TestCopticChronology {
     @DataProvider(name = "ranges")
     Object[][] data_ranges() {
         return new Object[][] {
-                {1727, 1, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 2, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 3, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 4, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 5, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 6, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 7, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 8, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 9, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 10, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 11, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 12, 23, DAY_OF_MONTH, 1, 30},
-                {1727, 13, 2, DAY_OF_MONTH, 1, 6},
-                {1727, 1, 23, DAY_OF_YEAR, 1, 366},
-                {1727, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
-                {1727, 12, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
-                {1727, 13, 2, ALIGNED_WEEK_OF_MONTH, 1, 1},
-                
-                {1726, 13, 2, DAY_OF_MONTH, 1, 5},
-                {1726, 13, 2, DAY_OF_YEAR, 1, 365},
-                {1726, 13, 2, ALIGNED_WEEK_OF_MONTH, 1, 1},
-                
-                {1726, 2, 23, WeekFields.ISO.dayOfWeek(), 1, 7},
+            {1727, 1, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 2, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 3, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 4, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 5, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 6, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 7, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 8, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 9, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 10, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 11, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 12, 23, DAY_OF_MONTH, 1, 30},
+            {1727, 13, 2, DAY_OF_MONTH, 1, 6},
+            {1727, 1, 23, DAY_OF_YEAR, 1, 366},
+            {1727, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
+            {1727, 12, 23, ALIGNED_WEEK_OF_MONTH, 1, 5},
+            {1727, 13, 2, ALIGNED_WEEK_OF_MONTH, 1, 1},
+
+            {1726, 13, 2, DAY_OF_MONTH, 1, 5},
+            {1726, 13, 2, DAY_OF_YEAR, 1, 365},
+            {1726, 13, 2, ALIGNED_WEEK_OF_MONTH, 1, 1},
+
+            {1726, 2, 23, WeekFields.ISO.dayOfWeek(), 1, 7},
         };
     }
 
@@ -417,21 +417,21 @@ public class TestCopticChronology {
     @DataProvider(name = "getLong")
     Object[][] data_getLong() {
         return new Object[][] {
-                {1727, 6, 8, DAY_OF_WEEK, 2},
-                {1727, 6, 8, DAY_OF_MONTH, 8},
-                {1727, 6, 8, DAY_OF_YEAR, 30 * 5 + 8},
-                {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1},
-                {1727, 6, 8, ALIGNED_WEEK_OF_MONTH, 2},
-                {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_YEAR, 4},
-                {1727, 6, 8, ALIGNED_WEEK_OF_YEAR, 23},
-                {1727, 6, 8, MONTH_OF_YEAR, 6},
-                {1727, 6, 8, PROLEPTIC_MONTH, 1727 * 13 + 6 - 1},
-                {1727, 6, 8, YEAR, 1727},
-                {1727, 6, 8, ERA, 1},
-                {1, 6, 8, ERA, 1},
-                {0, 6, 8, ERA, 0},
-                
-                {1727, 6, 8, WeekFields.ISO.dayOfWeek(), 2},
+            {1727, 6, 8, DAY_OF_WEEK, 2},
+            {1727, 6, 8, DAY_OF_MONTH, 8},
+            {1727, 6, 8, DAY_OF_YEAR, 30 * 5 + 8},
+            {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1},
+            {1727, 6, 8, ALIGNED_WEEK_OF_MONTH, 2},
+            {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_YEAR, 4},
+            {1727, 6, 8, ALIGNED_WEEK_OF_YEAR, 23},
+            {1727, 6, 8, MONTH_OF_YEAR, 6},
+            {1727, 6, 8, PROLEPTIC_MONTH, 1727 * 13 + 6 - 1},
+            {1727, 6, 8, YEAR, 1727},
+            {1727, 6, 8, ERA, 1},
+            {1, 6, 8, ERA, 1},
+            {0, 6, 8, ERA, 0},
+
+            {1727, 6, 8, WeekFields.ISO.dayOfWeek(), 2},
         };
     }
 
@@ -451,24 +451,24 @@ public class TestCopticChronology {
     @DataProvider(name = "with")
     Object[][] data_with() {
         return new Object[][] {
-                {1727, 6, 8, DAY_OF_WEEK, 4, 1727, 6, 10},
-                {1727, 6, 8, DAY_OF_MONTH, 30, 1727, 6, 30},
-                {1727, 6, 8, DAY_OF_YEAR, 365, 1727, 13, 5},
-                {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 1727, 6, 10},
-                {1727, 6, 8, ALIGNED_WEEK_OF_MONTH, 1, 1727, 6, 1},
-                {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 1727, 6, 6},
-                {1727, 6, 8, ALIGNED_WEEK_OF_YEAR, 22, 1727, 6, 1},
-                {1727, 6, 8, MONTH_OF_YEAR, 7, 1727, 7, 8},
-                {1727, 6, 8, PROLEPTIC_MONTH, 2009 * 13 + 3 - 1, 2009, 3, 8},
-                {1727, 6, 8, YEAR, 1728, 1728, 6, 8},
-                {1727, 6, 8, YEAR_OF_ERA, 2012, 2012, 6, 8},
-                {1727, 6, 8, ERA, 0, -1726, 6, 8},
-                
-                {1726, 3, 30, MONTH_OF_YEAR, 13, 1726, 13, 5},
-                {1727, 3, 30, MONTH_OF_YEAR, 13, 1727, 13, 6},
-                {1727, 13, 6, YEAR, 2006, 2006, 13, 5},
-                {-1727, 6, 8, YEAR_OF_ERA, 1722, -1721, 6, 8},
-                {1727, 6, 8, WeekFields.ISO.dayOfWeek(), 5, 1727, 6, 11},
+            {1727, 6, 8, DAY_OF_WEEK, 4, 1727, 6, 10},
+            {1727, 6, 8, DAY_OF_MONTH, 30, 1727, 6, 30},
+            {1727, 6, 8, DAY_OF_YEAR, 365, 1727, 13, 5},
+            {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 1727, 6, 10},
+            {1727, 6, 8, ALIGNED_WEEK_OF_MONTH, 1, 1727, 6, 1},
+            {1727, 6, 8, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 1727, 6, 6},
+            {1727, 6, 8, ALIGNED_WEEK_OF_YEAR, 22, 1727, 6, 1},
+            {1727, 6, 8, MONTH_OF_YEAR, 7, 1727, 7, 8},
+            {1727, 6, 8, PROLEPTIC_MONTH, 2009 * 13 + 3 - 1, 2009, 3, 8},
+            {1727, 6, 8, YEAR, 1728, 1728, 6, 8},
+            {1727, 6, 8, YEAR_OF_ERA, 2012, 2012, 6, 8},
+            {1727, 6, 8, ERA, 0, -1726, 6, 8},
+
+            {1726, 3, 30, MONTH_OF_YEAR, 13, 1726, 13, 5},
+            {1727, 3, 30, MONTH_OF_YEAR, 13, 1727, 13, 6},
+            {1727, 13, 6, YEAR, 2006, 2006, 13, 5},
+            {-1727, 6, 8, YEAR_OF_ERA, 1722, -1721, 6, 8},
+            {1727, 6, 8, WeekFields.ISO.dayOfWeek(), 5, 1727, 6, 11},
         };
     }
 
@@ -511,7 +511,7 @@ public class TestCopticChronology {
         assertEquals(test, CopticDate.of(1728, 10, 29));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_adjust_toMonth() {
         CopticDate coptic = CopticDate.of(1726, 1, 4);
         coptic.with(Month.APRIL);
@@ -540,28 +540,28 @@ public class TestCopticChronology {
     @DataProvider(name = "plus")
     Object[][] data_plus() {
         return new Object[][] {
-                {1726, 5, 26, 0, DAYS, 1726, 5, 26},
-                {1726, 5, 26, 8, DAYS, 1726, 6, 4},
-                {1726, 5, 26, -3, DAYS, 1726, 5, 23},
-                {1726, 5, 26, 0, WEEKS, 1726, 5, 26},
-                {1726, 5, 26, 3, WEEKS, 1726, 6, 17},
-                {1726, 5, 26, -5, WEEKS, 1726, 4, 21},
-                {1726, 5, 26, 0, MONTHS, 1726, 5, 26},
-                {1726, 5, 26, 3, MONTHS, 1726, 8, 26},
-                {1726, 5, 26, -6, MONTHS, 1725, 12, 26},
-                {1726, 5, 26, 0, YEARS, 1726, 5, 26},
-                {1726, 5, 26, 3, YEARS, 1729, 5, 26},
-                {1726, 5, 26, -5, YEARS, 1721, 5, 26},
-                {1726, 5, 26, 0, DECADES, 1726, 5, 26},
-                {1726, 5, 26, 3, DECADES, 1756, 5, 26},
-                {1726, 5, 26, -5, DECADES, 1676, 5, 26},
-                {1726, 5, 26, 0, CENTURIES, 1726, 5, 26},
-                {1726, 5, 26, 3, CENTURIES, 2026, 5, 26},
-                {1726, 5, 26, -5, CENTURIES, 1226, 5, 26},
-                {1726, 5, 26, 0, MILLENNIA, 1726, 5, 26},
-                {1726, 5, 26, 3, MILLENNIA, 4726, 5, 26},
-                {1726, 5, 26, -5, MILLENNIA, 1726 - 5000, 5, 26},
-                {1726, 5, 26, -1, ERAS, -1725, 5, 26},
+            {1726, 5, 26, 0, DAYS, 1726, 5, 26},
+            {1726, 5, 26, 8, DAYS, 1726, 6, 4},
+            {1726, 5, 26, -3, DAYS, 1726, 5, 23},
+            {1726, 5, 26, 0, WEEKS, 1726, 5, 26},
+            {1726, 5, 26, 3, WEEKS, 1726, 6, 17},
+            {1726, 5, 26, -5, WEEKS, 1726, 4, 21},
+            {1726, 5, 26, 0, MONTHS, 1726, 5, 26},
+            {1726, 5, 26, 3, MONTHS, 1726, 8, 26},
+            {1726, 5, 26, -6, MONTHS, 1725, 12, 26},
+            {1726, 5, 26, 0, YEARS, 1726, 5, 26},
+            {1726, 5, 26, 3, YEARS, 1729, 5, 26},
+            {1726, 5, 26, -5, YEARS, 1721, 5, 26},
+            {1726, 5, 26, 0, DECADES, 1726, 5, 26},
+            {1726, 5, 26, 3, DECADES, 1756, 5, 26},
+            {1726, 5, 26, -5, DECADES, 1676, 5, 26},
+            {1726, 5, 26, 0, CENTURIES, 1726, 5, 26},
+            {1726, 5, 26, 3, CENTURIES, 2026, 5, 26},
+            {1726, 5, 26, -5, CENTURIES, 1226, 5, 26},
+            {1726, 5, 26, 0, MILLENNIA, 1726, 5, 26},
+            {1726, 5, 26, 3, MILLENNIA, 4726, 5, 26},
+            {1726, 5, 26, -5, MILLENNIA, 1726 - 5000, 5, 26},
+            {1726, 5, 26, -1, ERAS, -1725, 5, 26},
         };
     }
 
@@ -612,27 +612,27 @@ public class TestCopticChronology {
     @DataProvider(name = "until")
     Object[][] data_until() {
         return new Object[][] {
-                {1726, 5, 26, 1726, 5, 26, DAYS, 0},
-                {1726, 5, 26, 1726, 6, 1, DAYS, 5},
-                {1726, 5, 26, 1726, 5, 20, DAYS, -6},
-                {1726, 5, 26, 1726, 5, 26, WEEKS, 0},
-                {1726, 5, 26, 1726, 6, 2, WEEKS, 0},
-                {1726, 5, 26, 1726, 6, 3, WEEKS, 1},
-                {1726, 5, 26, 1726, 5, 26, MONTHS, 0},
-                {1726, 5, 26, 1726, 6, 25, MONTHS, 0},
-                {1726, 5, 26, 1726, 6, 26, MONTHS, 1},
-                {1726, 5, 26, 1726, 5, 26, YEARS, 0},
-                {1726, 5, 26, 1727, 5, 25, YEARS, 0},
-                {1726, 5, 26, 1727, 5, 26, YEARS, 1},
-                {1726, 5, 26, 1726, 5, 26, DECADES, 0},
-                {1726, 5, 26, 1736, 5, 25, DECADES, 0},
-                {1726, 5, 26, 1736, 5, 26, DECADES, 1},
-                {1726, 5, 26, 1726, 5, 26, CENTURIES, 0},
-                {1726, 5, 26, 1826, 5, 25, CENTURIES, 0},
-                {1726, 5, 26, 1826, 5, 26, CENTURIES, 1},
-                {1726, 5, 26, 1726, 5, 26, MILLENNIA, 0},
-                {1726, 5, 26, 2726, 5, 25, MILLENNIA, 0},
-                {1726, 5, 26, 2726, 5, 26, MILLENNIA, 1},
+            {1726, 5, 26, 1726, 5, 26, DAYS, 0},
+            {1726, 5, 26, 1726, 6, 1, DAYS, 5},
+            {1726, 5, 26, 1726, 5, 20, DAYS, -6},
+            {1726, 5, 26, 1726, 5, 26, WEEKS, 0},
+            {1726, 5, 26, 1726, 6, 2, WEEKS, 0},
+            {1726, 5, 26, 1726, 6, 3, WEEKS, 1},
+            {1726, 5, 26, 1726, 5, 26, MONTHS, 0},
+            {1726, 5, 26, 1726, 6, 25, MONTHS, 0},
+            {1726, 5, 26, 1726, 6, 26, MONTHS, 1},
+            {1726, 5, 26, 1726, 5, 26, YEARS, 0},
+            {1726, 5, 26, 1727, 5, 25, YEARS, 0},
+            {1726, 5, 26, 1727, 5, 26, YEARS, 1},
+            {1726, 5, 26, 1726, 5, 26, DECADES, 0},
+            {1726, 5, 26, 1736, 5, 25, DECADES, 0},
+            {1726, 5, 26, 1736, 5, 26, DECADES, 1},
+            {1726, 5, 26, 1726, 5, 26, CENTURIES, 0},
+            {1726, 5, 26, 1826, 5, 25, CENTURIES, 0},
+            {1726, 5, 26, 1826, 5, 26, CENTURIES, 1},
+            {1726, 5, 26, 1726, 5, 26, MILLENNIA, 0},
+            {1726, 5, 26, 2726, 5, 25, MILLENNIA, 0},
+            {1726, 5, 26, 2726, 5, 26, MILLENNIA, 1},
         };
     }
 
@@ -663,23 +663,23 @@ public class TestCopticChronology {
         CopticDate b = CopticDate.of(1728, 1, 4);
         CopticDate c = CopticDate.of(1728, 2, 3);
         CopticDate d = CopticDate.of(1729, 1, 3);
-        
+
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
         assertEquals(a1.equals(b), false);
         assertEquals(a1.equals(c), false);
         assertEquals(a1.equals(d), false);
-        
+
         assertEquals(a1.equals(null), false);
         assertEquals(a1.equals(""), false);
-        
+
         assertEquals(a1.hashCode(), a2.hashCode());
     }
 
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="toString")
+    @DataProvider(name = "toString")
     Object[][] data_toString() {
         return new Object[][] {
             {CopticDate.of(1, 1, 1), "Coptic AM 1-01-01"},
@@ -690,7 +690,7 @@ public class TestCopticChronology {
         };
     }
 
-    @Test(dataProvider="toString")
+    @Test(dataProvider = "toString")
     public void test_toString(CopticDate coptic, String expected) {
         assertEquals(coptic.toString(), expected);
     }

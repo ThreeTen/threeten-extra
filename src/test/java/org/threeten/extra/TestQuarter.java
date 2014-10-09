@@ -113,12 +113,12 @@ public class TestQuarter {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_of_int_valueTooLow() {
         Quarter.of(0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_of_int_valueTooHigh() {
         Quarter.of(5);
     }
@@ -142,12 +142,12 @@ public class TestQuarter {
         assertEquals(Quarter.ofMonth(12), Quarter.Q4);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_ofMonth_int_valueTooLow() {
         Quarter.ofMonth(0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_ofMonth_int_valueTooHigh() {
         Quarter.ofMonth(13);
     }
@@ -177,12 +177,12 @@ public class TestQuarter {
         assertEquals(Quarter.from(Month.DECEMBER), Quarter.Q4);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_from_TemporalAccessorl_invalid_noDerive() {
         Quarter.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         Quarter.from((TemporalAccessor) null);
     }
@@ -304,7 +304,7 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     // plus(long), plus(long,unit)
     //-----------------------------------------------------------------------
-    @DataProvider(name="plus")
+    @DataProvider(name = "plus")
     Object[][] data_plus() {
         return new Object[][] {
             {1, -5, 4},
@@ -321,7 +321,7 @@ public class TestQuarter {
         };
     }
 
-    @Test(dataProvider="plus")
+    @Test(dataProvider = "plus")
     public void test_plus_long(int base, long amount, int expected) {
         assertEquals(Quarter.of(base).plus(amount), Quarter.of(expected));
     }
@@ -329,7 +329,7 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     // minus(long), minus(long,unit)
     //-----------------------------------------------------------------------
-    @DataProvider(name="minus")
+    @DataProvider(name = "minus")
     Object[][] data_minus() {
         return new Object[][] {
             {1, -5, 2},
@@ -346,7 +346,7 @@ public class TestQuarter {
         };
     }
 
-    @Test(dataProvider="minus")
+    @Test(dataProvider = "minus")
     public void test_minus_long(int base, long amount, int expected) {
         assertEquals(Quarter.of(base).minus(amount), Quarter.of(expected));
     }
