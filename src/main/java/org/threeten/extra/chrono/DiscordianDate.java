@@ -336,22 +336,20 @@ public final class DiscordianDate
         return DiscordianDate.create(prolepticYear, month, day);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     int getProlepticYear() {
-        // TODO Auto-generated method stub
-        return 0;
+        return prolepticYear;
     }
 
     @Override
     int getMonth() {
-        // TODO Auto-generated method stub
-        return 0;
+        return month;
     }
 
     @Override
     int getDayOfMonth() {
-        // TODO Auto-generated method stub
-        return 0;
+        return day;
     }
 
     @Override
