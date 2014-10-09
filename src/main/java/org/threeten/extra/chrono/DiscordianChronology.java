@@ -107,6 +107,15 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     public DiscordianChronology() {
     }
 
+    /**
+     * Resolve singleton.
+     *
+     * @return the singleton instance, not null
+     */
+    private Object readResolve() {
+        return INSTANCE;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the ID of the chronology - 'Discordian'.
