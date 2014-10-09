@@ -32,6 +32,7 @@
 package org.threeten.extra.chrono;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
@@ -77,6 +78,18 @@ public final class DiscordianDate
      * The difference between the Discordian and ISO epoch day count (Discordian 1267-01-01 to ISO 1970-01-01).
      */
     private static final int DISCORDIAN_1267_TO_ISO_1970 = 719162;
+    /**
+     * The days per short 4 year cycle.
+     */
+    private static final int DAYS_PER_SHORT_CYCLE = (365 * 4) + 1;
+    /**
+     * The days per 100 year cycle.
+     */
+    private static final int DAYS_PER_CYCLE = (DAYS_PER_SHORT_CYCLE * 25) - 1;
+    /**
+     * The days per 400 year long cycle.
+     */
+    private static final int DAYS_PER_LONG_CYCLE = (DAYS_PER_CYCLE * 4) + 1;
 
     /**
      * The proleptic year.
@@ -196,8 +209,27 @@ public final class DiscordianDate
      *  or if the day-of-year is invalid for the year
      */
     static DiscordianDate ofYearDay(int prolepticYear, int dayOfYear) {
-        // TODO Auto-generated method stub
-        return null;
+        DiscordianChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
+        DAY_OF_YEAR.checkValidValue(dayOfYear);
+        boolean leap = DiscordianChronology.INSTANCE.isLeapYear(prolepticYear);
+        if (dayOfYear == 366 && !leap) {
+            throw new DateTimeException("Invalid date 'DayOfYear 366' as '" + prolepticYear + "' is not a leap year");
+        }
+
+        if (leap) {
+            if (dayOfYear == 60) {
+                // Take care of special case of St Tib's Day.
+                return new DiscordianDate(prolepticYear, 0, 0);
+            } else if (dayOfYear > 60) {
+                // Offset dayOfYear to account for added day.
+                dayOfYear--;
+            }
+        }
+
+        int month = (dayOfYear - 1) / 73 + 1;
+        int dayOfMonth = (dayOfYear - 1) % 73 + 1;
+
+        return new DiscordianDate(prolepticYear, month, dayOfMonth);
     }
 
     /**
@@ -209,8 +241,32 @@ public final class DiscordianDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static DiscordianDate ofEpochDay(final long epochDay) {
-        // TODO Auto-generated method stub
-        return null;
+        DiscordianChronology.EPOCH_DAY_RANGE.checkValidValue(epochDay, EPOCH_DAY);
+        
+        // use of Discordian 1267 makes leap year at end of long cycle
+        long discordianEpochDay = epochDay + DISCORDIAN_1267_TO_ISO_1970;
+        
+        long longCycle = Math.floorDiv(discordianEpochDay, DAYS_PER_LONG_CYCLE);
+        long daysInLongCycle = Math.floorMod(discordianEpochDay, DAYS_PER_LONG_CYCLE);
+        if (daysInLongCycle == DAYS_PER_LONG_CYCLE) {
+            int year = (int) (longCycle * 400) + 400;
+            return ofYearDay(year, 366); 
+        }
+        
+        int cycle = (int) daysInLongCycle / DAYS_PER_CYCLE;
+        int dayInCycle = (int) daysInLongCycle % DAYS_PER_CYCLE;
+        int shortCycle = dayInCycle / DAYS_PER_SHORT_CYCLE;
+        int dayInShortCycle = dayInCycle % DAYS_PER_SHORT_CYCLE;
+        
+        if (dayInShortCycle == DAYS_PER_SHORT_CYCLE - 1) {
+            int year = (int) (longCycle * 400) + (cycle * 100) + (shortCycle * 4) + 4;
+            return ofYearDay(year, 366);
+        }
+        
+        int year = (int) (longCycle * 400) + (cycle * 100) + (shortCycle * 4) + (dayInShortCycle / 365) + 1;
+        int dayOfYear = (dayInShortCycle % 365) + 1;
+        
+        return ofYearDay(year, dayOfYear);
     }
 
     private static DiscordianDate resolvePreviousValid(int prolepticYear, int month, int day) {
