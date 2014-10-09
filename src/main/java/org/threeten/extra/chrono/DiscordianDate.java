@@ -382,10 +382,18 @@ public final class DiscordianDate
         return resolvePreviousValid(newYear, newMonth, dayOfMonth);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the chronology of this date, which is the Discordian calendar system.
+     * <p>
+     * The {@code Chronology} represents the calendar system in use.
+     * The era and other fields in {@link ChronoField} are defined by the chronology.
+     *
+     * @return the Discordian chronology, not null
+     */
     @Override
-    public Chronology getChronology() {
-        // TODO Auto-generated method stub
-        return null;
+    public DiscordianChronology getChronology() {
+        return DiscordianChronology.INSTANCE;
     }
 
     @Override
