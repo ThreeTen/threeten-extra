@@ -44,7 +44,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoPeriod;
-import java.time.chrono.Chronology;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -242,30 +241,30 @@ public final class DiscordianDate
      */
     static DiscordianDate ofEpochDay(final long epochDay) {
         DiscordianChronology.EPOCH_DAY_RANGE.checkValidValue(epochDay, EPOCH_DAY);
-        
+
         // use of Discordian 1267 makes leap year at end of long cycle
         long discordianEpochDay = epochDay + DISCORDIAN_1167_TO_ISO_1970;
-        
+
         long longCycle = Math.floorDiv(discordianEpochDay, DAYS_PER_LONG_CYCLE);
         long daysInLongCycle = Math.floorMod(discordianEpochDay, DAYS_PER_LONG_CYCLE);
-        if (daysInLongCycle == DAYS_PER_LONG_CYCLE) {
+        if (daysInLongCycle == DAYS_PER_LONG_CYCLE - 1) {
             int year = (int) (longCycle * 400) + 400;
-            return ofYearDay(year + 1166, 366); 
+            return ofYearDay(year + 1166, 366);
         }
-        
+
         int cycle = (int) daysInLongCycle / DAYS_PER_CYCLE;
         int dayInCycle = (int) daysInLongCycle % DAYS_PER_CYCLE;
         int shortCycle = dayInCycle / DAYS_PER_SHORT_CYCLE;
         int dayInShortCycle = dayInCycle % DAYS_PER_SHORT_CYCLE;
-        
+
         if (dayInShortCycle == DAYS_PER_SHORT_CYCLE - 1) {
             int year = (int) (longCycle * 400) + (cycle * 100) + (shortCycle * 4) + 4;
             return ofYearDay(year + 1166, 366);
         }
-        
+
         int year = (int) (longCycle * 400) + (cycle * 100) + (shortCycle * 4) + (dayInShortCycle / 365) + 1;
         int dayOfYear = (dayInShortCycle % 365) + 1;
-        
+
         return ofYearDay(year + 1166, dayOfYear);
     }
 
