@@ -99,6 +99,30 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * Range of day-of-month.
      */
     static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, 73, 73);
+    /**
+     * Range of proleptic month.
+     */
+    private static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(0, 999_999 * 5L + 4);
+    /**
+     * Range of day-of-week.
+     */
+    private static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, 5, 5);
+    /**
+     * Range of week-of-month.
+     */
+    private static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(0, 1, 15, 15);
+    /**
+     * Range of week-of-year.
+     */
+    private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 73, 73);
+    /**
+     * Range of epoch day.
+     */
+    private static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(-1_145_400, 999_999 * 365L + 242_499);
+    /**
+     * Range of eras.
+     */
+    private static final ValueRange ERA_RANGE = ValueRange.of(0, 1);
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}. 
@@ -364,6 +388,31 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     //-----------------------------------------------------------------------
     @Override
     public ValueRange range(ChronoField field) {
+        switch (field) {
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+            case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+            case DAY_OF_WEEK:
+                return DAY_OF_WEEK_RANGE;
+            case ALIGNED_WEEK_OF_MONTH:
+                return WEEK_OF_MONTH_RANGE;
+            case ALIGNED_WEEK_OF_YEAR:
+                return WEEK_OF_YEAR_RANGE;
+            case DAY_OF_MONTH:
+                return DAY_OF_MONTH_RANGE;
+            case EPOCH_DAY:
+                return EPOCH_DAY_RANGE;
+            case ERA:
+                return ERA_RANGE;
+            case MONTH_OF_YEAR:
+                return MONTH_OF_YEAR_RANGE;
+            case PROLEPTIC_MONTH:
+                return PROLEPTIC_MONTH_RANGE;
+            case YEAR_OF_ERA:
+            case YEAR:
+                return YEAR_RANGE;
+            default:
+                break;
+        }
         return field.range();
     }
 
