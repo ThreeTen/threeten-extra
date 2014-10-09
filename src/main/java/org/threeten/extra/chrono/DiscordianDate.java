@@ -75,9 +75,9 @@ public final class DiscordianDate
      */
     private static final long serialVersionUID = -4340508226506164852L;
     /**
-     * The difference between the Discordian and ISO epoch day count (Discordian 1267-01-01 to ISO 1970-01-01).
+     * The difference between the Discordian and ISO epoch day count (Discordian 1167-01-01 to ISO 1970-01-01).
      */
-    private static final int DISCORDIAN_1267_TO_ISO_1970 = 719162;
+    private static final int DISCORDIAN_1167_TO_ISO_1970 = 719162;
     /**
      * The days per short 4 year cycle.
      */
@@ -244,7 +244,7 @@ public final class DiscordianDate
         DiscordianChronology.EPOCH_DAY_RANGE.checkValidValue(epochDay, EPOCH_DAY);
         
         // use of Discordian 1267 makes leap year at end of long cycle
-        long discordianEpochDay = epochDay + DISCORDIAN_1267_TO_ISO_1970;
+        long discordianEpochDay = epochDay + DISCORDIAN_1167_TO_ISO_1970;
         
         long longCycle = Math.floorDiv(discordianEpochDay, DAYS_PER_LONG_CYCLE);
         long daysInLongCycle = Math.floorMod(discordianEpochDay, DAYS_PER_LONG_CYCLE);
@@ -283,7 +283,7 @@ public final class DiscordianDate
     }
 
     private static long getLeapYearsBefore(long year) {
-        long offsetYear = year - 1266 - 1;
+        long offsetYear = year - 1166 - 1;
         return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400);
     }
 
@@ -416,8 +416,8 @@ public final class DiscordianDate
     @Override
     public long toEpochDay() {
         long year = prolepticYear;
-        long discordianEpochDay = ((year - 1266 - 1) * 365) + getLeapYearsBefore(year) + (getDayOfYear() - 1);
-        return discordianEpochDay - DISCORDIAN_1267_TO_ISO_1970;
+        long discordianEpochDay = ((year - 1166 - 1) * 365) + getLeapYearsBefore(year) + (getDayOfYear() - 1);
+        return discordianEpochDay - DISCORDIAN_1167_TO_ISO_1970;
     }
 
 }
