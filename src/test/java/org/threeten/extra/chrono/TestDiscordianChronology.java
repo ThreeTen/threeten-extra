@@ -73,7 +73,7 @@ public class TestDiscordianChronology {
     // -----------------------------------------------------------------------
     // creation, toLocalDate()
     // -----------------------------------------------------------------------
-    @DataProvider(name="samples")
+    @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
             {DiscordianDate.of(1167, 1, 1), LocalDate.of(1, 1, 1)},
@@ -109,47 +109,47 @@ public class TestDiscordianChronology {
         };
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_LocalDate_from_DiscordianDate(DiscordianDate discordian, LocalDate iso) {
         assertEquals(LocalDate.from(discordian), iso);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_DiscordianDate_from_LocalDate(DiscordianDate discordian, LocalDate iso) {
         assertEquals(DiscordianDate.from(iso), discordian);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_DiscordianDate_chronology_dateEpochDay(DiscordianDate discordian, LocalDate iso) {
         assertEquals(DiscordianChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), discordian);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_DiscordianDate_toEpochDay(DiscordianDate discordian, LocalDate iso) {
         assertEquals(discordian.toEpochDay(), iso.toEpochDay());
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_DiscordianDate_until_DiscordianDate(DiscordianDate discordian, LocalDate iso) {
         assertEquals(discordian.until(discordian), DiscordianChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_DiscordianDate_until_LocalDate(DiscordianDate discordian, LocalDate iso) {
         assertEquals(discordian.until(iso), DiscordianChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_LocalDate_until_DiscordianDate(DiscordianDate discordian, LocalDate iso) {
         assertEquals(iso.until(discordian), Period.ZERO);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_Chronology_date_Temporal(DiscordianDate discordian, LocalDate iso) {
         assertEquals(DiscordianChronology.INSTANCE.date(iso), discordian);
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_plusDays(DiscordianDate discordian, LocalDate iso) {
         assertEquals(LocalDate.from(discordian.plus(0, DAYS)), iso);
         assertEquals(LocalDate.from(discordian.plus(1, DAYS)), iso.plusDays(1));
@@ -158,7 +158,7 @@ public class TestDiscordianChronology {
         assertEquals(LocalDate.from(discordian.plus(-60, DAYS)), iso.plusDays(-60));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_minusDays(DiscordianDate discordian, LocalDate iso) {
         assertEquals(LocalDate.from(discordian.minus(0, DAYS)), iso);
         assertEquals(LocalDate.from(discordian.minus(1, DAYS)), iso.minusDays(1));
@@ -167,7 +167,7 @@ public class TestDiscordianChronology {
         assertEquals(LocalDate.from(discordian.minus(-60, DAYS)), iso.minusDays(-60));
     }
 
-    @Test(dataProvider="samples")
+    @Test(dataProvider = "samples")
     public void test_until_DAYS(DiscordianDate discordian, LocalDate iso) {
         assertEquals(discordian.until(iso.plusDays(0), DAYS), 0);
         assertEquals(discordian.until(iso.plusDays(1), DAYS), 1);
@@ -175,7 +175,7 @@ public class TestDiscordianChronology {
         assertEquals(discordian.until(iso.minusDays(40), DAYS), -40);
     }
 
-    @DataProvider(name="badDates")
+    @DataProvider(name = "badDates")
     Object[][] data_badDates() {
         return new Object[][] {
             {1900, 0, 0},
@@ -201,12 +201,12 @@ public class TestDiscordianChronology {
         };
     }
 
-    @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
+    @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         DiscordianDate.of(year, month, dom);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_chronology_dateYearDay_badDate() {
         DiscordianChronology.INSTANCE.dateYearDay(2001, 366);
     }

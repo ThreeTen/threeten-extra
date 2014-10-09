@@ -71,7 +71,6 @@ public final class DiscordianDate
      */
     private static final long serialVersionUID = -4340508226506164852L;
 
-
     /**
      * The proleptic year.
      */
@@ -190,7 +189,7 @@ public final class DiscordianDate
      *  or if the day-of-year is invalid for the year
      */
     static DiscordianDate ofYearDay(int prolepticYear, int dayOfYear) {
-     // TODO Auto-generated method stub
+        // TODO Auto-generated method stub
         return null;
     }
 
@@ -203,12 +202,12 @@ public final class DiscordianDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static DiscordianDate ofEpochDay(final long epochDay) {
-     // TODO Auto-generated method stub
+        // TODO Auto-generated method stub
         return null;
     }
 
     private static DiscordianDate resolvePreviousValid(int prolepticYear, int month, int day) {
-     // TODO Auto-generated method stub
+        // TODO Auto-generated method stub
         return null;
     }
 
@@ -223,7 +222,7 @@ public final class DiscordianDate
      *  or if the day-of-year is invalid for the month-year
      */
     static DiscordianDate create(int prolepticYear, int month, int dayOfMonth) {
-     // TODO Auto-generated method stub
+        // TODO Auto-generated method stub
         return null;
     }
 
