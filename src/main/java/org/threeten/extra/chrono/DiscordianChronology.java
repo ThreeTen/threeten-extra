@@ -70,6 +70,11 @@ import java.util.List;
 public final class DiscordianChronology extends AbstractChronology implements Serializable {
 
     /**
+     * Singleton instance for the Julian chronology.
+     */
+    public static final DiscordianChronology INSTANCE = new DiscordianChronology();
+
+    /**
      * Serialization version.
      */
     private static final long serialVersionUID = 1075529146344250850L;
@@ -85,11 +90,6 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * Range of day-of-month.
      */
     static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, 73, 73);
-
-    /**
-     * Singleton instance for the Julian chronology.
-     */
-    public static final DiscordianChronology INSTANCE = new DiscordianChronology();
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}. 
@@ -180,5 +180,4 @@ public final class DiscordianChronology extends AbstractChronology implements Se
         // TODO Auto-generated method stub
         return null;
     }
-
 }
