@@ -98,40 +98,18 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     public DiscordianChronology() {
     }
 
+    /**
+     * Gets the ID of the chronology - 'Discordian'.
+     * <p>
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     *
+     * @return the chronology ID - 'Discordian'
+     * @see #getCalendarType()
+     */
     @Override
-    public ChronoLocalDate date(TemporalAccessor arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ChronoLocalDate date(int arg0, int arg1, int arg2) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ChronoLocalDate dateEpochDay(long arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ChronoLocalDate dateYearDay(int arg0, int arg1) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Era eraOf(int arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Era> eras() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getId() {
+        return "Discordian";
     }
 
     /**
@@ -149,18 +127,28 @@ public final class DiscordianChronology extends AbstractChronology implements Se
         return "discordian";
     }
 
-    /**
-     * Gets the ID of the chronology - 'Discordian'.
-     * <p>
-     * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
-     *
-     * @return the chronology ID - 'Discordian'
-     * @see #getCalendarType()
-     */
     @Override
-    public String getId() {
-        return "Discordian";
+    public ChronoLocalDate date(int arg0, int arg1, int arg2) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ChronoLocalDate dateYearDay(int arg0, int arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ChronoLocalDate dateEpochDay(long arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ChronoLocalDate date(TemporalAccessor arg0) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -173,6 +161,18 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     public int prolepticYear(Era arg0, int arg1) {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public Era eraOf(int arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Era> eras() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
