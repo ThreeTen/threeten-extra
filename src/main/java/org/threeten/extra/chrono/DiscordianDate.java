@@ -70,6 +70,10 @@ public final class DiscordianDate
      * Serialization version.
      */
     private static final long serialVersionUID = -4340508226506164852L;
+    /**
+     * The difference between the Discordian and ISO epoch day count (Discordian 1267-01-01 to ISO 1970-01-01).
+     */
+    private static final int DISCORDIAN_1267_TO_ISO_1970 = 719162;
 
     /**
      * The proleptic year.
@@ -211,6 +215,11 @@ public final class DiscordianDate
         return null;
     }
 
+    private static long getLeapYearsBefore(long year) {
+        long offsetYear = year - 1266 - 1;
+        return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400);
+    }
+
     /**
      * Creates a {@code DiscordianDate} validating the input.
      *
@@ -269,8 +278,13 @@ public final class DiscordianDate
 
     @Override
     int getDayOfYear() {
-        // TODO Auto-generated method stub
-        return 0;
+        // St. Tib's Day isn't part of any month, but would be the 60th day of the year.
+        if (month == 0 && day == 0) {
+            return 60;
+        }
+        int dayOfYear = (month - 1) * 73 + day;
+        // If after St. Tib's day, need to offset to account for it.
+        return dayOfYear + (dayOfYear >= 60 && isLeapYear() ? 1 : 0);
     }
 
     @Override
@@ -312,6 +326,14 @@ public final class DiscordianDate
     public ChronoPeriod until(ChronoLocalDate arg0) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long toEpochDay() {
+        long year = prolepticYear;
+        long discordianEpochDay = ((year - 1266 - 1) * 365) + getLeapYearsBefore(year) + (getDayOfYear() - 1);
+        return discordianEpochDay - DISCORDIAN_1267_TO_ISO_1970;
     }
 
 }

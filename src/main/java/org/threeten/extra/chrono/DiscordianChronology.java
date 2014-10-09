@@ -152,9 +152,9 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     }
 
     @Override
-    public boolean isLeapYear(long arg0) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean isLeapYear(long prolepticYear) {
+        long offsetYear = prolepticYear - 1266;
+        return (offsetYear % 4 == 0) && ((offsetYear % 400 == 0) || (offsetYear % 100 != 0));
     }
 
     @Override
