@@ -100,6 +100,10 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      */
     static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, 73, 73);
     /**
+     * Range of epoch day.
+     */
+    static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(-1_145_400, 999_999 * 365L + 242_499);
+    /**
      * Range of proleptic month.
      */
     private static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(0, 999_999 * 5L + 4);
@@ -115,10 +119,6 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * Range of week-of-year.
      */
     private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 73, 73);
-    /**
-     * Range of epoch day.
-     */
-    private static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(-1_145_400, 999_999 * 365L + 242_499);
     /**
      * Range of eras.
      */
