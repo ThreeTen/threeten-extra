@@ -32,14 +32,22 @@
 package org.threeten.extra.chrono;
 
 import java.io.Serializable;
+import java.time.Clock;
 import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Era;
+import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Discordian calendar system.
@@ -71,7 +79,7 @@ import java.util.List;
 public final class DiscordianChronology extends AbstractChronology implements Serializable {
 
     /**
-     * Singleton instance for the Julian chronology.
+     * Singleton instance for the Discordian chronology.
      */
     public static final DiscordianChronology INSTANCE = new DiscordianChronology();
 
@@ -132,6 +140,23 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     //-----------------------------------------------------------------------
     /**
      * Obtains a local date in Discordian calendar system from the
+     * era, year-of-era, month-of-year and day-of-month fields.
+     *
+     * @param era  the Discordian era, not null
+     * @param yearOfEra  the year-of-era
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
+     * @return the Discordian local date, not null
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code DiscordianEra}
+     */
+    @Override
+    public DiscordianDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+        return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
+    }
+
+    /**
+     * Obtains a local date in Discordian calendar system from the
      * proleptic-year, month-of-year and day-of-month fields.
      *
      * @param prolepticYear  the proleptic-year
@@ -143,6 +168,22 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     @Override
     public DiscordianDate date(int prolepticYear, int month, int dayOfMonth) {
         return DiscordianDate.of(prolepticYear, month, dayOfMonth);
+    }
+
+    /**
+     * Obtains a local date in Discordian calendar system from the
+     * era, year-of-era and day-of-year fields.
+     *
+     * @param era  the Discordian era, not null
+     * @param yearOfEra  the year-of-era
+     * @param dayOfYear  the day-of-year
+     * @return the Discordian local date, not null
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code DiscordianEra}
+     */
+    @Override
+    public DiscordianDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
+        return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
     /**
@@ -173,6 +214,58 @@ public final class DiscordianChronology extends AbstractChronology implements Se
 
     //-------------------------------------------------------------------------
     /**
+     * Obtains the current Discordian local date from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current Discordian local date using the system clock and default time-zone, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public DiscordianDate dateNow() {
+        return DiscordianDate.now();
+    }
+
+    /**
+     * Obtains the current Discordian local date from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @param zone  the zone ID to use, not null
+     * @return the current Discordian local date using the system clock, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public DiscordianDate dateNow(ZoneId zone) {
+        return DiscordianDate.now(zone);
+    }
+
+    /**
+     * Obtains the current Discordian local date from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current Discordian local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public DiscordianDate dateNow(Clock clock) {
+        return DiscordianDate.now(clock);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
      * Obtains a Discordian local date from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
@@ -184,11 +277,51 @@ public final class DiscordianChronology extends AbstractChronology implements Se
         return DiscordianDate.from(temporal);
     }
 
+    /**
+     * Obtains a Discordian local date-time from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Discordian local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<DiscordianDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<DiscordianDate>) super.localDateTime(temporal);
+    }
+
+    /**
+     * Obtains a Discordian zoned date-time from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Discordian zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<DiscordianDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<DiscordianDate>) super.zonedDateTime(temporal);
+    }
+
+    /**
+     * Obtains a Discordian zoned date-time in this chronology from an {@code Instant}.
+     *
+     * @param instant  the instant to create the date-time from, not null
+     * @param zone  the time-zone, not null
+     * @return the Discordian zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<DiscordianDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<DiscordianDate>) super.zonedDateTime(instant, zone);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.
      * <p>
-     * A Julian proleptic-year is leap if the remainder after division by four equals zero.
+     * A Discordian proleptic-year is leap if the remainder after division by four equals zero.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
      *
@@ -224,4 +357,11 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     public ValueRange range(ChronoField field) {
         return field.range();
     }
+
+    //-----------------------------------------------------------------------
+    @Override  // override for return type
+    public DiscordianDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+        return (DiscordianDate) super.resolveDate(fieldValues, resolverStyle);
+    }
+
 }
