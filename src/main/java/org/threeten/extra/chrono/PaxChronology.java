@@ -90,7 +90,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * Serialization version.
      */
     private static final long serialVersionUID = -7021464635577802085L;
-    
+
     /**
      * The leap-month of Pax is only one week long.
      */

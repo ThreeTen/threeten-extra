@@ -60,7 +60,6 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
@@ -465,6 +464,7 @@ public final class PaxDate
     long getProlepticMonth() {
         return ((long) getProlepticYear()) * MONTHS_IN_YEAR + getLeapYearsBefore(getProlepticYear()) + month - 1;
     }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the chronology of this date, which is the Pax calendar system.
