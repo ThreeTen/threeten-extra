@@ -58,6 +58,7 @@ import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalField;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -405,6 +406,51 @@ public class TestDiscordianChronology {
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_range_unsupported() {
         DiscordianDate.of(2012, 5, 30).range(MINUTE_OF_DAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // DiscordianDate.getLong
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "getLong")
+    Object[][] data_getLong() {
+        return new Object[][] {
+            {2014, 5, 26, DAY_OF_WEEK, 5},
+            {2014, 5, 26, DAY_OF_MONTH, 26},
+            {2014, 5, 26, DAY_OF_YEAR, 1 + 73 + 73 + 73 + 73 + 26},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 6},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 63},
+            {2014, 5, 26, MONTH_OF_YEAR, 5},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2013 * 5 + 5 - 1},
+            {2014, 5, 26, YEAR, 2014},
+            {2014, 5, 26, ERA, 1},
+            {1, 5, 8, ERA, 1},
+
+            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 6},
+
+            {2014, 0, 0, DAY_OF_WEEK, 0},
+            {2014, 0, 0, DAY_OF_MONTH, 0},
+            {2014, 0, 0, DAY_OF_YEAR, 60},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 0},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 0},
+            {2014, 0, 0, MONTH_OF_YEAR, 0},
+            {2014, 0, 0, PROLEPTIC_MONTH, 2013 * 5 + 5 - 1},
+
+            {2014, 0, 0, WeekFields.ISO.dayOfWeek(), 6},
+        };
+    }
+
+    @Test(dataProvider = "getLong")
+    public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
+        assertEquals(DiscordianDate.of(year, month, dom).getLong(field), expected);
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_getLong_unsupported() {
+        DiscordianDate.of(2012, 6, 30).getLong(MINUTE_OF_DAY);
     }
 
 }
