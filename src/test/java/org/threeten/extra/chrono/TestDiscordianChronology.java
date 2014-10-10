@@ -31,6 +31,8 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.YEAR;
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.testng.Assert.assertEquals;
 
@@ -38,6 +40,9 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.chrono.Chronology;
+import java.time.chrono.Era;
+import java.time.chrono.IsoEra;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.testng.Assert;
@@ -269,4 +274,63 @@ public class TestDiscordianChronology {
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(DiscordianDate.of(year, month, 1).lengthOfMonth(), length);
     }
+
+    //-----------------------------------------------------------------------
+    // era, prolepticYear and dateYearDay
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_era_loop() {
+        for (int year = 1; year < 200; year++) {
+            DiscordianDate base = DiscordianChronology.INSTANCE.date(year, 1, 1);
+            assertEquals(year, base.get(YEAR));
+            assertEquals(DiscordianEra.YOLD, base.getEra());
+            assertEquals(year, base.get(YEAR_OF_ERA));
+            DiscordianDate eraBased = DiscordianChronology.INSTANCE.date(DiscordianEra.YOLD, year, 1, 1);
+            assertEquals(eraBased, base);
+        }
+    }
+
+    @Test
+    public void test_era_yearDay_loop() {
+        for (int year = 1; year < 200; year++) {
+            DiscordianDate base = DiscordianChronology.INSTANCE.dateYearDay(year, 1);
+            assertEquals(year, base.get(YEAR));
+            assertEquals(DiscordianEra.YOLD, base.getEra());
+            assertEquals(year, base.get(YEAR_OF_ERA));
+            DiscordianDate eraBased = DiscordianChronology.INSTANCE.dateYearDay(DiscordianEra.YOLD, year, 1);
+            assertEquals(eraBased, base);
+        }
+    }
+
+    @Test
+    public void test_prolepticYear_specific() {
+        assertEquals(DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 4), 4);
+        assertEquals(DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 3), 3);
+        assertEquals(DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 2), 2);
+        assertEquals(DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 1), 1);
+    }
+
+    @Test(expectedExceptions = ClassCastException.class)
+    public void test_prolepticYear_badEra() {
+        DiscordianChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
+    }
+
+    @Test
+    public void test_Chronology_eraOf() {
+        assertEquals(DiscordianChronology.INSTANCE.eraOf(1), DiscordianEra.YOLD);
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_Chronology_eraOf_invalid() {
+        DiscordianChronology.INSTANCE.eraOf(2);
+        DiscordianChronology.INSTANCE.eraOf(0);
+    }
+
+    @Test
+    public void test_Chronology_eras() {
+        List<Era> eras = DiscordianChronology.INSTANCE.eras();
+        assertEquals(eras.size(), 1);
+        assertEquals(eras.contains(DiscordianEra.YOLD), true);
+    }
+
 }
