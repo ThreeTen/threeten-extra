@@ -40,6 +40,7 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.ERA;
+import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
@@ -53,6 +54,9 @@ import java.time.Period;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalField;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.List;
 import java.util.function.Predicate;
@@ -363,6 +367,44 @@ public class TestDiscordianChronology {
         assertEquals(DiscordianChronology.INSTANCE.range(PROLEPTIC_MONTH), ValueRange.of(0, 999_999 * 5L - 1));
         assertEquals(DiscordianChronology.INSTANCE.range(YEAR), ValueRange.of(1, 999_999));
         assertEquals(DiscordianChronology.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(1, 999_999));
+    }
+
+    //-----------------------------------------------------------------------
+    // DiscordianDate.range
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "ranges")
+    Object[][] data_ranges() {
+        return new Object[][] {
+            {2010, 0, 0, DAY_OF_MONTH, 0, 0},
+            {2010, 1, 23, DAY_OF_MONTH, 1, 73},
+            {2010, 2, 23, DAY_OF_MONTH, 1, 73},
+            {2010, 3, 23, DAY_OF_MONTH, 1, 73},
+            {2010, 4, 23, DAY_OF_MONTH, 1, 73},
+            {2010, 5, 23, DAY_OF_MONTH, 1, 73},
+            {2010, 1, 23, DAY_OF_YEAR, 1, 366},
+            {2010, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 15},
+            {2010, 1, 1, MONTH_OF_YEAR, 0, 5},
+            {2010, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
+            {2010, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 0},
+            {2010, 0, 0, ALIGNED_WEEK_OF_MONTH, 0, 0},
+            {2010, 0, 0, ALIGNED_WEEK_OF_YEAR, 0, 0},
+            {2010, 0, 0, DAY_OF_WEEK, 0, 0},
+
+            {2011, 2, 23, DAY_OF_YEAR, 1, 365},
+            {2011, 1, 23, MONTH_OF_YEAR, 1, 5},
+
+            {2011, 2, 23, IsoFields.QUARTER_OF_YEAR, 1, 4},
+        };
+    }
+
+    @Test(dataProvider = "ranges")
+    public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
+        assertEquals(DiscordianDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_range_unsupported() {
+        DiscordianDate.of(2012, 5, 30).range(MINUTE_OF_DAY);
     }
 
 }
