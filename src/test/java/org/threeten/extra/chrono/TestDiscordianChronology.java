@@ -38,6 +38,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.chrono.Chronology;
+import java.util.function.Predicate;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -49,9 +50,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestDiscordianChronology {
 
-    // -----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     // Chronology.of(String)
-    // -----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     @Test
     public void test_chronology_of_name() {
         Chronology chrono = Chronology.of("Discordian");
@@ -70,9 +71,9 @@ public class TestDiscordianChronology {
         Assert.assertEquals(chrono.getCalendarType(), "discordian");
     }
 
-    // -----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     // creation, toLocalDate()
-    // -----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
@@ -211,4 +212,61 @@ public class TestDiscordianChronology {
         DiscordianChronology.INSTANCE.dateYearDay(2001, 366);
     }
 
+    //-----------------------------------------------------------------------
+    // isLeapYear()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_isLeapYear_loop() {
+        Predicate<Integer> isLeapYear = year -> {
+            int offsetYear = year - 1166;
+            return offsetYear % 4 == 0 && (offsetYear % 400 == 0 || offsetYear % 100 != 0);
+        };
+        for (int year = 1066; year < 1567; year++) {
+            DiscordianDate base = DiscordianDate.of(year, 1, 1);
+            assertEquals(base.isLeapYear(), isLeapYear.test(year), "Mismatch on " + year);
+            assertEquals(DiscordianChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year), "Mismatch on " + year);
+        }
+    }
+
+    @Test
+    public void test_isLeapYear_specific() {
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1174), true);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1173), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1172), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1171), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1170), true);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1169), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1168), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1167), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1166), true);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1165), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1164), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1163), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1162), true);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1161), false);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1160), false);
+    }
+
+    @DataProvider(name = "lengthOfMonth")
+    Object[][] data_lengthOfMonth() {
+        return new Object[][] {
+            {1900, 1, 73},
+            {1900, 2, 73},
+            {1900, 3, 73},
+            {1900, 4, 73},
+            {1900, 5, 73},
+
+            {1901, 1, 73},
+            {1902, 1, 73},
+            {1903, 1, 73},
+            {1904, 1, 73},
+            {1966, 1, 73},
+            {2066, 1, 73},
+        };
+    }
+
+    @Test(dataProvider = "lengthOfMonth")
+    public void test_lengthOfMonth(int year, int month, int length) {
+        assertEquals(DiscordianDate.of(year, month, 1).lengthOfMonth(), length);
+    }
 }
