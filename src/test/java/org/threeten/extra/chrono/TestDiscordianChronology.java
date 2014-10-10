@@ -31,6 +31,17 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.ERA;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -42,6 +53,7 @@ import java.time.Period;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
+import java.time.temporal.ValueRange;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -331,6 +343,26 @@ public class TestDiscordianChronology {
         List<Era> eras = DiscordianChronology.INSTANCE.eras();
         assertEquals(eras.size(), 1);
         assertEquals(eras.contains(DiscordianEra.YOLD), true);
+    }
+
+    //-----------------------------------------------------------------------
+    // Chronology.range
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_Chronology_range() {
+        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(0, 1, 5, 5));
+        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(0, 1, 5, 5));
+        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(0, 1, 15, 15));
+        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(0, 1, 73, 73));
+        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(0, 1, 5, 5));
+        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(0, 1, 73, 73));
+        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
+        assertEquals(DiscordianChronology.INSTANCE.range(EPOCH_DAY), ValueRange.of(-1_145_400, 999_999 * 365L + 242_499));
+        assertEquals(DiscordianChronology.INSTANCE.range(ERA), ValueRange.of(1, 1));
+        assertEquals(DiscordianChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(0, 1, 5, 5));
+        assertEquals(DiscordianChronology.INSTANCE.range(PROLEPTIC_MONTH), ValueRange.of(0, 999_999 * 5L - 1));
+        assertEquals(DiscordianChronology.INSTANCE.range(YEAR), ValueRange.of(1, 999_999));
+        assertEquals(DiscordianChronology.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(1, 999_999));
     }
 
 }
