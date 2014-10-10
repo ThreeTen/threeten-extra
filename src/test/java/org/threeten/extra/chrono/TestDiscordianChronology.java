@@ -453,4 +453,70 @@ public class TestDiscordianChronology {
         DiscordianDate.of(2012, 6, 30).getLong(MINUTE_OF_DAY);
     }
 
+    //-----------------------------------------------------------------------
+    // DiscordianDate.with
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "with")
+    Object[][] data_with() {
+        return new Object[][] {
+            {2014, 5, 26, DAY_OF_WEEK, 3, 2014, 5, 24},
+            {2014, 5, 26, DAY_OF_WEEK, 5, 2014, 5, 26},
+            {2014, 5, 26, DAY_OF_MONTH, 31, 2014, 5, 31},
+            {2014, 5, 26, DAY_OF_MONTH, 26, 2014, 5, 26},
+            {2014, 5, 26, DAY_OF_YEAR, 365, 2014, 5, 72},
+            {2014, 5, 26, DAY_OF_YEAR, 319, 2014, 5, 26},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 5, 28},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 2014, 5, 26},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 1, 2014, 5, 1},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 6, 2014, 5, 26},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 2014, 5, 23},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, 2014, 5, 26},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 23, 2014, 2, 45},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 63, 2014, 5, 26},
+            {2014, 5, 26, MONTH_OF_YEAR, 4, 2014, 4, 26},
+            {2014, 5, 26, MONTH_OF_YEAR, 5, 2014, 5, 26},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2012 * 5 + 3 - 1, 2013, 3, 26},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2013 * 5 + 5 - 1, 2014, 5, 26},
+            {2014, 5, 26, YEAR, 2012, 2012, 5, 26},
+            {2014, 5, 26, YEAR, 2014, 2014, 5, 26},
+            {2014, 5, 26, YEAR_OF_ERA, 2012, 2012, 5, 26},
+            {2014, 5, 26, YEAR_OF_ERA, 2014, 2014, 5, 26},
+            {2014, 5, 26, ERA, 1, 2014, 5, 26},
+
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 3, 2014, 0, 0},
+            // TODO: ALIGNED_WEEK_OF_YEAR yields what?
+            {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 3, 2014, 0, 0},
+            {2014, 0, 0, DAY_OF_WEEK, 3, 2014, 0, 0},
+            {2014, 0, 0, DAY_OF_MONTH, 3, 2014, 0, 0},
+            {2014, 3, 31, DAY_OF_MONTH, 0, 2014, 3, 60},
+            // TODO: Compare vs what MONTH_OF_YEAR returns...
+            {2014, 1, 31, DAY_OF_MONTH, 0, 2014, 0, 0},
+            {2013, 1, 31, DAY_OF_MONTH, 0, 2013, 1, 60},
+            {2014, 0, 0, MONTH_OF_YEAR, 1, 2014, 1, 60},
+            {2014, 3, 31, MONTH_OF_YEAR, 0, 2014, 0, 0},
+            {2013, 3, 31, MONTH_OF_YEAR, 0, 2013, 1, 60},
+            {2014, 3, 31, DAY_OF_YEAR, 60, 2014, 0, 0},
+            {2013, 3, 31, DAY_OF_YEAR, 60, 2013, 1, 60},
+            {2014, 0, 0, YEAR, 2013, 2013, 1, 60},
+            {2013, 1, 60, YEAR, 2014, 2014, 1, 60},
+
+            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 23},
+
+        };
+    }
+
+    @Test(dataProvider = "with")
+    public void test_with_TemporalField(int year, int month, int dom,
+            TemporalField field, long value,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(DiscordianDate.of(year, month, dom).with(field, value), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_with_TemporalField_unsupported() {
+        DiscordianDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0);
+    }
+
 }
