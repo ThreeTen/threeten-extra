@@ -143,8 +143,9 @@ public final class PaxChronology extends AbstractChronology implements Serializa
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
-     * Use the singleton {@link #INSTANCE} instead.
+     * @deprecated Use the singleton {@link #INSTANCE} instead.
      */
+    @Deprecated
     public PaxChronology() {
     }
 
