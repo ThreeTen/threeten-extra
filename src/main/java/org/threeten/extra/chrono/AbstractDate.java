@@ -196,7 +196,7 @@ abstract class AbstractDate
                 case YEAR:
                     return resolvePrevious(nvalue, getMonth(), getDayOfMonth());
                 case ERA:
-                    return resolvePrevious(1 - getProlepticYear(), getMonth(), getDayOfMonth());
+                    return newValue == getLong(ERA) ? this : resolvePrevious(1 - getProlepticYear(), getMonth(), getDayOfMonth());
                 default:
                     break;
             }
