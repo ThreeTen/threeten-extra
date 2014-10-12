@@ -373,9 +373,9 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * Checks if the specified year is a leap year.
      * <p>
      * In general, a year is a leap year if the last two digits are divisible by 6 without remainder, or are 99. 
-     * Yearsbwith the last two digits of 00 are also leap years, with the exception of years divisible by 400, which are not.
+     * Years with the last two digits of 00 are also leap years, with the exception of years divisible by 400, which are not.
      * <p>
-     * For example, 2012 is a leap year becuase the last two digits (12) are divisible by 6. 
+     * For example, 2012 is a leap year becaue the last two digits (12) are divisible by 6. 
      * 1999 is a leap year as the last two digits are both 9's (99). 
      * 1900 is a leap year as the last two digits are both 0's (00), however 2000 was not a leap year as it is divisible by 400. 
      * The year 0 is not a leap year.
