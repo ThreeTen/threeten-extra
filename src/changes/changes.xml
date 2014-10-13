@@ -8,6 +8,14 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="0.9" date="xxx" description="v0.9">
+      <action dev="Clockwork-Muse" type="add" >
+        Add Pax calendar system.
+        Fixes #17.
+      </action>
+      <action dev="Clockwork-Muse" type="fix" >
+        Fix handling of with(era).
+        Fixes #18 / #20.
+      </action>
       <action dev="jodastephen" type="add" >
         Add Ethiopic calendar system.
         Fixes #11.
