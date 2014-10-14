@@ -486,13 +486,11 @@ public class TestDiscordianChronology {
             {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 0, 0},
             {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2014, 0, 0},
             {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 3, 2014, 0, 0},
-            // TODO: ALIGNED_WEEK_OF_YEAR yields what?
             {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 3, 2014, 0, 0},
             {2014, 0, 0, DAY_OF_WEEK, 3, 2014, 0, 0},
             {2014, 0, 0, DAY_OF_MONTH, 3, 2014, 0, 0},
             {2014, 3, 31, DAY_OF_MONTH, 0, 2014, 3, 60},
-            // TODO: Compare vs what MONTH_OF_YEAR returns...
-            {2014, 1, 31, DAY_OF_MONTH, 0, 2014, 0, 0},
+            {2014, 1, 31, DAY_OF_MONTH, 0, 2014, 1, 60},
             {2013, 1, 31, DAY_OF_MONTH, 0, 2013, 1, 60},
             {2014, 0, 0, MONTH_OF_YEAR, 1, 2014, 1, 60},
             {2014, 3, 31, MONTH_OF_YEAR, 0, 2014, 0, 0},
