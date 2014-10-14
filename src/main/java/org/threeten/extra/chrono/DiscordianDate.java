@@ -435,15 +435,13 @@ public final class DiscordianDate
     }
 
     @Override
-    public long until(Temporal arg0, TemporalUnit arg1) {
-        // TODO Auto-generated method stub
-        return 0;
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        return super.until(JulianDate.from(endExclusive), unit);
     }
 
     @Override
-    public ChronoPeriod until(ChronoLocalDate arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
+        return super.until(JulianDate.from(endDateExclusive));
     }
 
     //-----------------------------------------------------------------------

@@ -48,6 +48,7 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.DECADES;
+import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.MILLENNIA;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
@@ -681,6 +682,70 @@ public class TestDiscordianChronology {
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_plus_TemporalUnit_unsupported() {
         DiscordianDate.of(2012, 5, 30).plus(0, MINUTES);
+    }
+
+    //-----------------------------------------------------------------------
+    // DiscordianDate.until
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "until")
+    Object[][] data_until() {
+        return new Object[][] {
+            {2014, 5, 26, 2014, 5, 26, DAYS, 0},
+            {2014, 5, 26, 2014, 6, 1, DAYS, 6},
+            {2014, 5, 26, 2014, 5, 20, DAYS, -6},
+            {2014, 5, 26, 2014, 5, 26, WEEKS, 0},
+            {2014, 5, 26, 2014, 6, 1, WEEKS, 0},
+            {2014, 5, 26, 2014, 6, 2, WEEKS, 1},
+            {2014, 5, 26, 2014, 5, 26, MONTHS, 0},
+            {2014, 5, 26, 2014, 6, 25, MONTHS, 0},
+            {2014, 5, 26, 2014, 6, 26, MONTHS, 1},
+            {2014, 5, 26, 2014, 5, 26, YEARS, 0},
+            {2014, 5, 26, 2015, 5, 25, YEARS, 0},
+            {2014, 5, 26, 2015, 5, 26, YEARS, 1},
+            {2014, 5, 26, 2014, 5, 26, DECADES, 0},
+            {2014, 5, 26, 2024, 5, 25, DECADES, 0},
+            {2014, 5, 26, 2024, 5, 26, DECADES, 1},
+            {2014, 5, 26, 2014, 5, 26, CENTURIES, 0},
+            {2014, 5, 26, 2114, 5, 25, CENTURIES, 0},
+            {2014, 5, 26, 2114, 5, 26, CENTURIES, 1},
+            {2014, 5, 26, 2014, 5, 26, MILLENNIA, 0},
+            {2014, 5, 26, 3014, 5, 25, MILLENNIA, 0},
+            {2014, 5, 26, 3014, 5, 26, MILLENNIA, 1},
+            {2013, 5, 26, 3014, 5, 26, ERAS, 0},
+
+            {2014, 1, 59, 2014, 1, 60, DAYS, 2},
+            {2014, 1, 59, 2014, 0, 0, DAYS, 1},
+            {2014, 0, 0, 2014, 1, 60, DAYS, 1},
+            {2014, 1, 60, 2014, 1, 55, DAYS, -6},
+            {2014, 0, 0, 2014, 0, 0, WEEKS, 0},
+            {2014, 1, 60, 2014, 1, 60, WEEKS, 0},
+            {2014, 1, 60, 2014, 1, 59, WEEKS, 0},
+            {2014, 1, 60, 2014, 1, 56, WEEKS, 0},
+            {2014, 1, 60, 2014, 1, 55, WEEKS, -1},
+            {2014, 0, 0, 2014, 0, 0, MONTHS, 0},
+            {2014, 0, 0, 2014, 2, 59, MONTHS, 0},
+            {2014, 0, 0, 2014, 2, 60, MONTHS, 1},
+            {2014, 0, 0, 2014, 0, 0, YEARS, 0},
+            {2014, 0, 0, 2015, 1, 59, YEARS, 0},
+            {2014, 0, 0, 2015, 1, 60, YEARS, 1},
+        };
+    }
+
+    @Test(dataProvider = "until")
+    public void test_until_TemporalUnit(
+            int year1, int month1, int dom1,
+            int year2, int month2, int dom2,
+            TemporalUnit unit, long expected) {
+        DiscordianDate start = DiscordianDate.of(year1, month1, dom1);
+        DiscordianDate end = DiscordianDate.of(year2, month2, dom2);
+        assertEquals(start.until(end, unit), expected);
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_until_TemporalUnit_unsupported() {
+        DiscordianDate start = DiscordianDate.of(2012, 1, 30);
+        DiscordianDate end = DiscordianDate.of(2012, 2, 1);
+        start.until(end, MINUTES);
     }
 
 }
