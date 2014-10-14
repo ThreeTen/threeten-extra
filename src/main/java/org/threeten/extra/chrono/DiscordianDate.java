@@ -48,6 +48,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
@@ -410,6 +411,27 @@ public final class DiscordianDate
     @Override
     public DiscordianDate with(TemporalField field, long newValue) {
         return (DiscordianDate) super.with(field, newValue);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DiscordianDate plus(TemporalAmount amount) {
+        return (DiscordianDate) amount.addTo(this);
+    }
+
+    @Override
+    public DiscordianDate plus(long amountToAdd, TemporalUnit unit) {
+        return (DiscordianDate) super.plus(amountToAdd, unit);
+    }
+
+    @Override
+    public DiscordianDate minus(TemporalAmount amount) {
+        return (DiscordianDate) amount.subtractFrom(this);
+    }
+
+    @Override
+    public DiscordianDate minus(long amountToSubtract, TemporalUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     @Override

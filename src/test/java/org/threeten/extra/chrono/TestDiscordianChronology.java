@@ -45,7 +45,14 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.DECADES;
+import static java.time.temporal.ChronoUnit.MILLENNIA;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.WEEKS;
+import static java.time.temporal.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 
 import java.time.DateTimeException;
@@ -59,6 +66,7 @@ import java.time.chrono.IsoEra;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
@@ -489,7 +497,7 @@ public class TestDiscordianChronology {
             {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 0, 0},
             {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2014, 0, 0},
             {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 3, 2014, 0, 0},
-            {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 3, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 3, 2014, 1, 5},
             {2014, 0, 0, DAY_OF_WEEK, 3, 2014, 0, 0},
             {2014, 0, 0, DAY_OF_MONTH, 3, 2014, 0, 0},
             {2014, 3, 31, DAY_OF_MONTH, 0, 2014, 3, 60},
@@ -568,6 +576,111 @@ public class TestDiscordianChronology {
         DiscordianDate discordian = DiscordianDate.of(3178, 3, 41);
         LocalDateTime test = LocalDateTime.MIN.with(discordian);
         assertEquals(test, LocalDateTime.of(2012, 7, 6, 0, 0));
+    }
+
+    //-----------------------------------------------------------------------
+    // DiscordianDate.plus
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "plus")
+    Object[][] data_plus() {
+        return new Object[][] {
+            {2014, 5, 26, 0, DAYS, 2014, 5, 26},
+            {2014, 5, 26, 8, DAYS, 2014, 5, 34},
+            {2014, 5, 26, -3, DAYS, 2014, 5, 23},
+            {2014, 5, 26, 0, WEEKS, 2014, 5, 26},
+            {2014, 5, 26, 3, WEEKS, 2014, 5, 41},
+            {2014, 5, 26, -5, WEEKS, 2014, 5, 1},
+            {2014, 5, 26, 0, MONTHS, 2014, 5, 26},
+            {2014, 5, 26, 3, MONTHS, 2015, 3, 26},
+            {2014, 5, 26, -5, MONTHS, 2013, 5, 26},
+            {2014, 5, 26, 0, YEARS, 2014, 5, 26},
+            {2014, 5, 26, 3, YEARS, 2017, 5, 26},
+            {2014, 5, 26, -5, YEARS, 2009, 5, 26},
+            {2014, 5, 26, 0, DECADES, 2014, 5, 26},
+            {2014, 5, 26, 3, DECADES, 2044, 5, 26},
+            {2014, 5, 26, -5, DECADES, 1964, 5, 26},
+            {2014, 5, 26, 0, CENTURIES, 2014, 5, 26},
+            {2014, 5, 26, 3, CENTURIES, 2314, 5, 26},
+            {2014, 5, 26, -5, CENTURIES, 1514, 5, 26},
+            {2014, 5, 26, 0, MILLENNIA, 2014, 5, 26},
+            {2014, 5, 26, 3, MILLENNIA, 5014, 5, 26},
+            {2014, 5, 26, -1, MILLENNIA, 2014 - 1000, 5, 26},
+        };
+    }
+
+    @DataProvider(name = "plus_leap")
+    Object[][] data_plus_leap() {
+        return new Object[][] {
+            {2014, 0, 0, 0, DAYS, 2014, 0, 0},
+            {2014, 0, 0, 8, DAYS, 2014, 1, 67},
+            {2014, 0, 0, -3, DAYS, 2014, 1, 57},
+            {2014, 0, 0, 0, WEEKS, 2014, 0, 0},
+            {2014, 0, 0, 3, WEEKS, 2014, 2, 2},
+            {2014, 0, 0, -5, WEEKS, 2014, 1, 35},
+            {2014, 0, 0, 0, MONTHS, 2014, 0, 0},
+            {2014, 0, 0, 3, MONTHS, 2015, 4, 60},
+            {2014, 0, 0, -5, MONTHS, 2013, 1, 60},
+            {2014, 0, 0, 20, MONTHS, 2018, 0, 0},
+            {2014, 0, 0, 0, YEARS, 2014, 0, 0},
+            {2014, 0, 0, 3, YEARS, 2017, 1, 60},
+            {2014, 0, 0, -5, YEARS, 2009, 1, 60},
+            {2014, 0, 0, 4, YEARS, 2018, 0, 0},
+        };
+    }
+
+    @DataProvider(name = "minus_leap")
+    Object[][] data_minus_leap() {
+        return new Object[][] {
+            {2014, 0, 0, 0, DAYS, 2014, 0, 0},
+            {2014, 0, 0, 8, DAYS, 2014, 1, 52},
+            {2014, 0, 0, -3, DAYS, 2014, 1, 62},
+            {2014, 0, 0, 0, WEEKS, 2014, 0, 0},
+            {2014, 0, 0, 3, WEEKS, 2014, 1, 50},
+            {2014, 0, 0, -5, WEEKS, 2014, 2, 13},
+            {2014, 0, 0, 0, MONTHS, 2014, 0, 0},
+            {2014, 0, 0, 3, MONTHS, 2013, 4, 60},
+            {2014, 0, 0, -5, MONTHS, 2015, 1, 60},
+            {2014, 0, 0, 20, MONTHS, 2010, 0, 0},
+            {2014, 0, 0, 0, YEARS, 2014, 0, 0},
+            {2014, 0, 0, 3, YEARS, 2011, 1, 60},
+            {2014, 0, 0, -5, YEARS, 2019, 1, 60},
+            {2014, 0, 0, 4, YEARS, 2010, 0, 0},
+        };
+    }
+
+    @Test(dataProvider = "plus")
+    public void test_plus_TemporalUnit(int year, int month, int dom,
+            long amount, TemporalUnit unit,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(DiscordianDate.of(year, month, dom).plus(amount, unit), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(dataProvider = "plus_leap")
+    public void test_plus_leap_TemporalUnit(int year, int month, int dom,
+            long amount, TemporalUnit unit,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(DiscordianDate.of(year, month, dom).plus(amount, unit), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(dataProvider = "plus")
+    public void test_minus_TemporalUnit(
+            int expectedYear, int expectedMonth, int expectedDom,
+            long amount, TemporalUnit unit,
+            int year, int month, int dom) {
+        assertEquals(DiscordianDate.of(year, month, dom).minus(amount, unit), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(dataProvider = "minus_leap")
+    public void test_minus_leap_TemporalUnit(
+            int expectedYear, int expectedMonth, int expectedDom,
+            long amount, TemporalUnit unit,
+            int year, int month, int dom) {
+        assertEquals(DiscordianDate.of(year, month, dom).minus(amount, unit), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_plus_TemporalUnit_unsupported() {
+        DiscordianDate.of(2012, 5, 30).plus(0, MINUTES);
     }
 
 }
