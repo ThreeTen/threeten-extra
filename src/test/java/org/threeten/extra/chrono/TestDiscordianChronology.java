@@ -748,4 +748,25 @@ public class TestDiscordianChronology {
         start.until(end, MINUTES);
     }
 
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plus_Period() {
+        assertEquals(DiscordianDate.of(2014, 5, 26).plus(DiscordianChronology.INSTANCE.period(0, 2, 3)), DiscordianDate.of(2015, 2, 29));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_plus_Period_ISO() {
+        assertEquals(DiscordianDate.of(2014, 5, 26).plus(Period.ofMonths(2)), DiscordianDate.of(2015, 2, 26));
+    }
+
+    @Test
+    public void test_minus_Period() {
+        assertEquals(DiscordianDate.of(2014, 5, 26).minus(DiscordianChronology.INSTANCE.period(0, 2, 3)), DiscordianDate.of(2014, 3, 23));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_minus_Period_ISO() {
+        assertEquals(DiscordianDate.of(2014, 5, 26).minus(Period.ofMonths(2)), DiscordianDate.of(2014, 3, 26));
+    }
+
 }
