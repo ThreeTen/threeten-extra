@@ -769,4 +769,43 @@ public class TestDiscordianChronology {
         assertEquals(DiscordianDate.of(2014, 5, 26).minus(Period.ofMonths(2)), DiscordianDate.of(2014, 3, 26));
     }
 
+    //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
+    @Test
+    void test_equals() {
+        DiscordianDate a1 = DiscordianDate.of(2000, 1, 3);
+        DiscordianDate a2 = DiscordianDate.of(2000, 1, 3);
+        DiscordianDate b = DiscordianDate.of(2000, 1, 4);
+        DiscordianDate c = DiscordianDate.of(2000, 2, 3);
+        DiscordianDate d = DiscordianDate.of(2001, 1, 3);
+
+        assertEquals(a1.equals(a1), true);
+        assertEquals(a1.equals(a2), true);
+        assertEquals(a1.equals(b), false);
+        assertEquals(a1.equals(c), false);
+        assertEquals(a1.equals(d), false);
+
+        assertEquals(a1.equals(null), false);
+        assertEquals(a1.equals(""), false);
+
+        assertEquals(a1.hashCode(), a2.hashCode());
+    }
+
+    //-----------------------------------------------------------------------
+    // toString()
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "toString")
+    Object[][] data_toString() {
+        return new Object[][] {
+            {DiscordianDate.of(1, 1, 1), "Discordian YOLD 1-1-01"},
+            {DiscordianDate.of(2012, 5, 23), "Discordian YOLD 2012-5-23"},
+        };
+    }
+
+    @Test(dataProvider = "toString")
+    public void test_toString(DiscordianDate discordian, String expected) {
+        assertEquals(discordian.toString(), expected);
+    }
+
 }
