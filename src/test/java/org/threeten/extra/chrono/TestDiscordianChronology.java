@@ -50,6 +50,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
@@ -533,6 +534,22 @@ public class TestDiscordianChronology {
         DiscordianDate base = DiscordianDate.of(2012, 2, 23);
         DiscordianDate test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, DiscordianDate.of(2012, 2, 73));
+    }
+
+    //-----------------------------------------------------------------------
+    // DiscordianDate.with(Local*)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_adjust_toLocalDate() {
+        DiscordianDate discordian = DiscordianDate.of(2000, 1, 4);
+        DiscordianDate test = discordian.with(LocalDate.of(2012, 7, 6));
+        assertEquals(test, DiscordianDate.of(3178, 3, 41));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_adjust_toMonth() {
+        DiscordianDate discordian = DiscordianDate.of(2000, 1, 4);
+        discordian.with(Month.APRIL);
     }
 
 }
