@@ -36,6 +36,7 @@ import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
+import static org.threeten.extra.chrono.DiscordianChronology.OFFSET_FROM_ISO_0000;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -252,7 +253,7 @@ public final class DiscordianDate
         long daysInLongCycle = Math.floorMod(discordianEpochDay, DAYS_PER_LONG_CYCLE);
         if (daysInLongCycle == DAYS_PER_LONG_CYCLE - 1) {
             int year = (int) (longCycle * 400) + 400;
-            return ofYearDay(year + 1166, 366);
+            return ofYearDay(year + OFFSET_FROM_ISO_0000, 366);
         }
 
         int cycle = (int) daysInLongCycle / DAYS_PER_CYCLE;
@@ -262,13 +263,13 @@ public final class DiscordianDate
 
         if (dayInShortCycle == DAYS_PER_SHORT_CYCLE - 1) {
             int year = (int) (longCycle * 400) + (cycle * 100) + (shortCycle * 4) + 4;
-            return ofYearDay(year + 1166, 366);
+            return ofYearDay(year + OFFSET_FROM_ISO_0000, 366);
         }
 
         int year = (int) (longCycle * 400) + (cycle * 100) + (shortCycle * 4) + (dayInShortCycle / 365) + 1;
         int dayOfYear = (dayInShortCycle % 365) + 1;
 
-        return ofYearDay(year + 1166, dayOfYear);
+        return ofYearDay(year + OFFSET_FROM_ISO_0000, dayOfYear);
     }
 
     private static DiscordianDate resolvePreviousValid(int prolepticYear, int month, int day) {
@@ -285,7 +286,7 @@ public final class DiscordianDate
     }
 
     private static long getLeapYearsBefore(long year) {
-        long offsetYear = year - 1166 - 1;
+        long offsetYear = year - OFFSET_FROM_ISO_0000 - 1;
         return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400);
     }
 
@@ -448,7 +449,7 @@ public final class DiscordianDate
     @Override
     public long toEpochDay() {
         long year = prolepticYear;
-        long discordianEpochDay = ((year - 1166 - 1) * 365) + getLeapYearsBefore(year) + (getDayOfYear() - 1);
+        long discordianEpochDay = ((year - OFFSET_FROM_ISO_0000 - 1) * 365) + getLeapYearsBefore(year) + (getDayOfYear() - 1);
         return discordianEpochDay - DISCORDIAN_1167_TO_ISO_1970;
     }
 

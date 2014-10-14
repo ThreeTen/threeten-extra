@@ -88,6 +88,10 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      */
     private static final long serialVersionUID = 1075529146344250850L;
     /**
+     * Offset from ISO 0
+     */
+    static final int OFFSET_FROM_ISO_0000 = 1166;
+    /**
      * Range of proleptic-year.
      */
     static final ValueRange YEAR_RANGE = ValueRange.of(1, 999_999);
@@ -240,7 +244,8 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * @return the Discordian local date, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override // override with covariant return type
+    @Override
+    // override with covariant return type
     public DiscordianDate dateEpochDay(long epochDay) {
         return DiscordianDate.ofEpochDay(epochDay);
     }
@@ -258,7 +263,8 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * @return the current Discordian local date using the system clock and default time-zone, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override  // override with covariant return type
+    @Override
+    // override with covariant return type
     public DiscordianDate dateNow() {
         return DiscordianDate.now();
     }
@@ -276,7 +282,8 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * @return the current Discordian local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override  // override with covariant return type
+    @Override
+    // override with covariant return type
     public DiscordianDate dateNow(ZoneId zone) {
         return DiscordianDate.now(zone);
     }
@@ -292,7 +299,8 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * @return the current Discordian local date, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override  // override with covariant return type
+    @Override
+    // override with covariant return type
     public DiscordianDate dateNow(Clock clock) {
         return DiscordianDate.now(clock);
     }
@@ -363,7 +371,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        long offsetYear = prolepticYear - 1166;
+        long offsetYear = prolepticYear - OFFSET_FROM_ISO_0000;
         return (offsetYear % 4 == 0) && ((offsetYear % 400 == 0) || (offsetYear % 100 != 0));
     }
 
@@ -417,7 +425,8 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     }
 
     //-----------------------------------------------------------------------
-    @Override  // override for return type
+    @Override
+    // override for return type
     public DiscordianDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (DiscordianDate) super.resolveDate(fieldValues, resolverStyle);
     }
