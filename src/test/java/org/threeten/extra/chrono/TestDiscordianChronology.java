@@ -55,6 +55,7 @@ import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
 import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
@@ -515,6 +516,23 @@ public class TestDiscordianChronology {
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_with_TemporalField_unsupported() {
         DiscordianDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0);
+    }
+
+    //-----------------------------------------------------------------------
+    // DiscordianDate.with(TemporalAdjuster)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_adjust1() {
+        DiscordianDate base = DiscordianDate.of(2014, 0, 0);
+        DiscordianDate test = base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, DiscordianDate.of(2014, 0, 0));
+    }
+
+    @Test
+    public void test_adjust2() {
+        DiscordianDate base = DiscordianDate.of(2012, 2, 23);
+        DiscordianDate test = base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, DiscordianDate.of(2012, 2, 73));
     }
 
 }

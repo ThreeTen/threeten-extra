@@ -47,6 +47,8 @@ import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
@@ -397,6 +399,17 @@ public final class DiscordianDate
     public int lengthOfMonth() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public DiscordianDate with(TemporalAdjuster adjuster) {
+        return (DiscordianDate) adjuster.adjustInto(this);
+    }
+
+    @Override
+    public DiscordianDate with(TemporalField field, long newValue) {
+        return (DiscordianDate) super.with(field, newValue);
     }
 
     @Override
