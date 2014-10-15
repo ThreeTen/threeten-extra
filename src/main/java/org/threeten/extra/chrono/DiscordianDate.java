@@ -273,14 +273,22 @@ public final class DiscordianDate
     }
 
     private static DiscordianDate resolvePreviousValid(int prolepticYear, int month, int day) {
-        if (month == 0 && day != 0) {
-            day = 0;
-        } else if (day == 0) {
-            if (month == 1 && DiscordianChronology.INSTANCE.isLeapYear(prolepticYear)) {
-                month = 0;
-            } else {
-                day = 60;
-            }
+        switch (month) {
+            case 0:
+                if (DiscordianChronology.INSTANCE.isLeapYear(prolepticYear)) {
+                    day = 0;
+                    break;
+                } else {
+                    month = 1;
+                }
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                if (day == 0) {
+                    day = 60;
+                }
         }
         return new DiscordianDate(prolepticYear, month, day);
     }
