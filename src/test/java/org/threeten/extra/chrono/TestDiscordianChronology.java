@@ -426,15 +426,15 @@ public class TestDiscordianChronology {
     @DataProvider(name = "getLong")
     Object[][] data_getLong() {
         return new Object[][] {
-            {2014, 5, 26, DAY_OF_WEEK, 5},
+            {2014, 5, 26, DAY_OF_WEEK, 3},
             {2014, 5, 26, DAY_OF_MONTH, 26},
             {2014, 5, 26, DAY_OF_YEAR, 1 + 73 + 73 + 73 + 73 + 26},
             {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1},
             {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 6},
-            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5},
-            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 63},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 3},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 64},
             {2014, 5, 26, MONTH_OF_YEAR, 5},
-            {2014, 5, 26, PROLEPTIC_MONTH, 2013 * 5 + 5 - 1},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2014 * 5 + 5 - 1},
             {2014, 5, 26, YEAR, 2014},
             {2014, 5, 26, ERA, 1},
             {1, 5, 8, ERA, 1},
@@ -449,7 +449,7 @@ public class TestDiscordianChronology {
             {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
             {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 0},
             {2014, 0, 0, MONTH_OF_YEAR, 0},
-            {2014, 0, 0, PROLEPTIC_MONTH, 2013 * 5 + 5 - 1},
+            {2014, 0, 0, PROLEPTIC_MONTH, 2014 * 5 + 1 - 1},
 
             {2014, 0, 0, WeekFields.ISO.dayOfWeek(), 6},
         };
@@ -462,7 +462,7 @@ public class TestDiscordianChronology {
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_getLong_unsupported() {
-        DiscordianDate.of(2012, 6, 30).getLong(MINUTE_OF_DAY);
+        DiscordianDate.of(2012, 1, 30).getLong(MINUTE_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
