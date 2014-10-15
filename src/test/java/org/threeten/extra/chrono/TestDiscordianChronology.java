@@ -377,7 +377,7 @@ public class TestDiscordianChronology {
         assertEquals(DiscordianChronology.INSTANCE.range(EPOCH_DAY), ValueRange.of(-1_145_400, 999_999 * 365L + 242_499));
         assertEquals(DiscordianChronology.INSTANCE.range(ERA), ValueRange.of(1, 1));
         assertEquals(DiscordianChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(0, 1, 5, 5));
-        assertEquals(DiscordianChronology.INSTANCE.range(PROLEPTIC_MONTH), ValueRange.of(0, 999_999 * 5L - 1));
+        assertEquals(DiscordianChronology.INSTANCE.range(PROLEPTIC_MONTH), ValueRange.of(0, 999_999 * 5L + 5 - 1));
         assertEquals(DiscordianChronology.INSTANCE.range(YEAR), ValueRange.of(1, 999_999));
         assertEquals(DiscordianChronology.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(1, 999_999));
     }

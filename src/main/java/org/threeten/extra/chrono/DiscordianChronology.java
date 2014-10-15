@@ -130,7 +130,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     /**
      * Range of eras.
      */
-    private static final ValueRange ERA_RANGE = ValueRange.of(0, 1);
+    private static final ValueRange ERA_RANGE = ValueRange.of(1, 1);
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}. 
