@@ -36,6 +36,7 @@ import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
+import static org.threeten.extra.chrono.DiscordianChronology.DAYS_PER_MONTH;
 import static org.threeten.extra.chrono.DiscordianChronology.OFFSET_FROM_ISO_0000;
 
 import java.io.Serializable;
@@ -229,8 +230,8 @@ public final class DiscordianDate
             }
         }
 
-        int month = (dayOfYear - 1) / 73 + 1;
-        int dayOfMonth = (dayOfYear - 1) % 73 + 1;
+        int month = (dayOfYear - 1) / DAYS_PER_MONTH + 1;
+        int dayOfMonth = (dayOfYear - 1) % DAYS_PER_MONTH + 1;
 
         return new DiscordianDate(prolepticYear, month, dayOfMonth);
     }
@@ -369,7 +370,7 @@ public final class DiscordianDate
         if (month == 0 && day == 0) {
             return 60;
         }
-        int dayOfYear = (month - 1) * 73 + day;
+        int dayOfYear = (month - 1) * DAYS_PER_MONTH + day;
         // If after St. Tib's day, need to offset to account for it.
         return dayOfYear + (dayOfYear >= 60 && isLeapYear() ? 1 : 0);
     }
@@ -407,8 +408,7 @@ public final class DiscordianDate
 
     @Override
     public int lengthOfMonth() {
-        // TODO Auto-generated method stub
-        return 0;
+        return month == 0 ? 1 : DAYS_PER_MONTH;
     }
 
     //-------------------------------------------------------------------------

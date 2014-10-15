@@ -92,6 +92,10 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      */
     static final int OFFSET_FROM_ISO_0000 = 1166;
     /**
+     * Days in a regular month.
+     */
+    static final int DAYS_PER_MONTH = 73;
+    /**
      * Range of proleptic-year.
      */
     static final ValueRange YEAR_RANGE = ValueRange.of(1, 999_999);
@@ -102,7 +106,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     /**
      * Range of day-of-month.
      */
-    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, 73, 73);
+    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, DAYS_PER_MONTH, DAYS_PER_MONTH);
     /**
      * Range of epoch day.
      */
