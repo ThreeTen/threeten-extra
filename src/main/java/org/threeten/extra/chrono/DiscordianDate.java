@@ -31,6 +31,8 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
@@ -514,6 +516,59 @@ public final class DiscordianDate
 
     @Override
     public DiscordianDate with(TemporalField field, long newValue) {
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
+            DiscordianChronology.INSTANCE.range(f).checkValidValue(newValue, f);
+            int nvalue = (int) newValue;
+            switch (f) {
+                case DAY_OF_WEEK:
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                    if (nvalue == 0) {
+                        nvalue = 5;
+                    }
+                    if (month == 0) {
+                        return this;
+                    } else if (month == 1
+                            && day >= ST_TIBS_OFFSET - DAYS_IN_WEEK + 1 && day < ST_TIBS_OFFSET + 1
+                            && isLeapYear()) {
+                        int currentDayOfWeek = getDayOfWeek();
+                        // St. Tib's Day is between the 4th and 5th days of the week...
+                        if (currentDayOfWeek < DAYS_IN_WEEK && nvalue == DAYS_IN_WEEK) {
+                            return (DiscordianDate) plusDays(nvalue - currentDayOfWeek + 1);
+                        } else if (currentDayOfWeek == DAYS_IN_WEEK && nvalue < DAYS_IN_WEEK) {
+                            return (DiscordianDate) plusDays(nvalue - currentDayOfWeek - 1);
+                        }
+                    }
+                    break;
+                case ALIGNED_WEEK_OF_MONTH:
+                case ALIGNED_WEEK_OF_YEAR:
+                    if (nvalue == 0) {
+                        nvalue = ST_TIBS_OFFSET / DAYS_IN_WEEK;
+                    }
+                    if (month == 0) {
+                        if (field == ALIGNED_WEEK_OF_MONTH) {
+                            return this;
+                        } else if (field == ALIGNED_WEEK_OF_YEAR) {
+                            return ((DiscordianDate) plusDays(1)).with(ALIGNED_WEEK_OF_YEAR, nvalue);
+                        }
+                    } else if ((month == 1 || field == ALIGNED_WEEK_OF_YEAR) && isLeapYear()) {
+                        // St. Tib's Day is in the middle of the 12th week...
+                        int alignedWeek = (int) getLong(field);
+                        int currentDayOfWeek = getDayOfWeek();
+                        if ((alignedWeek > ST_TIBS_OFFSET / DAYS_IN_WEEK || (alignedWeek == ST_TIBS_OFFSET / DAYS_IN_WEEK && currentDayOfWeek == DAYS_IN_WEEK))
+                                && (nvalue < ST_TIBS_OFFSET / DAYS_IN_WEEK || (nvalue == ST_TIBS_OFFSET / DAYS_IN_WEEK && currentDayOfWeek < DAYS_IN_WEEK))) {
+                            return (DiscordianDate) plusDays((newValue - alignedWeek) * DAYS_IN_WEEK - 1);
+                        } else if ((nvalue > ST_TIBS_OFFSET / DAYS_IN_WEEK || (nvalue == ST_TIBS_OFFSET / DAYS_IN_WEEK && currentDayOfWeek == DAYS_IN_WEEK))
+                                && (alignedWeek < ST_TIBS_OFFSET / DAYS_IN_WEEK || (alignedWeek == ST_TIBS_OFFSET / DAYS_IN_WEEK && currentDayOfWeek < DAYS_IN_WEEK))) {
+                            return (DiscordianDate) plusDays((newValue - alignedWeek) * lengthOfWeek() + 1);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
         return (DiscordianDate) super.with(field, newValue);
     }
 
@@ -539,7 +594,8 @@ public final class DiscordianDate
     }
 
     //-------------------------------------------------------------------------
-    @Override // for covariant return type
+    @Override
+    // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<DiscordianDate> atTime(LocalTime localTime) {
         return (ChronoLocalDateTime<DiscordianDate>) ChronoLocalDate.super.atTime(localTime);
