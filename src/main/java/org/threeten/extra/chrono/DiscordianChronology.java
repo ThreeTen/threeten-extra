@@ -94,7 +94,11 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     /**
      * Days in a regular month.
      */
-    static final int DAYS_PER_MONTH = 73;
+    static final int DAYS_IN_MONTH = 73;
+    /**
+     * Days in a regular week.
+     */
+    static final int DAYS_IN_WEEK = 5;
     /**
      * Range of proleptic-year.
      */
@@ -106,7 +110,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     /**
      * Range of day-of-month.
      */
-    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, DAYS_PER_MONTH, DAYS_PER_MONTH);
+    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, DAYS_IN_MONTH, DAYS_IN_MONTH);
     /**
      * Range of epoch day.
      */
@@ -118,7 +122,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     /**
      * Range of day-of-week.
      */
-    private static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, 5, 5);
+    private static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, DAYS_IN_WEEK, DAYS_IN_WEEK);
     /**
      * Range of week-of-month.
      */
