@@ -31,6 +31,8 @@
  */
 package org.threeten.extra;
 
+import org.threeten.extra.instant.Span;
+
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.ERAS;
@@ -38,6 +40,7 @@ import static java.time.temporal.ChronoUnit.FOREVER;
 import static java.time.temporal.ChronoUnit.WEEKS;
 
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
@@ -213,4 +216,13 @@ public final class Temporals {
         return 3;  // quarters
     }
 
+    /**
+     * Creates a {@link Span} between two {@link Instant} values
+     * @param start
+     * @param stop
+     * @return
+     */
+    public static Span span(Instant start, Instant stop) {
+        return Span.between(start, stop);
+    }
 }
