@@ -451,7 +451,7 @@ public final class DiscordianDate
                     if (month == 0) {
                         return 0;
                     } else {
-                        return ((getDayOfYear() - (getDayOfYear() >= ST_TIBS_OFFSET && isLeapYear() ? 2 : 1)) / lengthOfWeek()) + 1;
+                        return ((getDayOfYear() - (getDayOfYear() >= ST_TIBS_OFFSET && isLeapYear() ? 1 : 0) - 1) / DAYS_IN_WEEK) + 1;
                     }
                 default:
                     break;
@@ -594,8 +594,7 @@ public final class DiscordianDate
     }
 
     //-------------------------------------------------------------------------
-    @Override
-    // for covariant return type
+    @Override // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<DiscordianDate> atTime(LocalTime localTime) {
         return (ChronoLocalDateTime<DiscordianDate>) ChronoLocalDate.super.atTime(localTime);
