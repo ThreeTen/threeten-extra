@@ -38,6 +38,7 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 import static org.threeten.extra.chrono.DiscordianChronology.DAYS_IN_MONTH;
 import static org.threeten.extra.chrono.DiscordianChronology.DAYS_IN_WEEK;
+import static org.threeten.extra.chrono.DiscordianChronology.MONTHS_IN_YEAR;
 import static org.threeten.extra.chrono.DiscordianChronology.OFFSET_FROM_ISO_0000;
 
 import java.io.Serializable;
@@ -390,7 +391,7 @@ public final class DiscordianDate
 
     @Override
     int lengthOfYearInMonths() {
-        return DAYS_IN_MONTH;
+        return MONTHS_IN_YEAR;
     }
 
     @Override
@@ -420,7 +421,7 @@ public final class DiscordianDate
                     case DAY_OF_WEEK:
                         return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, DAYS_IN_WEEK);
                     case MONTH_OF_YEAR:
-                        return ValueRange.of(isLeapYear() ? 0 : 1, 5);
+                        return ValueRange.of(isLeapYear() ? 0 : 1, MONTHS_IN_YEAR);
                     default:
                         break;
                 }
