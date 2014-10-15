@@ -468,6 +468,12 @@ public final class DiscordianDate
         return (dayOfYear - 1) / DAYS_IN_WEEK + 1;
     }
 
+    @Override
+    long getProlepticMonth() {
+        // Consider St. Tib's day to be part of the 1st month for this count.
+        return prolepticYear * MONTHS_IN_YEAR + (month == 0 ? 1 : month) - 1;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the chronology of this date, which is the Discordian calendar system.
