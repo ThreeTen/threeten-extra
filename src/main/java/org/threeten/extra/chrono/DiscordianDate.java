@@ -442,11 +442,7 @@ public final class DiscordianDate
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                     return month == 0 ? 0 : super.getLong(field);
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    if (month == 0) {
-                        return 0;
-                    } else {
-                        return ((getDayOfYear() - (getDayOfYear() >= ST_TIBS_OFFSET && isLeapYear() ? 2 : 1)) % lengthOfWeek()) + 1;
-                    }
+                    return getDayOfWeek();
                 case ALIGNED_WEEK_OF_MONTH:
                     return month == 0 ? 0 : super.getLong(field);
                 case ALIGNED_WEEK_OF_YEAR:
@@ -460,6 +456,16 @@ public final class DiscordianDate
             }
         }
         return super.getLong(field);
+    }
+
+    @Override
+    int getDayOfWeek() {
+        if (month == 0) {
+            return 0;
+        }
+        // Need to offset to account for added day.
+        int dayOfYear = getDayOfYear() - (getDayOfYear() >= ST_TIBS_OFFSET && isLeapYear() ? 1 : 0);
+        return (dayOfYear - 1) / DAYS_IN_WEEK + 1;
     }
 
     //-----------------------------------------------------------------------
