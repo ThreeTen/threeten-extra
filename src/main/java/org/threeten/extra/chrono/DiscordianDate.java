@@ -380,8 +380,7 @@ public final class DiscordianDate
 
     @Override
     AbstractDate withDayOfYear(int value) {
-        // TODO Auto-generated method stub
-        return null;
+        return plusDays(value - getDayOfYear());
     }
 
     @Override
