@@ -43,8 +43,10 @@ import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
@@ -406,6 +408,19 @@ public final class DiscordianDate
         return DiscordianChronology.INSTANCE;
     }
 
+    /**
+     * Gets the era applicable at this date.
+     * <p>
+     * The Discordian calendar system has one era, 'YOLD',
+     * defined by {@link DiscordianEra}.
+     *
+     * @return the era YOLD
+     */
+    @Override
+    public DiscordianEra getEra() {
+        return DiscordianEra.YOLD;
+    }
+
     @Override
     public int lengthOfMonth() {
         return month == 0 ? 1 : DAYS_PER_MONTH;
@@ -441,6 +456,13 @@ public final class DiscordianDate
     @Override
     public DiscordianDate minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
+    }
+
+    //-------------------------------------------------------------------------
+    @Override // for covariant return type
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<DiscordianDate> atTime(LocalTime localTime) {
+        return (ChronoLocalDateTime<DiscordianDate>) ChronoLocalDate.super.atTime(localTime);
     }
 
     @Override
