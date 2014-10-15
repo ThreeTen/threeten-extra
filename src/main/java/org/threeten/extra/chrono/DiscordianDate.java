@@ -404,6 +404,32 @@ public final class DiscordianDate
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public ValueRange range(TemporalField field) {
+        if (field instanceof ChronoField) {
+            if (isSupported(field)) {
+                ChronoField f = (ChronoField) field;
+                switch (f) {
+                    case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                        return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, DAYS_IN_WEEK);
+                    case ALIGNED_WEEK_OF_YEAR:
+                        return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, 73);
+                    case DAY_OF_MONTH:
+                        return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, DAYS_IN_MONTH);
+                    case DAY_OF_WEEK:
+                        return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, DAYS_IN_WEEK);
+                    case MONTH_OF_YEAR:
+                        return ValueRange.of(isLeapYear() ? 0 : 1, 5);
+                    default:
+                        break;
+                }
+            }
+        }
+        return super.range(field);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the chronology of this date, which is the Discordian calendar system.
      * <p>
