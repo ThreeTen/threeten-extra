@@ -396,8 +396,7 @@ public final class DiscordianDate
 
     @Override
     ValueRange rangeAlignedWeekOfMonth() {
-        // TODO Auto-generated method stub
-        return null;
+        return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, 15);
     }
 
     @Override
