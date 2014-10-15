@@ -98,6 +98,10 @@ public final class DiscordianDate
      * The days per 400 year long cycle.
      */
     private static final int DAYS_PER_LONG_CYCLE = (DAYS_PER_CYCLE * 4) + 1;
+    /**
+     * Offset in days from start of year to St. Tib's Day.
+     */
+    private static final int ST_TIBS_OFFSET = 60;
 
     /**
      * The proleptic year.
@@ -225,10 +229,10 @@ public final class DiscordianDate
         }
 
         if (leap) {
-            if (dayOfYear == 60) {
+            if (dayOfYear == ST_TIBS_OFFSET) {
                 // Take care of special case of St Tib's Day.
                 return new DiscordianDate(prolepticYear, 0, 0);
-            } else if (dayOfYear > 60) {
+            } else if (dayOfYear > ST_TIBS_OFFSET) {
                 // Offset dayOfYear to account for added day.
                 dayOfYear--;
             }
@@ -292,7 +296,7 @@ public final class DiscordianDate
             case 4:
             case 5:
                 if (day == 0) {
-                    day = 60;
+                    day = ST_TIBS_OFFSET;
                 }
         }
         return new DiscordianDate(prolepticYear, month, day);
@@ -372,11 +376,11 @@ public final class DiscordianDate
     int getDayOfYear() {
         // St. Tib's Day isn't part of any month, but would be the 60th day of the year.
         if (month == 0 && day == 0) {
-            return 60;
+            return ST_TIBS_OFFSET;
         }
         int dayOfYear = (month - 1) * DAYS_IN_MONTH + day;
         // If after St. Tib's day, need to offset to account for it.
-        return dayOfYear + (dayOfYear >= 60 && isLeapYear() ? 1 : 0);
+        return dayOfYear + (dayOfYear >= ST_TIBS_OFFSET && isLeapYear() ? 1 : 0);
     }
 
     @Override
@@ -428,6 +432,34 @@ public final class DiscordianDate
             }
         }
         return super.range(field);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long getLong(TemporalField field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                    return month == 0 ? 0 : super.getLong(field);
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                    if (month == 0) {
+                        return 0;
+                    } else {
+                        return ((getDayOfYear() - (getDayOfYear() >= ST_TIBS_OFFSET && isLeapYear() ? 2 : 1)) % lengthOfWeek()) + 1;
+                    }
+                case ALIGNED_WEEK_OF_MONTH:
+                    return month == 0 ? 0 : super.getLong(field);
+                case ALIGNED_WEEK_OF_YEAR:
+                    if (month == 0) {
+                        return 0;
+                    } else {
+                        return ((getDayOfYear() - (getDayOfYear() >= ST_TIBS_OFFSET && isLeapYear() ? 2 : 1)) / lengthOfWeek()) + 1;
+                    }
+                default:
+                    break;
+            }
+        }
+        return super.getLong(field);
     }
 
     //-----------------------------------------------------------------------
