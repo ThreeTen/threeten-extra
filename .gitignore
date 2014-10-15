@@ -15,3 +15,5 @@
 *.war
 *.ear
 **TempTest.java
+
+.idea
