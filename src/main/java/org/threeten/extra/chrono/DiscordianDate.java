@@ -467,7 +467,7 @@ public final class DiscordianDate
         }
         // Need to offset to account for added day.
         int dayOfYear = getDayOfYear() - (getDayOfYear() >= ST_TIBS_OFFSET && isLeapYear() ? 1 : 0);
-        return (dayOfYear - 1) / DAYS_IN_WEEK + 1;
+        return (dayOfYear - 1) % DAYS_IN_WEEK + 1;
     }
 
     @Override
