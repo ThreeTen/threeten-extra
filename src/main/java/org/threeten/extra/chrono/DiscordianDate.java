@@ -467,12 +467,12 @@ public final class DiscordianDate
 
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
-        return super.until(JulianDate.from(endExclusive), unit);
+        return super.until(DiscordianDate.from(endExclusive), unit);
     }
 
     @Override
     public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
-        return super.until(JulianDate.from(endDateExclusive));
+        return super.until(DiscordianDate.from(endDateExclusive));
     }
 
     //-----------------------------------------------------------------------
