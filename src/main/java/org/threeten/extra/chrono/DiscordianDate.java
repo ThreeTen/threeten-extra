@@ -478,6 +478,11 @@ public final class DiscordianDate
         return prolepticYear * MONTHS_IN_YEAR + (month == 0 ? 1 : month) - 1;
     }
 
+    long getProlepticWeek() {
+        // Consider St. Tib's day to be part of the 12th week for this count.
+        return ((long) prolepticYear) * WEEKS_IN_YEAR + (month == 0 ? ST_TIBS_OFFSET / DAYS_IN_WEEK : getLong(ALIGNED_WEEK_OF_YEAR)) - 1;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the chronology of this date, which is the Discordian calendar system.
@@ -615,9 +620,7 @@ public final class DiscordianDate
         if (weeks == 0) {
             return this;
         }
-        // For moving from St. Tib's Day, consider it part of the 12th week.
-        long curEw = prolepticYear * ((long) WEEKS_IN_YEAR) + (month == 0 ? ST_TIBS_OFFSET / DAYS_IN_WEEK : getLong(ALIGNED_WEEK_OF_YEAR)) - 1;
-        long calcEm = Math.addExact(curEw, weeks);
+        long calcEm = Math.addExact(getProlepticWeek(), weeks);
         int newYear = Math.toIntExact(Math.floorDiv(calcEm, WEEKS_IN_YEAR));
         // Give St. Tib's Day the same day-of-week as the day after it.
         int newDayOfYear = (int) (Math.floorMod(calcEm, WEEKS_IN_YEAR)) * DAYS_IN_WEEK + (month == 0 ? DAYS_IN_WEEK : get(DAY_OF_WEEK));
@@ -640,8 +643,7 @@ public final class DiscordianDate
     }
 
     //-------------------------------------------------------------------------
-    @Override
-    // for covariant return type
+    @Override // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<DiscordianDate> atTime(LocalTime localTime) {
         return (ChronoLocalDateTime<DiscordianDate>) ChronoLocalDate.super.atTime(localTime);
