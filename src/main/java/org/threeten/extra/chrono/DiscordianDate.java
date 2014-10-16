@@ -668,7 +668,9 @@ public final class DiscordianDate
     }
 
     long weeksUntil(DiscordianDate end) {
-        return end.toEpochDay() - toEpochDay();  // no overflow
+        long packed1 = this.getProlepticWeek() * 8L + (month == 0 ? DAYS_IN_WEEK : getDayOfWeek());  // no overflow
+        long packed2 = end.getProlepticWeek() * 8L + (end.month == 0 ? DAYS_IN_WEEK : end.getDayOfWeek());  // no overflow
+        return (packed2 - packed1) / 8L;
     }
 
     @Override
