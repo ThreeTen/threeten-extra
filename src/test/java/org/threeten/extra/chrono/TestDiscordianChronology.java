@@ -802,6 +802,7 @@ public class TestDiscordianChronology {
         return new Object[][] {
             {DiscordianDate.of(1, 1, 1), "Discordian YOLD 1-1-01"},
             {DiscordianDate.of(2012, 5, 23), "Discordian YOLD 2012-5-23"},
+            {DiscordianDate.of(2014, 0, 0), "Discordian YOLD 2014 St. Tib's Day"},
         };
     }
 

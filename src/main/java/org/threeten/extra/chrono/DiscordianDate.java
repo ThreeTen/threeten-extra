@@ -618,4 +618,22 @@ public final class DiscordianDate
         return discordianEpochDay - DISCORDIAN_1167_TO_ISO_1970;
     }
 
+    //-------------------------------------------------------------------------
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(30);
+        buf.append(DiscordianChronology.INSTANCE.toString())
+                .append(" ")
+                .append(DiscordianEra.YOLD)
+                .append(" ")
+                .append(prolepticYear);
+        if (month == 0) {
+            buf.append(" St. Tib's Day");
+        } else {
+            buf.append("-").append(month)
+                    .append(day < 10 ? "-0" : "-").append(day);
+        }
+        return buf.toString();
+    }
+
 }
