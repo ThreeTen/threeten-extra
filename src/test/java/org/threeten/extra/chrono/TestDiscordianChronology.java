@@ -526,7 +526,7 @@ public class TestDiscordianChronology {
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_with_TemporalField_unsupported() {
-        DiscordianDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0);
+        DiscordianDate.of(2012, 5, 30).with(MINUTE_OF_DAY, 0);
     }
 
     //-----------------------------------------------------------------------
