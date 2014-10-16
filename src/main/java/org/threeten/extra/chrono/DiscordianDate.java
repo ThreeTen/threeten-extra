@@ -640,7 +640,8 @@ public final class DiscordianDate
     }
 
     //-------------------------------------------------------------------------
-    @Override // for covariant return type
+    @Override
+    // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<DiscordianDate> atTime(LocalTime localTime) {
         return (ChronoLocalDateTime<DiscordianDate>) ChronoLocalDate.super.atTime(localTime);
@@ -648,7 +649,32 @@ public final class DiscordianDate
 
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
-        return super.until(DiscordianDate.from(endExclusive), unit);
+        return until(DiscordianDate.from(endExclusive), unit);
+    }
+
+    @Override
+    long until(AbstractDate end, TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            switch ((ChronoUnit) unit) {
+                case WEEKS:
+                    return weeksUntil(DiscordianDate.from(end));
+                default:
+                    break;
+            }
+        }
+        return super.until(end, unit);
+    }
+
+    long weeksUntil(DiscordianDate end) {
+        return end.toEpochDay() - toEpochDay();  // no overflow
+    }
+
+    @Override
+    long monthsUntil(AbstractDate end) {
+        DiscordianDate discordianEnd = DiscordianDate.from(end);
+        long packed1 = getProlepticMonth() * 256L + getDayOfMonth();  // no overflow
+        long packed2 = discordianEnd.getProlepticMonth() * 256L + discordianEnd.getDayOfMonth();  // no overflow
+        return (packed2 - packed1) / 256L;
     }
 
     @Override
