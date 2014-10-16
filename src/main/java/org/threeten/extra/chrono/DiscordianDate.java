@@ -34,6 +34,7 @@ package org.threeten.extra.chrono;
 import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
 import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
@@ -42,6 +43,7 @@ import static org.threeten.extra.chrono.DiscordianChronology.DAYS_IN_MONTH;
 import static org.threeten.extra.chrono.DiscordianChronology.DAYS_IN_WEEK;
 import static org.threeten.extra.chrono.DiscordianChronology.MONTHS_IN_YEAR;
 import static org.threeten.extra.chrono.DiscordianChronology.OFFSET_FROM_ISO_0000;
+import static org.threeten.extra.chrono.DiscordianChronology.WEEKS_IN_YEAR;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -53,6 +55,7 @@ import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -405,7 +408,7 @@ public final class DiscordianDate
     }
 
     @Override
-    AbstractDate resolvePrevious(int newYear, int newMonth, int dayOfMonth) {
+    DiscordianDate resolvePrevious(int newYear, int newMonth, int dayOfMonth) {
         return resolvePreviousValid(newYear, newMonth, dayOfMonth);
     }
 
@@ -579,7 +582,51 @@ public final class DiscordianDate
 
     @Override
     public DiscordianDate plus(long amountToAdd, TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
+            switch (f) {
+                case WEEKS:
+                    return plusWeeks(amountToAdd);
+                case MONTHS:
+                    return plusMonths(amountToAdd);
+                default:
+                    break;
+            }
+        }
         return (DiscordianDate) super.plus(amountToAdd, unit);
+    }
+
+    @Override
+    DiscordianDate plusMonths(long months) {
+        if (months == 0) {
+            return this;
+        }
+        long calcEm = Math.addExact(getProlepticMonth(), months);
+        int newYear = Math.toIntExact(Math.floorDiv(calcEm, MONTHS_IN_YEAR));
+        int newMonth = (int) (Math.floorMod(calcEm, MONTHS_IN_YEAR) + 1);
+        // If the starting date was St. Tib's Day, attempt to retain that status.
+        if (month == 0 && newMonth == 1) {
+            newMonth = 0;
+        }
+        return resolvePrevious(newYear, newMonth, day);
+    }
+
+    DiscordianDate plusWeeks(long weeks) {
+        if (weeks == 0) {
+            return this;
+        }
+        // For moving from St. Tib's Day, consider it part of the 12th week.
+        long curEw = prolepticYear * ((long) WEEKS_IN_YEAR) + (month == 0 ? ST_TIBS_OFFSET / DAYS_IN_WEEK : getLong(ALIGNED_WEEK_OF_YEAR)) - 1;
+        long calcEm = Math.addExact(curEw, weeks);
+        int newYear = Math.toIntExact(Math.floorDiv(calcEm, WEEKS_IN_YEAR));
+        // Give St. Tib's Day the same day-of-week as the day after it.
+        int newDayOfYear = (int) (Math.floorMod(calcEm, WEEKS_IN_YEAR)) * DAYS_IN_WEEK + (month == 0 ? DAYS_IN_WEEK : get(DAY_OF_WEEK));
+        // Need to offset day-of-year if leap year, and not heading to St. Tib's Day again.
+        if (DiscordianChronology.INSTANCE.isLeapYear(newYear)
+                && (newDayOfYear > ST_TIBS_OFFSET || (newDayOfYear == ST_TIBS_OFFSET && month != 0))) {
+            newDayOfYear++;
+        }
+        return ofYearDay(newYear, newDayOfYear);
     }
 
     @Override

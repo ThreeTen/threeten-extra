@@ -104,6 +104,10 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      */
     static final int MONTHS_IN_YEAR = 5;
     /**
+     * Weeks in a regular year.
+     */
+    static final int WEEKS_IN_YEAR = 73;
+    /**
      * Range of proleptic-year.
      */
     static final ValueRange YEAR_RANGE = ValueRange.of(1, 999_999);
@@ -134,7 +138,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     /**
      * Range of week-of-year.
      */
-    private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 73, 73);
+    private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, WEEKS_IN_YEAR, WEEKS_IN_YEAR);
     /**
      * Range of eras.
      */
