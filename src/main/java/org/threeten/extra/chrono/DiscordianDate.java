@@ -676,9 +676,9 @@ public final class DiscordianDate
     @Override
     long monthsUntil(AbstractDate end) {
         DiscordianDate discordianEnd = DiscordianDate.from(end);
-        long packed1 = getProlepticMonth() * 256L + getDayOfMonth();  // no overflow
-        long packed2 = discordianEnd.getProlepticMonth() * 256L + discordianEnd.getDayOfMonth();  // no overflow
-        return (packed2 - packed1) / 256L;
+        long packed1 = getProlepticMonth() * 128L + (month == 0 ? ST_TIBS_OFFSET : getDayOfMonth());  // no overflow
+        long packed2 = discordianEnd.getProlepticMonth() * 128L + (discordianEnd.month == 0 ? ST_TIBS_OFFSET : discordianEnd.getDayOfMonth());  // no overflow
+        return (packed2 - packed1) / 128L;
     }
 
     @Override
