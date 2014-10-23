@@ -87,7 +87,8 @@ public class TestAccountingChronology {
     // TODO: Test some aspects of other setups (especially, say, around the end of February)
     static AccountingChronology getChronologyInstance() {
         // AccountingChronology.endingOn(DayOfWeek.SUNDAY).inLastWeekOf(Month.AUGUST).....;
-        return AccountingChronology.endingOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST).withDivision(AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS).leapWeekInPeriod(13);
+        return new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST).
+                withDivision(AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS).leapWeekInPeriod(13).toChronology();
     }
 
     //-----------------------------------------------------------------------
