@@ -67,7 +67,6 @@ import java.time.chrono.IsoEra;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
@@ -88,7 +87,7 @@ public class TestAccountingChronology {
     // TODO: Test some aspects of other setups (especially, say, around the end of February)
     static AccountingChronology getChronologyInstance() {
         // AccountingChronology.endingOn(DayOfWeek.SUNDAY).inLastWeekOf(Month.AUGUST).....;
-        return AccountingChronology.endingOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST).withDivision(AccountingPeriod.13_EVEN_4_WEEKS).leapWeekInPeriod(13);
+        return AccountingChronology.endingOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST).withDivision(AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS).leapWeekInPeriod(13);
     }
 
     //-----------------------------------------------------------------------
