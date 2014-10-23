@@ -119,36 +119,36 @@ public class TestAccountingChronology {
     @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
-            {getChronologyInstance.date(1, 1, 1), LocalDate.of(0, 9, 4)},
-            {getChronologyInstance.date(1, 1, 2), LocalDate.of(0, 9, 5)},
-            {getChronologyInstance.date(1, 1, 3), LocalDate.of(0, 9, 6)},
+            {getChronologyInstance().date(1, 1, 1), LocalDate.of(0, 9, 4)},
+            {getChronologyInstance().date(1, 1, 2), LocalDate.of(0, 9, 5)},
+            {getChronologyInstance().date(1, 1, 3), LocalDate.of(0, 9, 6)},
 
-            {getChronologyInstance.date(2011, 13, 28), LocalDate.of(2011, 8, 28)},
-            {getChronologyInstance.date(2012, 1, 1), LocalDate.of(2011, 8, 29)},
-            {getChronologyInstance.date(2012, 1, 2), LocalDate.of(2011, 8, 30)},
-            {getChronologyInstance.date(2012, 1, 3), LocalDate.of(2011, 8, 31)},
+            {getChronologyInstance().date(2011, 13, 28), LocalDate.of(2011, 8, 28)},
+            {getChronologyInstance().date(2012, 1, 1), LocalDate.of(2011, 8, 29)},
+            {getChronologyInstance().date(2012, 1, 2), LocalDate.of(2011, 8, 30)},
+            {getChronologyInstance().date(2012, 1, 3), LocalDate.of(2011, 8, 31)},
 
-            {getChronologyInstance.date(2012, 13, 28), LocalDate.of(2012, 8, 26)},
-            {getChronologyInstance.date(2012, 13, 29), LocalDate.of(2012, 8, 27)},
-            {getChronologyInstance.date(2012, 13, 30), LocalDate.of(2012, 8, 28)},
-            {getChronologyInstance.date(2012, 13, 31), LocalDate.of(2012, 8, 29)},
-            {getChronologyInstance.date(2012, 13, 32), LocalDate.of(2012, 8, 30)},
-            {getChronologyInstance.date(2012, 13, 33), LocalDate.of(2012, 8, 31)},
-            {getChronologyInstance.date(2012, 13, 34), LocalDate.of(2012, 9, 1)},
-            {getChronologyInstance.date(2012, 13, 35), LocalDate.of(2012, 9, 2)},
-            {getChronologyInstance.date(2013, 1, 1), LocalDate.of(2012, 9, 3)},
-            {getChronologyInstance.date(2013, 1, 2), LocalDate.of(2012, 9, 4)},
-            {getChronologyInstance.date(2013, 1, 3), LocalDate.of(2012, 9, 5)},
+            {getChronologyInstance().date(2012, 13, 28), LocalDate.of(2012, 8, 26)},
+            {getChronologyInstance().date(2012, 13, 29), LocalDate.of(2012, 8, 27)},
+            {getChronologyInstance().date(2012, 13, 30), LocalDate.of(2012, 8, 28)},
+            {getChronologyInstance().date(2012, 13, 31), LocalDate.of(2012, 8, 29)},
+            {getChronologyInstance().date(2012, 13, 32), LocalDate.of(2012, 8, 30)},
+            {getChronologyInstance().date(2012, 13, 33), LocalDate.of(2012, 8, 31)},
+            {getChronologyInstance().date(2012, 13, 34), LocalDate.of(2012, 9, 1)},
+            {getChronologyInstance().date(2012, 13, 35), LocalDate.of(2012, 9, 2)},
+            {getChronologyInstance().date(2013, 1, 1), LocalDate.of(2012, 9, 3)},
+            {getChronologyInstance().date(2013, 1, 2), LocalDate.of(2012, 9, 4)},
+            {getChronologyInstance().date(2013, 1, 3), LocalDate.of(2012, 9, 5)},
 
-            {getChronologyInstance.date(0, 13, 28), LocalDate.of(0, 9, 3)},
-            {getChronologyInstance.date(0, 13, 27), LocalDate.of(0, 9, 2)},
+            {getChronologyInstance().date(0, 13, 28), LocalDate.of(0, 9, 3)},
+            {getChronologyInstance().date(0, 13, 27), LocalDate.of(0, 9, 2)},
 
-            {getChronologyInstance.date(1583, 2, 17), LocalDate.of(1582, 10, 14)},
-            {getChronologyInstance.date(1583, 2, 18), LocalDate.of(1582, 10, 15)},
-            {getChronologyInstance.date(1946, 3, 15), LocalDate.of(1945, 11, 12)},
+            {getChronologyInstance().date(1583, 2, 17), LocalDate.of(1582, 10, 14)},
+            {getChronologyInstance().date(1583, 2, 18), LocalDate.of(1582, 10, 15)},
+            {getChronologyInstance().date(1946, 3, 15), LocalDate.of(1945, 11, 12)},
 
-            {getChronologyInstance.date(2012, 11, 3), LocalDate.of(2012, 7, 5)},
-            {getChronologyInstance.date(2012, 11, 4), LocalDate.of(2012, 7, 6)},
+            {getChronologyInstance().date(2012, 11, 3), LocalDate.of(2012, 7, 5)},
+            {getChronologyInstance().date(2012, 11, 4), LocalDate.of(2012, 7, 6)},
         };
     }
 
@@ -263,7 +263,7 @@ public class TestAccountingChronology {
 
     @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
-        getChronologyInstance.date(year, month, dom);
+        getChronologyInstance().date(year, month, dom);
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -282,7 +282,7 @@ public class TestAccountingChronology {
             return currentYearStart.until(nextYearStart, DAYS) == 371;
         };
         for (int year = -200; year < 200; year++) {
-            AccountingDate base = getChronologyInstance.date(year, 1, 1);
+            AccountingDate base = getChronologyInstance().date(year, 1, 1);
             assertEquals(base.isLeapYear(), isLeapYear.test(year));
             assertEquals(getChronologyInstance().isLeapYear(year), isLeapYear.test(year));
         }
@@ -333,7 +333,7 @@ public class TestAccountingChronology {
 
     @Test(dataProvider = "lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
-        assertEquals(getChronologyInstance.date(year, month, 1).lengthOfMonth(), length);
+        assertEquals(getChronologyInstance().date(year, month, 1).lengthOfMonth(), length);
     }
 
     //-----------------------------------------------------------------------
@@ -448,12 +448,12 @@ public class TestAccountingChronology {
 
     @Test(dataProvider = "ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
-        assertEquals(getChronologyInstance.date(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+        assertEquals(getChronologyInstance().date(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_range_unsupported() {
-        getChronologyInstance.date(2012, 6, 28).range(MINUTE_OF_DAY);
+        getChronologyInstance().date(2012, 6, 28).range(MINUTE_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -482,12 +482,12 @@ public class TestAccountingChronology {
 
     @Test(dataProvider = "getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
-        assertEquals(getChronologyInstance.date(year, month, dom).getLong(field), expected);
+        assertEquals(getChronologyInstance().date(year, month, dom).getLong(field), expected);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_getLong_unsupported() {
-        getChronologyInstance.date(2012, 6, 28).getLong(MINUTE_OF_DAY);
+        getChronologyInstance().date(2012, 6, 28).getLong(MINUTE_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -535,12 +535,12 @@ public class TestAccountingChronology {
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(getChronologyInstance.date(year, month, dom).with(field, value), getChronologyInstance.date(expectedYear, expectedMonth, expectedDom));
+        assertEquals(getChronologyInstance().date(year, month, dom).with(field, value), getChronologyInstance().date(expectedYear, expectedMonth, expectedDom));
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_with_TemporalField_unsupported() {
-        getChronologyInstance.date(2012, 6, 28).with(MINUTE_OF_DAY, 0);
+        getChronologyInstance().date(2012, 6, 28).with(MINUTE_OF_DAY, 0);
     }
 
     //-----------------------------------------------------------------------
@@ -548,16 +548,16 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust1() {
-        AccountingDate base = getChronologyInstance.date(2012, 6, 23);
+        AccountingDate base = getChronologyInstance().date(2012, 6, 23);
         AccountingDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, getChronologyInstance.date(2012, 6, 28));
+        assertEquals(test, getChronologyInstance().date(2012, 6, 28));
     }
 
     @Test
     public void test_adjust2() {
-        AccountingDate base = getChronologyInstance.date(2012, 13, 23);
+        AccountingDate base = getChronologyInstance().date(2012, 13, 23);
         AccountingDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, getChronologyInstance.date(2012, 13, 35));
+        assertEquals(test, getChronologyInstance().date(2012, 13, 35));
     }
 
     //-----------------------------------------------------------------------
@@ -565,14 +565,14 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
-        AccountingDate accounting = getChronologyInstance.date(2000, 1, 4);
+        AccountingDate accounting = getChronologyInstance().date(2000, 1, 4);
         AccountingDate test = accounting.with(LocalDate.of(2012, 7, 6));
-        assertEquals(test, getChronologyInstance.date(2012, 11, 4));
+        assertEquals(test, getChronologyInstance().date(2012, 11, 4));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_adjust_toMonth() {
-        AccountingDate accounting = getChronologyInstance.date(2000, 1, 4);
+        AccountingDate accounting = getChronologyInstance().date(2000, 1, 4);
         accounting.with(Month.APRIL);
     }
 
@@ -581,14 +581,14 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToAccountingDate() {
-        AccountingDate accounting = getChronologyInstance.date(2012, 6, 23);
+        AccountingDate accounting = getChronologyInstance().date(2012, 6, 23);
         LocalDate test = LocalDate.MIN.with(accounting);
         assertEquals(test, LocalDate.of(2012, 2, 8));
     }
 
     @Test
     public void test_LocalDateTime_adjustToAccountingDate() {
-        AccountingDate accounting = getChronologyInstance.date(2012, 6, 23);
+        AccountingDate accounting = getChronologyInstance().date(2012, 6, 23);
         LocalDateTime test = LocalDateTime.MIN.with(accounting);
         assertEquals(test, LocalDateTime.of(2012, 2, 8, 0, 0));
     }
@@ -628,7 +628,7 @@ public class TestAccountingChronology {
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(getChronologyInstance.date(year, month, dom).plus(amount, unit), getChronologyInstance.date(expectedYear, expectedMonth, expectedDom));
+        assertEquals(getChronologyInstance().date(year, month, dom).plus(amount, unit), getChronologyInstance().date(expectedYear, expectedMonth, expectedDom));
     }
 
     @Test(dataProvider = "plus")
@@ -636,12 +636,12 @@ public class TestAccountingChronology {
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
-        assertEquals(getChronologyInstance.date(year, month, dom).minus(amount, unit), getChronologyInstance.date(expectedYear, expectedMonth, expectedDom));
+        assertEquals(getChronologyInstance().date(year, month, dom).minus(amount, unit), getChronologyInstance().date(expectedYear, expectedMonth, expectedDom));
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_plus_TemporalUnit_unsupported() {
-        getChronologyInstance.date(2012, 6, 28).plus(0, MINUTES);
+        getChronologyInstance().date(2012, 6, 28).plus(0, MINUTES);
     }
 
     //-----------------------------------------------------------------------
@@ -681,37 +681,37 @@ public class TestAccountingChronology {
             int year1, int month1, int dom1,
             int year2, int month2, int dom2,
             TemporalUnit unit, long expected) {
-        AccountingDate start = getChronologyInstance.date(year1, month1, dom1);
-        AccountingDate end = getChronologyInstance.date(year2, month2, dom2);
+        AccountingDate start = getChronologyInstance().date(year1, month1, dom1);
+        AccountingDate end = getChronologyInstance().date(year2, month2, dom2);
         assertEquals(start.until(end, unit), expected);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_until_TemporalUnit_unsupported() {
-        AccountingDate start = getChronologyInstance.date(2012, 6, 28);
-        AccountingDate end = getChronologyInstance.date(2012, 7, 1);
+        AccountingDate start = getChronologyInstance().date(2012, 6, 28);
+        AccountingDate end = getChronologyInstance().date(2012, 7, 1);
         start.until(end, MINUTES);
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_Period() {
-        assertEquals(getChronologyInstance.date(2014, 5, 26).plus(getChronologyInstance().period(0, 2, 3)), getChronologyInstance.date(2014, 8, 1));
+        assertEquals(getChronologyInstance().date(2014, 5, 26).plus(getChronologyInstance().period(0, 2, 3)), getChronologyInstance().date(2014, 8, 1));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_plus_Period_ISO() {
-        assertEquals(getChronologyInstance.date(2014, 5, 26).plus(Period.ofMonths(2)), getChronologyInstance.date(2014, 7, 26));
+        assertEquals(getChronologyInstance().date(2014, 5, 26).plus(Period.ofMonths(2)), getChronologyInstance().date(2014, 7, 26));
     }
 
     @Test
     public void test_minus_Period() {
-        assertEquals(getChronologyInstance.date(2014, 5, 26).minus(getChronologyInstance().period(0, 2, 3)), getChronologyInstance.date(2014, 3, 23));
+        assertEquals(getChronologyInstance().date(2014, 5, 26).minus(getChronologyInstance().period(0, 2, 3)), getChronologyInstance().date(2014, 3, 23));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_minus_Period_ISO() {
-        assertEquals(getChronologyInstance.date(2014, 5, 26).minus(Period.ofMonths(2)), getChronologyInstance.date(2014, 3, 26));
+        assertEquals(getChronologyInstance().date(2014, 5, 26).minus(Period.ofMonths(2)), getChronologyInstance().date(2014, 3, 26));
     }
 
     //-----------------------------------------------------------------------
@@ -719,11 +719,11 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     @Test
     void test_equals() {
-        AccountingDate a1 = getChronologyInstance.date(2000, 1, 3);
-        AccountingDate a2 = getChronologyInstance.date(2000, 1, 3);
-        AccountingDate b = getChronologyInstance.date(2000, 1, 4);
-        AccountingDate c = getChronologyInstance.date(2000, 2, 3);
-        AccountingDate d = getChronologyInstance.date(2001, 1, 3);
+        AccountingDate a1 = getChronologyInstance().date(2000, 1, 3);
+        AccountingDate a2 = getChronologyInstance().date(2000, 1, 3);
+        AccountingDate b = getChronologyInstance().date(2000, 1, 4);
+        AccountingDate c = getChronologyInstance().date(2000, 2, 3);
+        AccountingDate d = getChronologyInstance().date(2001, 1, 3);
 
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
@@ -744,8 +744,8 @@ public class TestAccountingChronology {
     @DataProvider(name = "toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {getChronologyInstance.date(1, 1, 1), "Accounting CE 1-01-01"},
-            {getChronologyInstance.date(2012, 6, 23), "Accounting CE 2012-06-23"},
+            {getChronologyInstance().date(1, 1, 1), "Accounting CE 1-01-01"},
+            {getChronologyInstance().date(2012, 6, 23), "Accounting CE 2012-06-23"},
         };
     }
 
