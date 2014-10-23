@@ -31,6 +31,85 @@
  */
 package org.threeten.extra.chrono;
 
+import java.time.DateTimeException;
+
+/**
+ * How an Accounting year is divided into smaller periods.
+ * <p>
+ * The Accounting calendar system generally divides a year into smaller periods, similar in length to regular calendar months.
+ * The most common divisions either use 12 such periods (requiring 1 period every quarter to be 5 weeks instead of 4),
+ * or use 13 periods of 4 weeks each (making one quarter have an extra period).
+ * <p>
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code AccountingPeriod}.
+ * Use {@code getValue()} instead.</b>
+ *
+ * <h3>Implementation Requirements:</h3>
+ * This is an immutable and thread-safe enum.
+ */
 public enum AccountingPeriod {
+
+    /**
+     * The singleton instance for a year divided into 4 quarters, 
+     * each having 3 periods with lengths of 4, 4, and 5 weeks, respectively.
+     */
+    QUARTERS_OF_PATTERN_4_4_5_WEEKS,
+    /**
+     * The singleton instance for a year divided into 4 quarters, 
+     * each having 3 periods with lengths of 4, 5, and 4 weeks, respectively.
+     */
+    QUARTERS_OF_PATTERN_4_5_4_WEEKS,
+    /**
+     * The singleton instance for a year divided into 4 quarters, 
+     * each having 3 periods with lengths of 5, 4, and 4 weeks, respectively.
+     */
+    QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+    /**
+     * The singleton instance for a year divided into 13 even periods,
+     * each having 4 weeks.
+     */
+    THIRTEEN_EVEN_PERIODS_OF_4_WEEKS;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code AccountingPeriod} from an {@code int} value.
+     * <p>
+     * {@code AccountingPeriod} is an enum representing how an Accounting year is divided into smaller periods.
+     * This factory allows the enum to be obtained from the {@code int} value.
+     *
+     * @param period  the AccountingPeriod division to represent, from 0 to 3
+     * @return the AccountingPeriod singleton, not null
+     * @throws DateTimeException if the value is invalid
+     */
+    public static AccountingPeriod of(int period) {
+        switch (period) {
+            case 0:
+                return QUARTERS_OF_PATTERN_4_4_5_WEEKS;
+            case 1:
+                return QUARTERS_OF_PATTERN_4_5_4_WEEKS;
+            case 2:
+                return QUARTERS_OF_PATTERN_5_4_4_WEEKS;
+            case 3:
+                return THIRTEEN_EVEN_PERIODS_OF_4_WEEKS;
+            default:
+                throw new DateTimeException("Invalid AccountingPeriod: " + period);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the numeric AccountingPeriod {@code int} value.
+     * <p>
+     * <ul>
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} has the value 0.
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} has the value 1.
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} has the value 2.
+     * <li>The AccountingPeriod {@code THIRTEEN_EVEN_PERIODS_OF_4_WEEKS} has the value 3.
+     * </ul>
+     *
+     * @return the AccountingPeriod value, from 0 to 3.
+     */
+    public int getValue() {
+        return ordinal();
+    }
 
 }
