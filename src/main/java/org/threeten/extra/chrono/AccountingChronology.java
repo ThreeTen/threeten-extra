@@ -40,6 +40,35 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.ValueRange;
 import java.util.List;
 
+/**
+ * An Accounting calendar system.
+ * <p>
+ * This chronology defines the rules of a proleptic 52/53-week Accounting calendar system.
+ * This calendar system follows the rules as laid down in TODO: get references as necessary
+ * The start of the Accounting calendar will vary against the ISO calendar.
+ * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-01-04 (ISO)}.
+ * <p>
+ * This class is proleptic. It implements Accounting chronology rules for the entire time-line.
+ * <p>
+ * The fields are defined as follows:
+ * <ul>
+ * <li>era - There are two eras, the current 'Current Era' (CE) and the previous era 'Before Current Era' (BCE).
+ * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
+ *  For the previous era the year increases from one as time goes backwards.
+ * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
+ *  current era. For the previous era, years have zero, then negative values.
+ * <li>month-of-year - There are 12 or 13 months (periods) in an Accouting year, numbered from 1 to 12 or 13.
+ * <li>day-of-month - There are 28 or 35 days in each Accounting month (period), numbered from 1 to 35.
+ *  Month (period) length depends on how the year has been divided.
+ *  When the Accounting leap year occurs, a week (7 days) is added to a specific month (period).
+ * <li>day-of-year - There are 364 days in a standard Accounting year and 371 in a leap year.
+ *  The days are numbered from 1 to 364 or 1 to 371.
+ * <li>leap-year - Leap years usually occur every 5 or 6 years.  Timing depends on settings chosen.
+ * </ul>
+ *
+ * <h3>Implementation Requirements</h3>
+ * This class is immutable and thread-safe.
+ */
 public final class AccountingChronology extends AbstractChronology implements Serializable {
 
     @Override
