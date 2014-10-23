@@ -46,9 +46,11 @@ import java.time.Month;
  * <li>month end - Which Gregorian/ISO end-of-month the year ends in/is nearest to.
  * <li>period division - How many 'months' (periods) to divide the accounting year into, 
  * and how many weeks are in each.
+ * <li>leap-week period - Which period will have the leap 'week' added to it.  
+ * In practice this is probably the last period, but this does not seem to be required.
  * </ul>
  * <p>
- * There are approximately 7 x 2 x 12 x 4 = 336 combinations.
+ * There are approximately 7 x 2 x 12 x 4 x 12/13 = 4032 combinations.
  * Note that US accounting practices appear to disallow the use of December as the ending month,
  * while international accounting practices appear to allow the use of December;
  * neither this builder nor the resulting chronology are able to enforce such rules in any way.
@@ -75,6 +77,10 @@ public final class AccountingChronologyBuilder {
      * How to divide an accounting year.
      */
     private AccountingPeriod division;
+    /**
+     * The period which will have the leap-week added.
+     */
+    private int leapWeekPeriod;
 
     /**
      * Constructs a new instance of the builder.
@@ -138,18 +144,35 @@ public final class AccountingChronologyBuilder {
     }
 
     /**
+     * Sets the period in which the leap-week occurs.
+     * 
+     * @param leapWeekPeriod The period in which the leap-week occurs.
+     * 
+     * @return this, for chaining, not null.
+     */
+    public AccountingChronologyBuilder leapWeekInPeriod(int leapWeekPeriod) {
+        this.leapWeekPeriod = leapWeekPeriod;
+        return this;
+    }
+
+    /**
      * Completes this builder by creating the {@code AccountingChronology}.
      * 
      * @return the created chronology, not null.
+     * 
+     * @throws IllegalStateException if the builder doesn't have sufficient information to build the chronology,
+     *  or if the period given for the leap-week does not exist.
      */
     public AccountingChronology toChronology() {
-        if (endsOn == null || end == null || division == null) {
+        if (endsOn == null || end == null || division == null || leapWeekPeriod == 0) {
             throw new IllegalStateException("AccountingCronology cannot be built: "
                     + (endsOn == null ? "| ending day-of-week |" : "")
                     + (end == null ? "| month ending in/nearest to |" : "")
                     + (division == null ? "| how year divided |" : "")
+                    + (leapWeekPeriod == 0 ? "| leap-week period |" : "")
                     + " not set.");
         }
+        // TODO: Add check for leap-week period versus periods available.
 
         // TODO: Actually create the chronology.
         return null;
