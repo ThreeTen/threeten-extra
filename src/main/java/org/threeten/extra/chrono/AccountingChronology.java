@@ -71,6 +71,11 @@ import java.util.List;
  */
 public final class AccountingChronology extends AbstractChronology implements Serializable {
 
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 7291205177830286973L;
+
     @Override
     public String getId() {
         // TODO Auto-generated method stub
