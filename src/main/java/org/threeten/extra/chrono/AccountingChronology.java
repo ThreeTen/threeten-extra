@@ -60,7 +60,8 @@ import java.util.List;
  * <li>month-of-year - There are 12 or 13 months (periods) in an Accouting year, numbered from 1 to 12 or 13.
  * <li>day-of-month - There are 28 or 35 days in each Accounting month (period), numbered from 1 to 35.
  *  Month (period) length depends on how the year has been divided.
- *  When the Accounting leap year occurs, a week (7 days) is added to a specific month (period).
+ *  When the Accounting leap year occurs, a week (7 days) is added to a specific month (period);
+ *  this increases to maximum day-of-month numbering to 35 or 42.
  * <li>day-of-year - There are 364 days in a standard Accounting year and 371 in a leap year.
  *  The days are numbered from 1 to 364 or 1 to 371.
  * <li>leap-year - Leap years usually occur every 5 or 6 years.  Timing depends on settings chosen.
