@@ -80,7 +80,7 @@ public final class AccountingChronologyBuilder {
     /**
      * The period which will have the leap-week added.
      */
-    private int leapWeekPeriod;
+    private int leapWeekInPeriod;
 
     /**
      * Constructs a new instance of the builder.
@@ -146,12 +146,12 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets the period in which the leap-week occurs.
      * 
-     * @param leapWeekPeriod The period in which the leap-week occurs.
+     * @param leapWeekInPeriod The period in which the leap-week occurs.
      * 
      * @return this, for chaining, not null.
      */
-    public AccountingChronologyBuilder leapWeekInPeriod(int leapWeekPeriod) {
-        this.leapWeekPeriod = leapWeekPeriod;
+    public AccountingChronologyBuilder leapWeekInPeriod(int leapWeekInPeriod) {
+        this.leapWeekInPeriod = leapWeekInPeriod;
         return this;
     }
 
@@ -164,16 +164,16 @@ public final class AccountingChronologyBuilder {
      *  or if the period given for the leap-week does not exist.
      */
     public AccountingChronology toChronology() {
-        if (endsOn == null || end == null || division == null || leapWeekPeriod == 0) {
+        if (endsOn == null || end == null || division == null || leapWeekInPeriod == 0) {
             throw new IllegalStateException("AccountingCronology cannot be built: "
                     + (endsOn == null ? "| ending day-of-week |" : "")
                     + (end == null ? "| month ending in/nearest to |" : "")
                     + (division == null ? "| how year divided |" : "")
-                    + (leapWeekPeriod == 0 ? "| leap-week period |" : "")
+                    + (leapWeekInPeriod == 0 ? "| leap-week period |" : "")
                     + " not set.");
         }
-        if (leapWeekPeriod < 1 || leapWeekPeriod > division.getMonthsInYear()) {
-            throw new IllegalStateException("Leap week cannot not be placed in non-existant period " + leapWeekPeriod
+        if (leapWeekInPeriod < 1 || leapWeekInPeriod > division.getMonthsInYear()) {
+            throw new IllegalStateException("Leap week cannot not be placed in non-existant period " + leapWeekInPeriod
                     + ", range is [1, " + division.getMonthsInYear() + "].");
         }
 
