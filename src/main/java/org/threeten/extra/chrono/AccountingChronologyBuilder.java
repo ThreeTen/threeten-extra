@@ -172,7 +172,10 @@ public final class AccountingChronologyBuilder {
                     + (leapWeekPeriod == 0 ? "| leap-week period |" : "")
                     + " not set.");
         }
-        // TODO: Add check for leap-week period versus periods available.
+        if (leapWeekPeriod < 1 || leapWeekPeriod > division.getMonthsInYear()) {
+            throw new IllegalStateException("Leap week cannot not be placed in non-existant period " + leapWeekPeriod
+                    + ", range is [1, " + division.getMonthsInYear() + "].");
+        }
 
         // TODO: Actually create the chronology.
         return null;

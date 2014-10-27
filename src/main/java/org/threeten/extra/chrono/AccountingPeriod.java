@@ -112,4 +112,21 @@ public enum AccountingPeriod {
         return ordinal();
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the number of months (periods) in a year.
+     * <p>
+     * <ul>
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} has 12 months.
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} has 12 months.
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} has 12 months.
+     * <li>The AccountingPeriod {@code THIRTEEN_EVEN_PERIODS_OF_4_WEEKS} has 13 months.
+     * </ul>
+     *
+     * @return the number of months (periods) in a year.
+     */
+    public int getMonthsInYear() {
+        return this == THIRTEEN_EVEN_PERIODS_OF_4_WEEKS ? 13 : 12;
+    }
+
 }
