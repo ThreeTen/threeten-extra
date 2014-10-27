@@ -95,7 +95,7 @@ public class TestAccountingChronologyBuilder {
             return currentYearEnd.until(nextYearEnd, DAYS) == 371;
         };
 
-        for (int year = -200; year < 400; year++) {
+        for (int year = -200; year < 600; year++) {
             assertEquals(chronology.isLeapYear(year), isLeapYear.test(year), "Fails on " + year);
         }
     }
@@ -115,7 +115,7 @@ public class TestAccountingChronologyBuilder {
             return currentYearEnd.until(nextYearEnd, DAYS) == 371;
         };
 
-        for (int year = -200; year < 400; year++) {
+        for (int year = -200; year < 600; year++) {
             assertEquals(chronology.isLeapYear(year), isLeapYear.test(year), "Fails on " + year);
         }
     }
@@ -130,7 +130,7 @@ public class TestAccountingChronologyBuilder {
             return LocalDate.of(year, ending, 1).with(TemporalAdjusters.lastDayOfMonth()).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
 
-        for (int year = -200; year < 400; year++) {
+        for (int year = -200; year < 600; year++) {
             assertEquals(chronology.date(year, 1, 1), chronology.date(getYearEnd.apply(year - 1).plusDays(1)));
         }
     }
@@ -145,7 +145,7 @@ public class TestAccountingChronologyBuilder {
             return LocalDate.of(year, ending, 1).plusMonths(1).plusDays(3 - 1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
 
-        for (int year = -200; year < 400; year++) {
+        for (int year = -200; year < 600; year++) {
             assertEquals(chronology.date(year, 1, 1), chronology.date(getYearEnd.apply(year - 1).plusDays(1)));
         }
     }
