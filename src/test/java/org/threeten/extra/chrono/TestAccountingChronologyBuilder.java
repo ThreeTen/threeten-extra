@@ -31,6 +31,17 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static org.testng.Assert.assertEquals;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -38,5 +49,103 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestAccountingChronologyBuilder {
+
+    //-----------------------------------------------------------------------
+    // isLeapYear(), date(int, int, int)
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "yearEnding")
+    Object[][] data_yearEnding() {
+        return new Object[][] {
+            {DayOfWeek.MONDAY, Month.JANUARY},
+            {DayOfWeek.TUESDAY, Month.MARCH},
+            {DayOfWeek.WEDNESDAY, Month.APRIL},
+            {DayOfWeek.THURSDAY, Month.MAY},
+            {DayOfWeek.FRIDAY, Month.JUNE},
+            {DayOfWeek.SATURDAY, Month.JULY},
+            {DayOfWeek.SUNDAY, Month.AUGUST},
+            {DayOfWeek.MONDAY, Month.SEPTEMBER},
+            {DayOfWeek.TUESDAY, Month.OCTOBER},
+            {DayOfWeek.WEDNESDAY, Month.NOVEMBER},
+            {DayOfWeek.THURSDAY, Month.DECEMBER},
+
+            {DayOfWeek.MONDAY, Month.FEBRUARY},
+            {DayOfWeek.TUESDAY, Month.FEBRUARY},
+            {DayOfWeek.WEDNESDAY, Month.FEBRUARY},
+            {DayOfWeek.THURSDAY, Month.FEBRUARY},
+            {DayOfWeek.FRIDAY, Month.FEBRUARY},
+            {DayOfWeek.SATURDAY, Month.FEBRUARY},
+            {DayOfWeek.SUNDAY, Month.FEBRUARY},
+        };
+    }
+
+    @Test(dataProvider = "yearEnding")
+    public void test_isLeapYear_inLastWeekOf(DayOfWeek dayOfWeek, Month ending) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
+                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .toChronology();
+
+        IntFunction<LocalDate> getYearEnd = year -> {
+            return LocalDate.of(year, ending, 1).with(TemporalAdjusters.lastDayOfMonth()).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+        };
+        Predicate<Integer> isLeapYear = year -> {
+            LocalDate currentYearEnd = getYearEnd.apply(year);
+            LocalDate nextYearEnd = getYearEnd.apply(year + 1);
+            return currentYearEnd.until(nextYearEnd, DAYS) == 371;
+        };
+
+        for (int year = -200; year < 400; year++) {
+            assertEquals(chronology.isLeapYear(year), isLeapYear.test(year), "Fails on " + year);
+        }
+    }
+
+    @Test(dataProvider = "yearEnding")
+    public void test_isLeapYear_nearestEndOf(DayOfWeek dayOfWeek, Month ending) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
+                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .toChronology();
+
+        IntFunction<LocalDate> getYearEnd = year -> {
+            return LocalDate.of(year, ending, 1).plusMonths(1).plusDays(3 - 1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+        };
+        Predicate<Integer> isLeapYear = year -> {
+            LocalDate currentYearEnd = getYearEnd.apply(year);
+            LocalDate nextYearEnd = getYearEnd.apply(year + 1);
+            return currentYearEnd.until(nextYearEnd, DAYS) == 371;
+        };
+
+        for (int year = -200; year < 400; year++) {
+            assertEquals(chronology.isLeapYear(year), isLeapYear.test(year), "Fails on " + year);
+        }
+    }
+
+    @Test(dataProvider = "yearEnding")
+    public void test_date_int_int_int_inLastWeekOf(DayOfWeek dayOfWeek, Month ending) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
+                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .toChronology();
+
+        IntFunction<LocalDate> getYearEnd = year -> {
+            return LocalDate.of(year, ending, 1).with(TemporalAdjusters.lastDayOfMonth()).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+        };
+
+        for (int year = -200; year < 400; year++) {
+            assertEquals(chronology.date(year, 1, 1), chronology.date(getYearEnd.apply(year - 1).plusDays(1)));
+        }
+    }
+
+    @Test(dataProvider = "yearEnding")
+    public void test_date_int_int_int_nearestEndOf(DayOfWeek dayOfWeek, Month ending) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
+                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .toChronology();
+
+        IntFunction<LocalDate> getYearEnd = year -> {
+            return LocalDate.of(year, ending, 1).plusMonths(1).plusDays(3 - 1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+        };
+
+        for (int year = -200; year < 400; year++) {
+            assertEquals(chronology.date(year, 1, 1), chronology.date(getYearEnd.apply(year - 1).plusDays(1)));
+        }
+    }
 
 }
