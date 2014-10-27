@@ -31,32 +31,79 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+
 import java.io.Serializable;
 import java.time.Clock;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Chronology;
+import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 
 public final class AccountingDate extends AbstractDate implements ChronoLocalDate, Serializable {
 
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains the current {@code AccountingDate} from the system clock in the default time-zone,
+     * translated with the given AccountingChronology.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     * 
+     * @param chronology  the accounting chronology to use, not null
+     * @return the current date using the system clock and default time-zone, not null
+     * @throws DateTimeException if the current date cannot be obtained
+     */
     public static AccountingDate now(AccountingChronology chronology) {
-        // TODO Auto-generated method stub
-        return null;
+        return now(chronology, Clock.systemDefaultZone());
     }
 
+    /**
+     * Obtains the current {@code AccountingDate} from the system clock in the specified time-zone,
+     * translated with the given AccountingChronology.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     * 
+     * @param chronology  the accounting chronology to use, not null
+     * @param zone  the zone ID to use, not null
+     * @return the current date using the system clock, not null
+     * @throws DateTimeException if the current date cannot be obtained
+     */
     public static AccountingDate now(AccountingChronology chronology, ZoneId zone) {
-        // TODO Auto-generated method stub
-        return null;
+        return now(chronology, Clock.system(zone));
     }
 
+    /**
+     * Obtains the current {@code AccountingDate} from the specified clock,
+     * translated with the given AccountingChronology.
+     * <p>
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@linkplain Clock dependency injection}.
+     *
+     * @param chronology  the accounting chronology to use, not null
+     * @param clock  the clock to use, not null
+     * @return the current date, not null
+     * @throws DateTimeException if the current date cannot be obtained
+     */
     public static AccountingDate now(AccountingChronology chronology, Clock clock) {
-        // TODO Auto-generated method stub
-        return null;
+        LocalDate now = LocalDate.now(clock);
+        return ofEpochDay(chronology, now.toEpochDay());
     }
 
     public static AccountingDate of(AccountingChronology chronology, int prolepticYear, int month, int dayOfMonth) {
@@ -64,9 +111,30 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         return null;
     }
 
+    /**
+     * Obtains an {@code AccountingDate} from a temporal object.
+     * <p>
+     * This obtains a date in the specified Accounting calendar system based on the specified temporal.
+     * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
+     * which this factory converts to an instance of {@code AccountingDate}.
+     * <p>
+     * The conversion typically uses the {@link ChronoField#EPOCH_DAY EPOCH_DAY}
+     * field, which is standardized across calendar systems.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used as a query via method reference, {@code AccountingDate::from}.
+     * TODO: Figure out how this implementation effects the above.
+     *
+     * @param chronology  the accounting chronology to use, not null
+     * @param temporal  the temporal object to convert, not null
+     * @return the date in Accounting calendar system, not null
+     * @throws DateTimeException if unable to convert to an {@code AccountingDate}
+     */
     public static AccountingDate from(AccountingChronology chronology, TemporalAccessor temporal) {
-        // TODO Auto-generated method stub
-        return null;
+        if (temporal instanceof AccountingDate && ((AccountingDate) temporal).getChronology().equals(chronology)) {
+            return (AccountingDate) temporal;
+        }
+        return ofEpochDay(chronology, temporal.getLong(EPOCH_DAY));
     }
 
     static AccountingDate ofYearDay(AccountingChronology chronology, int prolepticYear, int dayOfYear) {
