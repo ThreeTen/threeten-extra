@@ -35,7 +35,6 @@ import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.chrono.AbstractChronology;
-import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Era;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
@@ -142,25 +141,25 @@ public final class AccountingChronology extends AbstractChronology implements Se
     }
 
     @Override
-    public ChronoLocalDate date(int arg0, int arg1, int arg2) {
+    public AccountingDate date(int arg0, int arg1, int arg2) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ChronoLocalDate dateYearDay(int arg0, int arg1) {
+    public AccountingDate dateYearDay(int arg0, int arg1) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ChronoLocalDate dateEpochDay(long arg0) {
+    public AccountingDate dateEpochDay(long arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ChronoLocalDate date(TemporalAccessor arg0) {
+    public AccountingDate date(TemporalAccessor arg0) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -184,7 +183,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     }
 
     @Override
-    public Era eraOf(int arg0) {
+    public AccountingEra eraOf(int arg0) {
         // TODO Auto-generated method stub
         return null;
     }
