@@ -91,8 +91,8 @@ public class TestAccountingChronologyBuilder {
         };
         Predicate<Integer> isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
-            LocalDate nextYearEnd = getYearEnd.apply(year + 1);
-            return currentYearEnd.until(nextYearEnd, DAYS) == 371;
+            LocalDate prevYearEnd = getYearEnd.apply(year - 1);
+            return prevYearEnd.until(currentYearEnd, DAYS) == 371;
         };
 
         for (int year = -200; year < 600; year++) {
@@ -111,8 +111,8 @@ public class TestAccountingChronologyBuilder {
         };
         Predicate<Integer> isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
-            LocalDate nextYearEnd = getYearEnd.apply(year + 1);
-            return currentYearEnd.until(nextYearEnd, DAYS) == 371;
+            LocalDate prevYearEnd = getYearEnd.apply(year - 1);
+            return prevYearEnd.until(currentYearEnd, DAYS) == 371;
         };
 
         for (int year = -200; year < 600; year++) {
