@@ -35,9 +35,12 @@ import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Era;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
@@ -282,6 +285,46 @@ public final class AccountingChronology extends AbstractChronology implements Se
     @Override
     public AccountingDate date(TemporalAccessor temporal) {
         return AccountingDate.from(this, temporal);
+    }
+
+    /**
+     * Obtains a Accounting local date-time from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Accounting local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<AccountingDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<AccountingDate>) super.localDateTime(temporal);
+    }
+
+    /**
+     * Obtains a Accounting zoned date-time from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Accounting zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<AccountingDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<AccountingDate>) super.zonedDateTime(temporal);
+    }
+
+    /**
+     * Obtains a Accounting zoned date-time in this chronology from an {@code Instant}.
+     *
+     * @param instant  the instant to create the date-time from, not null
+     * @param zone  the time-zone, not null
+     * @return the Accounting zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<AccountingDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<AccountingDate>) super.zonedDateTime(instant, zone);
     }
 
     @Override
