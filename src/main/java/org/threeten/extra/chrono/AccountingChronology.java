@@ -172,9 +172,11 @@ public final class AccountingChronology extends AbstractChronology implements Se
     }
 
     @Override
-    public int prolepticYear(Era arg0, int arg1) {
-        // TODO Auto-generated method stub
-        return 0;
+    public int prolepticYear(Era era, int yearOfEra) {
+        if (!(era instanceof AccountingEra)) {
+            throw new ClassCastException("Era must be AccountingEra");
+        }
+        return (era == AccountingEra.CE ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
