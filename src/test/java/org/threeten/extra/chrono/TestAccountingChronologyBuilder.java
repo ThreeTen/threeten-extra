@@ -37,7 +37,9 @@ import static org.testng.Assert.assertEquals;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.ValueRange;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
@@ -146,6 +148,69 @@ public class TestAccountingChronologyBuilder {
         for (int year = -200; year < 400; year++) {
             assertEquals(chronology.date(year, 1, 1), chronology.date(getYearEnd.apply(year - 1).plusDays(1)));
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // range(MONTH_OF_YEAR), range(DAY_OF_MONTH)
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "range")
+    Object[][] data_range() {
+        return new Object[][] {
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 1,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 2,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 3,
+                ValueRange.of(1, 5, 6), ValueRange.of(1, 35, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 4,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 5,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 6,
+                ValueRange.of(1, 5, 6), ValueRange.of(1, 35, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 7,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 8,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 9,
+                ValueRange.of(1, 5, 6), ValueRange.of(1, 35, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 10,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 11,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 12,
+                ValueRange.of(1, 5, 6), ValueRange.of(1, 35, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 1,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 2,
+                ValueRange.of(1, 5, 6), ValueRange.of(1, 35, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 3,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+
+            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 1,
+                ValueRange.of(1, 5, 6), ValueRange.of(1, 35, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 2,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 3,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+
+            {AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 1,
+                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12)},
+        };
+    }
+
+    @Test(dataProvider = "range")
+    public void test_range(AccountingPeriod division, int leapWeekInPeriod,
+            ValueRange expectedWeekOfMonthRange, ValueRange expectedDayOfMonthRange, ValueRange expectedMonthRange, ValueRange expectedProlepticMonthRange) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
+                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .toChronology();
+
+        assertEquals(chronology.range(ChronoField.ALIGNED_WEEK_OF_MONTH), expectedWeekOfMonthRange);
+        assertEquals(chronology.range(ChronoField.DAY_OF_MONTH), expectedDayOfMonthRange);
+        assertEquals(chronology.range(ChronoField.MONTH_OF_YEAR), expectedMonthRange);
+        assertEquals(chronology.range(ChronoField.PROLEPTIC_MONTH), expectedProlepticMonthRange);
     }
 
 }
