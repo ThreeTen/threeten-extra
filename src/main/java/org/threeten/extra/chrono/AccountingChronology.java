@@ -32,9 +32,11 @@
 package org.threeten.extra.chrono;
 
 import java.io.Serializable;
+import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
 import java.time.chrono.Era;
 import java.time.temporal.ChronoField;
@@ -212,10 +214,61 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return the Accounting local date, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override
-    // override with covariant return type
+    @Override  // override with covariant return type
     public AccountingDate dateEpochDay(long epochDay) {
         return AccountingDate.ofEpochDay(this, epochDay);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Obtains the current Accounting local date from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current Accounting local date using the system clock and default time-zone, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public AccountingDate dateNow() {
+        return AccountingDate.now(this);
+    }
+
+    /**
+     * Obtains the current Accounting local date from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @param zone the zone ID to use, not null
+     * @return the current Accounting local date using the system clock, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public AccountingDate dateNow(ZoneId zone) {
+        return AccountingDate.now(this, zone);
+    }
+
+    /**
+     * Obtains the current Accounting local date from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current Accounting local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public AccountingDate dateNow(Clock clock) {
+        return AccountingDate.now(this, clock);
     }
 
     //-------------------------------------------------------------------------
