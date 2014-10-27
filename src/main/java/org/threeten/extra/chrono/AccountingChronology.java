@@ -36,6 +36,7 @@ import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
@@ -43,10 +44,13 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Era;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.LongFunction;
 
 /**
  * An Accounting calendar system.
@@ -108,6 +112,11 @@ public final class AccountingChronology extends AbstractChronology implements Se
     private final int leapWeekInPeriod;
 
     /**
+     * Difference in days between accounting year end and ISO month end, in ISO year 0.
+     */
+    private final int yearZeroDifference;
+
+    /**
      * Contructor for Accounting Chronologies.
      * Package private as only meant to be called from the builder.
      * 
@@ -123,6 +132,11 @@ public final class AccountingChronology extends AbstractChronology implements Se
         this.inLastWeek = inLastWeek;
         this.division = division;
         this.leapWeekInPeriod = leapWeekInPeriod;
+
+        // Derived values
+        LocalDate endingLimit = inLastWeek ? LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
+                LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
+        this.yearZeroDifference = (int) endingLimit.with(TemporalAdjusters.previousOrSame(endsOn)).until(endingLimit, ChronoUnit.DAYS);
     }
 
     /**
@@ -327,10 +341,27 @@ public final class AccountingChronology extends AbstractChronology implements Se
         return (ChronoZonedDateTime<AccountingDate>) super.zonedDateTime(instant, zone);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified year is a leap year.
+     * <p>
+     * An Accounting proleptic-year is leap if the time between the end of the previous year 
+     * and the end of the current year is 371 days.
+     * This method does not validate the year passed in, and only has a
+     * well-defined result for years in the supported range.
+     *
+     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @return true if the year is a leap year
+     */
     @Override
-    public boolean isLeapYear(long arg0) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean isLeapYear(long prolepticYear) {
+        LongFunction<Long> getISOleapYearCount = year -> {
+            long offsetYear = year - (end == Month.JANUARY ? 1 : 0);
+            return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400) + (end == Month.JANUARY ? 1 : 0);
+        };
+
+        return Math.floorMod(prolepticYear + getISOleapYearCount.apply(prolepticYear) + yearZeroDifference, 7) == 0
+                || Math.floorMod(prolepticYear + getISOleapYearCount.apply(prolepticYear - 1) + yearZeroDifference, 7) == 0;
     }
 
     @Override
