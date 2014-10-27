@@ -32,6 +32,7 @@
 package org.threeten.extra.chrono;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.chrono.AbstractChronology;
@@ -141,28 +142,58 @@ public final class AccountingChronology extends AbstractChronology implements Se
         return null;
     }
 
+    /**
+     * Obtains a local date in Accounting calendar system from the
+     * proleptic-year, month-of-year and day-of-month fields.
+     *
+     * @param prolepticYear  the proleptic-year
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
+     * @return the Accounting local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
-    public AccountingDate date(int arg0, int arg1, int arg2) {
-        // TODO Auto-generated method stub
-        return null;
+    public AccountingDate date(int prolepticYear, int month, int dayOfMonth) {
+        return AccountingDate.of(this, prolepticYear, month, dayOfMonth);
     }
 
+    /**
+     * Obtains a local date in Accounting calendar system from the
+     * proleptic-year and day-of-year fields.
+     *
+     * @param prolepticYear  the proleptic-year
+     * @param dayOfYear  the day-of-year
+     * @return the Accounting local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
-    public AccountingDate dateYearDay(int arg0, int arg1) {
-        // TODO Auto-generated method stub
-        return null;
+    public AccountingDate dateYearDay(int prolepticYear, int dayOfYear) {
+        return AccountingDate.ofYearDay(this, prolepticYear, dayOfYear);
     }
 
-    @Override
-    public AccountingDate dateEpochDay(long arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Obtains a local date in the Accounting calendar system from the epoch-day.
+     *
+     * @param epochDay  the epoch day
+     * @return the Accounting local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public AccountingDate dateEpochDay(long epochDay) {
+        return AccountingDate.ofEpochDay(this, epochDay);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Obtains a Accounting local date from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the Accounting local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
     @Override
-    public AccountingDate date(TemporalAccessor arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public AccountingDate date(TemporalAccessor temporal) {
+        return AccountingDate.from(this, temporal);
     }
 
     @Override
