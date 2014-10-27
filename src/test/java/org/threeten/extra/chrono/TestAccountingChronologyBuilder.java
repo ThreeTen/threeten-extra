@@ -213,4 +213,37 @@ public class TestAccountingChronologyBuilder {
         assertEquals(chronology.range(ChronoField.PROLEPTIC_MONTH), expectedProlepticMonthRange);
     }
 
+    //-----------------------------------------------------------------------
+    // toChronology() failures.
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "badChronology")
+    Object[][] data_badChronology() {
+        return new Object[][] {
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 0},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, -1},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 14},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 13},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 13},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 13},
+            {DayOfWeek.MONDAY, Month.JANUARY, null, 13},
+            {DayOfWeek.MONDAY, null, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 13},
+            {null, Month.JANUARY, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 13},
+
+        };
+    }
+
+    @Test(dataProvider = "badChronology", expectedExceptions = IllegalStateException.class)
+    public void test_badChronology_nearestEndOf(DayOfWeek dayOfWeek, Month ending, AccountingPeriod division, int leapWeekInPeriod) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
+                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .toChronology();
+    }
+
+    @Test(dataProvider = "badChronology", expectedExceptions = IllegalStateException.class)
+    public void test_badChronology_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingPeriod division, int leapWeekInPeriod) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
+                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .toChronology();
+    }
+
 }
