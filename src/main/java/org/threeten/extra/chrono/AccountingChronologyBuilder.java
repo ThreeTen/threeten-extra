@@ -177,8 +177,7 @@ public final class AccountingChronologyBuilder {
                     + ", range is [1, " + division.getMonthsInYear() + "].");
         }
 
-        // TODO: Actually create the chronology.
-        return null;
+        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod);
     }
 
 }

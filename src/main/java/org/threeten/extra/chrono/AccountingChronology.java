@@ -32,6 +32,8 @@
 package org.threeten.extra.chrono;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.Month;
 import java.time.chrono.AbstractChronology;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Era;
@@ -76,6 +78,56 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * Serialization version.
      */
     private static final long serialVersionUID = 7291205177830286973L;
+
+    /**
+     * The day of the week on which a given Accounting year ends.
+     */
+    private final DayOfWeek endsOn;
+    /**
+     * Whether the calendar ends in the last week of a given Gregorian/ISO month, 
+     * or nearest to the last day of the month (will sometimes be in the next month).
+     */
+    private final boolean inLastWeek;
+    /**
+     * Which Gregorian/ISO end-of-month the year ends in/is nearest to.
+     */
+    private final Month end;
+    /**
+     * How to divide an accounting year.
+     */
+    private final AccountingPeriod division;
+    /**
+     * The period which will have the leap-week added.
+     */
+    private final int leapWeekInPeriod;
+
+    /**
+     * Contructor for Accounting Chronologies.
+     * Package private as only meant to be called from the builder.
+     * 
+     * @param endsOn The day-of-week a given year ends on.
+     * @param end The month-end the year is based on.
+     * @param inLastWeek Whether the year ends in the last week of the month, or nearest the end-of-month.
+     * @param division How the year is divided.
+     * @param leapWeekInPeriod The period in which the leap-week resides.
+     */
+    AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod) {
+        this.endsOn = endsOn;
+        this.end = end;
+        this.inLastWeek = inLastWeek;
+        this.division = division;
+        this.leapWeekInPeriod = leapWeekInPeriod;
+    }
+
+    /**
+     * Resolve stored instances.
+     *
+     * @return a built, validated instance.
+     */
+    private Object readResolve() {
+        AccountingChronologyBuilder builder = new AccountingChronologyBuilder().endsOn(endsOn).leapWeekInPeriod(leapWeekInPeriod).withDivision(division);
+        return (inLastWeek ? builder.inLastWeekOf(end) : builder.nearestEndOf(end)).toChronology();
+    }
 
     @Override
     public String getId() {
