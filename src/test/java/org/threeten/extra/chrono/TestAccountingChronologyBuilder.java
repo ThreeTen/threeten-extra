@@ -131,7 +131,7 @@ public class TestAccountingChronologyBuilder {
         };
 
         for (int year = -200; year < 600; year++) {
-            assertEquals(chronology.date(year, 1, 1), chronology.date(getYearEnd.apply(year - 1).plusDays(1)));
+            assertEquals(chronology.date(year, 1, 1).toEpochDay(), getYearEnd.apply(year - 1).plusDays(1).toEpochDay());
         }
     }
 
@@ -146,7 +146,7 @@ public class TestAccountingChronologyBuilder {
         };
 
         for (int year = -200; year < 600; year++) {
-            assertEquals(chronology.date(year, 1, 1), chronology.date(getYearEnd.apply(year - 1).plusDays(1)));
+            assertEquals(chronology.date(year, 1, 1).toEpochDay(), getYearEnd.apply(year - 1).plusDays(1).toEpochDay());
         }
     }
 
