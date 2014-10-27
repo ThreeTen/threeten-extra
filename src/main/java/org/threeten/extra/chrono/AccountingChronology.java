@@ -142,6 +142,24 @@ public final class AccountingChronology extends AbstractChronology implements Se
         return null;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains a local date in Accounting calendar system from the
+     * era, year-of-era, month-of-year and day-of-month fields.
+     *
+     * @param era  the Accounting era, not null
+     * @param yearOfEra  the year-of-era
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
+     * @return the Accounting local date, not null
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code AccountingEra}
+     */
+    @Override
+    public AccountingDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+        return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
+    }
+
     /**
      * Obtains a local date in Accounting calendar system from the
      * proleptic-year, month-of-year and day-of-month fields.
@@ -155,6 +173,22 @@ public final class AccountingChronology extends AbstractChronology implements Se
     @Override
     public AccountingDate date(int prolepticYear, int month, int dayOfMonth) {
         return AccountingDate.of(this, prolepticYear, month, dayOfMonth);
+    }
+
+    /**
+     * Obtains a local date in Accounting calendar system from the
+     * era, year-of-era and day-of-year fields.
+     *
+     * @param era  the Accounting era, not null
+     * @param yearOfEra  the year-of-era
+     * @param dayOfYear  the day-of-year
+     * @return the Accounting local date, not null
+     * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not a {@code AccountingEra}
+     */
+    @Override
+    public AccountingDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
+        return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
     /**
@@ -178,7 +212,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return the Accounting local date, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override  // override with covariant return type
+    @Override
+    // override with covariant return type
     public AccountingDate dateEpochDay(long epochDay) {
         return AccountingDate.ofEpochDay(this, epochDay);
     }
