@@ -39,6 +39,7 @@ import java.time.chrono.Era;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.ValueRange;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -177,15 +178,13 @@ public final class AccountingChronology extends AbstractChronology implements Se
     }
 
     @Override
-    public List<Era> eras() {
-        // TODO Auto-generated method stub
-        return null;
+    public AccountingEra eraOf(int era) {
+        return AccountingEra.of(era);
     }
 
     @Override
-    public AccountingEra eraOf(int arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<Era> eras() {
+        return Arrays.<Era>asList(AccountingEra.values());
     }
 
     @Override
