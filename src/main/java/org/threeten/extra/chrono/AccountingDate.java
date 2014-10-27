@@ -32,14 +32,52 @@
 package org.threeten.extra.chrono;
 
 import java.io.Serializable;
+import java.time.Clock;
+import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Chronology;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 
 public final class AccountingDate extends AbstractDate implements ChronoLocalDate, Serializable {
+
+    public static AccountingDate now(AccountingChronology chronology) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static AccountingDate now(AccountingChronology chronology, ZoneId zone) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static AccountingDate now(AccountingChronology chronology, Clock clock) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static AccountingDate of(AccountingChronology chronology, int prolepticYear, int month, int dayOfMonth) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static AccountingDate from(AccountingChronology chronology, TemporalAccessor temporal) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    static AccountingDate ofYearDay(AccountingChronology chronology, int prolepticYear, int dayOfYear) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    static AccountingDate ofEpochDay(AccountingChronology chronology, long epochDay) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     int getProlepticYear() {

@@ -159,7 +159,7 @@ public class TestAccountingChronology {
 
     @Test(dataProvider = "samples")
     public void test_AccountingDate_from_LocalDate(AccountingDate accounting, LocalDate iso) {
-        assertEquals(AccountingDate.from(iso), accounting);
+        assertEquals(AccountingDate.from(getChronologyInstance(), iso), accounting);
     }
 
     @Test(dataProvider = "samples")
