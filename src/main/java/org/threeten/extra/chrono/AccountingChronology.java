@@ -130,8 +130,9 @@ public final class AccountingChronology extends AbstractChronology implements Se
      */
     private final int yearZeroDifference;
 
+    //-----------------------------------------------------------------------
     /**
-     * Contructor for Accounting Chronologies.
+     * Creates an {@code AccountingChronology} validating the input.
      * Package private as only meant to be called from the builder.
      * 
      * @param endsOn The day-of-week a given year ends on.
@@ -140,7 +141,21 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @param division How the year is divided.
      * @param leapWeekInPeriod The period in which the leap-week resides.
      */
-    AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod) {
+    static AccountingChronology create(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod) {
+        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates an instance from validated data, and cached data.
+     * 
+     * @param endsOn The day-of-week a given year ends on.
+     * @param end The month-end the year is based on.
+     * @param inLastWeek Whether the year ends in the last week of the month, or nearest the end-of-month.
+     * @param division How the year is divided.
+     * @param leapWeekInPeriod The period in which the leap-week resides.
+     */
+    private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod) {
         this.endsOn = endsOn;
         this.end = end;
         this.inLastWeek = inLastWeek;
