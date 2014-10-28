@@ -128,18 +128,18 @@ public final class AccountingChronology extends AbstractChronology implements Se
     /**
      * Difference in days between accounting year end and ISO month end, in ISO year 0.
      */
-    private final int yearZeroDifference;
+    private transient final int yearZeroDifference;
 
     //-----------------------------------------------------------------------
     /**
      * Creates an {@code AccountingChronology} validating the input.
      * Package private as only meant to be called from the builder.
      * 
-     * @param endsOn The day-of-week a given year ends on.
-     * @param end The month-end the year is based on.
-     * @param inLastWeek Whether the year ends in the last week of the month, or nearest the end-of-month.
-     * @param division How the year is divided.
-     * @param leapWeekInPeriod The period in which the leap-week resides.
+     * @param endsOn  The day-of-week a given year ends on.
+     * @param end The  month-end the year is based on.
+     * @param inLastWeek  Whether the year ends in the last week of the month, or nearest the end-of-month.
+     * @param division  How the year is divided.
+     * @param leapWeekInPeriod  The period in which the leap-week resides.
      * @return The created Chronology, not null.
      * @throws DateTimeException if the chronology cannot be built.
      */
@@ -157,30 +157,32 @@ public final class AccountingChronology extends AbstractChronology implements Se
                     + ", range is [" + division.getMonthsInYearRange() + "].");
         }
 
-        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod);
+        // Derive cached information.
+        LocalDate endingLimit = inLastWeek ? LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
+                LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
+        int yearZeroDifference = (int) endingLimit.with(TemporalAdjusters.previousOrSame(endsOn)).until(endingLimit, ChronoUnit.DAYS);
+
+        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod, yearZeroDifference);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Creates an instance from validated data, and cached data.
      * 
-     * @param endsOn The day-of-week a given year ends on.
-     * @param end The month-end the year is based on.
-     * @param inLastWeek Whether the year ends in the last week of the month, or nearest the end-of-month.
-     * @param division How the year is divided.
-     * @param leapWeekInPeriod The period in which the leap-week resides.
+     * @param endsOn  The day-of-week a given year ends on.
+     * @param end  The month-end the year is based on.
+     * @param inLastWeek  Whether the year ends in the last week of the month, or nearest the end-of-month.
+     * @param division  How the year is divided.
+     * @param leapWeekInPeriod  The period in which the leap-week resides.
+     * @param yearZeroDifference  Difference in days between accounting year end and ISO month end, in ISO year 0.
      */
-    private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod) {
+    private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod, int yearZeroDifference) {
         this.endsOn = endsOn;
         this.end = end;
         this.inLastWeek = inLastWeek;
         this.division = division;
         this.leapWeekInPeriod = leapWeekInPeriod;
-
-        // Derived values
-        LocalDate endingLimit = inLastWeek ? LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
-                LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
-        this.yearZeroDifference = (int) endingLimit.with(TemporalAdjusters.previousOrSame(endsOn)).until(endingLimit, ChronoUnit.DAYS);
+        this.yearZeroDifference = yearZeroDifference;
     }
 
     /**
