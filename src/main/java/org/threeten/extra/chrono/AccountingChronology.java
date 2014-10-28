@@ -129,6 +129,14 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * Difference in days between accounting year end and ISO month end, in ISO year 0.
      */
     private transient final int yearZeroDifference;
+    /** 
+     * Number of weeks in a month range.
+     */
+    private transient final ValueRange alignedWeekOfMonthRange;
+    /**
+     * Number of days in a month range.
+     */
+    private transient final ValueRange dayOfMonthRange;
 
     //-----------------------------------------------------------------------
     /**
@@ -161,8 +169,18 @@ public final class AccountingChronology extends AbstractChronology implements Se
         LocalDate endingLimit = inLastWeek ? LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
                 LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
         int yearZeroDifference = (int) endingLimit.with(TemporalAdjusters.previousOrSame(endsOn)).until(endingLimit, ChronoUnit.DAYS);
+        // Longest/shortest month lengths and related
+        int longestMonthLength = 0;
+        int shortestMonthLength = Integer.MAX_VALUE;
+        for (int month = 1; month <= division.getMonthsInYearRange().getMaximum(); month++) {
+            int monthLength = division.getWeeksInMonth(month);
+            shortestMonthLength = Math.min(shortestMonthLength, monthLength);
+            longestMonthLength = Math.max(longestMonthLength, monthLength + (month == leapWeekInPeriod ? 1 : 0));
+        }
+        ValueRange alignedWeekOfMonthRange = ValueRange.of(1, shortestMonthLength, longestMonthLength);
+        ValueRange dayOfMonthRange = ValueRange.of(1, shortestMonthLength * 7, longestMonthLength * 7);
 
-        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod, yearZeroDifference);
+        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod, yearZeroDifference, alignedWeekOfMonthRange, dayOfMonthRange);
     }
 
     //-----------------------------------------------------------------------
@@ -175,14 +193,19 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @param division  How the year is divided.
      * @param leapWeekInPeriod  The period in which the leap-week resides.
      * @param yearZeroDifference  Difference in days between accounting year end and ISO month end, in ISO year 0.
+     * @param alignedWeekOfMonthRange  Range of weeks in month.
+     * @param dayOfMonthRange  Range of days in month.
      */
-    private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod, int yearZeroDifference) {
+    private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod, int yearZeroDifference, ValueRange alignedWeekOfMonthRange,
+            ValueRange dayOfMonthRange) {
         this.endsOn = endsOn;
         this.end = end;
         this.inLastWeek = inLastWeek;
         this.division = division;
         this.leapWeekInPeriod = leapWeekInPeriod;
         this.yearZeroDifference = yearZeroDifference;
+        this.alignedWeekOfMonthRange = alignedWeekOfMonthRange;
+        this.dayOfMonthRange = dayOfMonthRange;
     }
 
     /**
@@ -432,9 +455,9 @@ public final class AccountingChronology extends AbstractChronology implements Se
     public ValueRange range(ChronoField field) {
         switch (field) {
             case ALIGNED_WEEK_OF_MONTH:
-                return null;
+                return alignedWeekOfMonthRange;
             case DAY_OF_MONTH:
-                return null;
+                return dayOfMonthRange;
             case DAY_OF_YEAR:
                 return DAY_OF_YEAR_RANGE;
             case MONTH_OF_YEAR:
