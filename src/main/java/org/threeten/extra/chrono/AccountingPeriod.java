@@ -147,7 +147,7 @@ public enum AccountingPeriod {
      *
      * @return the range of months (periods) in a year.
      */
-    public ValueRange getMonthsInYearRange() {
+    ValueRange getMonthsInYearRange() {
         return monthsInYearRange;
     }
 
