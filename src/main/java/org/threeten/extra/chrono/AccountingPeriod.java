@@ -32,6 +32,7 @@
 package org.threeten.extra.chrono;
 
 import java.time.DateTimeException;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ValueRange;
 
 /**
@@ -149,6 +150,13 @@ public enum AccountingPeriod {
      */
     ValueRange getMonthsInYearRange() {
         return monthsInYearRange;
+    }
+
+    /**
+     * Get the number of weeks in the given month (period). 
+     */
+    int getWeeksInMonth(int month) {
+        return weeksInMonths[monthsInYearRange.checkValidIntValue(month, ChronoField.MONTH_OF_YEAR) - 1];
     }
 
 }
