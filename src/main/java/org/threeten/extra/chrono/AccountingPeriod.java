@@ -52,22 +52,37 @@ public enum AccountingPeriod {
      * The singleton instance for a year divided into 4 quarters, 
      * each having 3 periods with lengths of 4, 4, and 5 weeks, respectively.
      */
-    QUARTERS_OF_PATTERN_4_4_5_WEEKS,
+    QUARTERS_OF_PATTERN_4_4_5_WEEKS(new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}),
     /**
      * The singleton instance for a year divided into 4 quarters, 
      * each having 3 periods with lengths of 4, 5, and 4 weeks, respectively.
      */
-    QUARTERS_OF_PATTERN_4_5_4_WEEKS,
+    QUARTERS_OF_PATTERN_4_5_4_WEEKS(new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}),
     /**
      * The singleton instance for a year divided into 4 quarters, 
      * each having 3 periods with lengths of 5, 4, and 4 weeks, respectively.
      */
-    QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+    QUARTERS_OF_PATTERN_5_4_4_WEEKS(new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}),
     /**
      * The singleton instance for a year divided into 13 even periods,
      * each having 4 weeks.
      */
-    THIRTEEN_EVEN_PERIODS_OF_4_WEEKS;
+    THIRTEEN_EVEN_PERIODS_OF_4_WEEKS(new int[] {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4});
+
+    /**
+     * The number of weeks in each month.
+     */
+    private final int[] weeksInMonths;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Private constructor for enum, for creating cached info.
+     * 
+     * @param weeksInMonths The number of weeks in each month (period).
+     */
+    private AccountingPeriod(int[] weeksInMonths) {
+        this.weeksInMonths = weeksInMonths;
+    }
 
     //-----------------------------------------------------------------------
     /**
