@@ -209,6 +209,7 @@ public class TestAccountingChronologyBuilder {
 
         assertEquals(chronology.range(ChronoField.ALIGNED_WEEK_OF_MONTH), expectedWeekOfMonthRange);
         assertEquals(chronology.range(ChronoField.DAY_OF_MONTH), expectedDayOfMonthRange);
+        assertEquals(chronology.range(ChronoField.DAY_OF_YEAR), ValueRange.of(1, 364, 371));
         assertEquals(chronology.range(ChronoField.MONTH_OF_YEAR), expectedMonthRange);
         assertEquals(chronology.range(ChronoField.PROLEPTIC_MONTH), expectedProlepticMonthRange);
     }

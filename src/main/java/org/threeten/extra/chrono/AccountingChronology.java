@@ -98,6 +98,10 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * Range of proleptic month for 13-month (period) year.
      */
     private static final ValueRange PROLEPTIC_MONTH_RANGE_13 = ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12);
+    /**
+     * Range of days in year.
+     */
+    private static final ValueRange DAY_OF_YEAR_RANGE = ValueRange.of(1, 364, 371);
 
     /**
      * The day of the week on which a given Accounting year ends.
@@ -400,6 +404,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
                 return null;
             case DAY_OF_MONTH:
                 return null;
+            case DAY_OF_YEAR:
+                return DAY_OF_YEAR_RANGE;
             case MONTH_OF_YEAR:
                 return division.getMonthsInYearRange();
             case PROLEPTIC_MONTH:
