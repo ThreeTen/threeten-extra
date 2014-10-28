@@ -32,6 +32,7 @@
 package org.threeten.extra.chrono;
 
 import java.time.DateTimeException;
+import java.time.temporal.ValueRange;
 
 /**
  * How an Accounting year is divided into smaller periods.
@@ -73,6 +74,10 @@ public enum AccountingPeriod {
      * The number of weeks in each month.
      */
     private final int[] weeksInMonths;
+    /**
+     * The range of months in each year.
+     */
+    private final ValueRange monthsInYearRange;
 
     //-----------------------------------------------------------------------
     /**
@@ -82,6 +87,8 @@ public enum AccountingPeriod {
      */
     private AccountingPeriod(int[] weeksInMonths) {
         this.weeksInMonths = weeksInMonths;
+
+        this.monthsInYearRange = ValueRange.of(1, weeksInMonths.length);
     }
 
     //-----------------------------------------------------------------------
@@ -129,19 +136,19 @@ public enum AccountingPeriod {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of months (periods) in a year.
+     * Gets the range of months in a year.
      * <p>
      * <ul>
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} has 12 months.
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} has 12 months.
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} has 12 months.
-     * <li>The AccountingPeriod {@code THIRTEEN_EVEN_PERIODS_OF_4_WEEKS} has 13 months.
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} range is [1, 12].
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} range is [1, 12].
+     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} range is [1, 12].
+     * <li>The AccountingPeriod {@code THIRTEEN_EVEN_PERIODS_OF_4_WEEKS} range is [1, 13].
      * </ul>
      *
-     * @return the number of months (periods) in a year.
+     * @return the range of months (periods) in a year.
      */
-    public int getMonthsInYear() {
-        return this == THIRTEEN_EVEN_PERIODS_OF_4_WEEKS ? 13 : 12;
+    public ValueRange getMonthsInYearRange() {
+        return monthsInYearRange;
     }
 
 }

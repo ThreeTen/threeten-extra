@@ -172,9 +172,9 @@ public final class AccountingChronologyBuilder {
                     + (leapWeekInPeriod == 0 ? "| leap-week period |" : "")
                     + " not set.");
         }
-        if (leapWeekInPeriod < 1 || leapWeekInPeriod > division.getMonthsInYear()) {
+        if (!division.getMonthsInYearRange().isValidValue(leapWeekInPeriod)) {
             throw new IllegalStateException("Leap week cannot not be placed in non-existant period " + leapWeekInPeriod
-                    + ", range is [1, " + division.getMonthsInYear() + "].");
+                    + ", range is [" + division.getMonthsInYearRange() + "].");
         }
 
         return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod);
