@@ -31,6 +31,8 @@
  */
 package org.threeten.extra.chrono;
 
+import static org.threeten.extra.chrono.AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS;
+
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
@@ -88,6 +90,14 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * Serialization version.
      */
     private static final long serialVersionUID = 7291205177830286973L;
+    /**
+     * Range of proleptic month for 12-month (period) year.
+     */
+    private static final ValueRange PROLEPTIC_MONTH_RANGE_12 = ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11);
+    /**
+     * Range of proleptic month for 13-month (period) year.
+     */
+    private static final ValueRange PROLEPTIC_MONTH_RANGE_13 = ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12);
 
     /**
      * The day of the week on which a given Accounting year ends.
@@ -382,10 +392,22 @@ public final class AccountingChronology extends AbstractChronology implements Se
         return Arrays.<Era>asList(AccountingEra.values());
     }
 
+    //-----------------------------------------------------------------------
     @Override
-    public ValueRange range(ChronoField arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public ValueRange range(ChronoField field) {
+        switch (field) {
+            case ALIGNED_WEEK_OF_MONTH:
+                return null;
+            case DAY_OF_MONTH:
+                return null;
+            case MONTH_OF_YEAR:
+                return division.getMonthsInYearRange();
+            case PROLEPTIC_MONTH:
+                return division == THIRTEEN_EVEN_PERIODS_OF_4_WEEKS ? PROLEPTIC_MONTH_RANGE_13 : PROLEPTIC_MONTH_RANGE_12;
+            default:
+                break;
+        }
+        return field.range();
     }
 
 }
