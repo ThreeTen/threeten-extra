@@ -31,6 +31,7 @@
  */
 package org.threeten.extra.chrono;
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Month;
 
@@ -159,24 +160,9 @@ public final class AccountingChronologyBuilder {
      * Completes this builder by creating the {@code AccountingChronology}.
      * 
      * @return the created chronology, not null.
-     * 
-     * @throws IllegalStateException if the builder doesn't have sufficient information to build the chronology,
-     *  or if the period given for the leap-week does not exist.
+     * @throws DateTimeException if the chronology cannot be built.
      */
     public AccountingChronology toChronology() {
-        if (endsOn == null || end == null || division == null || leapWeekInPeriod == 0) {
-            throw new IllegalStateException("AccountingCronology cannot be built: "
-                    + (endsOn == null ? "| ending day-of-week |" : "")
-                    + (end == null ? "| month ending in/nearest to |" : "")
-                    + (division == null ? "| how year divided |" : "")
-                    + (leapWeekInPeriod == 0 ? "| leap-week period |" : "")
-                    + " not set.");
-        }
-        if (!division.getMonthsInYearRange().isValidValue(leapWeekInPeriod)) {
-            throw new IllegalStateException("Leap week cannot not be placed in non-existant period " + leapWeekInPeriod
-                    + ", range is [" + division.getMonthsInYearRange() + "].");
-        }
-
         return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInPeriod);
     }
 

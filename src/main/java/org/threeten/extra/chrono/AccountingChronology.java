@@ -140,8 +140,23 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @param inLastWeek Whether the year ends in the last week of the month, or nearest the end-of-month.
      * @param division How the year is divided.
      * @param leapWeekInPeriod The period in which the leap-week resides.
+     * @return The created Chronology, not null.
+     * @throws DateTimeException if the chronology cannot be built.
      */
     static AccountingChronology create(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod) {
+        if (endsOn == null || end == null || division == null || leapWeekInPeriod == 0) {
+            throw new IllegalStateException("AccountingCronology cannot be built: "
+                    + (endsOn == null ? "| ending day-of-week |" : "")
+                    + (end == null ? "| month ending in/nearest to |" : "")
+                    + (division == null ? "| how year divided |" : "")
+                    + (leapWeekInPeriod == 0 ? "| leap-week period |" : "")
+                    + " not set.");
+        }
+        if (!division.getMonthsInYearRange().isValidValue(leapWeekInPeriod)) {
+            throw new IllegalStateException("Leap week cannot not be placed in non-existant period " + leapWeekInPeriod
+                    + ", range is [" + division.getMonthsInYearRange() + "].");
+        }
+
         return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod);
     }
 
@@ -174,8 +189,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return a built, validated instance.
      */
     private Object readResolve() {
-        AccountingChronologyBuilder builder = new AccountingChronologyBuilder().endsOn(endsOn).leapWeekInPeriod(leapWeekInPeriod).withDivision(division);
-        return (inLastWeek ? builder.inLastWeekOf(end) : builder.nearestEndOf(end)).toChronology();
+        return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInPeriod);
     }
 
     @Override
