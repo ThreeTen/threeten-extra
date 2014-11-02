@@ -71,6 +71,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.util.concurrent.TimeUnit;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -217,6 +218,49 @@ public class TestTemporals {
         assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
     }
 
+    //-----------------------------------------------------------------------
+    // chronoUnit() / timeUnit()
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "timeUnitConversion")
+    Object[][] data_timeUnitConversion() {
+        return new Object[][] {
+            {ChronoUnit.NANOS, TimeUnit.NANOSECONDS},
+            {ChronoUnit.MICROS, TimeUnit.MICROSECONDS},
+            {ChronoUnit.MILLIS, TimeUnit.MILLISECONDS},
+            {ChronoUnit.SECONDS, TimeUnit.SECONDS},
+            {ChronoUnit.MINUTES, TimeUnit.MINUTES},
+            {ChronoUnit.HOURS, TimeUnit.HOURS},
+            {ChronoUnit.DAYS, TimeUnit.DAYS},
+        };
+    }
+
+    @Test(dataProvider = "timeUnitConversion")
+    public void test_timeUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
+        assertEquals(Temporals.timeUnit(chronoUnit), timeUnit);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_timeUnit_unknown() {
+        Temporals.timeUnit(ChronoUnit.MONTHS);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_timeUnit_null() {
+        Temporals.timeUnit(null);
+    }
+
+    @Test(dataProvider = "timeUnitConversion")
+    public void test_chronoUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
+        assertEquals(Temporals.chronoUnit(timeUnit), chronoUnit);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_chronoUnit_null() {
+        Temporals.chronoUnit(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // convertAmount()
     //-------------------------------------------------------------------------
     @DataProvider(name = "convertAmount")
     Object[][] data_convertAmount() {

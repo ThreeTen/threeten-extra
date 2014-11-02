@@ -45,6 +45,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Additional utilities for working with temporal classes.
@@ -125,6 +126,68 @@ public final class Temporals {
                 }
             }
         },
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Converts a {@code TimeUnit} to a {@code ChronoUnit}.
+     * <p>
+     * This handles the seven units declared in {@code TimeUnit}.
+     * 
+     * @param unit  the unit to convert, not null
+     * @return the converted unit, not null
+     */
+    public static ChronoUnit chronoUnit(TimeUnit unit) {
+        Objects.requireNonNull(unit, "unit");
+        switch (unit) {
+            case NANOSECONDS:
+                return ChronoUnit.NANOS;
+            case MICROSECONDS:
+                return ChronoUnit.MICROS;
+            case MILLISECONDS:
+                return ChronoUnit.MILLIS;
+            case SECONDS:
+                return ChronoUnit.SECONDS;
+            case MINUTES:
+                return ChronoUnit.MINUTES;
+            case HOURS:
+                return ChronoUnit.HOURS;
+            case DAYS:
+                return ChronoUnit.DAYS;
+            default:
+                throw new IllegalArgumentException("Unknown TimeUnit constant");
+        }
+    }
+
+    /**
+     * Converts a {@code ChronoUnit} to a {@code TimeUnit}.
+     * <p>
+     * This handles the seven units declared in {@code TimeUnit}.
+     * 
+     * @param unit  the unit to convert, not null
+     * @return the converted unit, not null
+     * @throws IllegalArgumentException if the unit cannot be converted
+     */
+    public static TimeUnit timeUnit(ChronoUnit unit) {
+        Objects.requireNonNull(unit, "unit");
+        switch (unit) {
+            case NANOS:
+                return TimeUnit.NANOSECONDS;
+            case MICROS:
+                return TimeUnit.MICROSECONDS;
+            case MILLIS:
+                return TimeUnit.MILLISECONDS;
+            case SECONDS:
+                return TimeUnit.SECONDS;
+            case MINUTES:
+                return TimeUnit.MINUTES;
+            case HOURS:
+                return TimeUnit.HOURS;
+            case DAYS:
+                return TimeUnit.DAYS;
+            default:
+                throw new IllegalArgumentException("ChronoUnit cannot be converted to TimeUnit: " + unit);
+        }
     }
 
     //-------------------------------------------------------------------------

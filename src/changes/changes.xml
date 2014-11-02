@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="0.9" date="xxx" description="v0.9">
+      <action dev="jodastephen" type="add" >
+        Add Temporals helper methods to convert TimeUnit to/from ChronoUnit.
+        Fixes #22.
+      </action>
       <action dev="Clockwork-Muse" type="add" >
         Add Pax calendar system.
         Fixes #17.
