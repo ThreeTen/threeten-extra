@@ -556,7 +556,7 @@ public final class DiscordianDate
                         nvalue = ST_TIBS_OFFSET / DAYS_IN_WEEK;
                     }
                     if (month == 0) {
-                        if (field == ALIGNED_WEEK_OF_MONTH) {
+                        if (field == ALIGNED_WEEK_OF_MONTH || nvalue == ST_TIBS_OFFSET / DAYS_IN_WEEK) {
                             return this;
                         } else if (field == ALIGNED_WEEK_OF_YEAR) {
                             return ((DiscordianDate) plusDays(1)).with(ALIGNED_WEEK_OF_YEAR, nvalue);
