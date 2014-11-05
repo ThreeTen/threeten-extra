@@ -689,11 +689,13 @@ public final class DiscordianDate
 
     @Override
     public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
-        DiscordianDate end = DiscordianDate.from(endDateExclusive);
-        if (this.month != 0 && end.month != 0) {
-            return super.until(end);
-        }
-        return DiscordianChronology.INSTANCE.period(0, 0, 0);
+        long monthsUntil = monthsUntil(DiscordianDate.from(endDateExclusive));
+
+        int years = Math.toIntExact(monthsUntil / MONTHS_IN_YEAR);
+        int months = (int) (monthsUntil % MONTHS_IN_YEAR);
+        int days = (int) this.plusMonths(monthsUntil).daysUntil(endDateExclusive);
+
+        return DiscordianChronology.INSTANCE.period(years, months, days);
     }
 
     //-----------------------------------------------------------------------
