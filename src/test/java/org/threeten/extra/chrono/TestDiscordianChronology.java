@@ -70,7 +70,6 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
-import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -439,8 +438,6 @@ public class TestDiscordianChronology {
             {2014, 5, 26, ERA, 1},
             {1, 5, 8, ERA, 1},
 
-            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 6},
-
             {2014, 0, 0, DAY_OF_WEEK, 0},
             {2014, 0, 0, DAY_OF_MONTH, 0},
             {2014, 0, 0, DAY_OF_YEAR, 60},
@@ -450,8 +447,6 @@ public class TestDiscordianChronology {
             {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 0},
             {2014, 0, 0, MONTH_OF_YEAR, 0},
             {2014, 0, 0, PROLEPTIC_MONTH, 2014 * 5 + 1 - 1},
-
-            {2014, 0, 0, WeekFields.ISO.dayOfWeek(), 6},
         };
     }
 
@@ -511,9 +506,6 @@ public class TestDiscordianChronology {
             {2013, 3, 31, DAY_OF_YEAR, 60, 2013, 1, 60},
             {2014, 0, 0, YEAR, 2013, 2013, 1, 60},
             {2013, 1, 60, YEAR, 2014, 2014, 1, 60},
-
-            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 23},
-
         };
     }
 
