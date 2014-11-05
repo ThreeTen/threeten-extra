@@ -668,16 +668,22 @@ public final class DiscordianDate
     }
 
     long weeksUntil(DiscordianDate end) {
-        long packed1 = this.getProlepticWeek() * 8L + (month == 0 ? DAYS_IN_WEEK : getDayOfWeek());  // no overflow
-        long packed2 = end.getProlepticWeek() * 8L + (end.month == 0 ? DAYS_IN_WEEK : end.getDayOfWeek());  // no overflow
+        long weekStart = this.getProlepticWeek() * 8L;
+        long weekEnd = end.getProlepticWeek() * 8L;
+        // Toggle offset for St. Tib's Day based on the direction traveled.
+        long packed1 = weekStart + (this.month == 0 && end.month != 0 ? (weekEnd > weekStart ? DAYS_IN_WEEK : DAYS_IN_WEEK - 1) : this.getDayOfWeek());  // no overflow
+        long packed2 = weekEnd + (end.month == 0 && this.month != 0 ? (weekStart > weekEnd ? DAYS_IN_WEEK : DAYS_IN_WEEK - 1) : end.getDayOfWeek());  // no overflow
         return (packed2 - packed1) / 8L;
     }
 
     @Override
     long monthsUntil(AbstractDate end) {
         DiscordianDate discordianEnd = DiscordianDate.from(end);
-        long packed1 = getProlepticMonth() * 128L + (month == 0 ? ST_TIBS_OFFSET : getDayOfMonth());  // no overflow
-        long packed2 = discordianEnd.getProlepticMonth() * 128L + (discordianEnd.month == 0 ? ST_TIBS_OFFSET : discordianEnd.getDayOfMonth());  // no overflow
+        long monthStart = this.getProlepticMonth() * 128L;
+        long monthEnd = discordianEnd.getProlepticMonth() * 128L;
+        // Toggle offset for St. Tib's Day based on the direction traveled.
+        long packed1 = monthStart + (this.month == 0 && discordianEnd.month != 0 ? (monthEnd > monthStart ? ST_TIBS_OFFSET : ST_TIBS_OFFSET - 1) : this.getDayOfMonth());  // no overflow
+        long packed2 = monthEnd + (discordianEnd.month == 0 && this.month != 0 ? (monthStart > monthEnd ? ST_TIBS_OFFSET : ST_TIBS_OFFSET - 1) : end.getDayOfMonth());  // no overflow
         return (packed2 - packed1) / 128L;
     }
 
