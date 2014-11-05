@@ -175,6 +175,8 @@ public final class DiscordianDate
      * <p>
      * This returns a {@code DiscordianDate} with the specified fields.
      * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * <p>
+     * St. Tib's Day is indicated by specifying 0 for both month and day-of-month.
      *
      * @param prolepticYear  the Discordian proleptic-year
      * @param month  the Discordian month-of-year, from 1 to 5
@@ -643,7 +645,7 @@ public final class DiscordianDate
     }
 
     //-------------------------------------------------------------------------
-    @Override // for covariant return type
+    @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<DiscordianDate> atTime(LocalTime localTime) {
         return (ChronoLocalDateTime<DiscordianDate>) ChronoLocalDate.super.atTime(localTime);
