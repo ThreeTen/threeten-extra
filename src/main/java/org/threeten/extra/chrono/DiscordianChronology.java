@@ -145,7 +145,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     private static final ValueRange ERA_RANGE = ValueRange.of(1, 1);
 
     /**
-     * Private constructor, that is public to satisfy the {@code ServiceLoader}. 
+     * Private constructor, that is public to satisfy the {@code ServiceLoader}.
      * Use the singleton {@link #INSTANCE} instead.
      */
     public DiscordianChronology() {
@@ -260,8 +260,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * @return the Discordian local date, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override
-    // override with covariant return type
+    @Override  // override with covariant return type
     public DiscordianDate dateEpochDay(long epochDay) {
         return DiscordianDate.ofEpochDay(epochDay);
     }
@@ -279,8 +278,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * @return the current Discordian local date using the system clock and default time-zone, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override
-    // override with covariant return type
+    @Override  // override with covariant return type
     public DiscordianDate dateNow() {
         return DiscordianDate.now();
     }
@@ -298,8 +296,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * @return the current Discordian local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override
-    // override with covariant return type
+    @Override  // override with covariant return type
     public DiscordianDate dateNow(ZoneId zone) {
         return DiscordianDate.now(zone);
     }
@@ -315,8 +312,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * @return the current Discordian local date, not null
      * @throws DateTimeException if unable to create the date
      */
-    @Override
-    // override with covariant return type
+    @Override  // override with covariant return type
     public DiscordianDate dateNow(Clock clock) {
         return DiscordianDate.now(clock);
     }
@@ -441,8 +437,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    // override for return type
+    @Override  // override for return type
     public DiscordianDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (DiscordianDate) super.resolveDate(fieldValues, resolverStyle);
     }
