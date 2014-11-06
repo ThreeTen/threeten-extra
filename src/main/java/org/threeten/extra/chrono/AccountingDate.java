@@ -334,4 +334,10 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         return null;
     }
 
+    //-----------------------------------------------------------------------
+    @Override
+    public long toEpochDay() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }
