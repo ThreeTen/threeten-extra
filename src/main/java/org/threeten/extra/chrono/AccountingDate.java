@@ -48,6 +48,20 @@ import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 
+/**
+ * A date in an Accounting calendar system.
+ * <p>
+ * This date operates using a given {@linkplain AccountingChronology Accounting calendar}.
+ * An Accounting calendar differs greatly from the ISO calendar.
+ * The start of the Accounting calendar will vary against the ISO calendar.
+ * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-01-04 (ISO)}.
+ *
+ * <h3>Implementation Requirements</h3>
+ * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
+ */
 public final class AccountingDate extends AbstractDate implements ChronoLocalDate, Serializable {
 
     //-----------------------------------------------------------------------
