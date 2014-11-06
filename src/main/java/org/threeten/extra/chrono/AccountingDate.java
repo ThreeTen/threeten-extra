@@ -306,8 +306,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     ValueRange rangeAlignedWeekOfMonth() {
-        // TODO Auto-generated method stub
-        return null;
+        return ValueRange.of(1, (lengthOfMonth() - 1) / DAYS_IN_WEEK + 1);
     }
 
     @Override
