@@ -37,8 +37,10 @@ import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Chronology;
 import java.time.temporal.ChronoField;
@@ -311,6 +313,13 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     @Override
     public AccountingDate minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
+    }
+
+    //-------------------------------------------------------------------------
+    @Override  // for covariant return type
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<AccountingDate> atTime(LocalTime localTime) {
+        return (ChronoLocalDateTime<AccountingDate>) ChronoLocalDate.super.atTime(localTime);
     }
 
     @Override
