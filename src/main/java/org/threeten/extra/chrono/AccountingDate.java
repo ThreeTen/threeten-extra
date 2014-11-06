@@ -31,9 +31,11 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
+import static org.threeten.extra.chrono.AccountingChronology.DAY_OF_YEAR_RANGE;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -202,9 +204,48 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         return ofEpochDay(chronology, temporal.getLong(EPOCH_DAY));
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an {@code AccountingDate} representing a date in the given Accounting calendar
+     * system from the proleptic-year and day-of-year fields.
+     * <p>
+     * This returns an {@code AccountingDate} with the specified fields.
+     * The day must be valid for the year, otherwise an exception will be thrown.
+     *
+     * @param chronology  the chronology to use to evaluate the year and day-of-year
+     * @param prolepticYear  the Accounting proleptic-year
+     * @param dayOfYear  the Accounting day-of-year, from 1 to 371
+     * @return the date in Accounting calendar system, not null
+     * @throws DateTimeException if the value of any field is out of range,
+     *  if the day-of-year is invalid for the year,
+     *  or if the chronology was not provided.
+     */
     static AccountingDate ofYearDay(AccountingChronology chronology, int prolepticYear, int dayOfYear) {
-        // TODO Auto-generated method stub
-        return null;
+        if (chronology == null) {
+            throw new DateTimeException("A previously setup chronology is required.");
+        }
+        YEAR.checkValidValue(prolepticYear);
+        DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, DAY_OF_YEAR);
+        boolean leap = chronology.isLeapYear(prolepticYear);
+        if (dayOfYear > WEEKS_IN_YEAR * DAYS_IN_WEEK && !leap) {
+            throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
+        }
+
+        // If the day-of-year would be after the inserted leap-week (in the next month), remove its influence
+        if (leap && dayOfYear > (chronology.division.getWeeksAtStartOfMonth(chronology.leapWeekInPeriod) + chronology.division.getWeeksInMonth(chronology.leapWeekInPeriod) + 1) * DAYS_IN_WEEK) {
+            dayOfYear -= DAYS_IN_WEEK;
+        }
+
+        int month = chronology.division.getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK);
+        int dayOfMonth = dayOfYear - (chronology.division.getWeeksAtStartOfMonth(month) * DAYS_IN_WEEK);
+
+        // If the day-of-year is in the leap week, the month/day-of-month will be shifted.
+        if (leap && month == chronology.leapWeekInPeriod + 1 && dayOfMonth <= DAYS_IN_WEEK) {
+            month--;
+            dayOfMonth += chronology.division.getWeeksInMonth(month) * DAYS_IN_WEEK;
+        }
+
+        return new AccountingDate(chronology, prolepticYear, month, dayOfMonth);
     }
 
     static AccountingDate ofEpochDay(AccountingChronology chronology, long epochDay) {

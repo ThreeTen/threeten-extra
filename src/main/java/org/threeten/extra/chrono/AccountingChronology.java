@@ -101,7 +101,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     /**
      * Range of days in year.
      */
-    private static final ValueRange DAY_OF_YEAR_RANGE = ValueRange.of(1, 364, 371);
+    static final ValueRange DAY_OF_YEAR_RANGE = ValueRange.of(1, 364, 371);
 
     /**
      * The day of the week on which a given Accounting year ends.
