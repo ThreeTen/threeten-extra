@@ -120,7 +120,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     /**
      * How to divide an accounting year.
      */
-    private final AccountingPeriod division;
+    final AccountingPeriod division;
     /**
      * The period which will have the leap-week added.
      */

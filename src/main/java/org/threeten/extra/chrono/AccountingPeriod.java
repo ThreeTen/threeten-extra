@@ -153,6 +153,15 @@ public enum AccountingPeriod {
     }
 
     /**
+     * Gets the length of the year in months.
+     * 
+     * @return The length of the year in months.
+     */
+    int lengthOfYearInMonths() {
+        return weeksInMonths.length;
+    }
+
+    /**
      * Get the number of weeks in the given month (period). 
      */
     int getWeeksInMonth(int month) {

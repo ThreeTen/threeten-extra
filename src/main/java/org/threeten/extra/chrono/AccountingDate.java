@@ -262,6 +262,11 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     }
 
     @Override
+    int lengthOfYearInMonths() {
+        return chronology.division.lengthOfYearInMonths();
+    }
+
+    @Override
     ValueRange rangeAlignedWeekOfMonth() {
         // TODO Auto-generated method stub
         return null;
