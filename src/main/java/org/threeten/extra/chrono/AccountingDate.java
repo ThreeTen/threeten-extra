@@ -183,6 +183,11 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         return null;
     }
 
+    private static AccountingDate resolvePreviousValid(AccountingChronology chronology, int prolepticYear, int month, int day) {
+        // TODO Auto-generated method stub
+        return new AccountingDate(chronology, prolepticYear, month, day);
+    }
+
     /**
      * Creates an {@code AccountingDate} validating the input.
      *
@@ -258,9 +263,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     }
 
     @Override
-    AbstractDate resolvePrevious(int newYear, int newMonth, int dayOfMonth) {
-        // TODO Auto-generated method stub
-        return null;
+    AccountingDate resolvePrevious(int newYear, int newMonth, int dayOfMonth) {
+        return resolvePreviousValid(chronology, newYear, newMonth, dayOfMonth);
     }
 
     @Override
