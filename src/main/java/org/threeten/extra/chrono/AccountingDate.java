@@ -64,6 +64,28 @@ import java.time.temporal.ValueRange;
  */
 public final class AccountingDate extends AbstractDate implements ChronoLocalDate, Serializable {
 
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = -126140328940081914L;
+
+    /**
+     * The chronology for manipulating this date.
+     */
+    private final AccountingChronology chronology;
+    /**
+     * The proleptic year.
+     */
+    private final int prolepticYear;
+    /**
+     * The month (period).
+     */
+    private final short month;
+    /**
+     * The day.
+     */
+    private final short day;
+
     //-----------------------------------------------------------------------
     /**
      * Obtains the current {@code AccountingDate} from the system clock in the default time-zone,
@@ -159,6 +181,47 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     static AccountingDate ofEpochDay(AccountingChronology chronology, long epochDay) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * Creates an {@code AccountingDate} validating the input.
+     *
+     * @param chronology The Accounting chronology to base this date on
+     * @param prolepticYear  the Accounting proleptic-year
+     * @param dayOfYear  the Accounting day-of-year, from 1 to 371
+     * @return the date in Accounting calendar system, not null
+     * @throws DateTimeException if the value of any field is out of range,
+     *  if the day-of-year is invalid for the month-year,
+     *  or if a chronology was not provided.
+     */
+    static AccountingDate create(AccountingChronology chronology, int prolepticYear, int month, int dayOfMonth) {
+        // TODO Auto-generated method stub
+        return new AccountingDate(chronology, prolepticYear, month, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates an instance from validated data.
+     *
+     * @param chronology   The Accounting chronology to base the date on
+     * @param prolepticYear  the Accounting proleptic-year
+     * @param month  the Accounting month (period), from 1 to 12 or 1 to 13
+     * @param dayOfMonth  the Accounting day-of-month, from 1 to 35 or 1 to 42
+     */
+    private AccountingDate(AccountingChronology chronology, int prolepticYear, int month, int dayOfMonth) {
+        this.chronology = chronology;
+        this.prolepticYear = prolepticYear;
+        this.month = (short) month;
+        this.day = (short) dayOfMonth;
+    }
+
+    /**
+     * Validates the object.
+     *
+     * @return the resolved date, not null
+     */
+    private Object readResolve() {
+        return AccountingDate.create(chronology, prolepticYear, month, day);
     }
 
     @Override
