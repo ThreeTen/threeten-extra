@@ -52,7 +52,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.LongFunction;
 
 /**
  * An Accounting calendar system.
@@ -138,6 +137,10 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * Number of days in a month range.
      */
     private transient final ValueRange dayOfMonthRange;
+    /**
+     * Number of days from the start of Accounting year 1 (for this chronology) to the start of ISO 1970
+     */
+    transient final int ACCOUNTING_0001_TO_ISO_1970;
 
     //-----------------------------------------------------------------------
     /**
@@ -169,7 +172,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
         // Derive cached information.
         LocalDate endingLimit = inLastWeek ? LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
                 LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
-        int yearZeroDifference = (int) endingLimit.with(TemporalAdjusters.previousOrSame(endsOn)).until(endingLimit, ChronoUnit.DAYS);
+        LocalDate yearZeroEnd = endingLimit.with(TemporalAdjusters.previousOrSame(endsOn));
+        int yearZeroDifference = (int) yearZeroEnd.until(endingLimit, ChronoUnit.DAYS);
         // Longest/shortest month lengths and related
         int longestMonthLength = 0;
         int shortestMonthLength = Integer.MAX_VALUE;
@@ -180,8 +184,9 @@ public final class AccountingChronology extends AbstractChronology implements Se
         }
         ValueRange alignedWeekOfMonthRange = ValueRange.of(1, shortestMonthLength, longestMonthLength);
         ValueRange dayOfMonthRange = ValueRange.of(1, shortestMonthLength * 7, longestMonthLength * 7);
+        int daysToEpoch = Math.toIntExact(0 - yearZeroEnd.plusDays(1).toEpochDay());
 
-        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod, yearZeroDifference, alignedWeekOfMonthRange, dayOfMonthRange);
+        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod, yearZeroDifference, alignedWeekOfMonthRange, dayOfMonthRange, daysToEpoch);
     }
 
     //-----------------------------------------------------------------------
@@ -196,9 +201,10 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @param yearZeroDifference  Difference in days between accounting year end and ISO month end, in ISO year 0.
      * @param alignedWeekOfMonthRange  Range of weeks in month.
      * @param dayOfMonthRange  Range of days in month.
+     * @param daysToEpoch  The number of days between the start of Accounting 1 and ISO 1970.
      */
     private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod, int yearZeroDifference, ValueRange alignedWeekOfMonthRange,
-            ValueRange dayOfMonthRange) {
+            ValueRange dayOfMonthRange, int daysToEpoch) {
         this.endsOn = endsOn;
         this.end = end;
         this.inLastWeek = inLastWeek;
@@ -207,6 +213,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
         this.yearZeroDifference = yearZeroDifference;
         this.alignedWeekOfMonthRange = alignedWeekOfMonthRange;
         this.dayOfMonthRange = dayOfMonthRange;
+        this.ACCOUNTING_0001_TO_ISO_1970 = daysToEpoch;
     }
 
     /**
@@ -424,13 +431,39 @@ public final class AccountingChronology extends AbstractChronology implements Se
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        LongFunction<Long> getISOleapYearCount = year -> {
-            long offsetYear = year - (end == Month.JANUARY ? 1 : 0);
-            return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400) + (end == Month.JANUARY ? 1 : 0);
-        };
+        return Math.floorMod(prolepticYear + getISOLeapYearCount(prolepticYear) + yearZeroDifference, 7) == 0
+                || Math.floorMod(prolepticYear + getISOLeapYearCount(prolepticYear - 1) + yearZeroDifference, 7) == 0;
+    }
 
-        return Math.floorMod(prolepticYear + getISOleapYearCount.apply(prolepticYear) + yearZeroDifference, 7) == 0
-                || Math.floorMod(prolepticYear + getISOleapYearCount.apply(prolepticYear - 1) + yearZeroDifference, 7) == 0;
+    /**
+     * Return the number of ISO Leap Years since Accounting Year 0.
+     * <p>
+     * This method calculates how many ISO leap years have passed since year 0.
+     * The count returned will be negative for years before 0.
+     * This method does not validate the year passed in, and only has a
+     * well-defined result for years in the supported range.
+     * 
+     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @return the count of leap years since year 0.
+     */
+    private long getISOLeapYearCount(long prolepticYear) {
+        long offsetYear = prolepticYear - (end == Month.JANUARY ? 1 : 0);
+        return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400) + (end == Month.JANUARY ? 1 : 0);
+    }
+
+    /**
+     * Returns the count of leap years since year 1.
+     * <p>
+     * This method calculates how many Accounting leap years have passed since year 1.
+     * The count returned will be negative for years before 1.
+     * This method does not validate the year passed in, and only has a
+     * well-defined result for years in the supported range.
+     * 
+     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @return the count of leap years since year 1.
+     */
+    long previousLeapYears(long prolepticYear) {
+        return Math.floorDiv(prolepticYear - 1 + getISOLeapYearCount(prolepticYear - 1) + yearZeroDifference, 7);
     }
 
     @Override

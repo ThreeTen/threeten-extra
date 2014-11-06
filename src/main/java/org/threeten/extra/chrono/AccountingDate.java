@@ -79,6 +79,10 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * Number of days in a week.
      */
     private static final int DAYS_IN_WEEK = 7;
+    /** 
+     * Number of weeks in a regular (non-leap) year.
+     */
+    private static final long WEEKS_IN_YEAR = 52;
 
     /**
      * The chronology for manipulating this date.
@@ -385,7 +389,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
-        // TODO Auto-generated method stub
-        return 0;
+        long year = prolepticYear;
+        long accountingEpochDay = ((year - 1) * WEEKS_IN_YEAR + chronology.previousLeapYears(year)) * DAYS_IN_WEEK + (getDayOfYear() - 1);
+        return accountingEpochDay - chronology.ACCOUNTING_0001_TO_ISO_1970;
     }
 }
