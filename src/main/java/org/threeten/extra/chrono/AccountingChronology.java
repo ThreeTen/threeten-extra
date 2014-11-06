@@ -58,7 +58,8 @@ import java.util.function.LongFunction;
  * An Accounting calendar system.
  * <p>
  * This chronology defines the rules of a proleptic 52/53-week Accounting calendar system.
- * This calendar system follows the rules as laid down in TODO: get references as necessary
+ * This calendar system follows the rules as laid down in <a href="http://www.irs.gov/publications/p538/ar02.html">IRS Publication 538</a>
+ * and the <a href="?">International Financial Reporting Standards</a>.
  * The start of the Accounting calendar will vary against the ISO calendar.
  * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-01-04 (ISO)}.
  * <p>
