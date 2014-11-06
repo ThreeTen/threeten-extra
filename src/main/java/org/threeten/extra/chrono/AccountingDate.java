@@ -296,8 +296,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     AbstractDate withDayOfYear(int value) {
-        // TODO Auto-generated method stub
-        return null;
+        return plusDays(value - getDayOfYear());
     }
 
     @Override
