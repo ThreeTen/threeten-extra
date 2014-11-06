@@ -73,6 +73,10 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * Serialization version.
      */
     private static final long serialVersionUID = -126140328940081914L;
+    /**
+     * Number of days in a week.
+     */
+    private static final int DAYS_IN_WEEK = 7;
 
     /**
      * The chronology for manipulating this date.
@@ -189,7 +193,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     }
 
     private static AccountingDate resolvePreviousValid(AccountingChronology chronology, int prolepticYear, int month, int day) {
-        // TODO Auto-generated method stub
+        day = Math.min(day, (chronology.division.getWeeksInMonth(month) + (chronology.isLeapYear(prolepticYear) ? 1 : 0)) * DAYS_IN_WEEK);
         return new AccountingDate(chronology, prolepticYear, month, day);
     }
 
