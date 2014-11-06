@@ -44,6 +44,8 @@ import java.time.chrono.Chronology;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
@@ -276,6 +278,17 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     public int lengthOfMonth() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public AccountingDate with(TemporalAdjuster adjuster) {
+        return (AccountingDate) adjuster.adjustInto(this);
+    }
+
+    @Override
+    public AccountingDate with(TemporalField field, long newValue) {
+        return (AccountingDate) super.with(field, newValue);
     }
 
     @Override
