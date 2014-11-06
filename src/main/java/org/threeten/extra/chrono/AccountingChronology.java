@@ -124,7 +124,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     /**
      * The period which will have the leap-week added.
      */
-    private final int leapWeekInPeriod;
+    final int leapWeekInPeriod;
 
     /**
      * Difference in days between accounting year end and ISO month end, in ISO year 0.

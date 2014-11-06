@@ -32,6 +32,8 @@
 package org.threeten.extra.chrono;
 
 import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.YEAR;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -209,7 +211,24 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      *  or if a chronology was not provided.
      */
     static AccountingDate create(AccountingChronology chronology, int prolepticYear, int month, int dayOfMonth) {
-        // TODO Auto-generated method stub
+        if (chronology == null) {
+            throw new DateTimeException("A previously setup chronology is required.");
+        }
+        YEAR.checkValidValue(prolepticYear);
+        chronology.range(MONTH_OF_YEAR).checkValidValue(month, MONTH_OF_YEAR);
+
+        int daysInMonth = (chronology.division.getWeeksInMonth(month) +
+                (month == chronology.leapWeekInPeriod && chronology.isLeapYear(prolepticYear) ? 1 : 0)) * DAYS_IN_WEEK;
+
+        if (dayOfMonth > daysInMonth) {
+            if (month == chronology.leapWeekInPeriod && dayOfMonth < (chronology.division.getWeeksInMonth(month) + 1) * DAYS_IN_WEEK
+                    && !chronology.isLeapYear(prolepticYear)) {
+                throw new DateTimeException("Invalid date '" + month + "/" + dayOfMonth + "' as '" + prolepticYear + "' is not a leap year");
+            } else {
+                throw new DateTimeException("Invalid date '" + month + "/" + dayOfMonth + "'");
+            }
+        }
+
         return new AccountingDate(chronology, prolepticYear, month, dayOfMonth);
     }
 
