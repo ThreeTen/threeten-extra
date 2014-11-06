@@ -195,8 +195,13 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     }
 
     private static AccountingDate resolvePreviousValid(AccountingChronology chronology, int prolepticYear, int month, int day) {
-        day = Math.min(day, (chronology.division.getWeeksInMonth(month) + (chronology.isLeapYear(prolepticYear) ? 1 : 0)) * DAYS_IN_WEEK);
+        day = Math.min(day, lengthOfMonth(chronology, prolepticYear, month));
         return new AccountingDate(chronology, prolepticYear, month, day);
+    }
+
+    private static int lengthOfMonth(AccountingChronology chronology, int prolepticYear, int month) {
+        return (chronology.division.getWeeksInMonth(month) +
+                (month == chronology.leapWeekInPeriod && chronology.isLeapYear(prolepticYear) ? 1 : 0)) * DAYS_IN_WEEK;
     }
 
     /**
@@ -217,10 +222,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         YEAR.checkValidValue(prolepticYear);
         chronology.range(MONTH_OF_YEAR).checkValidValue(month, MONTH_OF_YEAR);
 
-        int daysInMonth = (chronology.division.getWeeksInMonth(month) +
-                (month == chronology.leapWeekInPeriod && chronology.isLeapYear(prolepticYear) ? 1 : 0)) * DAYS_IN_WEEK;
-
-        if (dayOfMonth > daysInMonth) {
+        if (dayOfMonth > lengthOfMonth(chronology, prolepticYear, month)) {
             if (month == chronology.leapWeekInPeriod && dayOfMonth < (chronology.division.getWeeksInMonth(month) + 1) * DAYS_IN_WEEK
                     && !chronology.isLeapYear(prolepticYear)) {
                 throw new DateTimeException("Invalid date '" + month + "/" + dayOfMonth + "' as '" + prolepticYear + "' is not a leap year");
@@ -307,8 +309,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     public int lengthOfMonth() {
-        // TODO Auto-generated method stub
-        return 0;
+        return lengthOfMonth(chronology, prolepticYear, month);
     }
 
     //-------------------------------------------------------------------------
