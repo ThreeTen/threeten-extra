@@ -52,9 +52,6 @@ import java.time.Month;
  * </ul>
  * <p>
  * There are approximately 7 x 2 x 12 x 4 x 12/13 = 4032 combinations.
- * Note that US accounting practices appear to disallow the use of December as the ending month,
- * while international accounting practices appear to allow the use of December;
- * neither this builder nor the resulting chronology are able to enforce such rules in any way.
  *
  * <h3>Implementation Requirements</h3>
  * This class is a mutable builder suitable for use from a single thread.
