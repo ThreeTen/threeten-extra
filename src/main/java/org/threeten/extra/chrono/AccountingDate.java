@@ -259,6 +259,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         return AccountingDate.create(chronology, prolepticYear, month, day);
     }
 
+    //-----------------------------------------------------------------------
     @Override
     int getProlepticYear() {
         return prolepticYear;
@@ -302,6 +303,15 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         return resolvePreviousValid(chronology, newYear, newMonth, dayOfMonth);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the chronology of this date, which is an Accounting calendar system.
+     * <p>
+     * The {@code Chronology} represents the calendar system in use.
+     * The era and other fields in {@link ChronoField} are defined by the chronology.
+     *
+     * @return the Accounting chronology, not null
+     */
     @Override
     public Chronology getChronology() {
         return chronology;
