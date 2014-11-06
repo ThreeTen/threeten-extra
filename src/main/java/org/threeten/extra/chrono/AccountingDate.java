@@ -153,9 +153,23 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         return ofEpochDay(chronology, now.toEpochDay());
     }
 
+    /**
+     * Obtains a {@code AccountingDate} representing a date in the given accounting calendar
+     * system from the proleptic-year, month-of-year and day-of-month fields.
+     * <p>
+     * This returns a {@code AccountingDate} with the specified fields.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * @param chronology  the Accounting chronology to use, not null
+     * @param prolepticYear  the Accounting proleptic-year
+     * @param month  the Accounting month-of-year, from 1 to 12 or 1 to 13
+     * @param dayOfMonth  the Accounting day-of-month, from 1 to 35 or 1 to 42
+     * @return the date in the given Accounting calendar system, not null
+     * @throws DateTimeException if the value of any field is out of range,
+     *  if the day-of-month is invalid for the month-year,
+     *  or if an AccountingChronology was not provided
+     */
     public static AccountingDate of(AccountingChronology chronology, int prolepticYear, int month, int dayOfMonth) {
-        // TODO Auto-generated method stub
-        return null;
+        return create(chronology, prolepticYear, month, dayOfMonth);
     }
 
     /**
