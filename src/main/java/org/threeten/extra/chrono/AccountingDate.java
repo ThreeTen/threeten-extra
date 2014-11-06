@@ -226,20 +226,17 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     int getProlepticYear() {
-        // TODO Auto-generated method stub
-        return 0;
+        return prolepticYear;
     }
 
     @Override
     int getMonth() {
-        // TODO Auto-generated method stub
-        return 0;
+        return month;
     }
 
     @Override
     int getDayOfMonth() {
-        // TODO Auto-generated method stub
-        return 0;
+        return day;
     }
 
     @Override
@@ -268,8 +265,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     public Chronology getChronology() {
-        // TODO Auto-generated method stub
-        return null;
+        return chronology;
     }
 
     @Override
