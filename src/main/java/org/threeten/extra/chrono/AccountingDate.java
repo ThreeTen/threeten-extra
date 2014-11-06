@@ -291,8 +291,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     int getDayOfYear() {
-        // TODO Auto-generated method stub
-        return 0;
+        return (chronology.division.getWeeksAtStartOfMonth(month) + (month > chronology.leapWeekInPeriod && isLeapYear() ? 1 : 0)) * DAYS_IN_WEEK + day;
     }
 
     @Override

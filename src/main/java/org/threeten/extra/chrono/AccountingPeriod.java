@@ -79,6 +79,10 @@ public enum AccountingPeriod {
      * The range of months in each year.
      */
     private final ValueRange monthsInYearRange;
+    /**
+     * The elapsed number of weeks at the start of each month.
+     */
+    private final int[] elapsedWeeks;
 
     //-----------------------------------------------------------------------
     /**
@@ -90,6 +94,11 @@ public enum AccountingPeriod {
         this.weeksInMonths = weeksInMonths;
 
         this.monthsInYearRange = ValueRange.of(1, weeksInMonths.length);
+
+        this.elapsedWeeks = new int[weeksInMonths.length];
+        for (int i = 1; i < weeksInMonths.length; i++) {
+            elapsedWeeks[i] = elapsedWeeks[i - 1] + weeksInMonths[i - 1];
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -161,6 +170,7 @@ public enum AccountingPeriod {
         return weeksInMonths.length;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Get the number of weeks in the given month (period). 
      */
@@ -168,4 +178,29 @@ public enum AccountingPeriod {
         return weeksInMonths[monthsInYearRange.checkValidIntValue(month, ChronoField.MONTH_OF_YEAR) - 1];
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Get the number of weeks elapsed before the start of the month.
+     * 
+     * @param month The month
+     * @return The number of weeks elapsed before the start of the month.
+     */
+    int getWeeksAtStartOfMonth(int month) {
+        return elapsedWeeks[month - 1];
+    }
+
+    /**
+     * Get the month from a count of elapsed weeks.
+     * 
+     * @param weeksElapsed The weeks elapsed since the start of the year.
+     * @return the month
+     */
+    int getMonthFromElapsedWeeks(int weeksElapsed) {
+        for (int i = elapsedWeeks.length - 1; i >= 0; i++) {
+            if (elapsedWeeks[i] <= weeksElapsed) {
+                return i + 1;
+            }
+        }
+        return 1;
+    }
 }
