@@ -114,7 +114,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      * 
-     * @param chronology  the accounting chronology to use, not null
+     * @param chronology  the Accounting chronology to base the date on, not null
      * @return the current date using the system clock and default time-zone, not null
      * @throws DateTimeException if the current date cannot be obtained
      */
@@ -132,7 +132,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      * 
-     * @param chronology  the accounting chronology to use, not null
+     * @param chronology  the Accounting chronology to base the date on, not null
      * @param zone  the zone ID to use, not null
      * @return the current date using the system clock, not null
      * @throws DateTimeException if the current date cannot be obtained
@@ -149,7 +149,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@linkplain Clock dependency injection}.
      *
-     * @param chronology  the accounting chronology to use, not null
+     * @param chronology  the Accounting chronology to base the date on, not null
      * @param clock  the clock to use, not null
      * @return the current date, not null
      * @throws DateTimeException if the current date cannot be obtained
@@ -165,7 +165,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * <p>
      * This returns a {@code AccountingDate} with the specified fields.
      * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * @param chronology  the Accounting chronology to use, not null
+     * @param chronology  the Accounting chronology to base the date on, not null
      * @param prolepticYear  the Accounting proleptic-year
      * @param month  the Accounting month-of-year, from 1 to 12 or 1 to 13
      * @param dayOfMonth  the Accounting day-of-month, from 1 to 35 or 1 to 42
@@ -192,7 +192,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * allowing it to be used as a query via method reference, {@code AccountingDate::from}.
      * TODO: Figure out how this implementation effects the above.
      *
-     * @param chronology  the accounting chronology to use, not null
+     * @param chronology  the Accounting chronology to base the date on, not null
      * @param temporal  the temporal object to convert, not null
      * @return the date in Accounting calendar system, not null
      * @throws DateTimeException if unable to convert to an {@code AccountingDate}
@@ -212,7 +212,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * This returns an {@code AccountingDate} with the specified fields.
      * The day must be valid for the year, otherwise an exception will be thrown.
      *
-     * @param chronology  the chronology to use to evaluate the year and day-of-year
+     * @param chronology  the Accounting chronology to base the date on, not null
      * @param prolepticYear  the Accounting proleptic-year
      * @param dayOfYear  the Accounting day-of-year, from 1 to 371
      * @return the date in Accounting calendar system, not null
@@ -248,6 +248,15 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         return new AccountingDate(chronology, prolepticYear, month, dayOfMonth);
     }
 
+    /**
+     * Obtains an {@code AccountingDate} representing a date in the given Accounting calendar
+     * system from the epoch-day.
+     *
+     * @param chronology  the Accounting chronology to base the date on, not null
+     * @param epochDay  the epoch day to convert based on 1970-01-01 (ISO)
+     * @return the date in given Accounting calendar system, not null
+     * @throws DateTimeException if the epoch-day is out of range
+     */
     static AccountingDate ofEpochDay(AccountingChronology chronology, long epochDay) {
         // TODO Auto-generated method stub
         return null;
@@ -266,7 +275,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     /**
      * Creates an {@code AccountingDate} validating the input.
      *
-     * @param chronology The Accounting chronology to base this date on
+     * @param chronology  the Accounting chronology to base the date on, not null
      * @param prolepticYear  the Accounting proleptic-year
      * @param dayOfYear  the Accounting day-of-year, from 1 to 371
      * @return the date in Accounting calendar system, not null
@@ -297,7 +306,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     /**
      * Creates an instance from validated data.
      *
-     * @param chronology   The Accounting chronology to base the date on
+     * @param chronology  the Accounting chronology to base the date on, not null
      * @param prolepticYear  the Accounting proleptic-year
      * @param month  the Accounting month (period), from 1 to 12 or 1 to 13
      * @param dayOfMonth  the Accounting day-of-month, from 1 to 35 or 1 to 42
