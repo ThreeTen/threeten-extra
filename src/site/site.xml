@@ -1,23 +1,79 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="ThreeTen-Extra">
-  <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
-  <bannerLeft>
-    <name>ThreeTen.org</name>
-    <href>http://www.threeten.org/</href>
-  </bannerLeft>
-  <bannerRight>
-    <name>ThreeTen-Extra</name>
-    <href>http://www.threeten.org/threeten-extra/</href>
-  </bannerRight>
+  <publishDate position="bottom" format="yyyy-MM-dd"/>
+  <version position="bottom"/>
+  <googleAnalyticsAccountId>UA-1425975-2</googleAnalyticsAccountId>
+
+  <skin>
+    <groupId>lt.velykis.maven.skins</groupId>
+    <artifactId>reflow-maven-skin</artifactId>
+    <version>1.1.1</version>
+  </skin>
+
+  <custom>
+    <reflowSkin>
+      <smoothScroll>false</smoothScroll>
+      <highlightJs>true</highlightJs>
+      <highlightJsTheme>github</highlightJsTheme>
+      <imgLightbox>false</imgLightbox>
+      <theme>bootswatch-cosmo</theme>
+      <brand>
+        <name>ThreeTen Extra</name>
+        <href>index.html</href>
+      </brand>
+      <topNav>Documentation|Releases|Development|ThreeTen</topNav>
+      <bottomNav>
+        <column>Documentation</column>
+        <column>Releases</column>
+        <column>Development</column>
+        <column>Reports</column>
+      </bottomNav>
+      <bottomDescription><![CDATA[
+        Additional date and time classes for Java SE 8 building on JSR-310
+      ]]></bottomDescription>
+      <toc>false</toc>
+      <breadcrumbs>false</breadcrumbs>
+      <markPageHeader>false</markPageHeader>
+      <pages>
+        <index>
+          <sections>
+            <columns>3</columns>
+            <body />
+            <sidebar />
+          </sections>
+          <shortTitle>Home</shortTitle>
+          <highlightJs>false</highlightJs>
+        </index>
+        <source-repository>
+          <highlightJs>false</highlightJs>
+        </source-repository>
+        <issue-tracking>
+          <highlightJs>false</highlightJs>
+        </issue-tracking>
+        <license>
+          <highlightJs>false</highlightJs>
+        </license>
+      </pages>
+    </reflowSkin>
+  </custom>
 
   <body>
-    <menu name="ThreeTen Extra">
-      <item name="Overview" href="index.html"/>
+    <head>
+      <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet"/>
+      <link rel="author" href="https://plus.google.com/113137868744510231215"/>
+    </head>
+
+    <menu name="Documentation">
+      <item name="Home" href="index.html"/>
       <item name="User guide" href="userguide.html"/>
       <item name="Javadoc" href="apidocs/index.html"/>
       <item name="License" href="license.html"/>
+    </menu>
+
+    <menu name="Releases">
       <item name="Release notes" href="changes-report.html"/>
-      <item name="Download" href="http://search.maven.org/#search|gav|1|g%3A%22org.threeten%22%20AND%20a%3A%22threeten-extra%22"/>
+      <item name="Dependency info" href="dependency-info.html"/>
+      <item name="Download" href="http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.threeten%22%20AND%20a%3A%22threeten-extra%22"/>
     </menu>
 
     <menu name="Development">
@@ -27,16 +83,10 @@
     </menu>
 
     <menu name="ThreeTen">
-      <item name="ThreeTen home" href="http://www.threeten.org"/>
+      <item name="Home" href="http://www.threeten.org"/>
+      <item name="Backport" href="http://www.threeten.org/threetenbp"/>
     </menu>
 
-    <menu ref="reports"/>
+    <menu name="Reports" ref="reports"/>
   </body>
-
-  <poweredBy>
-    <logo name="Maven" href="http://maven.apache.org/"
-          img="http://maven.apache.org/images/logos/maven-feather.png"/>
-    <logo name="GitHub" href="https://github.com/ThreeTen/threeten-extra"
-          img="http://www.threeten.org/images/github.png"/>
-  </poweredBy>
 </project>

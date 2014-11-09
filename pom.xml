@@ -9,7 +9,7 @@
   <artifactId>threeten-extra</artifactId>
   <packaging>jar</packaging>
   <name>ThreeTen-extra</name>
-  <version>0.8.1-SNAPSHOT</version>
+  <version>0.9-SNAPSHOT</version>
   <description>Additional functionality that enhances JSR-310 dates and times in JDK 8</description>
   <url>https://www.threeten.org/threeten-extra</url>
 
@@ -60,7 +60,7 @@
   <licenses>
     <license>
       <name>BSD 3-clause</name>
-      <url>https://raw2.github.com/ThreeTen/threeten-extra/master/LICENSE.txt</url>
+      <url>https://raw.githubusercontent.com/ThreeTen/threeten-extra/master/LICENSE.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -176,11 +176,23 @@
         <configuration>
           <skipDeploy>true</skipDeploy>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>lt.velykis.maven.skins</groupId>
+            <artifactId>reflow-velocity-tools</artifactId>
+            <version>1.1.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin><!-- invoke with mvn site-deploy -->
         <groupId>com.github.github</groupId>
         <artifactId>site-maven-plugin</artifactId>
-        <version>0.9</version>
+        <version>0.10</version>
         <executions>
           <execution>
             <id>github-site</id>
@@ -435,7 +447,7 @@
           </reportSet>
         </reportSets>
       </plugin>
-      <!-- Checkstyle disabled until properly release for Java SE 8 -->
+      <!-- Checkstyle disabled until properly released for Java SE 8 -->
       <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
