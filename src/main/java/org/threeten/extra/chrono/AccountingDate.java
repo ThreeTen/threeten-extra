@@ -231,19 +231,10 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
             throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
         }
 
-        // If the day-of-year would be after the inserted leap-week (in the next month), remove its influence
-        if (leap && dayOfYear > (chronology.division.getWeeksAtStartOfMonth(chronology.leapWeekInPeriod) + chronology.division.getWeeksInMonth(chronology.leapWeekInPeriod) + 1) * DAYS_IN_WEEK) {
-            dayOfYear -= DAYS_IN_WEEK;
-        }
-
-        int month = chronology.division.getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK);
-        int dayOfMonth = dayOfYear - (chronology.division.getWeeksAtStartOfMonth(month) * DAYS_IN_WEEK);
-
-        // If the day-of-year is in the leap week, the month/day-of-month will be shifted.
-        if (leap && month == chronology.leapWeekInPeriod + 1 && dayOfMonth <= DAYS_IN_WEEK) {
-            month--;
-            dayOfMonth += chronology.division.getWeeksInMonth(month) * DAYS_IN_WEEK;
-        }
+        int month = (leap ? chronology.division.getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK, chronology.leapWeekInPeriod)
+                : chronology.division.getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK));
+        int dayOfMonth = dayOfYear - (leap ? chronology.division.getWeeksAtStartOfMonth(month, chronology.leapWeekInPeriod)
+                : chronology.division.getWeeksAtStartOfMonth(month) * DAYS_IN_WEEK);
 
         return new AccountingDate(chronology, prolepticYear, month, dayOfMonth);
     }
@@ -268,8 +259,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     }
 
     private static int lengthOfMonth(AccountingChronology chronology, int prolepticYear, int month) {
-        return (chronology.division.getWeeksInMonth(month) +
-                (month == chronology.leapWeekInPeriod && chronology.isLeapYear(prolepticYear) ? 1 : 0)) * DAYS_IN_WEEK;
+        return (chronology.isLeapYear(prolepticYear) ? chronology.division.getWeeksInMonth(month, chronology.leapWeekInPeriod)
+                : chronology.division.getWeeksInMonth(month)) * DAYS_IN_WEEK;
     }
 
     /**
@@ -345,7 +336,9 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     int getDayOfYear() {
-        return (chronology.division.getWeeksAtStartOfMonth(month) + (month > chronology.leapWeekInPeriod && isLeapYear() ? 1 : 0)) * DAYS_IN_WEEK + day;
+        int weeksAtStartOfMonth = (isLeapYear() ? chronology.division.getWeeksAtStartOfMonth(month, chronology.leapWeekInPeriod)
+                : chronology.division.getWeeksAtStartOfMonth(month));
+        return weeksAtStartOfMonth * DAYS_IN_WEEK + day;
     }
 
     @Override

@@ -34,6 +34,7 @@ package org.threeten.extra.chrono;
 import java.time.DateTimeException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ValueRange;
+import java.util.Arrays;
 
 /**
  * How an Accounting year is divided into smaller periods.
@@ -173,9 +174,27 @@ public enum AccountingPeriod {
     //-----------------------------------------------------------------------
     /**
      * Get the number of weeks in the given month (period). 
+     * 
+     * @param month  The month for which to get the count of weeks.
+     * @return The count of weeks in the given month.
+     * @throws DateTimeException if the month isn't in the valid range of months.
      */
     int getWeeksInMonth(int month) {
-        return weeksInMonths[monthsInYearRange.checkValidIntValue(month, ChronoField.MONTH_OF_YEAR) - 1];
+        return getWeeksInMonth(month, 0);
+    }
+
+    /**
+     * Get the number of weeks in the given month (period), with the leap year in the indicated month.
+     * 
+     * @param month  The month for which to get the count of weeks.
+     * @param leapWeekInMonth  The month in which the leap-week resides
+     * @return The count of weeks in the given month, including any leap week.
+     * @throws DateTimeException if the month isn't in the valid range of months.
+     */
+    int getWeeksInMonth(int month, int leapWeekInMonth) {
+        month = monthsInYearRange.checkValidIntValue(month, ChronoField.MONTH_OF_YEAR);
+        leapWeekInMonth = (leapWeekInMonth == 0 ? 0 : monthsInYearRange.checkValidIntValue(leapWeekInMonth, ChronoField.MONTH_OF_YEAR));
+        return weeksInMonths[month - 1] + (month == leapWeekInMonth ? 1 : 0);
     }
 
     //-----------------------------------------------------------------------
@@ -184,9 +203,24 @@ public enum AccountingPeriod {
      * 
      * @param month The month
      * @return The number of weeks elapsed before the start of the month.
+     * @throws DateTimeException if the month isn't in the valid range of months.
      */
     int getWeeksAtStartOfMonth(int month) {
-        return elapsedWeeks[month - 1];
+        return getWeeksAtStartOfMonth(month, 0);
+    }
+
+    /**
+     * Get the number of weeks elapsed before the start of the month.
+     * 
+     * @param month The month
+     * @param leapWeekInMonth  The month in which the leap-week resides
+     * @return The number of weeks elapsed before the start of the month, including any leap week.
+     * @throws DateTimeException if the month isn't in the valid range of months.
+     */
+    int getWeeksAtStartOfMonth(int month, int leapWeekInMonth) {
+        month = monthsInYearRange.checkValidIntValue(month, ChronoField.MONTH_OF_YEAR);
+        leapWeekInMonth = (leapWeekInMonth == 0 ? 0 : monthsInYearRange.checkValidIntValue(leapWeekInMonth, ChronoField.MONTH_OF_YEAR));
+        return elapsedWeeks[month - 1] + (month != 0 && month > leapWeekInMonth ? 1 : 0);
     }
 
     /**
@@ -194,13 +228,33 @@ public enum AccountingPeriod {
      * 
      * @param weeksElapsed The weeks elapsed since the start of the year.
      * @return the month
+     * @throws DateTimeException if the month isn't in the valid range of months, 
+     *   or the week isn't in the valid range.
      */
     int getMonthFromElapsedWeeks(int weeksElapsed) {
-        for (int i = elapsedWeeks.length - 1; i >= 0; i++) {
-            if (elapsedWeeks[i] <= weeksElapsed) {
-                return i + 1;
-            }
+        return getMonthFromElapsedWeeks(weeksElapsed, 0);
+    }
+
+    /**
+     * Get the month from a count of elapsed weeks.
+     * 
+     * @param weeksElapsed The weeks elapsed since the start of the year.
+     * @param leapWeekInMonth  The month in which the leap-week resides
+     * @return the month
+     * @throws DateTimeException if the month isn't in the valid range of months, 
+     *   or the week isn't in the valid range.
+     */
+    int getMonthFromElapsedWeeks(int weeksElapsed, int leapWeekInMonth) {
+        if (weeksElapsed < 0 || weeksElapsed >= (leapWeekInMonth == 0 ? 52 : 53)) {
+            throw new DateTimeException("Count of '" + elapsedWeeks + "' elapsed weeks not valid,"
+                    + " should be in the range [0, " + (leapWeekInMonth == 0 ? 52 : 53) + ")");
         }
-        return 1;
+        leapWeekInMonth = (leapWeekInMonth == 0 ? 0 : monthsInYearRange.checkValidIntValue(leapWeekInMonth, ChronoField.MONTH_OF_YEAR));
+
+        int month = Arrays.binarySearch(elapsedWeeks, weeksElapsed);
+        // Binary search returns 0-indexed if found, negative - 1 for insert position if not.
+        month = (month >= 0 ? month + 1 : 0 - month);
+        // Need to move to previous month if there was a leap week and in the first week.
+        return leapWeekInMonth == 0 || month <= leapWeekInMonth || weeksElapsed > elapsedWeeks[month - 1] ? month : month - 1;
     }
 }
