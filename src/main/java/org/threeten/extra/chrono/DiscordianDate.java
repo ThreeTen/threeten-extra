@@ -262,7 +262,7 @@ public final class DiscordianDate
     static DiscordianDate ofEpochDay(final long epochDay) {
         DiscordianChronology.EPOCH_DAY_RANGE.checkValidValue(epochDay, EPOCH_DAY);
 
-        // use of Discordian 1267 makes leap year at end of long cycle
+        // use of Discordian 1167 makes leap year at end of long cycle
         long discordianEpochDay = epochDay + DISCORDIAN_1167_TO_ISO_1970;
 
         long longCycle = Math.floorDiv(discordianEpochDay, DAYS_PER_LONG_CYCLE);
