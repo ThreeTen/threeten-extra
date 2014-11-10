@@ -296,11 +296,7 @@ public final class DiscordianDate
                     break;
                 }
                 month = 1;
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
+            default:
                 if (day == 0) {
                     day = ST_TIBS_OFFSET;
                 }
