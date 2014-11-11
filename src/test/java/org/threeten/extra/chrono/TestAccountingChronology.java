@@ -522,7 +522,7 @@ public class TestAccountingChronology {
             {2012, 13, 35, MONTH_OF_YEAR, 6, 2012, 6, 28},
             {2012, 13, 35, YEAR, 2011, 2011, 13, 28},
             {-2013, 6, 8, YEAR_OF_ERA, 2012, -2011, 6, 8},
-            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 25},
+            {2014, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 24},
 
         };
     }
@@ -563,7 +563,7 @@ public class TestAccountingChronology {
     public void test_adjust_toLocalDate() {
         AccountingDate accounting = INSTANCE.date(2000, 1, 4);
         AccountingDate test = accounting.with(LocalDate.of(2012, 7, 6));
-        assertEquals(test, INSTANCE.date(2012, 11, 4));
+        assertEquals(test, INSTANCE.date(2012, 12, 5));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -579,14 +579,14 @@ public class TestAccountingChronology {
     public void test_LocalDate_adjustToAccountingDate() {
         AccountingDate accounting = INSTANCE.date(2012, 6, 23);
         LocalDate test = LocalDate.MIN.with(accounting);
-        assertEquals(test, LocalDate.of(2012, 2, 8));
+        assertEquals(test, LocalDate.of(2012, 2, 7));
     }
 
     @Test
     public void test_LocalDateTime_adjustToAccountingDate() {
         AccountingDate accounting = INSTANCE.date(2012, 6, 23);
         LocalDateTime test = LocalDateTime.MIN.with(accounting);
-        assertEquals(test, LocalDateTime.of(2012, 2, 8, 0, 0));
+        assertEquals(test, LocalDateTime.of(2012, 2, 7, 0, 0));
     }
 
     //-----------------------------------------------------------------------
