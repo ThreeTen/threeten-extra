@@ -136,15 +136,15 @@ public class TestAccountingChronology {
             {INSTANCE.date(2013, 1, 2), LocalDate.of(2012, 9, 4)},
             {INSTANCE.date(2013, 1, 3), LocalDate.of(2012, 9, 5)},
 
-            {INSTANCE.date(0, 13, 28), LocalDate.of(0, 9, 3)},
-            {INSTANCE.date(0, 13, 27), LocalDate.of(0, 9, 2)},
+            {INSTANCE.date(0, 13, 35), LocalDate.of(0, 9, 3)},
+            {INSTANCE.date(0, 13, 34), LocalDate.of(0, 9, 2)},
 
-            {INSTANCE.date(1583, 2, 17), LocalDate.of(1582, 10, 14)},
-            {INSTANCE.date(1583, 2, 18), LocalDate.of(1582, 10, 15)},
+            {INSTANCE.date(1583, 2, 18), LocalDate.of(1582, 10, 14)},
+            {INSTANCE.date(1583, 2, 19), LocalDate.of(1582, 10, 15)},
             {INSTANCE.date(1946, 3, 15), LocalDate.of(1945, 11, 12)},
 
-            {INSTANCE.date(2012, 11, 3), LocalDate.of(2012, 7, 5)},
-            {INSTANCE.date(2012, 11, 4), LocalDate.of(2012, 7, 6)},
+            {INSTANCE.date(2012, 12, 4), LocalDate.of(2012, 7, 5)},
+            {INSTANCE.date(2012, 12, 5), LocalDate.of(2012, 7, 6)},
         };
     }
 
