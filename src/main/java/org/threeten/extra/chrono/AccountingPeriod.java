@@ -220,7 +220,7 @@ public enum AccountingPeriod {
     int getWeeksAtStartOfMonth(int month, int leapWeekInMonth) {
         month = monthsInYearRange.checkValidIntValue(month, ChronoField.MONTH_OF_YEAR);
         leapWeekInMonth = (leapWeekInMonth == 0 ? 0 : monthsInYearRange.checkValidIntValue(leapWeekInMonth, ChronoField.MONTH_OF_YEAR));
-        return elapsedWeeks[month - 1] + (month != 0 && month > leapWeekInMonth ? 1 : 0);
+        return elapsedWeeks[month - 1] + (leapWeekInMonth != 0 && month > leapWeekInMonth ? 1 : 0);
     }
 
     /**
