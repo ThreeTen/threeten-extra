@@ -304,7 +304,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         YEAR.checkValidValue(prolepticYear);
         chronology.range(MONTH_OF_YEAR).checkValidValue(month, MONTH_OF_YEAR);
 
-        if (dayOfMonth > lengthOfMonth(chronology, prolepticYear, month)) {
+        if (dayOfMonth < 1 || dayOfMonth > lengthOfMonth(chronology, prolepticYear, month)) {
             if (month == chronology.leapWeekInPeriod && dayOfMonth < (chronology.division.getWeeksInMonth(month) + 1) * DAYS_IN_WEEK
                     && !chronology.isLeapYear(prolepticYear)) {
                 throw new DateTimeException("Invalid date '" + month + "/" + dayOfMonth + "' as '" + prolepticYear + "' is not a leap year");
