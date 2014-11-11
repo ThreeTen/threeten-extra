@@ -273,6 +273,79 @@ public class TestAccountingChronologyBuilder {
     }
 
     //-----------------------------------------------------------------------
+    // getWeeksInMonth(month), 
+    // getWeeksAtStartOfMonth(weeks), getMonthFromElapsedWeeks(weeks)
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "weeksInMonth")
+    Object[][] data_weeksInMonth() {
+        return new Object[][] {
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 1},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 2},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 3},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 4},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 5},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 6},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 7},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 8},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 9},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 10},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 11},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 12},
+
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 1},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 2},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 3},
+
+            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 1},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 2},
+            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 3},
+
+            {AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, new int[] {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 13},
+        };
+    }
+
+    @Test(dataProvider = "weeksInMonth")
+    public void test_getWeeksInMonth(AccountingPeriod division, int[] weeksInMonth, int leapWeekInPeriod) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
+                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .toChronology();
+
+        for (int month = 1; month <= weeksInMonth.length; month++) {
+            assertEquals(chronology.division.getWeeksInMonth(month), weeksInMonth[month - 1]);
+            assertEquals(chronology.division.getWeeksInMonth(month, leapWeekInPeriod), weeksInMonth[month - 1] + (month == leapWeekInPeriod ? 1 : 0));
+        }
+    }
+
+    @Test(dataProvider = "weeksInMonth")
+    public void test_getWeeksAtStartOf(AccountingPeriod division, int[] weeksInMonth, int leapWeekInPeriod) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
+                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .toChronology();
+
+        for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
+            assertEquals(chronology.division.getWeeksAtStartOfMonth(month), elapsedWeeks);
+            assertEquals(chronology.division.getWeeksAtStartOfMonth(month, leapWeekInPeriod), elapsedWeeks + (month > leapWeekInPeriod ? 1 : 0));
+        }
+    }
+
+    @Test(dataProvider = "weeksInMonth")
+    public void test_getMonthFromElapsedWeeks(AccountingPeriod division, int[] weeksInMonth, int leapWeekInPeriod) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
+                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .toChronology();
+
+        for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
+            for (int i = 0; i < weeksInMonth[month - 1]; i++) {
+                assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i), month);
+                assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i + (month > leapWeekInPeriod ? 1 : 0), leapWeekInPeriod), month);
+                if (month == leapWeekInPeriod && i == weeksInMonth[month - 1] - 1) {
+                    assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i + 1, leapWeekInPeriod), month);
+                }
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // toChronology() failures.
     //-----------------------------------------------------------------------
     @DataProvider(name = "badChronology")
