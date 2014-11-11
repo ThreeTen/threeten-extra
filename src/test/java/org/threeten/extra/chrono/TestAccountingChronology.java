@@ -273,9 +273,9 @@ public class TestAccountingChronology {
     @Test
     public void test_isLeapYear_loop() {
         Predicate<Integer> isLeapYear = year -> {
-            LocalDate currentYearStart = LocalDate.of(year, 9, 4).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            LocalDate nextYearStart = LocalDate.of(year + 1, 9, 4).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            return currentYearStart.until(nextYearStart, DAYS) == 371;
+            LocalDate currentYearEnd = LocalDate.of(year, 9, 3).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+            LocalDate prevYearEnd = LocalDate.of(year - 1, 9, 3).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+            return prevYearEnd.until(currentYearEnd, DAYS) == 371;
         };
         for (int year = -200; year < 200; year++) {
             AccountingDate base = INSTANCE.date(year, 1, 1);
@@ -458,13 +458,13 @@ public class TestAccountingChronology {
     @DataProvider(name = "getLong")
     Object[][] data_getLong() {
         return new Object[][] {
-            {2014, 5, 26, DAY_OF_WEEK, 7},
+            {2014, 5, 26, DAY_OF_WEEK, 5},
             {2014, 5, 26, DAY_OF_MONTH, 26},
             {2014, 5, 26, DAY_OF_YEAR, 28 + 28 + 28 + 28 + 26},
             {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5},
             {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 4},
-            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 6},
-            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 21},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 20},
             {2014, 5, 26, MONTH_OF_YEAR, 5},
             {2014, 5, 26, PROLEPTIC_MONTH, 2014 * 13 + 5 - 1},
             {2014, 5, 26, YEAR, 2014},
