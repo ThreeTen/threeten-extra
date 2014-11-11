@@ -84,7 +84,11 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     /** 
      * Number of weeks in a regular (non-leap) year.
      */
-    private static final long WEEKS_IN_YEAR = 52;
+    private static final int WEEKS_IN_YEAR = 52;
+    /**
+     * Number of days in a long (400-year) cycle.
+     */
+    private static final int DAYS_PER_LONG_CYCLE = 400 * 365 + 3 * 24 + 1 * 25;
 
     /**
      * The chronology for manipulating this date.
@@ -234,7 +238,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         int month = (leap ? chronology.division.getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK, chronology.leapWeekInPeriod)
                 : chronology.division.getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK));
         int dayOfMonth = dayOfYear - (leap ? chronology.division.getWeeksAtStartOfMonth(month, chronology.leapWeekInPeriod)
-                : chronology.division.getWeeksAtStartOfMonth(month) * DAYS_IN_WEEK);
+                : chronology.division.getWeeksAtStartOfMonth(month)) * DAYS_IN_WEEK;
 
         return new AccountingDate(chronology, prolepticYear, month, dayOfMonth);
     }
@@ -249,8 +253,27 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @throws DateTimeException if the epoch-day is out of range
      */
     static AccountingDate ofEpochDay(AccountingChronology chronology, long epochDay) {
-        // TODO Auto-generated method stub
-        return null;
+        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
+        // Use Accounting 1 to help with 0-counts.  Leap years can occur at any time.
+        long accountingEpochDay = epochDay + chronology.ACCOUNTING_0001_TO_ISO_1970;
+
+        int longCycle = (int) Math.floorDiv(accountingEpochDay, DAYS_PER_LONG_CYCLE);
+        int daysInLongCycle = (int) Math.floorMod(accountingEpochDay, DAYS_PER_LONG_CYCLE);
+
+        // Value is an estimate, as the floating leap-years make this difficult.
+        int year = (daysInLongCycle - (daysInLongCycle / 365 + daysInLongCycle / (4 * 365 + 1) - daysInLongCycle / (100 * 365 + 24)) / 7) / (DAYS_IN_WEEK * WEEKS_IN_YEAR);
+        int yearStart = (int) (WEEKS_IN_YEAR * (year - 1) + chronology.previousLeapYears(year)) * DAYS_IN_WEEK;
+
+        // Despite the year being an estimate, the effect should still be within a few days.
+        if (yearStart > daysInLongCycle) {
+            year--;
+            yearStart -= (WEEKS_IN_YEAR + (chronology.isLeapYear(year) ? 1 : 0)) * DAYS_IN_WEEK;
+        } else if (daysInLongCycle - yearStart >= (WEEKS_IN_YEAR + (chronology.isLeapYear(year) ? 1 : 0)) * DAYS_IN_WEEK) {
+            yearStart += (WEEKS_IN_YEAR + (chronology.isLeapYear(year) ? 1 : 0)) * DAYS_IN_WEEK;
+            year++;
+        }
+
+        return ofYearDay(chronology, year + 400 * longCycle, daysInLongCycle - yearStart + 1);
     }
 
     private static AccountingDate resolvePreviousValid(AccountingChronology chronology, int prolepticYear, int month, int day) {
