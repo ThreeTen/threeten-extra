@@ -63,7 +63,7 @@ import java.time.temporal.ValueRange;
  * This date operates using a given {@linkplain AccountingChronology Accounting calendar}.
  * An Accounting calendar differs greatly from the ISO calendar.
  * The start of the Accounting calendar will vary against the ISO calendar.
- * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-01-04 (ISO)}.
+ * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-12-04 (ISO)}.
  *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.

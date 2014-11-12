@@ -43,7 +43,7 @@ import java.time.chrono.Era;
  * in the year-of-era count, are part of the 'Before Current Era' era.
  * <p>
  * The start of accounting epochs {@code 0001-01-01 (Accounting)} will vary against the ISO calendar.
- * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-01-04 (ISO)}.
+ * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-12-04 (ISO)}.
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code AccountingEra}.
  * Use {@code getValue()} instead.</b>

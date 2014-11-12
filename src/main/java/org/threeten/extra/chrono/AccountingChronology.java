@@ -58,9 +58,9 @@ import java.util.List;
  * <p>
  * This chronology defines the rules of a proleptic 52/53-week Accounting calendar system.
  * This calendar system follows the rules as laid down in <a href="http://www.irs.gov/publications/p538/ar02.html">IRS Publication 538</a>
- * and the <a href="?">International Financial Reporting Standards</a>.
+ * and the <a href="?">International Financial Reporting Standards</a>.  TODO: Find a link?
  * The start of the Accounting calendar will vary against the ISO calendar.
- * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-01-04 (ISO)}.
+ * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-12-04 (ISO)}.
  * <p>
  * This class is proleptic. It implements Accounting chronology rules for the entire time-line.
  * <p>
@@ -72,9 +72,9 @@ import java.util.List;
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
  *  current era. For the previous era, years have zero, then negative values.
  * <li>month-of-year - There are 12 or 13 months (periods) in an Accouting year, numbered from 1 to 12 or 13.
- * <li>day-of-month - There are 28 or 35 days in each Accounting month (period), numbered from 1 to 35.
- *  Month (period) length depends on how the year has been divided.
- *  When the Accounting leap year occurs, a week (7 days) is added to a specific month (period);
+ * <li>day-of-month - There are 28 or 35 days in each Accounting month, numbered from 1 to 35.
+ *  Month length depends on how the year has been divided.
+ *  When the Accounting leap year occurs, a week (7 days) is added to a specific month;
  *  this increases to maximum day-of-month numbering to 35 or 42.
  * <li>day-of-year - There are 364 days in a standard Accounting year and 371 in a leap year.
  *  The days are numbered from 1 to 364 or 1 to 371.
@@ -452,22 +452,22 @@ public final class AccountingChronology extends AbstractChronology implements Se
     @Override
     public boolean isLeapYear(long prolepticYear) {
         return Math.floorMod(prolepticYear + getISOLeapYearCount(prolepticYear) + yearZeroDifference, 7) == 0
-                || Math.floorMod(prolepticYear + getISOLeapYearCount(prolepticYear - 1) + yearZeroDifference, 7) == 0;
+                || Math.floorMod(prolepticYear + getISOLeapYearCount(prolepticYear + 1) + yearZeroDifference, 7) == 0;
     }
 
     /**
-     * Return the number of ISO Leap Years since Accounting Year 0.
+     * Return the number of ISO Leap Years since Accounting Year 1.
      * <p>
-     * This method calculates how many ISO leap years have passed since year 0.
-     * The count returned will be negative for years before 0.
+     * This method calculates how many ISO leap years have passed since year 1.
+     * The count returned will be negative for years before 1.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
      * 
      * @param prolepticYear  the proleptic-year to check, not validated for range
-     * @return the count of leap years since year 0.
+     * @return the count of leap years since year 1.
      */
     private long getISOLeapYearCount(long prolepticYear) {
-        long offsetYear = prolepticYear - (end == Month.JANUARY ? 1 : 0);
+        long offsetYear = prolepticYear - (end == Month.JANUARY ? 1 : 0) - 1;
         return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400) + (end == Month.JANUARY ? 1 : 0);
     }
 
@@ -483,7 +483,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return the count of leap years since year 1.
      */
     long previousLeapYears(long prolepticYear) {
-        return Math.floorDiv(prolepticYear - 1 + getISOLeapYearCount(prolepticYear - 1) + yearZeroDifference, 7);
+        return Math.floorDiv(prolepticYear - 1 + getISOLeapYearCount(prolepticYear) + yearZeroDifference, 7);
     }
 
     @Override
