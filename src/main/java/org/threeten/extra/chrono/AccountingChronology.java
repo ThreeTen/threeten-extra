@@ -524,4 +524,48 @@ public final class AccountingChronology extends AbstractChronology implements Se
         return field.range();
     }
 
+    //-------------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof AccountingChronology) {
+            AccountingChronology other = (AccountingChronology) obj;
+            return this.endsOn == other.endsOn &&
+                    this.inLastWeek == other.inLastWeek &&
+                    this.end == other.end &&
+                    this.division == other.division &&
+                    this.leapWeekInPeriod == other.leapWeekInPeriod;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 0;
+        result = prime * result + endsOn.hashCode();
+        result = prime * result + (inLastWeek ? 1231 : 1237);
+        result = prime * result + end.hashCode();
+        result = prime * result + leapWeekInPeriod;
+        result = prime * result + division.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder bld = new StringBuilder(30);
+        bld.append(getId())
+                .append(" calendar ends on ")
+                .append(endsOn)
+                .append(inLastWeek ? " in last week of " : " nearest end of ")
+                .append(end)
+                .append(", year divided in ")
+                .append(division)
+                .append(" with leap-week in month ")
+                .append(leapWeekInPeriod);
+        return bld.toString();
+    }
+
 }

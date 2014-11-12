@@ -726,12 +726,11 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    // TODO:  Figure out how to encode Chronology info!
     @DataProvider(name = "toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {INSTANCE.date(1, 1, 1), "Accounting CE 1-01-01"},
-            {INSTANCE.date(2012, 6, 23), "Accounting CE 2012-06-23"},
+            {INSTANCE.date(1, 1, 1), "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_PERIODS_OF_4_WEEKS with leap-week in month 13 CE 1-01-01"},
+            {INSTANCE.date(2012, 6, 23), "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_PERIODS_OF_4_WEEKS with leap-week in month 13 CE 2012-06-23"},
         };
     }
 
