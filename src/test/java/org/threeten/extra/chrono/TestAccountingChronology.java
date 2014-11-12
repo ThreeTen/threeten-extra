@@ -61,7 +61,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Period;
-import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
 import java.time.temporal.IsoFields;
@@ -90,14 +89,9 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // Chronology.of(String)
     //-----------------------------------------------------------------------
-    // TODO: Figure out what names/ids are reported.
     @Test
     public void test_chronology_of_name() {
-        Chronology chrono = Chronology.of("Accounting");
-        Assert.assertNotNull(chrono);
-        Assert.assertEquals(chrono, INSTANCE);
-        Assert.assertEquals(chrono.getId(), "Accounting");
-        Assert.assertEquals(chrono.getCalendarType(), null);
+        Assert.assertEquals(INSTANCE.getId(), "Accounting");
     }
 
     @Test

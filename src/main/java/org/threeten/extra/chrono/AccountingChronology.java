@@ -225,10 +225,20 @@ public final class AccountingChronology extends AbstractChronology implements Se
         return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInPeriod);
     }
 
+    /**
+     * Gets the ID of the chronology - 'Accounting'.
+     * <p>
+     * The ID uniquely identifies the {@code Chronology}, 
+     * but does not differentiate between instances of {@code AccountingChronology}.
+     * It cannot be used to lookup the {@code Chronology} using {@link #of(String)},
+     * because each instance requires setup.
+     *
+     * @return the chronology ID - 'Accounting'
+     * @see #getCalendarType()
+     */
     @Override
     public String getId() {
-        // TODO Auto-generated method stub
-        return null;
+        return "Accounting";
     }
 
     /**
