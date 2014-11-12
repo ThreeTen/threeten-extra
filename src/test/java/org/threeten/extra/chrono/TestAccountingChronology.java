@@ -97,16 +97,12 @@ public class TestAccountingChronology {
         Assert.assertNotNull(chrono);
         Assert.assertEquals(chrono, INSTANCE);
         Assert.assertEquals(chrono.getId(), "Accounting");
-        Assert.assertEquals(chrono.getCalendarType(), "accounting");
+        Assert.assertEquals(chrono.getCalendarType(), null);
     }
 
     @Test
     public void test_chronology_of_name_id() {
-        Chronology chrono = Chronology.of("accounting");
-        Assert.assertNotNull(chrono);
-        Assert.assertEquals(chrono, INSTANCE);
-        Assert.assertEquals(chrono.getId(), "Accounting");
-        Assert.assertEquals(chrono.getCalendarType(), "accounting");
+        Assert.assertEquals(INSTANCE.getCalendarType(), null);
     }
 
     //-----------------------------------------------------------------------

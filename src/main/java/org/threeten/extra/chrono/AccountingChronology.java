@@ -231,9 +231,19 @@ public final class AccountingChronology extends AbstractChronology implements Se
         return null;
     }
 
+    /**
+     * Gets the calendar type of the underlying calendar system, which is null.
+     * <p>
+     * The <em>Unicode Locale Data Markup Language (LDML)</em> specification
+     * does not define an identifier for 52/53 week calendars used for accounting purposes,
+     * and given that setup required is unlikely to do so.  
+     * For this reason, the calendar type is null.
+     *
+     * @return null, as the calendar is unlikely to be specified in LDML
+     * @see #getId()
+     */
     @Override
     public String getCalendarType() {
-        // TODO Auto-generated method stub
         return null;
     }
 
