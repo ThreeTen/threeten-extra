@@ -464,4 +464,43 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         long accountingEpochDay = ((year - 1) * WEEKS_IN_YEAR + chronology.previousLeapYears(year)) * DAYS_IN_WEEK + (getDayOfYear() - 1);
         return accountingEpochDay - chronology.ACCOUNTING_0001_TO_ISO_1970;
     }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Compares this date to another date, including the chronology.
+     * <p>
+     * Compares this date with another ensuring that the date is the same.
+     * <p>
+     * Only objects of this concrete type are compared, other types return false.
+     * To compare the dates of two {@code TemporalAccessor} instances, including dates
+     * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
+     *
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof AccountingDate) {
+            AccountingDate other = (AccountingDate) obj;
+            return this.chronology.equals(other.chronology) &&
+                    this.prolepticYear == other.prolepticYear &&
+                    this.month == other.month &&
+                    this.day == other.day;
+        }
+        return false;
+    }
+
+    /**
+     * A hash code for this date.
+     *
+     * @return a suitable hash code based only on the Chronology and the date
+     */
+    @Override  // override for performance
+    public int hashCode() {
+        return chronology.hashCode() ^
+                ((prolepticYear & 0xFFFFF800) ^ ((prolepticYear << 11) + (month << 6) + (day)));
+    }
 }
