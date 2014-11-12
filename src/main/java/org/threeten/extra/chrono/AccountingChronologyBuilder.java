@@ -45,10 +45,10 @@ import java.time.Month;
  * <li>last-in-month vs. nearest-end-of-month - Whether the ending day-of-week is the last in the month,
  * or the nearest to the end of the month (will sometimes be in the <i>next</i> month.
  * <li>month end - Which Gregorian/ISO end-of-month the year ends in/is nearest to.
- * <li>period division - How many 'months' (periods) to divide the accounting year into, 
+ * <li>year division - How many 'months' (periods) to divide the accounting year into, 
  * and how many weeks are in each.
- * <li>leap-week period - Which period will have the leap 'week' added to it.  
- * In practice this is probably the last period, but this does not seem to be required.
+ * <li>leap-week month - Which month will have the leap 'week' added to it.  
+ * In practice this is probably the last one, but this does not seem to be required.
  * </ul>
  * <p>
  * There are approximately 7 x 2 x 12 x 4 x 12/13 = 4032 combinations.
@@ -74,11 +74,11 @@ public final class AccountingChronologyBuilder {
     /**
      * How to divide an accounting year.
      */
-    private AccountingPeriod division;
+    private AccountingYearDivision division;
     /**
-     * The period which will have the leap-week added.
+     * The month which will have the leap-week added.
      */
-    private int leapWeekInPeriod;
+    private int leapWeekInMonth;
 
     /**
      * Constructs a new instance of the builder.
@@ -136,20 +136,20 @@ public final class AccountingChronologyBuilder {
      * 
      * @return this, for chaining, not null.
      */
-    public AccountingChronologyBuilder withDivision(AccountingPeriod division) {
+    public AccountingChronologyBuilder withDivision(AccountingYearDivision division) {
         this.division = division;
         return this;
     }
 
     /**
-     * Sets the period in which the leap-week occurs.
+     * Sets the month in which the leap-week occurs.
      * 
-     * @param leapWeekInPeriod The period in which the leap-week occurs.
+     * @param leapWeekInMonth The month in which the leap-week occurs.
      * 
      * @return this, for chaining, not null.
      */
-    public AccountingChronologyBuilder leapWeekInPeriod(int leapWeekInPeriod) {
-        this.leapWeekInPeriod = leapWeekInPeriod;
+    public AccountingChronologyBuilder leapWeekInMonth(int leapWeekInMonth) {
+        this.leapWeekInMonth = leapWeekInMonth;
         return this;
     }
 
@@ -160,7 +160,7 @@ public final class AccountingChronologyBuilder {
      * @throws DateTimeException if the chronology cannot be built.
      */
     public AccountingChronology toChronology() {
-        return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInPeriod);
+        return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInMonth);
     }
 
 }

@@ -31,7 +31,7 @@
  */
 package org.threeten.extra.chrono;
 
-import static org.threeten.extra.chrono.AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS;
+import static org.threeten.extra.chrono.AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -119,11 +119,11 @@ public final class AccountingChronology extends AbstractChronology implements Se
     /**
      * How to divide an accounting year.
      */
-    final AccountingPeriod division;
+    final AccountingYearDivision division;
     /**
-     * The period which will have the leap-week added.
+     * The month which will have the leap-week added.
      */
-    final int leapWeekInPeriod;
+    final int leapWeekInMonth;
 
     /**
      * Difference in days between accounting year end and ISO month end, in ISO year 0.
@@ -151,21 +151,21 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @param end The  month-end the year is based on.
      * @param inLastWeek  Whether the year ends in the last week of the month, or nearest the end-of-month.
      * @param division  How the year is divided.
-     * @param leapWeekInPeriod  The period in which the leap-week resides.
+     * @param leapWeekInMonth  The month in which the leap-week resides.
      * @return The created Chronology, not null.
      * @throws DateTimeException if the chronology cannot be built.
      */
-    static AccountingChronology create(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod) {
-        if (endsOn == null || end == null || division == null || leapWeekInPeriod == 0) {
+    static AccountingChronology create(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingYearDivision division, int leapWeekInMonth) {
+        if (endsOn == null || end == null || division == null || leapWeekInMonth == 0) {
             throw new IllegalStateException("AccountingCronology cannot be built: "
                     + (endsOn == null ? "| ending day-of-week |" : "")
                     + (end == null ? "| month ending in/nearest to |" : "")
                     + (division == null ? "| how year divided |" : "")
-                    + (leapWeekInPeriod == 0 ? "| leap-week period |" : "")
+                    + (leapWeekInMonth == 0 ? "| leap-week month |" : "")
                     + " not set.");
         }
-        if (!division.getMonthsInYearRange().isValidValue(leapWeekInPeriod)) {
-            throw new IllegalStateException("Leap week cannot not be placed in non-existant period " + leapWeekInPeriod
+        if (!division.getMonthsInYearRange().isValidValue(leapWeekInMonth)) {
+            throw new IllegalStateException("Leap week cannot not be placed in non-existant month " + leapWeekInMonth
                     + ", range is [" + division.getMonthsInYearRange() + "].");
         }
 
@@ -180,13 +180,13 @@ public final class AccountingChronology extends AbstractChronology implements Se
         for (int month = 1; month <= division.getMonthsInYearRange().getMaximum(); month++) {
             int monthLength = division.getWeeksInMonth(month);
             shortestMonthLength = Math.min(shortestMonthLength, monthLength);
-            longestMonthLength = Math.max(longestMonthLength, monthLength + (month == leapWeekInPeriod ? 1 : 0));
+            longestMonthLength = Math.max(longestMonthLength, monthLength + (month == leapWeekInMonth ? 1 : 0));
         }
         ValueRange alignedWeekOfMonthRange = ValueRange.of(1, shortestMonthLength, longestMonthLength);
         ValueRange dayOfMonthRange = ValueRange.of(1, shortestMonthLength * 7, longestMonthLength * 7);
         int daysToEpoch = Math.toIntExact(0 - yearZeroEnd.plusDays(1).toEpochDay());
 
-        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInPeriod, yearZeroDifference, alignedWeekOfMonthRange, dayOfMonthRange, daysToEpoch);
+        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInMonth, yearZeroDifference, alignedWeekOfMonthRange, dayOfMonthRange, daysToEpoch);
     }
 
     //-----------------------------------------------------------------------
@@ -197,19 +197,19 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @param end  The month-end the year is based on.
      * @param inLastWeek  Whether the year ends in the last week of the month, or nearest the end-of-month.
      * @param division  How the year is divided.
-     * @param leapWeekInPeriod  The period in which the leap-week resides.
+     * @param leapWeekInMonth  The month in which the leap-week resides.
      * @param yearZeroDifference  Difference in days between accounting year end and ISO month end, in ISO year 0.
      * @param alignedWeekOfMonthRange  Range of weeks in month.
      * @param dayOfMonthRange  Range of days in month.
      * @param daysToEpoch  The number of days between the start of Accounting 1 and ISO 1970.
      */
-    private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingPeriod division, int leapWeekInPeriod, int yearZeroDifference, ValueRange alignedWeekOfMonthRange,
+    private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingYearDivision division, int leapWeekInMonth, int yearZeroDifference, ValueRange alignedWeekOfMonthRange,
             ValueRange dayOfMonthRange, int daysToEpoch) {
         this.endsOn = endsOn;
         this.end = end;
         this.inLastWeek = inLastWeek;
         this.division = division;
-        this.leapWeekInPeriod = leapWeekInPeriod;
+        this.leapWeekInMonth = leapWeekInMonth;
         this.yearZeroDifference = yearZeroDifference;
         this.alignedWeekOfMonthRange = alignedWeekOfMonthRange;
         this.dayOfMonthRange = dayOfMonthRange;
@@ -222,7 +222,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return a built, validated instance.
      */
     private Object readResolve() {
-        return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInPeriod);
+        return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInMonth);
     }
 
     /**
@@ -517,7 +517,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
             case MONTH_OF_YEAR:
                 return division.getMonthsInYearRange();
             case PROLEPTIC_MONTH:
-                return division == THIRTEEN_EVEN_PERIODS_OF_4_WEEKS ? PROLEPTIC_MONTH_RANGE_13 : PROLEPTIC_MONTH_RANGE_12;
+                return division == THIRTEEN_EVEN_MONTHS_OF_4_WEEKS ? PROLEPTIC_MONTH_RANGE_13 : PROLEPTIC_MONTH_RANGE_12;
             default:
                 break;
         }
@@ -536,7 +536,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
                     this.inLastWeek == other.inLastWeek &&
                     this.end == other.end &&
                     this.division == other.division &&
-                    this.leapWeekInPeriod == other.leapWeekInPeriod;
+                    this.leapWeekInMonth == other.leapWeekInMonth;
         }
         return false;
     }
@@ -548,7 +548,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
         result = prime * result + endsOn.hashCode();
         result = prime * result + (inLastWeek ? 1231 : 1237);
         result = prime * result + end.hashCode();
-        result = prime * result + leapWeekInPeriod;
+        result = prime * result + leapWeekInMonth;
         result = prime * result + division.hashCode();
         return result;
     }
@@ -564,7 +564,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
                 .append(", year divided in ")
                 .append(division)
                 .append(" with leap-week in month ")
-                .append(leapWeekInPeriod);
+                .append(leapWeekInMonth);
         return bld.toString();
     }
 

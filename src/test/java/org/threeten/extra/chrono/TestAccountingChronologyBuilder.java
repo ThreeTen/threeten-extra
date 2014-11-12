@@ -83,7 +83,7 @@ public class TestAccountingChronologyBuilder {
     @Test(dataProvider = "yearEnding")
     public void test_isLeapYear_inLastWeekOf(DayOfWeek dayOfWeek, Month ending) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
-                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInMonth(12)
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
@@ -103,7 +103,7 @@ public class TestAccountingChronologyBuilder {
     @Test(dataProvider = "yearEnding")
     public void test_isLeapYear_nearestEndOf(DayOfWeek dayOfWeek, Month ending) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
-                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInMonth(12)
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
@@ -123,7 +123,7 @@ public class TestAccountingChronologyBuilder {
     @Test(dataProvider = "yearEnding")
     public void test_previousLeapYears_inLastWeekOf(DayOfWeek dayOfWeek, Month ending) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
-                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInMonth(12)
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
@@ -152,7 +152,7 @@ public class TestAccountingChronologyBuilder {
     @Test(dataProvider = "yearEnding")
     public void test_previousLeapYears_nearestEndOf(DayOfWeek dayOfWeek, Month ending) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
-                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInMonth(12)
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
@@ -181,7 +181,7 @@ public class TestAccountingChronologyBuilder {
     @Test(dataProvider = "yearEnding")
     public void test_date_int_int_int_inLastWeekOf(DayOfWeek dayOfWeek, Month ending) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
-                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInMonth(12)
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
@@ -196,7 +196,7 @@ public class TestAccountingChronologyBuilder {
     @Test(dataProvider = "yearEnding")
     public void test_date_int_int_int_nearestEndOf(DayOfWeek dayOfWeek, Month ending) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
-                .withDivision(AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInPeriod(12)
+                .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInMonth(12)
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
@@ -214,55 +214,55 @@ public class TestAccountingChronologyBuilder {
     @DataProvider(name = "range")
     Object[][] data_range() {
         return new Object[][] {
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 1,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 1,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 2,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 2,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 3,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 3,
                 ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 4,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 4,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 5,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 5,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 6,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 6,
                 ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 7,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 7,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 8,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 8,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 9,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 9,
                 ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 10,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 10,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 11,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 11,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 12,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 12,
                 ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
 
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 1,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 1,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 2,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 2,
                 ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 3,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 3,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
 
-            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 1,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 1,
                 ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 2,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 2,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 3,
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 3,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
 
-            {AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 1,
+            {AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 1,
                 ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12)},
         };
     }
 
     @Test(dataProvider = "range")
-    public void test_range(AccountingPeriod division, int leapWeekInPeriod,
+    public void test_range(AccountingYearDivision division, int leapWeekInPeriod,
             ValueRange expectedWeekOfMonthRange, ValueRange expectedDayOfMonthRange, ValueRange expectedMonthRange, ValueRange expectedProlepticMonthRange) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
                 .toChronology();
 
         assertEquals(chronology.range(ChronoField.ALIGNED_WEEK_OF_MONTH), expectedWeekOfMonthRange);
@@ -279,35 +279,35 @@ public class TestAccountingChronologyBuilder {
     @DataProvider(name = "weeksInMonth")
     Object[][] data_weeksInMonth() {
         return new Object[][] {
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 1},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 2},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 3},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 4},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 5},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 6},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 7},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 8},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 9},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 10},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 11},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 12},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 1},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 2},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 3},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 4},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 5},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 6},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 7},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 8},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 9},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 10},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 11},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 12},
 
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 1},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 2},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 3},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 1},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 2},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 3},
 
-            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 1},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 2},
-            {AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 3},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 1},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 2},
+            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 3},
 
-            {AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, new int[] {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 13},
+            {AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, new int[] {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 13},
         };
     }
 
     @Test(dataProvider = "weeksInMonth")
-    public void test_getWeeksInMonth(AccountingPeriod division, int[] weeksInMonth, int leapWeekInPeriod) {
+    public void test_getWeeksInMonth(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInPeriod) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
                 .toChronology();
 
         for (int month = 1; month <= weeksInMonth.length; month++) {
@@ -317,9 +317,9 @@ public class TestAccountingChronologyBuilder {
     }
 
     @Test(dataProvider = "weeksInMonth")
-    public void test_getWeeksAtStartOf(AccountingPeriod division, int[] weeksInMonth, int leapWeekInPeriod) {
+    public void test_getWeeksAtStartOf(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInPeriod) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
                 .toChronology();
 
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
@@ -329,9 +329,9 @@ public class TestAccountingChronologyBuilder {
     }
 
     @Test(dataProvider = "weeksInMonth")
-    public void test_getMonthFromElapsedWeeks(AccountingPeriod division, int[] weeksInMonth, int leapWeekInPeriod) {
+    public void test_getMonthFromElapsedWeeks(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInPeriod) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
                 .toChronology();
 
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
@@ -351,30 +351,30 @@ public class TestAccountingChronologyBuilder {
     @DataProvider(name = "badChronology")
     Object[][] data_badChronology() {
         return new Object[][] {
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 0},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, -1},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 14},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 13},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 13},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingPeriod.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 13},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 0},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, -1},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 14},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 13},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 13},
+            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 13},
             {DayOfWeek.MONDAY, Month.JANUARY, null, 13},
-            {DayOfWeek.MONDAY, null, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 13},
-            {null, Month.JANUARY, AccountingPeriod.THIRTEEN_EVEN_PERIODS_OF_4_WEEKS, 13},
+            {DayOfWeek.MONDAY, null, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13},
+            {null, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13},
 
         };
     }
 
     @Test(dataProvider = "badChronology", expectedExceptions = IllegalStateException.class)
-    public void test_badChronology_nearestEndOf(DayOfWeek dayOfWeek, Month ending, AccountingPeriod division, int leapWeekInPeriod) {
+    public void test_badChronology_nearestEndOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInPeriod) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
-                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
                 .toChronology();
     }
 
     @Test(dataProvider = "badChronology", expectedExceptions = IllegalStateException.class)
-    public void test_badChronology_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingPeriod division, int leapWeekInPeriod) {
+    public void test_badChronology_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInPeriod) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
-                .withDivision(division).leapWeekInPeriod(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
                 .toChronology();
     }
 

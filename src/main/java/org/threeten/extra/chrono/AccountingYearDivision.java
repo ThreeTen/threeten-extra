@@ -37,40 +37,40 @@ import java.time.temporal.ValueRange;
 import java.util.Arrays;
 
 /**
- * How an Accounting year is divided into smaller periods.
+ * How an Accounting year is divided.
  * <p>
- * The Accounting calendar system generally divides a year into smaller periods, similar in length to regular calendar months.
- * The most common divisions either use 12 such periods (requiring 1 period every quarter to be 5 weeks instead of 4),
- * or use 13 periods of 4 weeks each (making one quarter have an extra period).
+ * An Accounting calendar system generally divides a year into smaller periods, similar in length to regular calendar months.
+ * The most common divisions either use 12 such 'months' (requiring one every quarter to be 5 weeks instead of 4),
+ * or use 13 of 4 weeks each (making one quarter have an extra month, or each quarter have partial months).
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code AccountingPeriod}.
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code AccountingYearDivision}.
  * Use {@code getValue()} instead.</b>
  *
  * <h3>Implementation Requirements:</h3>
  * This is an immutable and thread-safe enum.
  */
-public enum AccountingPeriod {
+public enum AccountingYearDivision {
 
     /**
      * The singleton instance for a year divided into 4 quarters, 
-     * each having 3 periods with lengths of 4, 4, and 5 weeks, respectively.
+     * each having 3 months with lengths of 4, 4, and 5 weeks, respectively.
      */
     QUARTERS_OF_PATTERN_4_4_5_WEEKS(new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}),
     /**
      * The singleton instance for a year divided into 4 quarters, 
-     * each having 3 periods with lengths of 4, 5, and 4 weeks, respectively.
+     * each having 3 months with lengths of 4, 5, and 4 weeks, respectively.
      */
     QUARTERS_OF_PATTERN_4_5_4_WEEKS(new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}),
     /**
      * The singleton instance for a year divided into 4 quarters, 
-     * each having 3 periods with lengths of 5, 4, and 4 weeks, respectively.
+     * each having 3 months with lengths of 5, 4, and 4 weeks, respectively.
      */
     QUARTERS_OF_PATTERN_5_4_4_WEEKS(new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}),
     /**
-     * The singleton instance for a year divided into 13 even periods,
+     * The singleton instance for a year divided into 13 even months,
      * each having 4 weeks.
      */
-    THIRTEEN_EVEN_PERIODS_OF_4_WEEKS(new int[] {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4});
+    THIRTEEN_EVEN_MONTHS_OF_4_WEEKS(new int[] {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4});
 
     /**
      * The number of weeks in each month.
@@ -91,7 +91,7 @@ public enum AccountingPeriod {
      * 
      * @param weeksInMonths The number of weeks in each month (period).
      */
-    private AccountingPeriod(int[] weeksInMonths) {
+    private AccountingYearDivision(int[] weeksInMonths) {
         this.weeksInMonths = weeksInMonths;
 
         this.monthsInYearRange = ValueRange.of(1, weeksInMonths.length);
@@ -104,17 +104,17 @@ public enum AccountingPeriod {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code AccountingPeriod} from an {@code int} value.
+     * Obtains an instance of {@code AccountingYearDivision} from an {@code int} value.
      * <p>
-     * {@code AccountingPeriod} is an enum representing how an Accounting year is divided into smaller periods.
+     * {@code AccountingYearDivision} is an enum representing how an Accounting year is divided into smaller periods.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param period  the AccountingPeriod division to represent, from 0 to 3
-     * @return the AccountingPeriod singleton, not null
+     * @param division  the AccountingYearDivision division to represent, from 0 to 3
+     * @return the AccountingYearDivision singleton, not null
      * @throws DateTimeException if the value is invalid
      */
-    public static AccountingPeriod of(int period) {
-        switch (period) {
+    public static AccountingYearDivision of(int division) {
+        switch (division) {
             case 0:
                 return QUARTERS_OF_PATTERN_4_4_5_WEEKS;
             case 1:
@@ -122,24 +122,24 @@ public enum AccountingPeriod {
             case 2:
                 return QUARTERS_OF_PATTERN_5_4_4_WEEKS;
             case 3:
-                return THIRTEEN_EVEN_PERIODS_OF_4_WEEKS;
+                return THIRTEEN_EVEN_MONTHS_OF_4_WEEKS;
             default:
-                throw new DateTimeException("Invalid AccountingPeriod: " + period);
+                throw new DateTimeException("Invalid AccountingYearDivision: " + division);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the numeric AccountingPeriod {@code int} value.
+     * Gets the numeric AccountingYearDivision {@code int} value.
      * <p>
      * <ul>
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} has the value 0.
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} has the value 1.
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} has the value 2.
-     * <li>The AccountingPeriod {@code THIRTEEN_EVEN_PERIODS_OF_4_WEEKS} has the value 3.
+     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} has the value 0.
+     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} has the value 1.
+     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} has the value 2.
+     * <li>The AccountingYearDivision {@code THIRTEEN_EVEN_MONTHS_OF_4_WEEKS} has the value 3.
      * </ul>
      *
-     * @return the AccountingPeriod value, from 0 to 3.
+     * @return the AccountingYearDivision value, from 0 to 3.
      */
     public int getValue() {
         return ordinal();
@@ -150,10 +150,10 @@ public enum AccountingPeriod {
      * Gets the range of months in a year.
      * <p>
      * <ul>
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} range is [1, 12].
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} range is [1, 12].
-     * <li>The AccountingPeriod {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} range is [1, 12].
-     * <li>The AccountingPeriod {@code THIRTEEN_EVEN_PERIODS_OF_4_WEEKS} range is [1, 13].
+     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} range is [1, 12].
+     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} range is [1, 12].
+     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} range is [1, 12].
+     * <li>The AccountingYearDivision {@code THIRTEEN_EVEN_MONTHS_OF_4_WEEKS} range is [1, 13].
      * </ul>
      *
      * @return the range of months (periods) in a year.
