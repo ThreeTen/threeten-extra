@@ -192,9 +192,10 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * The conversion typically uses the {@link ChronoField#EPOCH_DAY EPOCH_DAY}
      * field, which is standardized across calendar systems.
      * <p>
-     * This method matches the signature of the functional interface {@link TemporalQuery}
-     * allowing it to be used as a query via method reference, {@code AccountingDate::from}.
-     * TODO: Figure out how this implementation effects the above.
+     * This method almost matches the signature of the functional interface {@link TemporalQuery}
+     * and must be used as a query via something that supplies the missing parameter,
+     * such as a curried method reference, {@code temporal -> AccountingDate.from(chronology, temporal)}
+     * (where {@code chronology} resolves to a set up {@code AccountingChronology}).
      *
      * @param chronology  the Accounting chronology to base the date on, not null
      * @param temporal  the temporal object to convert, not null
