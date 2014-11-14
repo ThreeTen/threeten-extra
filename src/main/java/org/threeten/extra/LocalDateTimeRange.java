@@ -40,17 +40,20 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * LocalDateTimeRange is the implementation of an immutable time interval.
+ * A range between to LocalDateTime objects.
  * <p>
- A LocalDateTimeRange represents a period of time between two LocalDateTimes. 
- LocalDateTimeRange are <i>closed</i>.
- LocalDateTimeRange are inclusive of the start and inclusive of the end. 
- The end is always greater than or equal to the begin.
- <p>
+ * A LocalDateTimeRange represents a range of time between two LocalDateTimes
+ * objects. 
+ * LocalDateTimeRange are <i>closed</i>.
+ * LocalDateTimeRange are inclusive of the start and inclusive of the end. 
+ * The end is always greater than or equal to the begin.
+ * <p>
  * Methods throw a <tt>NullPointerException</tt> if any null object 
  * parameter is passed.
- * <p>
- LocalDateTimeRange is thread-safe and immutable.
+ * 
+ * <h3>Implementation Requirements:</h3>
+ * This is a thread-safe utility class.
+ * All returned classes are immutable and thread-safe.
  */
 public final class LocalDateTimeRange implements Serializable {
     
@@ -122,10 +125,10 @@ public final class LocalDateTimeRange implements Serializable {
     }
     
     /**
-     * Checks if this LocalDateTimeRange intersects with another LocalDateTimeRange
+     * Checks if this ranges intersects with the specified {@code LocalDateTimeRange}
      * 
      * @param other the LocalDateTimeRange to compare to
-     * @return true if the LocalDateRanges intersects
+     * @return true if the ranges intersect
      */
     public boolean intersects(LocalDateTimeRange other) {
         Objects.requireNonNull(other, "other cannot be null");
@@ -133,10 +136,10 @@ public final class LocalDateTimeRange implements Serializable {
     }
     
     /**
-     * Checks if this LocalDateRanges abuts with another LocalDateTimeRange
+     * Checks if this range abuts with the specified {@code LocalDateTimeRange}
      * 
      * @param other the LocalDateTimeRange to compare to
-     * @return true if the LocalDateRanges abuts
+     * @return true if the ranges abut
      */
     public boolean abuts(LocalDateTimeRange other) {
         Objects.requireNonNull(other, "other cannot be null");
@@ -144,22 +147,22 @@ public final class LocalDateTimeRange implements Serializable {
     }
     
     /**
-     * Checks if this there is a gap
+     * Checks if there is a gap between this and the specified {@code LocalDateTimeRange}
      * 
      * @param other the LocalDateTimeRange to compare to
-     * @return true if there is a gaps
+     * @return true if there is a gap
      */
     public boolean gaps(LocalDateTimeRange other) {
         return !intersects(other);
     }
     
     /**
-     * Obtains the intersection of this LocalDateTimeRange with another LocalDateTimeRange.
+     * Obtains the intersection with the specified {@code LocalDateTimeRange}
      * <p>
      * The LocalDateTimeRange have to overlaps.
      * 
      * @param other the range to compare to
-     * @return the LocalDateTimeRange
+     * @return the intersection
      */
     public Optional<LocalDateTimeRange> intersection(LocalDateTimeRange other) {
         Objects.requireNonNull(other, "other cannot be null");
@@ -167,6 +170,50 @@ public final class LocalDateTimeRange implements Serializable {
             LocalDateTime max = max(start, other.start);
             LocalDateTime min = min(end, other.end);
             return Optional.of(LocalDateTimeRange.of(max, min));
+        } else {
+            return Optional.empty();
+        }
+    }
+    
+    /**
+     * Obtains the abut with the specified {@code LocalDateTimeRange}
+     * <p>
+     * The LocalDateTimeRange have to abut.
+     * 
+     * @param other the range to compare to
+     * @return the abut
+     */
+    public Optional<LocalDateTimeRange> abut(LocalDateTimeRange other) {
+        Objects.requireNonNull(other, "other cannot be null");
+        if (abuts(other)) {
+            LocalDateTimeRange abut;
+            if (start.equals(other.start)) {
+                abut = LocalDateTimeRange.of(start, start);
+            } else {
+                abut = LocalDateTimeRange.of(end, end);
+            }
+            return Optional.of(abut);
+        } else {
+            return Optional.empty();
+        }
+    }
+    
+    /**
+     * Obtains the gap with the specified {@code LocalDateTimeRange}
+     * 
+     * @param other the range to compare to
+     * @return the gap
+     */
+    public Optional<LocalDateTimeRange> gap(LocalDateTimeRange other) {
+        Objects.requireNonNull(other, "other cannot be null");
+        if (gaps(other)) {
+            LocalDateTimeRange abut;
+            if (start.equals(other.start)) {
+                abut = LocalDateTimeRange.of(start, start);
+            } else {
+                abut = LocalDateTimeRange.of(end, end);
+            }
+            return Optional.of(abut);
         } else {
             return Optional.empty();
         }
