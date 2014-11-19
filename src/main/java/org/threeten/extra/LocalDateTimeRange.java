@@ -143,7 +143,7 @@ public final class LocalDateTimeRange implements Serializable {
      */
     public boolean abuts(LocalDateTimeRange other) {
         Objects.requireNonNull(other, "other cannot be null");
-        return start.equals(other.start) || end.equals(other.end);
+        return end.equals(other.start) || start.equals(other.end);
     }
     
     /**
@@ -207,13 +207,9 @@ public final class LocalDateTimeRange implements Serializable {
     public Optional<LocalDateTimeRange> gap(LocalDateTimeRange other) {
         Objects.requireNonNull(other, "other cannot be null");
         if (gaps(other)) {
-            LocalDateTimeRange abut;
-            if (start.equals(other.start)) {
-                abut = LocalDateTimeRange.of(start, start);
-            } else {
-                abut = LocalDateTimeRange.of(end, end);
-            }
-            return Optional.of(abut);
+            LocalDateTime min = min(end, other.end);
+            LocalDateTime max = max(start, other.start);
+            return Optional.of(LocalDateTimeRange.of(min, max));
         } else {
             return Optional.empty();
         }

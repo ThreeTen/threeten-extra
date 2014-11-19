@@ -170,8 +170,56 @@ public class TestLocalDateTimeRange {
     }
 
     @Test(dataProvider = "data_test_intersects")
-    public void test_overlaps(LocalDateTimeRange a, LocalDateTimeRange b, boolean expected) {
+    public void test_intersects(LocalDateTimeRange a, LocalDateTimeRange b, boolean expected) {
         assertEquals(a.intersects(b), expected);
+    }
+    
+    //-----------------------------------------------------------------------
+    // abuts()
+    //-----------------------------------------------------------------------
+    @DataProvider
+    public Object[][] data_test_abuts() {
+        LocalDateTime a = LocalDateTime.of(2014, 1, 1, 0, 0);
+        LocalDateTime b = LocalDateTime.of(2014, 1, 1, 12, 0);
+        LocalDateTime c = LocalDateTime.of(2014, 1, 2, 0, 0);
+        LocalDateTime d = LocalDateTime.of(2014, 1, 2, 12, 0);
+
+        return new Object[][]{
+            {LocalDateTimeRange.of(a, a), LocalDateTimeRange.of(a, a), true},
+            {LocalDateTimeRange.of(a, a), LocalDateTimeRange.of(b, b), false},
+            {LocalDateTimeRange.of(a, b), LocalDateTimeRange.of(c, d), false},
+            {LocalDateTimeRange.of(a, c), LocalDateTimeRange.of(b, d), false},
+            {LocalDateTimeRange.of(a, b), LocalDateTimeRange.of(b, c), true}
+        };
+    }
+
+    @Test(dataProvider = "data_test_abuts")
+    public void test_abuts(LocalDateTimeRange a, LocalDateTimeRange b, boolean expected) {
+        assertEquals(a.abuts(b), expected);
+    }
+    
+    //-----------------------------------------------------------------------
+    // gaps()
+    //-----------------------------------------------------------------------
+    @DataProvider
+    public Object[][] data_test_gaps() {
+        LocalDateTime a = LocalDateTime.of(2014, 1, 1, 0, 0);
+        LocalDateTime b = LocalDateTime.of(2014, 1, 1, 12, 0);
+        LocalDateTime c = LocalDateTime.of(2014, 1, 2, 0, 0);
+        LocalDateTime d = LocalDateTime.of(2014, 1, 2, 12, 0);
+
+        return new Object[][]{
+            {LocalDateTimeRange.of(a, a), LocalDateTimeRange.of(a, a), false},
+            {LocalDateTimeRange.of(a, a), LocalDateTimeRange.of(b, b), true},
+            {LocalDateTimeRange.of(a, b), LocalDateTimeRange.of(c, d), true},
+            {LocalDateTimeRange.of(a, c), LocalDateTimeRange.of(b, d), false},
+            {LocalDateTimeRange.of(a, b), LocalDateTimeRange.of(b, c), false}
+        };
+    }
+
+    @Test(dataProvider = "data_test_gaps")
+    public void test_gaps(LocalDateTimeRange a, LocalDateTimeRange b, boolean expected) {
+        assertEquals(a.gaps(b), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -194,6 +242,47 @@ public class TestLocalDateTimeRange {
     @Test(dataProvider = "data_test_intersection", dependsOnMethods = { "test_equals", "test_intersects"})
     public void test_intersection(LocalDateTimeRange a, LocalDateTimeRange b, LocalDateTimeRange c) {
         assertEquals(a.intersection(b).get(), c);
+    }
+    
+    //-----------------------------------------------------------------------
+    // abut()
+    //-----------------------------------------------------------------------
+    @DataProvider
+    public Object[][] data_test_abut() {
+        LocalDateTime a = LocalDateTime.of(2014, 1, 1, 0, 0);
+        LocalDateTime b = LocalDateTime.of(2014, 1, 1, 12, 0);
+        LocalDateTime c = LocalDateTime.of(2014, 1, 2, 0, 0);
+
+        return new Object[][]{
+            {LocalDateTimeRange.of(a, a), LocalDateTimeRange.of(a, a), LocalDateTimeRange.of(a, a)},
+            {LocalDateTimeRange.of(a, b), LocalDateTimeRange.of(b, c), LocalDateTimeRange.of(b, b)},
+        };
+    }
+
+    @Test(dataProvider = "data_test_abut", dependsOnMethods = { "test_equals", "test_abuts"})
+    public void test_abut(LocalDateTimeRange a, LocalDateTimeRange b, LocalDateTimeRange c) {
+        assertEquals(a.abut(b).get(), c);
+    }
+    
+    //-----------------------------------------------------------------------
+    // gap()
+    //-----------------------------------------------------------------------
+    @DataProvider
+    public Object[][] data_test_gap() {
+        LocalDateTime a = LocalDateTime.of(2014, 1, 1, 0, 0);
+        LocalDateTime b = LocalDateTime.of(2014, 1, 1, 12, 0);
+        LocalDateTime c = LocalDateTime.of(2014, 1, 2, 0, 0);
+        LocalDateTime d = LocalDateTime.of(2014, 1, 2, 12, 0);
+
+        return new Object[][]{
+            {LocalDateTimeRange.of(a, b), LocalDateTimeRange.of(c, d), LocalDateTimeRange.of(b, c)},
+            {LocalDateTimeRange.of(a, a), LocalDateTimeRange.of(b, b), LocalDateTimeRange.of(a, b)},
+        };
+    }
+
+    @Test(dataProvider = "data_test_gap", dependsOnMethods = { "test_equals", "test_gaps"})
+    public void test_gap(LocalDateTimeRange a, LocalDateTimeRange b, LocalDateTimeRange c) {
+        assertEquals(a.gap(b).get(), c);
     }
     
     //-----------------------------------------------------------------------
