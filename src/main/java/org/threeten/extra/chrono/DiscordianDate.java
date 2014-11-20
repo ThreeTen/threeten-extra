@@ -31,7 +31,6 @@
  */
 package org.threeten.extra.chrono;
 
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
 import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
@@ -418,10 +417,11 @@ public final class DiscordianDate
                 ChronoField f = (ChronoField) field;
                 switch (f) {
                     case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                         return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, DAYS_IN_WEEK);
+                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                        return ValueRange.of(isLeapYear() ? 0 : 1, DAYS_IN_WEEK);
                     case ALIGNED_WEEK_OF_YEAR:
-                        return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, 73);
+                        return ValueRange.of(isLeapYear() ? 0 : 1, WEEKS_IN_YEAR);
                     case DAY_OF_MONTH:
                         return month == 0 ? ValueRange.of(0, 0) : ValueRange.of(1, DAYS_IN_MONTH);
                     case DAY_OF_WEEK:
@@ -501,7 +501,7 @@ public final class DiscordianDate
      * The Discordian calendar system has one era, 'YOLD',
      * defined by {@link DiscordianEra}.
      *
-     * @return the era YOLD
+     * @return the era YOLD, not null
      */
     @Override
     public DiscordianEra getEra() {
@@ -525,16 +525,42 @@ public final class DiscordianDate
             ChronoField f = (ChronoField) field;
             DiscordianChronology.INSTANCE.range(f).checkValidValue(newValue, f);
             int nvalue = (int) newValue;
+            // trying to move to St Tibs
+            if (nvalue == 0 && isLeapYear()) {
+                switch (f) {
+                    case DAY_OF_WEEK:
+                    case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                    case ALIGNED_WEEK_OF_MONTH:
+                    case ALIGNED_WEEK_OF_YEAR:
+                    case DAY_OF_MONTH:
+                    case MONTH_OF_YEAR:
+                        if (month == 0) {
+                            return this;
+                        }
+                        return DiscordianDate.create(prolepticYear, 0, 0);
+                }
+            }
+            // currently on St Tibs
+            if (month == 0) {
+                switch (f) {
+                    case YEAR:
+                    case YEAR_OF_ERA:
+                        if (DiscordianChronology.INSTANCE.isLeapYear(nvalue)) {
+                            return DiscordianDate.create(nvalue, 0, 0);
+                        }
+                        // fall through
+                    default:
+                        return DiscordianDate.create(prolepticYear, 1, 60).with(field, newValue);
+                }
+            }
+            // validate range (generally excluding zero value)
+            range(f).checkValidValue(newValue, f);
             switch (f) {
                 case DAY_OF_WEEK:
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    if (nvalue == 0) {
-                        nvalue = 5;
-                    }
-                    if (month == 0) {
-                        return this;
-                    } else if (month == 1
+                    if (month == 1
                             && day >= ST_TIBS_OFFSET - DAYS_IN_WEEK + 1 && day < ST_TIBS_OFFSET + 1
                             && isLeapYear()) {
                         int currentDayOfWeek = getDayOfWeek();
@@ -548,16 +574,7 @@ public final class DiscordianDate
                     break;
                 case ALIGNED_WEEK_OF_MONTH:
                 case ALIGNED_WEEK_OF_YEAR:
-                    if (nvalue == 0) {
-                        nvalue = ST_TIBS_OFFSET / DAYS_IN_WEEK;
-                    }
-                    if (month == 0) {
-                        if (field == ALIGNED_WEEK_OF_MONTH || nvalue == ST_TIBS_OFFSET / DAYS_IN_WEEK) {
-                            return this;
-                        } else if (field == ALIGNED_WEEK_OF_YEAR) {
-                            return ((DiscordianDate) plusDays(1)).with(ALIGNED_WEEK_OF_YEAR, nvalue);
-                        }
-                    } else if ((month == 1 || field == ALIGNED_WEEK_OF_YEAR) && isLeapYear()) {
+                    if ((month == 1 || field == ALIGNED_WEEK_OF_YEAR) && isLeapYear()) {
                         // St. Tib's Day is in the middle of the 12th week...
                         int alignedWeek = (int) getLong(field);
                         int currentDayOfWeek = getDayOfWeek();

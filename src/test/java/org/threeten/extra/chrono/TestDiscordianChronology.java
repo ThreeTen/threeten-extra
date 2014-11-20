@@ -64,7 +64,6 @@ import java.time.Period;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
-import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
@@ -110,6 +109,11 @@ public class TestDiscordianChronology {
     @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
+            {DiscordianDate.of(2, 1, 1), LocalDate.of(-1164, 1, 1)},
+            {DiscordianDate.of(166, 1, 1), LocalDate.of(-1000, 1, 1)},
+            {DiscordianDate.of(1156, 1, 1), LocalDate.of(-10, 1, 1)},
+            {DiscordianDate.of(1166, 1, 1), LocalDate.of(0, 1, 1)},
+
             {DiscordianDate.of(1167, 1, 1), LocalDate.of(1, 1, 1)},
             {DiscordianDate.of(1167, 1, 2), LocalDate.of(1, 1, 2)},
             {DiscordianDate.of(1167, 1, 3), LocalDate.of(1, 1, 3)},
@@ -303,6 +307,13 @@ public class TestDiscordianChronology {
         assertEquals(DiscordianDate.of(year, month, 1).lengthOfMonth(), length);
     }
 
+    @Test
+    public void test_lengthOfMonth_specific() {
+        assertEquals(DiscordianDate.of(3178, 0, 0).lengthOfMonth(), 1);
+        assertEquals(DiscordianDate.of(3178, 1, 1).lengthOfMonth(), 73);
+        assertEquals(DiscordianDate.of(3178, 1, 73).lengthOfMonth(), 73);
+    }
+
     //-----------------------------------------------------------------------
     // era, prolepticYear and dateYearDay
     //-----------------------------------------------------------------------
@@ -366,12 +377,12 @@ public class TestDiscordianChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(0, 1, 5, 5));
+        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(0, 1, 0, 5));
         assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(0, 1, 5, 5));
-        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(0, 1, 15, 15));
+        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(0, 1, 0, 15));
         assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(0, 1, 73, 73));
-        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(0, 1, 5, 5));
-        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(0, 1, 73, 73));
+        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(0, 1, 0, 5));
+        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(0, 1, 0, 73));
         assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
         assertEquals(DiscordianChronology.INSTANCE.range(EPOCH_DAY), ValueRange.of(-1_145_400, 999_999 * 365L + 242_499));
         assertEquals(DiscordianChronology.INSTANCE.range(ERA), ValueRange.of(1, 1));
@@ -387,25 +398,42 @@ public class TestDiscordianChronology {
     @DataProvider(name = "ranges")
     Object[][] data_ranges() {
         return new Object[][] {
+            // St Tibs is in its own month, so (0 to 0) or (1 to 73)
             {2010, 0, 0, DAY_OF_MONTH, 0, 0},
             {2010, 1, 23, DAY_OF_MONTH, 1, 73},
             {2010, 2, 23, DAY_OF_MONTH, 1, 73},
             {2010, 3, 23, DAY_OF_MONTH, 1, 73},
             {2010, 4, 23, DAY_OF_MONTH, 1, 73},
             {2010, 5, 23, DAY_OF_MONTH, 1, 73},
+            // Day of year is an ordinal count including St Tibs
+            {2010, 0, 0, DAY_OF_YEAR, 1, 366},
             {2010, 1, 23, DAY_OF_YEAR, 1, 366},
-            {2010, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 15},
-            {2010, 1, 1, MONTH_OF_YEAR, 0, 5},
-            {2010, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
-            {2010, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 0},
-            {2010, 0, 0, ALIGNED_WEEK_OF_MONTH, 0, 0},
-            {2010, 0, 0, ALIGNED_WEEK_OF_YEAR, 0, 0},
-            {2010, 0, 0, DAY_OF_WEEK, 0, 0},
-
             {2011, 2, 23, DAY_OF_YEAR, 1, 365},
+            // St Tibs is still in same year, so (0 to 5) in leap year and (1 to 5) in non-leap year
+            {2010, 0, 0, MONTH_OF_YEAR, 0, 5},
+            {2010, 1, 1, MONTH_OF_YEAR, 0, 5},
             {2011, 1, 23, MONTH_OF_YEAR, 1, 5},
-
-            {2011, 2, 23, IsoFields.QUARTER_OF_YEAR, 1, 4},
+            // St Tibs is in its own month, so (0 to 0) or (1 to 5)
+            {2010, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
+            {2010, 1, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 5},
+            {2010, 1, 59, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 5},
+            {2010, 1, 60, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 5},
+            // St Tibs is still in same year, so (0 to 5) in leap year and (1 to 5) in non-leap year
+            {2010, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 5},
+            {2010, 1, 23, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 5},
+            {2010, 1, 59, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 5},
+            {2010, 1, 60, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 5},
+            {2011, 1, 23, ALIGNED_DAY_OF_WEEK_IN_YEAR, 1, 5},
+            // St Tibs is in its own month, so (0 to 0) or (1 to 15)
+            {2010, 0, 0, ALIGNED_WEEK_OF_MONTH, 0, 0},
+            {2010, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 15},
+            // St Tibs is still in same year, so (0 to 73) in leap year and (1 to 73) in non-leap year
+            {2010, 0, 0, ALIGNED_WEEK_OF_YEAR, 0, 73},
+            {2010, 1, 23, ALIGNED_WEEK_OF_YEAR, 0, 73},
+            {2011, 1, 23, ALIGNED_WEEK_OF_YEAR, 1, 73},
+            // St Tibs is in its own week, so (0 to 0) or (1 to 5)
+            {2010, 0, 0, DAY_OF_WEEK, 0, 0},
+            {2010, 1, 1, DAY_OF_WEEK, 1, 5},
         };
     }
 
@@ -425,6 +453,18 @@ public class TestDiscordianChronology {
     @DataProvider(name = "getLong")
     Object[][] data_getLong() {
         return new Object[][] {
+            {2014, 1, 26, DAY_OF_WEEK, 1},
+            {2014, 1, 26, DAY_OF_MONTH, 26},
+            {2014, 1, 26, DAY_OF_YEAR, 26},
+            {2014, 1, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1},
+            {2014, 1, 26, ALIGNED_WEEK_OF_MONTH, 6},
+            {2014, 1, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 1},
+            {2014, 1, 26, ALIGNED_WEEK_OF_YEAR, 6},
+            {2014, 1, 26, MONTH_OF_YEAR, 1},
+            {2014, 1, 26, PROLEPTIC_MONTH, 2014 * 5 + 1 - 1},
+            {2014, 1, 26, YEAR, 2014},
+            {2014, 1, 26, ERA, 1},
+
             {2014, 5, 26, DAY_OF_WEEK, 3},
             {2014, 5, 26, DAY_OF_MONTH, 26},
             {2014, 5, 26, DAY_OF_YEAR, 1 + 73 + 73 + 73 + 73 + 26},
@@ -490,21 +530,50 @@ public class TestDiscordianChronology {
             {2014, 5, 26, YEAR_OF_ERA, 2014, 2014, 5, 26},
             {2014, 5, 26, ERA, 1, 2014, 5, 26},
 
-            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 0, 0},
-            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2014, 0, 0},
-            {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 3, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 2014, 1, 56},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 2, 2014, 1, 57},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 1, 58},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 4, 2014, 1, 59},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, 2014, 1, 60},
+
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 1, 2014, 1, 56},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 2014, 1, 57},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2014, 1, 58},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 4, 2014, 1, 59},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, 2014, 1, 60},
+
+            {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 0, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 3, 2014, 1, 15},
+
+            {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 0, 2014, 0, 0},
             {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 3, 2014, 1, 15},
-            {2014, 0, 0, DAY_OF_WEEK, 3, 2014, 0, 0},
-            {2014, 0, 0, DAY_OF_MONTH, 3, 2014, 0, 0},
-            {2014, 3, 31, DAY_OF_MONTH, 0, 2014, 3, 60},
-            {2014, 1, 31, DAY_OF_MONTH, 0, 2014, 1, 60},
-            {2013, 1, 31, DAY_OF_MONTH, 0, 2013, 1, 60},
+
+            {2014, 0, 0, DAY_OF_WEEK, 0, 2014, 0, 0},
+            {2014, 0, 0, DAY_OF_WEEK, 1, 2014, 1, 56},
+            {2014, 0, 0, DAY_OF_WEEK, 2, 2014, 1, 57},
+            {2014, 0, 0, DAY_OF_WEEK, 3, 2014, 1, 58},
+            {2014, 0, 0, DAY_OF_WEEK, 4, 2014, 1, 59},
+            {2014, 0, 0, DAY_OF_WEEK, 5, 2014, 1, 60},
+
+            {2014, 0, 0, DAY_OF_MONTH, 0, 2014, 0, 0},
+            {2014, 0, 0, DAY_OF_MONTH, 3, 2014, 1, 3},
+
+            {2014, 0, 0, MONTH_OF_YEAR, 0, 2014, 0, 0},
             {2014, 0, 0, MONTH_OF_YEAR, 1, 2014, 1, 60},
+            {2014, 0, 0, MONTH_OF_YEAR, 2, 2014, 2, 60},
+
+            {2014, 0, 0, YEAR, 2014, 2014, 0, 0},
+            {2014, 0, 0, YEAR, 2013, 2013, 1, 60},
+            {2014, 0, 0, YEAR, 2015, 2015, 1, 60},
+            {2014, 0, 0, YEAR, 2018, 2018, 0, 0},
+
+            {2014, 3, 31, DAY_OF_MONTH, 0, 2014, 0, 0},
+            {2014, 1, 31, DAY_OF_MONTH, 0, 2014, 0, 0},
             {2014, 3, 31, MONTH_OF_YEAR, 0, 2014, 0, 0},
-            {2013, 3, 31, MONTH_OF_YEAR, 0, 2013, 1, 60},
             {2014, 3, 31, DAY_OF_YEAR, 60, 2014, 0, 0},
             {2013, 3, 31, DAY_OF_YEAR, 60, 2013, 1, 60},
-            {2014, 0, 0, YEAR, 2013, 2013, 1, 60},
             {2013, 1, 60, YEAR, 2014, 2014, 1, 60},
         };
     }
@@ -514,6 +583,36 @@ public class TestDiscordianChronology {
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
         assertEquals(DiscordianDate.of(year, month, dom).with(field, value), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @DataProvider(name = "withBad")
+    Object[][] data_with_bad() {
+        return new Object[][] {
+            {2013, 1, 1, DAY_OF_WEEK, 0},
+            {2013, 1, 1, DAY_OF_WEEK, 6},
+            {2014, 1, 1, DAY_OF_WEEK, -1},
+            {2014, 1, 1, DAY_OF_WEEK, 6},
+
+            {2013, 1, 1, DAY_OF_MONTH, 0},
+            {2013, 1, 1, DAY_OF_MONTH, 74},
+            {2014, 1, 1, DAY_OF_MONTH, -1},
+            {2014, 1, 1, DAY_OF_MONTH, 74},
+
+            {2013, 1, 1, DAY_OF_YEAR, 0},
+            {2014, 1, 1, DAY_OF_YEAR, 0},
+            {2013, 1, 1, DAY_OF_YEAR, 367},
+            {2014, 1, 1, DAY_OF_YEAR, 367},
+
+            {2013, 1, 1, MONTH_OF_YEAR, 0},
+            {2013, 1, 1, MONTH_OF_YEAR, 6},
+            {2014, 1, 1, MONTH_OF_YEAR, -1},
+            {2014, 1, 1, MONTH_OF_YEAR, 6},
+        };
+    }
+
+    @Test(dataProvider = "withBad", expectedExceptions = DateTimeException.class)
+    public void test_with_TemporalField_badValue(int year, int month, int dom, TemporalField field, long value) {
+        DiscordianDate.of(year, month, dom).with(field, value);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)

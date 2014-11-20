@@ -76,7 +76,9 @@ import java.util.Map;
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
-public final class DiscordianChronology extends AbstractChronology implements Serializable {
+public final class DiscordianChronology
+        extends AbstractChronology
+        implements Serializable {
 
     /**
      * Singleton instance for the Discordian chronology.
@@ -118,7 +120,7 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     /**
      * Range of day-of-month.
      */
-    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, DAYS_IN_MONTH, DAYS_IN_MONTH);
+    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, 0, DAYS_IN_MONTH);
     /**
      * Range of epoch day.
      */
@@ -130,11 +132,15 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     /**
      * Range of day-of-week.
      */
-    private static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, DAYS_IN_WEEK, DAYS_IN_WEEK);
+    private static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, 0, DAYS_IN_WEEK);
+    /**
+     * Range of aligned day-of-week of year.
+     */
+    private static final ValueRange ALIGNED_DOW_OF_YEAR_RANGE = ValueRange.of(0, 1, DAYS_IN_WEEK, DAYS_IN_WEEK);
     /**
      * Range of week-of-month.
      */
-    private static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(0, 1, 15, 15);
+    private static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(0, 1, 0, 15);
     /**
      * Range of week-of-year.
      */
@@ -146,8 +152,9 @@ public final class DiscordianChronology extends AbstractChronology implements Se
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
-     * Use the singleton {@link #INSTANCE} instead.
+     * @deprecated Use the singleton {@link #INSTANCE} instead.
      */
+    @Deprecated
     public DiscordianChronology() {
     }
 
@@ -375,8 +382,10 @@ public final class DiscordianChronology extends AbstractChronology implements Se
      * Checks if the specified year is a leap year.
      * <p>
      * A Discordian proleptic-year is leap if the remainder after division by four equals zero.
-     * This method does not validate the year passed in, and only has a
-     * well-defined result for years in the supported range.
+     * There are two special cases.
+     * If the year minus 1166 is divisible by 100 it is not a leap year, unless
+     * it is also divisible by 400, when it is a leap year.
+     * These rules produce leap days on the same dates as the ISO-8601 calendar system.
      *
      * @param prolepticYear  the proleptic-year to check, not validated for range
      * @return true if the year is a leap year
@@ -409,8 +418,9 @@ public final class DiscordianChronology extends AbstractChronology implements Se
     @Override
     public ValueRange range(ChronoField field) {
         switch (field) {
-            case ALIGNED_DAY_OF_WEEK_IN_MONTH:
             case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                return ALIGNED_DOW_OF_YEAR_RANGE;
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH:
             case DAY_OF_WEEK:
                 return DAY_OF_WEEK_RANGE;
             case ALIGNED_WEEK_OF_MONTH:
