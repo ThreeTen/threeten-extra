@@ -457,6 +457,7 @@ public class TestEthiopicChronology {
             {2007, 6, 8, DAY_OF_MONTH, 30, 2007, 6, 30},
             {2007, 6, 8, DAY_OF_MONTH, 8, 2007, 6, 8},
             {2007, 6, 8, DAY_OF_YEAR, 365, 2007, 13, 5},
+            {2007, 6, 8, DAY_OF_YEAR, 366, 2007, 13, 6},
             {2007, 6, 8, DAY_OF_YEAR, 158, 2007, 6, 8},
             {2007, 6, 8, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2007, 6, 10},
             {2007, 6, 8, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 2007, 6, 8},
@@ -477,8 +478,10 @@ public class TestEthiopicChronology {
             {2007, 6, 8, ERA, 0, -2006, 6, 8},
             {2007, 6, 8, ERA, 1, 2007, 6, 8},
 
+            {2006, 6, 8, DAY_OF_YEAR, 366, 2006, 13, 5},
             {2006, 3, 30, MONTH_OF_YEAR, 13, 2006, 13, 5},
             {2007, 3, 30, MONTH_OF_YEAR, 13, 2007, 13, 6},
+            {2007, 13, 6, DAY_OF_MONTH, 30, 2007, 13, 6},
             {2007, 13, 6, YEAR, 2006, 2006, 13, 5},
             {-2005, 6, 8, YEAR_OF_ERA, 2004, -2003, 6, 8},
             {2007, 6, 8, WeekFields.ISO.dayOfWeek(), 4, 2007, 6, 5},
@@ -490,6 +493,26 @@ public class TestEthiopicChronology {
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
         assertEquals(EthiopicDate.of(year, month, dom).with(field, value), EthiopicDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @DataProvider(name = "withBad")
+    Object[][] data_with_bad() {
+        return new Object[][] {
+            {2007, 6, 8, DAY_OF_WEEK, 0},
+            {2007, 6, 8, DAY_OF_WEEK, 8},
+            {2007, 6, 8, DAY_OF_MONTH, 0},
+            {2007, 6, 8, DAY_OF_MONTH, 31},
+            {2007, 13, 1, DAY_OF_MONTH, 31},
+            {2007, 6, 8, DAY_OF_YEAR, 0},
+            {2007, 6, 8, DAY_OF_YEAR, 367},
+            {2007, 6, 8, MONTH_OF_YEAR, 0},
+            {2007, 6, 8, MONTH_OF_YEAR, 14},
+        };
+    }
+
+    @Test(dataProvider = "withBad", expectedExceptions = DateTimeException.class)
+    public void test_with_TemporalField_badValue(int year, int month, int dom, TemporalField field, long value) {
+        EthiopicDate.of(year, month, dom).with(field, value);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
