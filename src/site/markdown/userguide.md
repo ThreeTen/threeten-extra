@@ -26,6 +26,7 @@ The additional calendar systems operate exactly as per similar classes in Java S
 These include:
 
 * [Coptic](apidocs/org/threeten/extra/chrono/CopticChronology.html) calendar system
+* [Discordian](apidocs/org/threeten/extra/chrono/DiscordianChronology.html) calendar system
 * [Ethiopic](apidocs/org/threeten/extra/chrono/EthiopicChronology.html) calendar system
 * [Julian](apidocs/org/threeten/extra/chrono/JulianChronology.html) calendar system
 * [Pax](apidocs/org/threeten/extra/chrono/PaxChronology.html) calendar system
