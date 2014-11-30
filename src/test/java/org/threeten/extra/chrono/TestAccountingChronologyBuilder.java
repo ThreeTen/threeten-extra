@@ -34,6 +34,7 @@ package org.threeten.extra.chrono;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.testng.Assert.assertEquals;
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
@@ -107,7 +108,7 @@ public class TestAccountingChronologyBuilder {
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
-            return LocalDate.of(year, ending, 1).plusMonths(1).plusDays(3 - 1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+            return LocalDate.of(year, ending, 3).plusMonths(1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
         Predicate<Integer> isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
@@ -156,7 +157,7 @@ public class TestAccountingChronologyBuilder {
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
-            return LocalDate.of(year, ending, 1).plusMonths(1).plusDays(3 - 1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+            return LocalDate.of(year, ending, 3).plusMonths(1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
         Predicate<Integer> isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
@@ -200,7 +201,7 @@ public class TestAccountingChronologyBuilder {
                 .toChronology();
 
         IntFunction<LocalDate> getYearEnd = year -> {
-            return LocalDate.of(year, ending, 1).plusMonths(1).plusDays(3 - 1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+            return LocalDate.of(year, ending, 3).plusMonths(1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
 
         for (int year = -200; year < 600; year++) {
@@ -259,10 +260,10 @@ public class TestAccountingChronologyBuilder {
     }
 
     @Test(dataProvider = "range")
-    public void test_range(AccountingYearDivision division, int leapWeekInPeriod,
+    public void test_range(AccountingYearDivision division, int leapWeekInMonth,
             ValueRange expectedWeekOfMonthRange, ValueRange expectedDayOfMonthRange, ValueRange expectedMonthRange, ValueRange expectedProlepticMonthRange) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
                 .toChronology();
 
         assertEquals(chronology.range(ChronoField.ALIGNED_WEEK_OF_MONTH), expectedWeekOfMonthRange);
@@ -270,6 +271,60 @@ public class TestAccountingChronologyBuilder {
         assertEquals(chronology.range(ChronoField.DAY_OF_YEAR), ValueRange.of(1, 364, 371));
         assertEquals(chronology.range(ChronoField.MONTH_OF_YEAR), expectedMonthRange);
         assertEquals(chronology.range(ChronoField.PROLEPTIC_MONTH), expectedProlepticMonthRange);
+    }
+
+    @Test(dataProvider = "weeksInMonth")
+    public void test_date_dayOfMonth_range(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
+                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
+                .toChronology();
+
+        for (int month = 1; month <= weeksInMonth.length; month++) {
+            assertEquals(AccountingDate.of(chronology, 2011, month, 15).range(ChronoField.DAY_OF_MONTH), ValueRange.of(1, weeksInMonth[month - 1] * 7));
+            assertEquals(AccountingDate.of(chronology, 2012, month, 15).range(ChronoField.DAY_OF_MONTH), ValueRange.of(1, weeksInMonth[month - 1] * 7 + (month == leapWeekInMonth ? 7 : 0)));
+            assertEquals(AccountingDate.of(chronology, 2011, month, 15).range(ChronoField.ALIGNED_WEEK_OF_MONTH), ValueRange.of(1, weeksInMonth[month - 1]));
+            assertEquals(AccountingDate.of(chronology, 2012, month, 15).range(ChronoField.ALIGNED_WEEK_OF_MONTH), ValueRange.of(1, weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0)));
+        }
+    }
+
+    @Test(dataProvider = "yearEnding")
+    public void test_date_dayOfYear_inLastWeekOf_range(DayOfWeek dayOfWeek, Month ending) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
+                .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInMonth(12)
+                .toChronology();
+
+        IntFunction<LocalDate> getYearEnd = year -> {
+            return LocalDate.of(year, ending, 1).with(TemporalAdjusters.lastDayOfMonth()).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+        };
+        Predicate<Integer> isLeapYear = year -> {
+            LocalDate currentYearEnd = getYearEnd.apply(year);
+            LocalDate prevYearEnd = getYearEnd.apply(year - 1);
+            return prevYearEnd.until(currentYearEnd, DAYS) == 371;
+        };
+
+        for (int year = 2007; year < 2015; year++) {
+            assertEquals(AccountingDate.of(chronology, year, 3, 5).range(ChronoField.DAY_OF_YEAR), ValueRange.of(1, isLeapYear.test(year) ? 371 : 364));
+        }
+    }
+
+    @Test(dataProvider = "yearEnding")
+    public void test_date_dayOfYear_nearestEndOf_range(DayOfWeek dayOfWeek, Month ending) {
+        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
+                .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS).leapWeekInMonth(12)
+                .toChronology();
+
+        IntFunction<LocalDate> getYearEnd = year -> {
+            return LocalDate.of(year, ending, 3).plusMonths(1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+        };
+        Predicate<Integer> isLeapYear = year -> {
+            LocalDate currentYearEnd = getYearEnd.apply(year);
+            LocalDate prevYearEnd = getYearEnd.apply(year - 1);
+            return prevYearEnd.until(currentYearEnd, DAYS) == 371;
+        };
+
+        for (int year = 2007; year < 2015; year++) {
+            assertEquals(AccountingDate.of(chronology, year, 3, 5).range(ChronoField.DAY_OF_YEAR), ValueRange.of(1, isLeapYear.test(year) ? 371 : 364));
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -305,44 +360,70 @@ public class TestAccountingChronologyBuilder {
     }
 
     @Test(dataProvider = "weeksInMonth")
-    public void test_getWeeksInMonth(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInPeriod) {
+    public void test_getWeeksInMonth(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
                 .toChronology();
 
         for (int month = 1; month <= weeksInMonth.length; month++) {
             assertEquals(chronology.division.getWeeksInMonth(month), weeksInMonth[month - 1]);
-            assertEquals(chronology.division.getWeeksInMonth(month, leapWeekInPeriod), weeksInMonth[month - 1] + (month == leapWeekInPeriod ? 1 : 0));
+            assertEquals(chronology.division.getWeeksInMonth(month, leapWeekInMonth), weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0));
         }
     }
 
     @Test(dataProvider = "weeksInMonth")
-    public void test_getWeeksAtStartOf(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInPeriod) {
+    public void test_getWeeksAtStartOf(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
                 .toChronology();
 
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
             assertEquals(chronology.division.getWeeksAtStartOfMonth(month), elapsedWeeks);
-            assertEquals(chronology.division.getWeeksAtStartOfMonth(month, leapWeekInPeriod), elapsedWeeks + (month > leapWeekInPeriod ? 1 : 0));
+            assertEquals(chronology.division.getWeeksAtStartOfMonth(month, leapWeekInMonth), elapsedWeeks + (month > leapWeekInMonth ? 1 : 0));
         }
     }
 
     @Test(dataProvider = "weeksInMonth")
-    public void test_getMonthFromElapsedWeeks(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInPeriod) {
+    public void test_getMonthFromElapsedWeeks(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
         AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
+                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
                 .toChronology();
 
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
             for (int i = 0; i < weeksInMonth[month - 1]; i++) {
                 assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i), month);
-                assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i + (month > leapWeekInPeriod ? 1 : 0), leapWeekInPeriod), month);
-                if (month == leapWeekInPeriod && i == weeksInMonth[month - 1] - 1) {
-                    assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i + 1, leapWeekInPeriod), month);
+                assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i + (month > leapWeekInMonth ? 1 : 0), leapWeekInMonth), month);
+                if (month == leapWeekInMonth && i == weeksInMonth[month - 1] - 1) {
+                    assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i + 1, leapWeekInMonth), month);
                 }
             }
         }
+    }
+
+    @Test(dataProvider = "weeksInMonth", expectedExceptions = DateTimeException.class)
+    public void test_negativeWeeks_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
+        assertEquals(division.getMonthFromElapsedWeeks(0), 1);
+        division.getMonthFromElapsedWeeks(-1);
+    }
+
+    @Test(dataProvider = "weeksInMonth", expectedExceptions = DateTimeException.class)
+    public void test_extraWeeks_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
+        int elapsedWeeks = 0;
+        for (int month = 1; month <= weeksInMonth.length; month++) {
+            elapsedWeeks += weeksInMonth[month - 1];
+        }
+        assertEquals(division.getMonthFromElapsedWeeks(elapsedWeeks), weeksInMonth.length);
+        division.getMonthFromElapsedWeeks(elapsedWeeks + 1);
+    }
+
+    @Test(dataProvider = "weeksInMonth", expectedExceptions = DateTimeException.class)
+    public void test_extraWeeksLeap_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
+        int elapsedWeeks = 1;
+        for (int month = 1; month <= weeksInMonth.length; month++) {
+            elapsedWeeks += weeksInMonth[month - 1];
+        }
+        assertEquals(division.getMonthFromElapsedWeeks(elapsedWeeks, leapWeekInMonth), weeksInMonth.length);
+        division.getMonthFromElapsedWeeks(elapsedWeeks + 1, leapWeekInMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -365,16 +446,16 @@ public class TestAccountingChronologyBuilder {
     }
 
     @Test(dataProvider = "badChronology", expectedExceptions = IllegalStateException.class)
-    public void test_badChronology_nearestEndOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInPeriod) {
-        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
-                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
+    public void test_badChronology_nearestEndOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
+        new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
+                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
                 .toChronology();
     }
 
     @Test(dataProvider = "badChronology", expectedExceptions = IllegalStateException.class)
-    public void test_badChronology_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInPeriod) {
-        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
-                .withDivision(division).leapWeekInMonth(leapWeekInPeriod)
+    public void test_badChronology_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
+        new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
+                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
                 .toChronology();
     }
 

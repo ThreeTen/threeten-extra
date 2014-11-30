@@ -46,7 +46,6 @@ import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
-import java.time.chrono.Chronology;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -56,6 +55,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
+import java.util.Objects;
 
 /**
  * A date in an Accounting calendar system.
@@ -63,7 +63,7 @@ import java.time.temporal.ValueRange;
  * This date operates using a given {@linkplain AccountingChronology Accounting calendar}.
  * An Accounting calendar differs greatly from the ISO calendar.
  * The start of the Accounting calendar will vary against the ISO calendar.
- * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-12-04 (ISO)}.
+ * Depending on options chosen, it can start as early as {@code 0000-01-26 (ISO)} or as late as {@code 0001-01-04 (ISO)}.
  *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
@@ -120,7 +120,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * 
      * @param chronology  the Accounting chronology to base the date on, not null
      * @return the current date using the system clock and default time-zone, not null
-     * @throws DateTimeException if the current date cannot be obtained
+     * @throws DateTimeException if the current date cannot be obtained,
+     *  NullPointerException if an AccountingChronology was not provided
      */
     public static AccountingDate now(AccountingChronology chronology) {
         return now(chronology, Clock.systemDefaultZone());
@@ -139,7 +140,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @param chronology  the Accounting chronology to base the date on, not null
      * @param zone  the zone ID to use, not null
      * @return the current date using the system clock, not null
-     * @throws DateTimeException if the current date cannot be obtained
+     * @throws DateTimeException if the current date cannot be obtained,
+     *  NullPointerException if an AccountingChronology was not provided
      */
     public static AccountingDate now(AccountingChronology chronology, ZoneId zone) {
         return now(chronology, Clock.system(zone));
@@ -156,7 +158,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @param chronology  the Accounting chronology to base the date on, not null
      * @param clock  the clock to use, not null
      * @return the current date, not null
-     * @throws DateTimeException if the current date cannot be obtained
+     * @throws DateTimeException if the current date cannot be obtained,
+     *  NullPointerException if an AccountingChronology was not provided
      */
     public static AccountingDate now(AccountingChronology chronology, Clock clock) {
         LocalDate now = LocalDate.now(clock);
@@ -200,7 +203,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @param chronology  the Accounting chronology to base the date on, not null
      * @param temporal  the temporal object to convert, not null
      * @return the date in Accounting calendar system, not null
-     * @throws DateTimeException if unable to convert to an {@code AccountingDate}
+     * @throws DateTimeException if unable to convert to an {@code AccountingDate},
+     *  NullPointerException if an AccountingChronology was not provided
      */
     public static AccountingDate from(AccountingChronology chronology, TemporalAccessor temporal) {
         if (temporal instanceof AccountingDate && ((AccountingDate) temporal).getChronology().equals(chronology)) {
@@ -222,13 +226,11 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @param dayOfYear  the Accounting day-of-year, from 1 to 371
      * @return the date in Accounting calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
-     *  if the day-of-year is invalid for the year,
-     *  or if the chronology was not provided.
+     *  or if the day-of-year is invalid for the year,
+     *  NullPointerException if an AccountingChronology was not provided
      */
     static AccountingDate ofYearDay(AccountingChronology chronology, int prolepticYear, int dayOfYear) {
-        if (chronology == null) {
-            throw new DateTimeException("A previously setup chronology is required.");
-        }
+        Objects.requireNonNull(chronology, "A previously setup chronology is required.");
         YEAR.checkValidValue(prolepticYear);
         DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, DAY_OF_YEAR);
         boolean leap = chronology.isLeapYear(prolepticYear);
@@ -251,7 +253,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @param chronology  the Accounting chronology to base the date on, not null
      * @param epochDay  the epoch day to convert based on 1970-01-01 (ISO)
      * @return the date in given Accounting calendar system, not null
-     * @throws DateTimeException if the epoch-day is out of range
+     * @throws DateTimeException if the epoch-day is out of range,
+     *  NullPointerException if an AccountingChronology was not provided
      */
     static AccountingDate ofEpochDay(AccountingChronology chronology, long epochDay) {
         EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
@@ -295,13 +298,11 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @param dayOfYear  the Accounting day-of-year, from 1 to 371
      * @return the date in Accounting calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
-     *  if the day-of-year is invalid for the month-year,
-     *  or if a chronology was not provided.
+     *  or if the day-of-year is invalid for the month-year,
+     *  NullPointerException if an AccountingChronology was not provided
      */
     static AccountingDate create(AccountingChronology chronology, int prolepticYear, int month, int dayOfMonth) {
-        if (chronology == null) {
-            throw new DateTimeException("A previously setup chronology is required.");
-        }
+        Objects.requireNonNull(chronology, "A previously setup chronology is required.");
         YEAR.checkValidValue(prolepticYear);
         chronology.range(MONTH_OF_YEAR).checkValidValue(month, MONTH_OF_YEAR);
 
@@ -395,7 +396,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @return the Accounting chronology, not null
      */
     @Override
-    public Chronology getChronology() {
+    public AccountingChronology getChronology() {
         return chronology;
     }
 
@@ -486,10 +487,10 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         }
         if (obj instanceof AccountingDate) {
             AccountingDate other = (AccountingDate) obj;
-            return this.chronology.equals(other.chronology) &&
-                    this.prolepticYear == other.prolepticYear &&
+            return this.prolepticYear == other.prolepticYear &&
                     this.month == other.month &&
-                    this.day == other.day;
+                    this.day == other.day &&
+                    this.chronology.equals(other.chronology);
         }
         return false;
     }

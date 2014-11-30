@@ -257,6 +257,36 @@ public class TestAccountingChronology {
         INSTANCE.dateYearDay(2001, 366);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_date_create_no_chronology() {
+        AccountingDate.create(null, 2012, 1, 1);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_date_from_no_chronology() {
+        AccountingDate.from(null, LocalDate.of(2012, 1, 1));
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_date_now_no_chronology() {
+        AccountingDate.now(null);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_date_of_no_chronology() {
+        AccountingDate.of(null, 2012, 1, 1);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_date_ofEpochDay_no_chronology() {
+        AccountingDate.ofEpochDay(null, 0);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_date_ofYearDay_no_chronology() {
+        AccountingDate.ofYearDay(null, 0, 1);
+    }
+
     //-----------------------------------------------------------------------
     // isLeapYear()
     //-----------------------------------------------------------------------
@@ -398,6 +428,7 @@ public class TestAccountingChronology {
         assertEquals(INSTANCE.range(DAY_OF_MONTH), ValueRange.of(1, 28, 35));
         assertEquals(INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 364, 371));
         assertEquals(INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(1, 13));
+        assertEquals(INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(1, 52, 53));
     }
 
     //-----------------------------------------------------------------------
@@ -711,6 +742,11 @@ public class TestAccountingChronology {
         AccountingDate c = INSTANCE.date(2000, 2, 3);
         AccountingDate d = INSTANCE.date(2001, 1, 3);
 
+        AccountingDate other = new AccountingChronologyBuilder().endsOn(DayOfWeek.WEDNESDAY)
+                .nearestEndOf(Month.AUGUST).leapWeekInMonth(13)
+                .withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS)
+                .toChronology().date(2000, 1, 3);
+
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
         assertEquals(a1.equals(b), false);
@@ -719,6 +755,8 @@ public class TestAccountingChronology {
 
         assertEquals(a1.equals(null), false);
         assertEquals(a1.equals(""), false);
+        assertEquals(a1.getChronology().equals(other.getChronology()), false);
+        assertEquals(a1.equals(other), false);
 
         assertEquals(a1.hashCode(), a2.hashCode());
     }

@@ -42,9 +42,6 @@ import java.util.Arrays;
  * An Accounting calendar system generally divides a year into smaller periods, similar in length to regular calendar months.
  * The most common divisions either use 12 such 'months' (requiring one every quarter to be 5 weeks instead of 4),
  * or use 13 of 4 weeks each (making one quarter have an extra month, or each quarter have partial months).
- * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code AccountingYearDivision}.
- * Use {@code getValue()} instead.</b>
  *
  * <h3>Implementation Requirements:</h3>
  * This is an immutable and thread-safe enum.
@@ -100,49 +97,6 @@ public enum AccountingYearDivision {
         for (int i = 1; i < weeksInMonths.length; i++) {
             elapsedWeeks[i] = elapsedWeeks[i - 1] + weeksInMonths[i - 1];
         }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code AccountingYearDivision} from an {@code int} value.
-     * <p>
-     * {@code AccountingYearDivision} is an enum representing how an Accounting year is divided into smaller periods.
-     * This factory allows the enum to be obtained from the {@code int} value.
-     *
-     * @param division  the AccountingYearDivision division to represent, from 0 to 3
-     * @return the AccountingYearDivision singleton, not null
-     * @throws DateTimeException if the value is invalid
-     */
-    public static AccountingYearDivision of(int division) {
-        switch (division) {
-            case 0:
-                return QUARTERS_OF_PATTERN_4_4_5_WEEKS;
-            case 1:
-                return QUARTERS_OF_PATTERN_4_5_4_WEEKS;
-            case 2:
-                return QUARTERS_OF_PATTERN_5_4_4_WEEKS;
-            case 3:
-                return THIRTEEN_EVEN_MONTHS_OF_4_WEEKS;
-            default:
-                throw new DateTimeException("Invalid AccountingYearDivision: " + division);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the numeric AccountingYearDivision {@code int} value.
-     * <p>
-     * <ul>
-     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_4_4_5_WEEKS} has the value 0.
-     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_4_5_4_WEEKS} has the value 1.
-     * <li>The AccountingYearDivision {@code QUARTERS_OF_PATTERN_5_4_4_WEEKS} has the value 2.
-     * <li>The AccountingYearDivision {@code THIRTEEN_EVEN_MONTHS_OF_4_WEEKS} has the value 3.
-     * </ul>
-     *
-     * @return the AccountingYearDivision value, from 0 to 3.
-     */
-    public int getValue() {
-        return ordinal();
     }
 
     //-----------------------------------------------------------------------

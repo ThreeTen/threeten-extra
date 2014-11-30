@@ -60,7 +60,7 @@ import java.util.List;
  * This calendar system follows the rules as laid down in <a href="http://www.irs.gov/publications/p538/ar02.html">IRS Publication 538</a>
  * and the <a href="http://www.ifrs.org">International Financial Reporting Standards</a>.
  * The start of the Accounting calendar will vary against the ISO calendar.
- * Depending on options chosen, it can start as early as {@code 0000-12-26 (ISO)} or as late as {@code 0001-12-04 (ISO)}.
+ * Depending on options chosen, it can start as early as {@code 0000-01-26 (ISO)} or as late as {@code 0001-01-04 (ISO)}.
  * <p>
  * This class is proleptic. It implements Accounting chronology rules for the entire time-line.
  * <p>
@@ -71,7 +71,7 @@ import java.util.List;
  *  For the previous era the year increases from one as time goes backwards.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
  *  current era. For the previous era, years have zero, then negative values.
- * <li>month-of-year - There are 12 or 13 months (periods) in an Accouting year, numbered from 1 to 12 or 13.
+ * <li>month-of-year - There are 12 or 13 months (periods) in an Accounting year, numbered from 1 to 12 or 13.
  * <li>day-of-month - There are 28 or 35 days in each Accounting month, numbered from 1 to 35.
  *  Month length depends on how the year has been divided.
  *  When the Accounting leap year occurs, a week (7 days) is added to a specific month;
@@ -98,6 +98,10 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * Range of proleptic month for 13-month (period) year.
      */
     private static final ValueRange PROLEPTIC_MONTH_RANGE_13 = ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12);
+    /**
+     * Range of weeks in year.
+     */
+    private static final ValueRange ALIGNED_WEEK_OF_YEAR_RANGE = ValueRange.of(1, 52, 53);
     /**
      * Range of days in year.
      */
@@ -510,6 +514,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
         switch (field) {
             case ALIGNED_WEEK_OF_MONTH:
                 return alignedWeekOfMonthRange;
+            case ALIGNED_WEEK_OF_YEAR:
+                return ALIGNED_WEEK_OF_YEAR_RANGE;
             case DAY_OF_MONTH:
                 return dayOfMonthRange;
             case DAY_OF_YEAR:
