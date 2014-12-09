@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="0.9" date="SNAPSHOT" description="v0.9">
+      <action dev="jodastephen" type="add" >
+        Add Interval class.
+        Fixes #2.
+      </action>
       <action dev="Clockwork-Muse" type="add" >
         Add Accounting calendar system.
         Fixes #27.

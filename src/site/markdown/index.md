@@ -24,6 +24,7 @@ The following features are included:
 [`Weeks`](apidocs/org/threeten/extra/Weeks.html),
 [`Months`](apidocs/org/threeten/extra/Months.html) and
 [`Years`](apidocs/org/threeten/extra/Years.html) - amounts of time
+* [`Interval`](apidocs/org/threeten/extra/Interval.html) - an interval between two instants
 * Weekend adjusters
 * [Coptic](apidocs/org/threeten/extra/chrono/CopticChronology.html) calendar system
 * [Ethiopic](apidocs/org/threeten/extra/chrono/EthiopicChronology.html) calendar system

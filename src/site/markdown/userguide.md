@@ -18,6 +18,7 @@ These include:
 * [`Weeks`](apidocs/org/threeten/extra/Weeks.html) - an amount of time measured in weeks
 * [`Months`](apidocs/org/threeten/extra/Months.html) - an amount of time measured in months
 * [`Years`](apidocs/org/threeten/extra/Years.html) - an amount of time measured in years
+* [`Interval`](apidocs/org/threeten/extra/Interval.html) - an interval between two instants
 
 
 ## Calendar systems
