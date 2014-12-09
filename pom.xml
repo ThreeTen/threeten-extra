@@ -54,6 +54,14 @@
       <name>Stephen A. Imhoff</name>
       <url>https://github.com/Clockwork-Muse</url>
     </contributor>
+      <contributor>
+          <name>Ivan Hristov</name>
+          <url>http://ingini.org</url>
+          <properties>
+              <twitter>@iv_hristov</twitter>
+              <github>https://github.com/ihr</github>
+          </properties>
+      </contributor>
   </contributors>
 
   <!-- ==================================================================== -->
@@ -373,6 +381,12 @@
     <maven>3.0.4</maven>
   </prerequisites>
   <dependencies>
+      <dependency>
+          <groupId>org.assertj</groupId>
+          <artifactId>assertj-core</artifactId>
+          <version>1.7.0</version>
+          <scope>test</scope>
+      </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
