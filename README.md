@@ -17,13 +17,13 @@ Various documentation is available:
 
 
 ### Releases
-Release 0.8 is the current development release intended for feedback.
+Release 0.9 is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 
 The project runs on JDK 8 and has no dependencies.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|0.8|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|0.9|jar)
 
 
 ### Support
