@@ -92,6 +92,19 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>run-checkstyle</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>checkstyle</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
@@ -447,8 +460,7 @@
           </reportSet>
         </reportSets>
       </plugin>
-      <!-- Checkstyle disabled until properly released for Java SE 8 -->
-      <!--plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${maven-checkstyle-plugin.version}</version>
@@ -459,7 +471,7 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin-->
+      </plugin>
     </plugins>
   </reporting>
 

@@ -130,7 +130,7 @@ public final class Interval
      */
     public static Interval parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
-        for (int i = 0; i < text.length()   ; i++) {
+        for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '/') {
                 Instant start = Instant.parse(text.subSequence(0, i));
                 Instant end = Instant.parse(text.subSequence(i + 1, text.length()));

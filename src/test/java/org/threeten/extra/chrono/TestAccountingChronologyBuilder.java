@@ -366,8 +366,8 @@ public class TestAccountingChronologyBuilder {
                 .toChronology();
 
         for (int month = 1; month <= weeksInMonth.length; month++) {
-            assertEquals(chronology.division.getWeeksInMonth(month), weeksInMonth[month - 1]);
-            assertEquals(chronology.division.getWeeksInMonth(month, leapWeekInMonth), weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0));
+            assertEquals(chronology.getDivision().getWeeksInMonth(month), weeksInMonth[month - 1]);
+            assertEquals(chronology.getDivision().getWeeksInMonth(month, leapWeekInMonth), weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0));
         }
     }
 
@@ -378,8 +378,8 @@ public class TestAccountingChronologyBuilder {
                 .toChronology();
 
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
-            assertEquals(chronology.division.getWeeksAtStartOfMonth(month), elapsedWeeks);
-            assertEquals(chronology.division.getWeeksAtStartOfMonth(month, leapWeekInMonth), elapsedWeeks + (month > leapWeekInMonth ? 1 : 0));
+            assertEquals(chronology.getDivision().getWeeksAtStartOfMonth(month), elapsedWeeks);
+            assertEquals(chronology.getDivision().getWeeksAtStartOfMonth(month, leapWeekInMonth), elapsedWeeks + (month > leapWeekInMonth ? 1 : 0));
         }
     }
 
@@ -391,10 +391,10 @@ public class TestAccountingChronologyBuilder {
 
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
             for (int i = 0; i < weeksInMonth[month - 1]; i++) {
-                assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i), month);
-                assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i + (month > leapWeekInMonth ? 1 : 0), leapWeekInMonth), month);
+                assertEquals(chronology.getDivision().getMonthFromElapsedWeeks(elapsedWeeks + i), month);
+                assertEquals(chronology.getDivision().getMonthFromElapsedWeeks(elapsedWeeks + i + (month > leapWeekInMonth ? 1 : 0), leapWeekInMonth), month);
                 if (month == leapWeekInMonth && i == weeksInMonth[month - 1] - 1) {
-                    assertEquals(chronology.division.getMonthFromElapsedWeeks(elapsedWeeks + i + 1, leapWeekInMonth), month);
+                    assertEquals(chronology.getDivision().getMonthFromElapsedWeeks(elapsedWeeks + i + 1, leapWeekInMonth), month);
                 }
             }
         }

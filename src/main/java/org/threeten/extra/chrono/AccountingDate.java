@@ -238,10 +238,10 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
             throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
         }
 
-        int month = (leap ? chronology.division.getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK, chronology.leapWeekInMonth)
-                : chronology.division.getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK));
-        int dayOfMonth = dayOfYear - (leap ? chronology.division.getWeeksAtStartOfMonth(month, chronology.leapWeekInMonth)
-                : chronology.division.getWeeksAtStartOfMonth(month)) * DAYS_IN_WEEK;
+        int month = (leap ? chronology.getDivision().getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK, chronology.getLeapWeekInMonth())
+                : chronology.getDivision().getMonthFromElapsedWeeks((dayOfYear - 1) / DAYS_IN_WEEK));
+        int dayOfMonth = dayOfYear - (leap ? chronology.getDivision().getWeeksAtStartOfMonth(month, chronology.getLeapWeekInMonth())
+                : chronology.getDivision().getWeeksAtStartOfMonth(month)) * DAYS_IN_WEEK;
 
         return new AccountingDate(chronology, prolepticYear, month, dayOfMonth);
     }
@@ -259,7 +259,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     static AccountingDate ofEpochDay(AccountingChronology chronology, long epochDay) {
         EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
         // Use Accounting 1 to help with 0-counts.  Leap years can occur at any time.
-        long accountingEpochDay = epochDay + chronology.ACCOUNTING_0001_TO_ISO_1970;
+        long accountingEpochDay = epochDay + chronology.getDays0001ToIso1970();
 
         int longCycle = (int) Math.floorDiv(accountingEpochDay, DAYS_PER_LONG_CYCLE);
         int daysInLongCycle = (int) Math.floorMod(accountingEpochDay, DAYS_PER_LONG_CYCLE);
@@ -286,8 +286,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     }
 
     private static int lengthOfMonth(AccountingChronology chronology, int prolepticYear, int month) {
-        return (chronology.isLeapYear(prolepticYear) ? chronology.division.getWeeksInMonth(month, chronology.leapWeekInMonth)
-                : chronology.division.getWeeksInMonth(month)) * DAYS_IN_WEEK;
+        return (chronology.isLeapYear(prolepticYear) ? chronology.getDivision().getWeeksInMonth(month, chronology.getLeapWeekInMonth())
+                : chronology.getDivision().getWeeksInMonth(month)) * DAYS_IN_WEEK;
     }
 
     /**
@@ -307,7 +307,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
         chronology.range(MONTH_OF_YEAR).checkValidValue(month, MONTH_OF_YEAR);
 
         if (dayOfMonth < 1 || dayOfMonth > lengthOfMonth(chronology, prolepticYear, month)) {
-            if (month == chronology.leapWeekInMonth && dayOfMonth < (chronology.division.getWeeksInMonth(month) + 1) * DAYS_IN_WEEK
+            if (month == chronology.getLeapWeekInMonth() && dayOfMonth < (chronology.getDivision().getWeeksInMonth(month) + 1) * DAYS_IN_WEEK
                     && !chronology.isLeapYear(prolepticYear)) {
                 throw new DateTimeException("Invalid date '" + month + "/" + dayOfMonth + "' as '" + prolepticYear + "' is not a leap year");
             } else {
@@ -361,8 +361,8 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     int getDayOfYear() {
-        int weeksAtStartOfMonth = (isLeapYear() ? chronology.division.getWeeksAtStartOfMonth(month, chronology.leapWeekInMonth)
-                : chronology.division.getWeeksAtStartOfMonth(month));
+        int weeksAtStartOfMonth = (isLeapYear() ? chronology.getDivision().getWeeksAtStartOfMonth(month, chronology.getLeapWeekInMonth())
+                : chronology.getDivision().getWeeksAtStartOfMonth(month));
         return weeksAtStartOfMonth * DAYS_IN_WEEK + day;
     }
 
@@ -373,7 +373,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     int lengthOfYearInMonths() {
-        return chronology.division.lengthOfYearInMonths();
+        return chronology.getDivision().lengthOfYearInMonths();
     }
 
     @Override
@@ -464,7 +464,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     public long toEpochDay() {
         long year = prolepticYear;
         long accountingEpochDay = ((year - 1) * WEEKS_IN_YEAR + chronology.previousLeapYears(year)) * DAYS_IN_WEEK + (getDayOfYear() - 1);
-        return accountingEpochDay - chronology.ACCOUNTING_0001_TO_ISO_1970;
+        return accountingEpochDay - chronology.getDays0001ToIso1970();
     }
 
     //-------------------------------------------------------------------------
