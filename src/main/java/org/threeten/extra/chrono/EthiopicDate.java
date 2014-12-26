@@ -244,7 +244,8 @@ public final class EthiopicDate
      * Creates a {@code EthiopicDate} validating the input.
      *
      * @param prolepticYear  the Ethiopic proleptic-year
-     * @param dayOfYear  the Ethiopic day-of-year, from 1 to 366
+     * @param month  the Ethiopic month-of-year, from 1 to 13
+     * @param dayOfMonth  the Ethiopic day-of-month, from 1 to 30
      * @return the date in Ethiopic calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
      *  or if the day-of-year is invalid for the month-year
@@ -391,7 +392,7 @@ public final class EthiopicDate
 
     @Override
     public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
-        return super.until(EthiopicDate.from(endDateExclusive));
+        return super.doUntil(EthiopicDate.from(endDateExclusive));
     }
 
 }

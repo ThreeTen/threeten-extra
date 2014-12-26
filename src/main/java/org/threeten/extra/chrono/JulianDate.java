@@ -263,7 +263,8 @@ public final class JulianDate
      * Creates a {@code JulianDate} validating the input.
      *
      * @param prolepticYear  the Julian proleptic-year
-     * @param dayOfYear  the Julian day-of-year, from 1 to 366
+     * @param month  the Julian month-of-year, from 1 to 12
+     * @param dayOfMonth  the Julian day-of-month, from 1 to 31
      * @return the date in Julian calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
      *  or if the day-of-year is invalid for the month-year
@@ -338,11 +339,6 @@ public final class JulianDate
     @Override
     int getDayOfYear() {
         return Month.of(month).firstDayOfYear(isLeapYear()) + day - 1;
-    }
-
-    @Override
-    AbstractDate withDayOfYear(int value) {
-        return plusDays(value - getDayOfYear());
     }
 
     @Override
@@ -451,7 +447,7 @@ public final class JulianDate
 
     @Override
     public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
-        return super.until(JulianDate.from(endDateExclusive));
+        return super.doUntil(JulianDate.from(endDateExclusive));
     }
 
     //-----------------------------------------------------------------------

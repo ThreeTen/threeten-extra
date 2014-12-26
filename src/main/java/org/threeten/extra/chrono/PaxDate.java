@@ -426,11 +426,6 @@ public final class PaxDate
     }
 
     @Override
-    AbstractDate withDayOfYear(int value) {
-        return plusDays(value - getDayOfYear());
-    }
-
-    @Override
     int lengthOfYearInMonths() {
         return MONTHS_IN_YEAR + (isLeapYear() ? 1 : 0);
     }

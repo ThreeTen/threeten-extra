@@ -71,7 +71,9 @@ abstract class AbstractDate
 
     abstract int getDayOfYear();
 
-    abstract AbstractDate withDayOfYear(int value);
+    AbstractDate withDayOfYear(int value) {
+        return plusDays(value - getDayOfYear());
+    }
 
     int lengthOfWeek() {
         return 7;
@@ -94,22 +96,25 @@ abstract class AbstractDate
     public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
-                ChronoField f = (ChronoField) field;
-                switch (f) {
-                    case DAY_OF_MONTH:
-                        return ValueRange.of(1, lengthOfMonth());
-                    case DAY_OF_YEAR:
-                        return ValueRange.of(1, lengthOfYear());
-                    case ALIGNED_WEEK_OF_MONTH:
-                        return rangeAlignedWeekOfMonth();
-                    default:
-                        break;
-                }
-                return getChronology().range(f);
+                return rangeChrono((ChronoField) field);
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.rangeRefinedBy(this);
+    }
+
+    ValueRange rangeChrono(ChronoField field) {
+        switch (field) {
+            case DAY_OF_MONTH:
+                return ValueRange.of(1, lengthOfMonth());
+            case DAY_OF_YEAR:
+                return ValueRange.of(1, lengthOfYear());
+            case ALIGNED_WEEK_OF_MONTH:
+                return rangeAlignedWeekOfMonth();
+            default:
+                break;
+        }
+        return getChronology().range(field);
     }
 
     //-----------------------------------------------------------------------
@@ -120,9 +125,9 @@ abstract class AbstractDate
                 case DAY_OF_WEEK:
                     return getDayOfWeek();
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    return ((getDayOfMonth() - 1) % lengthOfWeek()) + 1;
+                    return getAlignedDayOfWeekInMonth();
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    return ((getDayOfYear() - 1) % lengthOfWeek()) + 1;
+                    return getAlignedDayOfWeekInYear();
                 case DAY_OF_MONTH:
                     return getDayOfMonth();
                 case DAY_OF_YEAR:
@@ -130,9 +135,9 @@ abstract class AbstractDate
                 case EPOCH_DAY:
                     return toEpochDay();
                 case ALIGNED_WEEK_OF_MONTH:
-                    return ((getDayOfMonth() - 1) / lengthOfWeek()) + 1;
+                    return getAlignedWeekOfMonth();
                 case ALIGNED_WEEK_OF_YEAR:
-                    return ((getDayOfYear() - 1) / lengthOfWeek()) + 1;
+                    return getAlignedWeekOfYear();
                 case MONTH_OF_YEAR:
                     return getMonth();
                 case PROLEPTIC_MONTH:
@@ -149,6 +154,22 @@ abstract class AbstractDate
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.getFrom(this);
+    }
+
+    int getAlignedDayOfWeekInMonth() {
+        return ((getDayOfMonth() - 1) % lengthOfWeek()) + 1;
+    }
+
+    int getAlignedDayOfWeekInYear() {
+        return ((getDayOfYear() - 1) % lengthOfWeek()) + 1;
+    }
+
+    int getAlignedWeekOfMonth() {
+        return ((getDayOfMonth() - 1) / lengthOfWeek()) + 1;
+    }
+
+    int getAlignedWeekOfYear() {
+        return ((getDayOfYear() - 1) / lengthOfWeek()) + 1;
     }
 
     int getDayOfWeek() {
@@ -246,7 +267,7 @@ abstract class AbstractDate
         if (months == 0) {
             return this;
         }
-        long curEm = getProlepticYear() * ((long) lengthOfYearInMonths()) + (getMonth() - 1);
+        long curEm = getProlepticMonth();
         long calcEm = Math.addExact(curEm, months);
         int newYear = Math.toIntExact(Math.floorDiv(calcEm, lengthOfYearInMonths()));
         int newMonth = (int) (Math.floorMod(calcEm, lengthOfYearInMonths()) + 1);
@@ -298,7 +319,7 @@ abstract class AbstractDate
         return (packed2 - packed1) / 256L;
     }
 
-    ChronoPeriod until(AbstractDate end) {
+    ChronoPeriod doUntil(AbstractDate end) {
         long totalMonths = end.getProlepticMonth() - this.getProlepticMonth();  // safe
         int days = end.getDayOfMonth() - this.getDayOfMonth();
         if (totalMonths > 0 && days < 0) {

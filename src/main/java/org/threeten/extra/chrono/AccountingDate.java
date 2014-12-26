@@ -456,7 +456,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
 
     @Override
     public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
-        return super.until(AccountingDate.from(chronology, endDateExclusive));
+        return super.doUntil(AccountingDate.from(chronology, endDateExclusive));
     }
 
     //-----------------------------------------------------------------------

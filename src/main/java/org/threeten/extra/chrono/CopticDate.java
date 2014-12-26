@@ -242,10 +242,11 @@ public final class CopticDate
      * Creates a {@code CopticDate} validating the input.
      *
      * @param prolepticYear  the Coptic proleptic-year
-     * @param dayOfYear  the Coptic day-of-year, from 1 to 366
+     * @param month  the Coptic month-of-year, from 1 to 13
+     * @param dayOfMonth  the Coptic day-of-month, from 1 to 30
      * @return the date in Coptic calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-year is invalid for the month-year
+     *  or if the day-of-month is invalid for the month-year
      */
     static CopticDate create(int prolepticYear, int month, int dayOfMonth) {
         CopticChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
@@ -389,7 +390,7 @@ public final class CopticDate
 
     @Override
     public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
-        return super.until(CopticDate.from(endDateExclusive));
+        return super.doUntil(CopticDate.from(endDateExclusive));
     }
 
 }

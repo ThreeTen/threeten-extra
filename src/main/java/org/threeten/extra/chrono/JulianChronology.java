@@ -346,7 +346,7 @@ public final class JulianChronology extends AbstractChronology implements Serial
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return Math.floorMod(prolepticYear, 4) == 0;
+        return (prolepticYear % 4) == 0;
     }
 
     @Override
