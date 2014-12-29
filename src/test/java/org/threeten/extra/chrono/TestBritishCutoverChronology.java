@@ -56,11 +56,14 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.Period;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Chronology;
@@ -72,7 +75,11 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -1229,6 +1236,28 @@ public class TestBritishCutoverChronology {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_atTime_null() {
         BritishCutoverDate.of(2014, 5, 26).atTime(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // check against GregorianCalendar
+    //-----------------------------------------------------------------------
+    @Test
+    void test_crossCheck() {
+        BritishCutoverDate test = BritishCutoverDate.of(1700, 1, 1);
+        BritishCutoverDate end = BritishCutoverDate.of(1800, 1, 1);
+        Instant cutover = ZonedDateTime.of(1752, 9, 14, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();
+        GregorianCalendar gcal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+        gcal.setGregorianChange(Date.from(cutover));
+        gcal.clear();
+        gcal.set(1700, Calendar.JANUARY, 1);
+        while (test.isBefore(end)) {
+            assertEquals(test.get(YEAR_OF_ERA), gcal.get(Calendar.YEAR));
+            assertEquals(test.get(MONTH_OF_YEAR), gcal.get(Calendar.MONTH) + 1);
+            assertEquals(test.get(DAY_OF_MONTH), gcal.get(Calendar.DAY_OF_MONTH));
+            assertEquals(LocalDate.from(test), gcal.toZonedDateTime().toLocalDate());
+            gcal.add(Calendar.DAY_OF_MONTH, 1);
+            test = test.plus(1, DAYS);
+        }
     }
 
     //-----------------------------------------------------------------------
