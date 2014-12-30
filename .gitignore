@@ -3,7 +3,6 @@
 /lib/
 /dist/
 /test-output/
-/temp*
 /.settings/
 /nbproject/private/
 /target/
@@ -14,4 +13,12 @@
 *.jar
 *.war
 *.ear
-**TempTest.java
+[tT]emp*
+# IIDEA meta files
+/.idea/
+/*.iml
+/*.ipr
+/*.iws
+# diff by-products
+*.rej
+*.orig
