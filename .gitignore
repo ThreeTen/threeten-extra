@@ -9,12 +9,7 @@
 .classpath
 .project
 .checkstyle
-*.class
-*.jar
-*.war
-*.ear
-[tT]emp*
-# IIDEA meta files
+# IDEA meta files
 /.idea/
 /*.iml
 /*.ipr
