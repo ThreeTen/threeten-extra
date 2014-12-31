@@ -71,9 +71,9 @@ public final class InternationalFixedDate
         implements ChronoLocalDate, Serializable {
 
     /**
-     * Serialization version.
+     * Serialization version UID.
      */
-    private static final long serialVersionUID = -2229133057743750072L;
+    private static final long serialVersionUID = -7473722012599657263L;
 
     /**
      * The days per 400 year cycle.

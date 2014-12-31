@@ -46,9 +46,9 @@ public class InternationalFixedChronology extends AbstractChronology implements 
     public static final InternationalFixedChronology INSTANCE = new InternationalFixedChronology ();
 
     /**
-     * Serialization version.
+     * Serialization version UID.
      */
-    //private static final long serialVersionUID = -7021464635577802085L;
+    private static final long serialVersionUID = -199871091397669007L;
 
     /**
      * Standard 7-day week.
