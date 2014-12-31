@@ -624,17 +624,4 @@ public final class InternationalFixedDate
     int getYearOfEra () {
         return getProlepticYear ();
     }
-
-    @Override
-    public String toString () {
-        StringBuilder buf = new StringBuilder (getChronology ().toString ());
-        buf.append (' ')
-           .append (getEra ())
-           .append (' ')
-           .append (getYearOfEra ())
-           .append (getMonth () < 10 ? "-0" : '-').append (getMonth ())
-           .append (getDayOfMonth () < 10 ? "-0" : '-').append (getDayOfMonth ());
-
-        return buf.toString ();
-    }
 }
