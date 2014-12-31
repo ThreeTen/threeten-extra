@@ -83,7 +83,7 @@ public class InternationalFixedChronology extends AbstractChronology implements 
     /**
      * Range of year.
      */
-    private static final ValueRange YEAR_RANGE = ValueRange.of (0, 999_999);
+    private static final ValueRange YEAR_RANGE = ValueRange.of (1, 999_999);
 
     /**
      * Range of proleptic month.
@@ -233,7 +233,7 @@ public class InternationalFixedChronology extends AbstractChronology implements 
             throw new ClassCastException ("Era must be InternationalFixedEra");
         }
 
-        if (0 > yearOfEra) {
+        if (1 > yearOfEra) {
             throw new DateTimeException ("Year of era MUST not be negative!");
         }
 

@@ -38,9 +38,6 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.*;
 
-import static java.time.temporal.ChronoField.*;
-//import static org.threeten.extra.chrono.InternationalFixedChronology.*;
-
 /**
  * A date in the International fixed calendar system.
  * <p>
@@ -130,12 +127,12 @@ public final class InternationalFixedDate
      * @param dayOfMonth    the International fixed day-of-month, from 1 to 28, the 29th is only legal for leap day and year day
      */
     private InternationalFixedDate (final int prolepticYear, final int month, final int dayOfMonth) {
-        YEAR.checkValidValue (prolepticYear);
-        InternationalFixedChronology.MONTH_OF_YEAR_RANGE.checkValidValue (month, MONTH_OF_YEAR);
-        InternationalFixedChronology.DAY_OF_MONTH_RANGE.checkValidValue (dayOfMonth, DAY_OF_MONTH);
+        ChronoField.YEAR.checkValidValue (prolepticYear);
+        InternationalFixedChronology.MONTH_OF_YEAR_RANGE.checkValidValue (month, ChronoField.MONTH_OF_YEAR);
+        InternationalFixedChronology.DAY_OF_MONTH_RANGE.checkValidValue (dayOfMonth, ChronoField.DAY_OF_MONTH);
 
-        if (0 > prolepticYear) {
-            throw new DateTimeException ("Invalid date, year must be positive: " + prolepticYear + '-' + month + '-' + dayOfMonth);
+        if (1 > prolepticYear) {
+            throw new DateTimeException ("Invalid date, year must be at least 1: " + prolepticYear + '-' + month + '-' + dayOfMonth);
         }
 
         if (dayOfMonth > 28 && month != 6 && month != 13) {
@@ -243,7 +240,7 @@ public final class InternationalFixedDate
             return (InternationalFixedDate) temporal;
         }
 
-        return InternationalFixedDate.ofEpochDay (temporal.getLong (EPOCH_DAY));
+        return InternationalFixedDate.ofEpochDay (temporal.getLong (ChronoField.EPOCH_DAY));
     }
 
     /**
@@ -260,8 +257,8 @@ public final class InternationalFixedDate
      *                           or if the day-of-year is invalid for the year
      */
     static InternationalFixedDate ofYearDay (final int prolepticYear, final int dayOfYear) {
-        YEAR.checkValidValue (prolepticYear);
-        InternationalFixedChronology.DAY_OF_YEAR_RANGE.checkValidValue (dayOfYear, DAY_OF_YEAR);
+        ChronoField.YEAR.checkValidValue (prolepticYear);
+        InternationalFixedChronology.DAY_OF_YEAR_RANGE.checkValidValue (dayOfYear, ChronoField.DAY_OF_YEAR);
         boolean leap = InternationalFixedChronology.INSTANCE.isLeapYear (prolepticYear);
 
         if (dayOfYear > (InternationalFixedChronology.DAYS_IN_YEAR + 1) && !leap) {
@@ -295,7 +292,7 @@ public final class InternationalFixedDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     public static InternationalFixedDate ofEpochDay (final long epochDay) {
-        EPOCH_DAY.range ().checkValidValue (epochDay, EPOCH_DAY);
+        ChronoField.EPOCH_DAY.range ().checkValidValue (epochDay, ChronoField.EPOCH_DAY);
         long zeroDay = epochDay + InternationalFixedChronology.DAYS_0000_TO_1970;
 
         if (zeroDay < 0) {
@@ -313,7 +310,7 @@ public final class InternationalFixedDate
         }
 
         // check year now we are certain it is correct
-        int year = YEAR.checkValidIntValue (yearEst);
+        int year = ChronoField.YEAR.checkValidIntValue (yearEst);
 
         return new InternationalFixedDate (year, month, dom);
     }
@@ -500,7 +497,7 @@ public final class InternationalFixedDate
             return this;
         }
 
-        int newYear = YEAR.checkValidIntValue (getProlepticYear () + yearsToAdd);
+        int newYear = ChronoField.YEAR.checkValidIntValue (getProlepticYear () + yearsToAdd);
 
         // Otherwise, one of the following is true:
         // 1 - Before the leap month, nothing to do (most common)
@@ -537,7 +534,7 @@ public final class InternationalFixedDate
         }
 
         long calcMonths = Math.addExact (getProlepticMonth (), monthsToAdd);
-        int newYear = YEAR.checkValidIntValue (Math.floorDiv (calcMonths, InternationalFixedChronology.MONTHS_IN_YEAR));
+        int newYear = ChronoField.YEAR.checkValidIntValue (Math.floorDiv (calcMonths, InternationalFixedChronology.MONTHS_IN_YEAR));
         int newMonth = Math.toIntExact (calcMonths % InternationalFixedChronology.MONTHS_IN_YEAR) + 1;
 
         return resolvePreviousValid (newYear, newMonth, getDayOfMonth ());
