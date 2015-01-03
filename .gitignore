@@ -3,17 +3,15 @@
 /lib/
 /dist/
 /test-output/
+/temp*
 /.settings/
 /nbproject/private/
 /target/
 .classpath
 .project
 .checkstyle
-# IDEA meta files
-/.idea/
-/*.iml
-/*.ipr
-/*.iws
-# diff by-products
-*.rej
-*.orig
+*.class
+*.jar
+*.war
+*.ear
+**TempTest.java
