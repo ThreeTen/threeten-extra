@@ -42,7 +42,7 @@ import java.time.chrono.Era;
  * The current era, for years from 1 onwards, is known as 'Current Era'.
  * All previous years are invalid.
  * <p>
- * The start of the International Fixed epoch {@code 0001-01-01 (Pax)} is {@code 0000-12-31 (ISO)}.
+ * The start of the International Fixed epoch {@code 0001-01-01 (International Fixed)} is {@code 0001-01-01 (ISO)}.
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code InternationalFixedEra}.
  * Use {@code getValue()} instead.</b>
@@ -58,27 +58,25 @@ public enum InternationalFixedEra implements Era {
     CE;
 
     //-----------------------------------------------------------------------
-
     /**
-     * Obtains an instance of {@code PaxEra} from an {@code int} value.
+     * Obtains an instance of {@code InternationalFixedEra} from an {@code int} value.
      * <p>
-     * {@code PaxEra} is an enum representing the International Fixed era of CE.
+     * {@code InternationalFixedEra} is an enum representing the International Fixed era of CE.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
      * @param era the CE value to represent, only 0 (CE)
-     * @return the era singleton, not null
      * @throws DateTimeException if the value is invalid
+     * @return the era singleton, not null
      */
-    public static InternationalFixedEra of (final int era) {
+    public static InternationalFixedEra of(final int era) {
         if (0 == era) {
             return CE;
         }
 
-        throw new DateTimeException ("Invalid era: " + era);
+        throw new DateTimeException("Invalid era: " + era);
     }
 
     //-----------------------------------------------------------------------
-
     /**
      * Gets the numeric era {@code int} value.
      * <p>
@@ -87,7 +85,7 @@ public enum InternationalFixedEra implements Era {
      * @return the era value, only 0 (CE)
      */
     @Override
-    public int getValue () {
-        return ordinal ();
+    public int getValue() {
+        return ordinal();
     }
 }
