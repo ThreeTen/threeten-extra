@@ -31,168 +31,177 @@
  */
 package org.threeten.extra.chrono;
 
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Period;
+
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
-import java.time.temporal.*;
+
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
+import java.time.temporal.WeekFields;
+
 import java.util.List;
 import java.util.function.Predicate;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * Test.
  */
 @Test
-@SuppressWarnings ({ "static-method", "javadoc" })
+@SuppressWarnings({ "static-method", "javadoc" })
 public class TestInternationalFixedChronology {
 
     //-----------------------------------------------------------------------
     // Chronology.of(String)
+    // Chronology.getId
+    // Chronology.getCalendarType
     //-----------------------------------------------------------------------
     @Test
-    public void test_chronology_of_name () {
-        Chronology chronology = Chronology.of ("Ifc");
-        Assert.assertNotNull (chronology);
-        Assert.assertEquals (chronology, InternationalFixedChronology.INSTANCE);
-        Assert.assertEquals (chronology.getId (), "Ifc");
-        Assert.assertEquals (chronology.getCalendarType (), "ifc");
-    }
-
-    @Test
-    public void test_chronology_of_name_id () {
-        Chronology chronology = Chronology.of ("Ifc");
-        Assert.assertNotNull (chronology);
-        Assert.assertEquals (chronology, InternationalFixedChronology.INSTANCE);
-        Assert.assertEquals (chronology.getId (), "Ifc");
-        Assert.assertEquals (chronology.getCalendarType (), "ifc");
+    public void test_chronology() {
+        Chronology chronology = Chronology.of("Ifc");
+        assertNotNull(chronology);
+        assertEquals (chronology, InternationalFixedChronology.INSTANCE);
+        assertEquals(chronology.getId(), "Ifc");
+        assertEquals (chronology.getCalendarType(), "ifc");
     }
 
     //-----------------------------------------------------------------------
-    // creation, toLocalDate()
+    // InternationalFixedDate.of
     //-----------------------------------------------------------------------
-    @DataProvider (name = "samples")
-    Object[][] data_samples () {
+    @DataProvider(name = "samples")
+    Object[][] data_samples() {
         return new Object[][] {
-                { InternationalFixedDate.of (0, 13, 29), LocalDate.of (0, 12, 31) },
-                { InternationalFixedDate.of (1, 1, 1), LocalDate.of (1, 1, 1) },
-                { InternationalFixedDate.of (1, 1, 2), LocalDate.of (1, 1, 2) },
+                { InternationalFixedDate.of(1, 1, 1), LocalDate.of(1, 1, 1) },
+                { InternationalFixedDate.of(1, 1, 2), LocalDate.of(1, 1, 2) },
 
-                { InternationalFixedDate.of (1, 1, 27), LocalDate.of (1, 1, 27) },
-                { InternationalFixedDate.of (1, 1, 28), LocalDate.of (1, 1, 28) },
-                { InternationalFixedDate.of (1, 2, 1), LocalDate.of (1, 1, 29) },
-                { InternationalFixedDate.of (1, 2, 2), LocalDate.of (1, 1, 30) },
+                { InternationalFixedDate.of(1, 1, 27), LocalDate.of(1, 1, 27) },
+                { InternationalFixedDate.of(1, 1, 28), LocalDate.of(1, 1, 28) },
+                { InternationalFixedDate.of(1, 2,  1), LocalDate.of(1, 1, 29) },
+                { InternationalFixedDate.of(1, 2,  2), LocalDate.of(1, 1, 30) },
 
-                { InternationalFixedDate.of (6, 12, 27), LocalDate.of (6, 12, 1) },
-                { InternationalFixedDate.of (6, 12, 28), LocalDate.of (6, 12, 2) },
-                { InternationalFixedDate.of (6, 13, 1), LocalDate.of (6, 12, 3) },
-                { InternationalFixedDate.of (6, 13, 2), LocalDate.of (6, 12, 4) },
-                { InternationalFixedDate.of (6, 13, 3), LocalDate.of (6, 12, 5) },
-                { InternationalFixedDate.of (6, 13, 27), LocalDate.of (6, 12, 29) },
-                { InternationalFixedDate.of (6, 13, 28), LocalDate.of (6, 12, 30) },
-                { InternationalFixedDate.of (6, 13, 29), LocalDate.of (6, 12, 31) },
-                { InternationalFixedDate.of (7, 1, 1), LocalDate.of (7, 1, 1) },
+                { InternationalFixedDate.of(1, 13, 28), LocalDate.of(1, 12, 30) },
+                { InternationalFixedDate.of(1, 13, 27), LocalDate.of(1, 12, 29) },
+                { InternationalFixedDate.of(1, false, true), LocalDate.of(1, 12, 31) },
+                { InternationalFixedDate.of(2,  1,  1), LocalDate.of(2,  1,  1) },
 
-                { InternationalFixedDate.of (399, 13, 1), LocalDate.of (399, 12, 3) },
-                { InternationalFixedDate.of (399, 13, 2), LocalDate.of (399, 12, 4) },
-                { InternationalFixedDate.of (399, 13, 3), LocalDate.of (399, 12, 5) },
-                { InternationalFixedDate.of (399, 13, 4), LocalDate.of (399, 12, 6) },
-                { InternationalFixedDate.of (399, 13, 5), LocalDate.of (399, 12, 7) },
-                { InternationalFixedDate.of (400, 13, 27), LocalDate.of (400, 12, 29) },
-                { InternationalFixedDate.of (400, 13, 28), LocalDate.of (400, 12, 30) },
-                { InternationalFixedDate.of (400, 13, 29), LocalDate.of (400, 12, 31) },
-                { InternationalFixedDate.of (401, 1, 1), LocalDate.of (401, 1, 1) },
-                { InternationalFixedDate.of (401, 1, 2), LocalDate.of (401, 1, 2) },
+                { InternationalFixedDate.of(6, 12, 27), LocalDate.of(6, 12,  1) },
+                { InternationalFixedDate.of(6, 12, 28), LocalDate.of(6, 12,  2) },
+                { InternationalFixedDate.of(6, 13,  1), LocalDate.of(6, 12,  3) },
+                { InternationalFixedDate.of(6, 13,  2), LocalDate.of(6, 12,  4) },
+                { InternationalFixedDate.of(6, 13,  3), LocalDate.of(6, 12,  5) },
+                { InternationalFixedDate.of(6, 13, 27), LocalDate.of(6, 12, 29) },
+                { InternationalFixedDate.of(6, 13, 28), LocalDate.of(6, 12, 30) },
+                { InternationalFixedDate.of(6, false, true), LocalDate.of(6, 12, 31) },
+                { InternationalFixedDate.of(7,  1,  1), LocalDate.of(7,  1,  1) },
 
-                { InternationalFixedDate.of (0, 13, 28), LocalDate.of (0, 12, 30) },
-                { InternationalFixedDate.of (0, 13, 27), LocalDate.of (0, 12, 29) },
+                { InternationalFixedDate.of(399, 13,  1), LocalDate.of(399, 12,  3) },
+                { InternationalFixedDate.of(399, 13,  2), LocalDate.of(399, 12,  4) },
+                { InternationalFixedDate.of(399, 13,  3), LocalDate.of(399, 12,  5) },
+                { InternationalFixedDate.of(399, 13,  4), LocalDate.of(399, 12,  6) },
+                { InternationalFixedDate.of(399, 13,  5), LocalDate.of(399, 12,  7) },
 
-                { InternationalFixedDate.of (1582, 9, 28), LocalDate.of (1582, 9, 9) },
-                { InternationalFixedDate.of (1582, 10, 1), LocalDate.of (1582, 9, 10) },
-                { InternationalFixedDate.of (1945, 10, 27), LocalDate.of (1945, 10, 6) },
+                { InternationalFixedDate.of(400,  1,  1), LocalDate.of(400,  1,  1) },
+                { InternationalFixedDate.of(400,  1,  2), LocalDate.of(400,  1,  2) },
+                { InternationalFixedDate.of(400, true, false), LocalDate.of(400,  6, 17) },
+                { InternationalFixedDate.of(400, 13, 27), LocalDate.of(400, 12, 29) },
+                { InternationalFixedDate.of(400, 13, 28), LocalDate.of(400, 12, 30) },
+                { InternationalFixedDate.of(400, false, true), LocalDate.of(400, 12, 31) },
+                { InternationalFixedDate.of(401,  1,  1), LocalDate.of(401,  1,  1) },
+                { InternationalFixedDate.of(401,  1,  2), LocalDate.of(401,  1,  2) },
 
-                { InternationalFixedDate.of (2012, 6, 15), LocalDate.of (2012, 6, 4) },
-                { InternationalFixedDate.of (2012, 6, 16), LocalDate.of (2012, 6, 5) },
+                { InternationalFixedDate.of(1582,  9, 28), LocalDate.of(1582,  9,  9) },
+                { InternationalFixedDate.of(1582, 10,  1), LocalDate.of(1582,  9, 10) },
+                { InternationalFixedDate.of(1945, 10, 27), LocalDate.of(1945, 10,  6) },
+
+                { InternationalFixedDate.of(2012,  6, 15), LocalDate.of(2012,  6,  3) },
+                { InternationalFixedDate.of(2012,  6, 16), LocalDate.of(2012,  6,  4) },
         };
     }
 
-    @Test (dataProvider = "samples")
-    public void test_LocalDate_from_InternationalFixedDate (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (LocalDate.from (date), iso);
+    @Test(dataProvider = "samples")
+    public void test_LocalDate_from_InternationalFixedDate(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(LocalDate.from(date), iso);
     }
 
-    @Test (dataProvider = "samples")
-    public void test_InternationalFixedDate_from_LocalDate (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (InternationalFixedDate.from (iso), date);
+    @Test(dataProvider = "samples")
+    public void test_InternationalFixedDate_from_LocalDate(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(InternationalFixedDate.from(iso), date);
     }
 
-    @Test (dataProvider = "samples")
-    public void test_InternationalFixedDate_chronology_dateEpochDay (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (InternationalFixedChronology.INSTANCE.dateEpochDay (iso.toEpochDay ()), date);
+    @Test(dataProvider = "samples")
+    public void test_InternationalFixedDate_chronology_dateEpochDay(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(InternationalFixedChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), date);
     }
 
-    @Test (dataProvider = "samples")
-    public void test_InternationalFixedDate_toEpochDay (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (date.toEpochDay (), iso.toEpochDay ());
+    @Test(dataProvider = "samples")
+    public void test_InternationalFixedDate_toEpochDay(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(date.toEpochDay(), iso.toEpochDay());
     }
 
-    @Test (dataProvider = "samples")
-    public void test_InternationalFixedDate_until_InternationalFixedDate (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (date.until (date), InternationalFixedChronology.INSTANCE.period (0, 0, 0));
+    @Test(dataProvider = "samples")
+    public void test_InternationalFixedDate_until_InternationalFixedDate(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(date.until(date), InternationalFixedChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test (dataProvider = "samples")
-    public void test_InternationalFixedDate_until_LocalDate (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (date.until (iso), InternationalFixedChronology.INSTANCE.period (0, 0, 0));
+    @Test(dataProvider = "samples")
+    public void test_InternationalFixedDate_until_LocalDate(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(date.until(iso), InternationalFixedChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test (dataProvider = "samples")
-    public void test_LocalDate_until_InternationalFixedDate (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (iso.until (date), Period.ZERO);
+    @Test(dataProvider = "samples")
+    public void test_LocalDate_until_InternationalFixedDate(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(iso.until(date), Period.ZERO);
     }
 
-    @Test (dataProvider = "samples")
-    public void test_Chronology_date_Temporal (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (InternationalFixedChronology.INSTANCE.date (iso), date);
+    @Test(dataProvider = "samples")
+    public void test_Chronology_date_Temporal(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(InternationalFixedChronology.INSTANCE.date(iso), date);
     }
 
-    @Test (dataProvider = "samples")
-    public void test_plusDays (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (LocalDate.from (date.plus (0, ChronoUnit.DAYS)), iso);
-        assertEquals (LocalDate.from (date.plus (1, ChronoUnit.DAYS)), iso.plusDays (1));
-        assertEquals (LocalDate.from (date.plus (35, ChronoUnit.DAYS)), iso.plusDays (35));
-        assertEquals (LocalDate.from (date.plus (-1, ChronoUnit.DAYS)), iso.plusDays (-1));
-        assertEquals (LocalDate.from (date.plus (-60, ChronoUnit.DAYS)), iso.plusDays (-60));
+    @Test(dataProvider = "samples")
+    public void test_plusDays(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(LocalDate.from(date.plus(0, ChronoUnit.DAYS)), iso);
+        assertEquals(LocalDate.from(date.plus(1, ChronoUnit.DAYS)), iso.plusDays(1));
+        assertEquals(LocalDate.from(date.plus(35, ChronoUnit.DAYS)), iso.plusDays(35));
     }
 
-    @Test (dataProvider = "samples")
-    public void test_minusDays (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (LocalDate.from (date.minus (0, ChronoUnit.DAYS)), iso);
-        assertEquals (LocalDate.from (date.minus (1, ChronoUnit.DAYS)), iso.minusDays (1));
-        assertEquals (LocalDate.from (date.minus (35, ChronoUnit.DAYS)), iso.minusDays (35));
-        assertEquals (LocalDate.from (date.minus (-1, ChronoUnit.DAYS)), iso.minusDays (-1));
-        assertEquals (LocalDate.from (date.minus (-60, ChronoUnit.DAYS)), iso.minusDays (-60));
+    @Test(dataProvider = "samples")
+    public void test_minusDays(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(LocalDate.from(date.minus(0, ChronoUnit.DAYS)), iso);
+        assertEquals(LocalDate.from(date.minus(-1, ChronoUnit.DAYS)), iso.minusDays(-1));
+        assertEquals(LocalDate.from(date.minus(-60, ChronoUnit.DAYS)), iso.minusDays(-60));
     }
 
-    @Test (dataProvider = "samples")
-    public void test_until_DAYS (final InternationalFixedDate date, final LocalDate iso) {
-        assertEquals (date.until (iso.plusDays (0), ChronoUnit.DAYS), 0);
-        assertEquals (date.until (iso.plusDays (1), ChronoUnit.DAYS), 1);
-        assertEquals (date.until (iso.plusDays (35), ChronoUnit.DAYS), 35);
-        assertEquals (date.until (iso.minusDays (40), ChronoUnit.DAYS), -40);
+    @Test(dataProvider = "samples")
+    public void test_until_DAYS(final InternationalFixedDate date, final LocalDate iso) {
+        assertEquals(date.until(iso.plusDays(0), ChronoUnit.DAYS), 0);
+        assertEquals(date.until(iso.plusDays(1), ChronoUnit.DAYS), 1);
+        assertEquals(date.until(iso.plusDays(35), ChronoUnit.DAYS), 35);
     }
 
-    @DataProvider (name = "badDates")
-    Object[][] data_badDates () {
+    @DataProvider(name = "badDates")
+    Object[][] data_badDates() {
         return new Object[][] {
-                { 1900, 0, 0 },
+                {    0, 1, 1 },
 
+                { 1900, 0, 0 },
                 { 1900, -1, 1 },
                 { 1900, 0, 1 },
                 { 1900, 15, 1 },
@@ -235,270 +244,438 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test (dataProvider = "badDates", expectedExceptions = DateTimeException.class)
-    public void test_badDates (final int year, final int month, final int dom) {
-        InternationalFixedDate.of (year, month, dom);
+    @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
+    public void test_badDates(final int year, final int month, final int dom) {
+        InternationalFixedDate.of(year, month, dom);
     }
 
-    @Test (expectedExceptions = DateTimeException.class)
-    public void test_chronology_dateYearDay_badDate () {
-        InternationalFixedChronology.INSTANCE.dateYearDay (2001, 365);
+    @DataProvider(name = "badLeapDayAndYearDayDates")
+    Object[][] badLeapDayAndYearDayDates() {
+        return new Object[][] {
+                {    1, false, false },
+                {    1, true,  true },
+                {    1, true,  false },
+        };
+    }
+
+    @Test(dataProvider = "badLeapDayAndYearDayDates", expectedExceptions = DateTimeException.class)
+    public void badLeapDayAndYearDayDates(final int year, final boolean isLeapDay, final boolean isYearDay) {
+        InternationalFixedDate.of(year, isLeapDay, isYearDay);
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_chronology_dateYearDay_badDate() {
+        InternationalFixedChronology.INSTANCE.dateYearDay(2001, 0);
+        InternationalFixedChronology.INSTANCE.dateYearDay(2001, -1);
+        InternationalFixedChronology.INSTANCE.dateYearDay(2001, 366);
+        InternationalFixedChronology.INSTANCE.dateYearDay(2001, 999);
+
+        InternationalFixedChronology.INSTANCE.dateYearDay(2000, 0);
+        InternationalFixedChronology.INSTANCE.dateYearDay(2000, -1);
+        InternationalFixedChronology.INSTANCE.dateYearDay(2000, 367);
+        InternationalFixedChronology.INSTANCE.dateYearDay(2000, 999);
     }
 
     //-----------------------------------------------------------------------
-    // isLeapYear()
+    // InternationalFixedDate.getDayOfYear
     //-----------------------------------------------------------------------
     @Test
-    public void test_isLeapYear_loop () {
+    public void test_dateYearDay() {
+        checkYearDateForYear(2001, 365);
+        checkYearDateForYear(2004, 366);
+
+        assertEquals(InternationalFixedChronology.INSTANCE.dateYearDay(2001, 365), InternationalFixedDate.of(2001, false, true));
+        assertEquals(InternationalFixedChronology.INSTANCE.dateYearDay(2004, 169), InternationalFixedDate.of(2004, true, false));
+        assertEquals(InternationalFixedChronology.INSTANCE.dateYearDay(2004, 366), InternationalFixedDate.of(2004, false, true));
+    }
+
+    private void checkYearDateForYear(final int year, final int daysInYear) {
+        InternationalFixedDate date = null;
+        int month = 0;
+        int dayOfMonth = 0;
+        int y = 0;
+
+        for (int i = 1; i <= daysInYear; i++) {
+            date = InternationalFixedChronology.INSTANCE.dateYearDay(year, i);
+            assertEquals(date.getDayOfYear(), i);
+
+            if (date.isYearDay() || date.isLeapDay()) {
+                // year day / leap day are not part of any months!
+                continue;
+            }
+
+            y = (i > 169 && date.isLeapYear()) ? i - 1 : i;
+            dayOfMonth = ((y - 1) % 28) + 1;
+            month = ((y - 1) / 28) + 1;
+
+            assertEquals(month, date.getMonth());
+            assertEquals(dayOfMonth, date.getDayOfMonth());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // InternationalFixedDate.isLeapYear
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_isLeapYear_loop() {
         Predicate<Integer> isLeapYear = year -> {
-            return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+            return ((year & 3) == 0) &&((year % 100) != 0 ||(year % 400) == 0);
         };
 
-        for (int year = 0; year < 1000; year++) {
-            InternationalFixedDate base = InternationalFixedDate.of (year, 1, 1);
-            assertEquals (base.isLeapYear (), isLeapYear.test (year), "Year " + year + " is failing");
-            assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (year), isLeapYear.test (year), "Year " + year + " is failing");
+        for(int year = 1; year < 1001; year++) {
+            InternationalFixedDate base = InternationalFixedDate.of(year, 1, 1);
+            assertEquals(base.isLeapYear(), isLeapYear.test(year), "Year " + year + " is failing");
+            assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year), "Year " + year + " is failing leap-year test");
         }
     }
 
     @Test
-    public void test_isLeapYear_specific () {
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (400), true);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (100), false);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (99), false);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (7), false);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (6), false);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (5), false);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (4), true);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (3), false);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (2), false);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (1), false);
-        assertEquals (InternationalFixedChronology.INSTANCE.isLeapYear (0), true);
+    public void test_isLeapYear_specific() {
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(400), true);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(100), false);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(99), false);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(7), false);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(6), false);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(5), false);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(4), true);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(3), false);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(2), false);
+        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(1), false);
     }
 
-    @DataProvider (name = "lengthOfMonth")
-    Object[][] data_lengthOfMonth () {
+    //-----------------------------------------------------------------------
+    // InternationalFixedDate.era
+    // InternationalFixedDate.dateYearDay
+    // InternationalFixedDate.prolepticYear
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "lengthOfMonth")
+    Object[][] data_lengthOfMonth() {
         return new Object[][] {
-                { 1900, 1, 28 },
-                { 1900, 2, 28 },
-                { 1900, 3, 28 },
-                { 1900, 4, 28 },
-                { 1900, 5, 28 },
-                { 1900, 6, 28 },
-                { 1900, 7, 28 },
-                { 1900, 8, 28 },
-                { 1900, 9, 28 },
+                { 1900,  1, 28 },
+                { 1900,  2, 28 },
+                { 1900,  3, 28 },
+                { 1900,  4, 28 },
+                { 1900,  5, 28 },
+                { 1900,  6, 28 },
+                { 1900,  7, 28 },
+                { 1900,  8, 28 },
+                { 1900,  9, 28 },
                 { 1900, 10, 28 },
                 { 1900, 11, 28 },
                 { 1900, 12, 28 },
-                { 1900, 13, 29 },
+                { 1900, 13, 28 },
 
-                { 1901, 13, 29 },
-                { 1902, 13, 29 },
-                { 1903, 13, 29 },
-                { 1904, 13, 29 },
-                { 1905, 13, 29 },
-                { 1906, 13, 29 },
-                { 2000, 13, 29 },
-                { 2100, 13, 29 },
+                { 1901, 13, 28 },
+                { 1902, 13, 28 },
+                { 1903, 13, 28 },
+                { 1904, 13, 28 },
+                { 1905, 13, 28 },
+                { 1906, 13, 28 },
+                { 2000, 13, 28 },
+                { 2100, 13, 28 },
         };
     }
 
-    @Test (dataProvider = "lengthOfMonth")
-    public void test_lengthOfMonth (final int year, final int month, final int length) {
-        InternationalFixedDate date = InternationalFixedDate.of (year, month, 1);
-        assertEquals (date.lengthOfMonth (), length);
+    @Test(dataProvider = "lengthOfMonth")
+    public void test_lengthOfMonth(final int year, final int month, final int length) {
+        InternationalFixedDate date = InternationalFixedDate.of(year, month, 1);
+        assertEquals(date.lengthOfMonth(), length);
     }
 
     //-----------------------------------------------------------------------
-    // era, prolepticYear and dateYearDay
+    // InternationalFixedDate.era
+    // InternationalFixedDate.dateYearDay
+    // InternationalFixedDate.prolepticYear
     //-----------------------------------------------------------------------
     @Test
-    public void test_era_loop () {
-        for (int year = 0; year < 400; year++) {
-            InternationalFixedDate base = InternationalFixedChronology.INSTANCE.date (year, 1, 1);
-            assertEquals (year, base.get (ChronoField.YEAR));
+    public void test_era_loop() {
+        for(int year = 1; year < 401; year++) {
+            InternationalFixedDate base = InternationalFixedChronology.INSTANCE.date(year, 1, 1);
+            assertEquals(year, base.get(ChronoField.YEAR));
             InternationalFixedEra era = InternationalFixedEra.CE;
-            assertEquals (era, base.getEra ());
-            assertEquals (year, base.get (ChronoField.YEAR_OF_ERA));
-            InternationalFixedDate eraBased = InternationalFixedChronology.INSTANCE.date (era, year, 1, 1);
-            assertEquals (eraBased, base);
+            assertEquals(era, base.getEra());
+            assertEquals(year, base.get(ChronoField.YEAR_OF_ERA));
+            InternationalFixedDate eraBased = InternationalFixedChronology.INSTANCE.date(era, year, 1, 1);
+            assertEquals(eraBased, base);
         }
     }
 
     @Test
-    public void test_era_yearDay_loop () {
-        for (int year = 0; year < 400; year++) {
-            InternationalFixedDate base = InternationalFixedChronology.INSTANCE.dateYearDay (year, 1);
-            assertEquals (year, base.get (ChronoField.YEAR));
+    public void test_era_yearDay_loop() {
+        for(int year = 1; year < 401; year++) {
+            InternationalFixedDate base = InternationalFixedChronology.INSTANCE.dateYearDay(year, 1);
+            assertEquals(year, base.get(ChronoField.YEAR));
             InternationalFixedEra era = InternationalFixedEra.CE;
-            assertEquals (era, base.getEra ());
-            assertEquals (year, base.get (ChronoField.YEAR_OF_ERA));
-            InternationalFixedDate eraBased = InternationalFixedChronology.INSTANCE.dateYearDay (era, year, 1);
-            assertEquals (eraBased, base);
+            assertEquals(era, base.getEra());
+            assertEquals(year, base.get(ChronoField.YEAR_OF_ERA));
+            InternationalFixedDate eraBased = InternationalFixedChronology.INSTANCE.dateYearDay(era, year, 1);
+            assertEquals(eraBased, base);
         }
     }
 
     @Test
-    public void test_prolepticYear_specific () {
-        assertEquals (InternationalFixedChronology.INSTANCE.prolepticYear (InternationalFixedEra.CE, 4), 4);
-        assertEquals (InternationalFixedChronology.INSTANCE.prolepticYear (InternationalFixedEra.CE, 3), 3);
-        assertEquals (InternationalFixedChronology.INSTANCE.prolepticYear (InternationalFixedEra.CE, 2), 2);
-        assertEquals (InternationalFixedChronology.INSTANCE.prolepticYear (InternationalFixedEra.CE, 1), 1);
+    public void test_prolepticYear_specific() {
+        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE,    4),    4);
+        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE,    3),    3);
+        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE,    2),    2);
+        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE,    1),    1);
+        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE, 2000), 2000);
+        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE, 1582), 1582);
     }
 
-    @Test (expectedExceptions = ClassCastException.class)
-    public void test_prolepticYear_badEra () {
-        InternationalFixedChronology.INSTANCE.prolepticYear (IsoEra.CE, 4);
-    }
-
-    @Test
-    public void test_Chronology_eraOf () {
-        assertEquals (InternationalFixedChronology.INSTANCE.eraOf (0), InternationalFixedEra.CE);
-    }
-
-    @Test (expectedExceptions = DateTimeException.class)
-    public void test_Chronology_eraOf_invalid () {
-        InternationalFixedChronology.INSTANCE.eraOf (2);
+    @Test(expectedExceptions = ClassCastException.class)
+    public void test_prolepticYear_badEra() {
+        InternationalFixedChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
     }
 
     @Test
-    public void test_Chronology_eras () {
-        List<Era> eras = InternationalFixedChronology.INSTANCE.eras ();
-        assertEquals (eras.size (), 1);
-        assertEquals (eras.contains (InternationalFixedEra.CE), true);
+    public void test_Chronology_eraOf() {
+        assertEquals(InternationalFixedChronology.INSTANCE.eraOf(0), InternationalFixedEra.CE);
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_Chronology_eraOf_invalid() {
+        InternationalFixedChronology.INSTANCE.eraOf(2);
+    }
+
+    @Test
+    public void test_Chronology_eras() {
+        List<Era> eras = InternationalFixedChronology.INSTANCE.eras();
+        assertEquals(eras.size(), 1);
+        assertEquals(eras.contains(InternationalFixedEra.CE), true);
     }
 
     //-----------------------------------------------------------------------
     // Chronology.range
     //-----------------------------------------------------------------------
     @Test
-    public void test_Chronology_range () {
-        assertEquals (InternationalFixedChronology.INSTANCE.range (ChronoField.DAY_OF_WEEK), ValueRange.of (1, 7));
-        assertEquals (InternationalFixedChronology.INSTANCE.range (ChronoField.DAY_OF_MONTH), ValueRange.of (1, 28, 29));
-        assertEquals (InternationalFixedChronology.INSTANCE.range (ChronoField.DAY_OF_YEAR), ValueRange.of (1, 364, 365));
-        assertEquals (InternationalFixedChronology.INSTANCE.range (ChronoField.MONTH_OF_YEAR), ValueRange.of (1, 13));
+    public void test_Chronology_range() {
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK),           ValueRange.of(1,   7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_MONTH),          ValueRange.of(1,  28));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_YEAR),           ValueRange.of(1, 365, 366));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR),         ValueRange.of(1,  13));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.ALIGNED_WEEK_OF_MONTH), ValueRange.of(1,   4));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.PROLEPTIC_MONTH),       ValueRange.of(13, 13_000_000 - 1));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.YEAR_OF_ERA),           ValueRange.of(1, 999_999));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.YEAR),                  ValueRange.of(1, 999_999));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.EPOCH_DAY),             ValueRange.of(-719528, 365_000_000));
     }
 
     //-----------------------------------------------------------------------
     // InternationalFixedDate.range
     //-----------------------------------------------------------------------
-    @DataProvider (name = "ranges")
-    Object[][] data_ranges () {
+    @DataProvider(name = "ranges")
+    Object[][] data_ranges() {
         return new Object[][] {
-                { 2012, 1, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 2, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 3, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 4, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 5, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 6, 23, ChronoField.DAY_OF_MONTH, 1, 29 },
-                { 2012, 7, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 8, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 9, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 10, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 11, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 12, 23, ChronoField.DAY_OF_MONTH, 1, 28 },
-                { 2012, 13, 3, ChronoField.DAY_OF_MONTH, 1, 29 },
-                { 2012, 13, 23, ChronoField.DAY_OF_MONTH, 1, 29 },
+                { 2011,  1, 23, ChronoField.DAY_OF_MONTH,          1,  28 },
+                { 2012,  1, 23, ChronoField.DAY_OF_MONTH,          1,  28 },
 
-                { 2012, 1, 23, ChronoField.MONTH_OF_YEAR, 1, 13 },
-                { 2012, 1, 23, ChronoField.DAY_OF_YEAR, 1, 365 },
+                { 2011,  1,  1, ChronoField.DAY_OF_WEEK,           1,   7 },
+                { 2012,  1,  1, ChronoField.DAY_OF_WEEK,           1,   7 },
 
-                { 2012, 1, 23, ChronoField.ALIGNED_WEEK_OF_MONTH, 1, 4 },
-                { 2012, 13, 3, ChronoField.ALIGNED_WEEK_OF_MONTH, 1, 4 },
-                { 2012, 13, 23, ChronoField.ALIGNED_WEEK_OF_MONTH, 1, 4 },
+                { 2011,  1, 23, ChronoField.DAY_OF_YEAR,           1, 365 },
+                { 2012,  1, 23, ChronoField.DAY_OF_YEAR,           1, 366 },
 
-                { 2011, 13, 23, ChronoField.DAY_OF_MONTH, 1, 29 },
-                { 2011, 1, 23, ChronoField.MONTH_OF_YEAR, 1, 13 },
-                { 2011, 13, 23, ChronoField.DAY_OF_YEAR, 1, 364 },
-                { 2011, 13, 23, ChronoField.ALIGNED_WEEK_OF_MONTH, 1, 4 },
+                { 2011,  1, 23, ChronoField.MONTH_OF_YEAR,         1,  13 },
+                { 2012,  1, 23, ChronoField.MONTH_OF_YEAR,         1,  13 },
+
+                { 2011,  1,  3, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { 2011,  1, 10, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { 2011,  1, 17, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { 2011,  1, 24, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { 2012,  1,  3, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { 2012,  1, 10, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { 2012,  1, 17, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { 2012,  1, 24, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+
+                { 2011,  1, 23, ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
+                { 2012,  1, 23, ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
+
+                { 2011,  1, 23, ChronoField.YEAR_OF_ERA,           1,    999_999 },
+                { 2012,  1, 23, ChronoField.YEAR_OF_ERA,           1,    999_999 },
+
+                { 2011,  1, 23, ChronoField.YEAR,                  1,    999_999 },
+                { 2012,  1, 23, ChronoField.YEAR,                  1,    999_999 },
+
+                { 2011,  1, 23, ChronoField.EPOCH_DAY,      -719_528, 365_000_000 },
+                { 2012,  1, 23, ChronoField.EPOCH_DAY,      -719_528, 365_000_000 },
         };
     }
 
-    @Test (dataProvider = "ranges")
-    public void test_range (final int year, final int month, final int dom, final TemporalField field, final int expectedMin, final int expectedMax) {
-        assertEquals (InternationalFixedDate.of (year, month, dom).range (field), ValueRange.of (expectedMin, expectedMax));
+    @Test(dataProvider = "ranges")
+    public void test_range(
+            final int year,
+            final int month,
+            final int dom,
+            final TemporalField field,
+            final int expectedMin,
+            final int expectedMax) {
+        for (int m = month; m < 14; m++) {
+            assertEquals(InternationalFixedDate.of(year, m, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+        }
     }
 
-    @Test (expectedExceptions = UnsupportedTemporalTypeException.class)
-    public void test_range_unsupported () {
-        InternationalFixedDate.of (2012, 6, 28).range (ChronoField.MINUTE_OF_DAY);
+    @DataProvider(name = "rangesLeapAndYearDay")
+    Object[][] data_ranges_leap_and_year_day() {
+        return new Object[][] {
+                { InternationalFixedDate.of (2011, false, true), ChronoField.DAY_OF_MONTH,          1,  28 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.DAY_OF_MONTH,          1,  28 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.DAY_OF_MONTH,          1,  28 },
+
+                { InternationalFixedDate.of (2011, false, true), ChronoField.DAY_OF_WEEK,           1,   7 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.DAY_OF_WEEK,           1,   7 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.DAY_OF_WEEK,           1,   7 },
+
+                { InternationalFixedDate.of (2011, false, true), ChronoField.DAY_OF_YEAR,           1, 365 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.DAY_OF_YEAR,           1, 366 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.DAY_OF_YEAR,           1, 366 },
+
+                { InternationalFixedDate.of (2011, false, true), ChronoField.MONTH_OF_YEAR,         1,  13 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.MONTH_OF_YEAR,         1,  13 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.MONTH_OF_YEAR,         1,  13 },
+
+                { InternationalFixedDate.of (2011, false, true), ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+
+                { InternationalFixedDate.of (2011, false, true), ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
+
+                { InternationalFixedDate.of (2011, false, true), ChronoField.YEAR_OF_ERA,           1,    999_999 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.YEAR_OF_ERA,           1,    999_999 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.YEAR_OF_ERA,           1,    999_999 },
+
+                { InternationalFixedDate.of (2011, false, true), ChronoField.YEAR,                  1,    999_999 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.YEAR,                  1,    999_999 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.YEAR,                  1,    999_999 },
+
+                { InternationalFixedDate.of (2011, false, true), ChronoField.EPOCH_DAY,      -719_528, 365_000_000 },
+                { InternationalFixedDate.of (2012, true, false), ChronoField.EPOCH_DAY,      -719_528, 365_000_000 },
+                { InternationalFixedDate.of (2012, false, true), ChronoField.EPOCH_DAY,      -719_528, 365_000_000 },
+        };
+    }
+
+    @Test(dataProvider = "rangesLeapAndYearDay")
+    public void test_range_leap_and_year_day(
+            final InternationalFixedDate date,
+            final TemporalField field,
+            final int expectedMin,
+            final int expectedMax) {
+        assertEquals(date.range(field), ValueRange.of(expectedMin, expectedMax));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_range_unsupported() {
+        InternationalFixedDate.of(2012, 6, 28).range(ChronoField.MINUTE_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
     // InternationalFixedDate.getLong
     //-----------------------------------------------------------------------
-    @DataProvider (name = "getLong")
-    Object[][] data_getLong () {
+    @DataProvider(name = "getLong")
+    Object[][] data_getLong() {
         return new Object[][] {
-                { 2014, 5, 26, ChronoField.DAY_OF_WEEK, 7 },
-                { 2014, 5, 26, ChronoField.DAY_OF_MONTH, 26 },
-                { 2014, 5, 26, ChronoField.DAY_OF_YEAR, 28 + 28 + 28 + 28 + 26 },
-                { 2014, 5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 5 },
-                { 2014, 5, 26, ChronoField.ALIGNED_WEEK_OF_MONTH, 4 },
-                { 2014, 5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5 },
-                { 2014, 5, 26, ChronoField.ALIGNED_WEEK_OF_YEAR, 20 },
-                { 2014, 5, 26, ChronoField.MONTH_OF_YEAR, 5 },
-                { 2014, 5, 26, ChronoField.PROLEPTIC_MONTH, 2014 * 13 + 5 - 1 },
-                { 2014, 5, 26, ChronoField.YEAR, 2014 },
-                { 2014, 5, 26, ChronoField.ERA, 1 },
-                { 1, 6, 8, ChronoField.ERA, 1 },
-                { 0, 6, 8, ChronoField.ERA, 0 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 4 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_MONTH, 26 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_YEAR, 5 * 28 - 2 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 5 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_MONTH, 4 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 20 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR, 5 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.PROLEPTIC_MONTH, 2014 * 13 + 4 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR, 2014 },
+            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ERA, 1 },
+            { InternationalFixedDate.of(   1,  6,  8), ChronoField.ERA, 1 },
+            { InternationalFixedDate.of(2014,  5, 26), WeekFields.ISO.dayOfWeek(), 4 },
 
-                { 2014, 5, 26, WeekFields.ISO.dayOfWeek (), 7 },
+            { InternationalFixedDate.of(2007, false, true), ChronoField.DAY_OF_WEEK, 7 },
+            { InternationalFixedDate.of(2008, true, false), ChronoField.DAY_OF_WEEK, 7 },
+            { InternationalFixedDate.of(2008, false, true), ChronoField.DAY_OF_WEEK, 7 },
+
+            { InternationalFixedDate.of(2007, false, true), ChronoField.DAY_OF_MONTH, 29 },
+            { InternationalFixedDate.of(2008, true, false), ChronoField.DAY_OF_MONTH, 1 },
+            { InternationalFixedDate.of(2008, false, true), ChronoField.DAY_OF_MONTH, 29 },
+
+            { InternationalFixedDate.of(2007, false, true), ChronoField.DAY_OF_YEAR, 365 },
+            { InternationalFixedDate.of(2008, true, false), ChronoField.DAY_OF_YEAR, 169 },
+            { InternationalFixedDate.of(2008, false, true), ChronoField.DAY_OF_YEAR, 366 },
+
+            { InternationalFixedDate.of(2007, false, true), ChronoField.MONTH_OF_YEAR, 13 },
+            { InternationalFixedDate.of(2008, true, false), ChronoField.MONTH_OF_YEAR, 7 },
+            { InternationalFixedDate.of(2008, false, true), ChronoField.MONTH_OF_YEAR, 13 },
+
+            { InternationalFixedDate.of(2007, false, true), ChronoField.PROLEPTIC_MONTH, 2007 * 13 + 12 },
+            { InternationalFixedDate.of(2008, true, false), ChronoField.PROLEPTIC_MONTH, 2008 * 13 + 6 },
+            { InternationalFixedDate.of(2008, false, true), ChronoField.PROLEPTIC_MONTH, 2008 * 13 + 12 },
+
+            { InternationalFixedDate.of(2007, false, true), ChronoField.YEAR, 2007 },
+            { InternationalFixedDate.of(2008, true, false), ChronoField.YEAR, 2008 },
+            { InternationalFixedDate.of(2008, false, true), ChronoField.YEAR, 2008 },
+
+            { InternationalFixedDate.of(2007, false, true), ChronoField.ERA, 1 },
+            { InternationalFixedDate.of(2008, true, false), ChronoField.ERA, 1 },
+            { InternationalFixedDate.of(2008, false, true), ChronoField.ERA, 1 },
+
+            { InternationalFixedDate.of(2007, false, true), WeekFields.ISO.dayOfWeek(), 7 },
+            { InternationalFixedDate.of(2008, true, false), WeekFields.ISO.dayOfWeek(), 7 },
+            { InternationalFixedDate.of(2008, false, true), WeekFields.ISO.dayOfWeek(), 7 },
         };
     }
 
-    @Test (dataProvider = "getLong")
-    public void test_getLong (final int year, final int month, final int dom, final TemporalField field, final long expected) {
-        assertEquals (InternationalFixedDate.of (year, month, dom).getLong (field), expected);
+    @Test(dataProvider = "getLong")
+    public void test_data_getLong(
+            final InternationalFixedDate date,
+            final TemporalField field,
+            final long expected) {
+        assertEquals(date.getLong(field), expected);
     }
 
-    @Test (expectedExceptions = UnsupportedTemporalTypeException.class)
-    public void test_getLong_unsupported () {
-        InternationalFixedDate.of (2012, 6, 28).getLong (ChronoField.MINUTE_OF_DAY);
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_getLong_unsupported() {
+        InternationalFixedDate.of(2012, 6, 28).getLong(ChronoField.MINUTE_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
     // InternationalFixedDate.with
     //-----------------------------------------------------------------------
-    @DataProvider (name = "with")
-    Object[][] data_with () {
+    @DataProvider(name = "with")
+    Object[][] data_with() {
         return new Object[][] {
-                { 2014, 5, 26, ChronoField.DAY_OF_WEEK, 3, 2014, 5, 22 },
-                { 2014, 5, 26, ChronoField.DAY_OF_WEEK, 4, 2014, 5, 23 },
-                { 2014, 5, 26, ChronoField.DAY_OF_MONTH, 28, 2014, 5, 28 },
-                { 2014, 5, 26, ChronoField.DAY_OF_MONTH, 26, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.DAY_OF_YEAR, 364, 2014, 13, 28 },
-                { 2014, 5, 26, ChronoField.DAY_OF_YEAR, 138, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 5, 24 },
-                { 2014, 5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.ALIGNED_WEEK_OF_MONTH, 1, 2014, 5, 5 },
-                { 2014, 5, 26, ChronoField.ALIGNED_WEEK_OF_MONTH, 4, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2014, 5, 24 },
-                { 2014, 5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.ALIGNED_WEEK_OF_YEAR, 23, 2014, 6, 19 },
-                { 2014, 5, 26, ChronoField.ALIGNED_WEEK_OF_YEAR, 20, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.MONTH_OF_YEAR, 7, 2014, 7, 26 },
-                { 2014, 5, 26, ChronoField.MONTH_OF_YEAR, 5, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 4, 2013, 5, 26 },
-                { 2014, 5, 26, ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 5, 2013, 6, 26 },
-                { 2014, 5, 26, ChronoField.YEAR, 2012, 2012, 5, 26 },
-                { 2014, 5, 26, ChronoField.YEAR, 2014, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.YEAR_OF_ERA, 2012, 2012, 5, 26 },
-                { 2014, 5, 26, ChronoField.YEAR_OF_ERA, 2014, 2014, 5, 26 },
-                { 2014, 5, 26, ChronoField.ERA, 1, 2014, 5, 26 },
-
-                { 2011, 3, 28, ChronoField.MONTH_OF_YEAR, 13, 2011, 13, 28 },
-                { 2012, 3, 28, ChronoField.MONTH_OF_YEAR, 13, 2012, 13, 28 },
-                { 2012, 3, 28, ChronoField.MONTH_OF_YEAR, 6, 2012, 6, 28 },
+                { 2014,  5, 26, ChronoField.DAY_OF_WEEK, 3, 2014, 5, 25 },
+                { 2014,  5, 26, ChronoField.DAY_OF_WEEK, 4, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.DAY_OF_MONTH, 28, 2014, 5, 28 },
+                { 2014,  5, 26, ChronoField.DAY_OF_MONTH, 26, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.DAY_OF_YEAR, 364, 2014, 13, 28 },
+                { 2014,  5, 26, ChronoField.DAY_OF_YEAR, 138, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 5, 24 },
+                { 2014,  5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.ALIGNED_WEEK_OF_MONTH, 1, 2014, 5, 5 },
+                { 2014,  5, 26, ChronoField.ALIGNED_WEEK_OF_MONTH, 4, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2014, 5, 24 },
+                { 2014,  5, 26, ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.ALIGNED_WEEK_OF_YEAR, 23, 2014, 6, 19 },
+                { 2014,  5, 26, ChronoField.ALIGNED_WEEK_OF_YEAR, 20, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.MONTH_OF_YEAR, 7, 2014, 7, 26 },
+                { 2014,  5, 26, ChronoField.MONTH_OF_YEAR, 5, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 4, 2013, 5, 26 },
+                { 2014,  5, 26, ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 5, 2013, 6, 26 },
+                { 2014,  5, 26, ChronoField.YEAR, 2012, 2012, 5, 26 },
+                { 2014,  5, 26, ChronoField.YEAR, 2014, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.YEAR_OF_ERA, 2012, 2012, 5, 26 },
+                { 2014,  5, 26, ChronoField.YEAR_OF_ERA, 2014, 2014, 5, 26 },
+                { 2014,  5, 26, ChronoField.ERA, 1, 2014, 5, 26 },
+                { 2011,  3, 28, ChronoField.MONTH_OF_YEAR, 13, 2011, 13, 28 },
+                { 2012,  3, 28, ChronoField.MONTH_OF_YEAR, 13, 2012, 13, 28 },
+                { 2012,  3, 28, ChronoField.MONTH_OF_YEAR, 6, 2012, 6, 28 },
                 { 2012, 13, 7, ChronoField.YEAR, 2011, 2011, 13, 7 },
-                { 2014, 5, 26, WeekFields.ISO.dayOfWeek (), 3, 2014, 5, 22 },
+                { 2014,  5, 26, WeekFields.ISO.dayOfWeek(), 3, 2014, 5, 25 },
         };
     }
 
-    @Test (dataProvider = "with")
-    public void test_with_TemporalField (
+    @Test(dataProvider = "with")
+    public void test_with_TemporalField(
             final int year,
             final int month,
             final int dom,
@@ -507,116 +684,107 @@ public class TestInternationalFixedChronology {
             final int expectedYear,
             final int expectedMonth,
             final int expectedDom) {
-        assertEquals (InternationalFixedDate.of (year, month, dom).with (field, value), InternationalFixedDate.of (expectedYear, expectedMonth, expectedDom));
+        assertEquals(InternationalFixedDate.of(year, month, dom).with(field, value), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @Test (expectedExceptions = UnsupportedTemporalTypeException.class)
-    public void test_with_TemporalField_unsupported () {
-        InternationalFixedDate.of (2012, 6, 28).with (ChronoField.MINUTE_OF_DAY, 0);
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_with_TemporalField_unsupported() {
+        InternationalFixedDate.of(2012, 6, 28).with(ChronoField.MINUTE_OF_DAY, 0);
     }
 
     //-----------------------------------------------------------------------
     // InternationalFixedDate.with(TemporalAdjuster)
     //-----------------------------------------------------------------------
     @Test
-    public void test_adjust_toLastDayOfMonth () {
-        InternationalFixedDate base = InternationalFixedDate.of (2012, 6, 23);
-        InternationalFixedDate test = base.with (TemporalAdjusters.lastDayOfMonth ());
-        assertEquals (test, InternationalFixedDate.of (2012, 6, 29));
+    public void test_adjust_toLastDayOfMonth() {
+        InternationalFixedDate base = InternationalFixedDate.of(2012, 6, 23);
+        InternationalFixedDate test = (InternationalFixedDate) base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, InternationalFixedDate.of(2012, 6, 28));
 
-        base = InternationalFixedDate.of (2012, 13, 2);
-        test = base.with (TemporalAdjusters.lastDayOfMonth ());
-        assertEquals (test, InternationalFixedDate.of (2012, 13, 29));
+        base = InternationalFixedDate.of(2012, 13, 2);
+        test = (InternationalFixedDate) base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, InternationalFixedDate.of(2012, 13, 28));
     }
 
     //-----------------------------------------------------------------------
     // InternationalFixedDate.with(Local*)
     //-----------------------------------------------------------------------
     @Test
-    public void test_adjust_toLocalDate () {
-        InternationalFixedDate date = InternationalFixedDate.of (2000, 1, 4);
-        InternationalFixedDate test = date.with (LocalDate.of (2012, 7, 14));
-        assertEquals (test, InternationalFixedDate.of (2012, 7, 27));
+    public void test_adjust_toLocalDate() {
+        InternationalFixedDate date = InternationalFixedDate.of(2000, 1, 4);
+        InternationalFixedDate test = (InternationalFixedDate) date.with(LocalDate.of(2012, 7, 14));
+        assertEquals(test, InternationalFixedDate.of(2012, 7, 27));
     }
 
-    @Test (expectedExceptions = DateTimeException.class)
-    public void test_adjust_toMonth () {
-        InternationalFixedDate date = InternationalFixedDate.of (2000, 1, 4);
-        date.with (Month.APRIL);
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_adjust_toMonth() {
+        InternationalFixedDate date = InternationalFixedDate.of(2000, 1, 4);
+        date.with(Month.APRIL);
     }
 
     //-----------------------------------------------------------------------
     // LocalDate.with(InternationalFixedDate)
     //-----------------------------------------------------------------------
     @Test
-    public void test_LocalDate_adjustToInternationalFixedDate () {
-        InternationalFixedDate date = InternationalFixedDate.of (2012, 6, 15);
-        LocalDate test = LocalDate.MIN.with (date);
-        assertEquals (test, LocalDate.of (2012, 6, 4));
+    public void test_LocalDate_adjustToInternationalFixedDate() {
+        InternationalFixedDate date = InternationalFixedDate.of(2012, 6, 15);
+        LocalDate test = LocalDate.MIN.with(date);
+        assertEquals(test, LocalDate.of(2012, 6, 3));
     }
 
     @Test
-    public void test_LocalDateTime_adjustToInternationalFixedDate () {
-        InternationalFixedDate date = InternationalFixedDate.of (2012, 6, 15);
-        LocalDateTime test = LocalDateTime.MIN.with (date);
-        assertEquals (test, LocalDateTime.of (2012, 6, 4, 0, 0));
+    public void test_LocalDateTime_adjustToInternationalFixedDate() {
+        InternationalFixedDate date = InternationalFixedDate.of(2012, 6, 15);
+        LocalDateTime test = LocalDateTime.MIN.with(date);
+        assertEquals(test, LocalDateTime.of(2012, 6, 3, 0, 0));
     }
 
     //-----------------------------------------------------------------------
     // InternationalFixedDate.plus
     //-----------------------------------------------------------------------
-    @DataProvider (name = "plus")
-    Object[][] data_plus () {
+    @DataProvider(name = "plus")
+    Object[][] data_plus() {
         return new Object[][] {
-                { 2014, 5, 26, 0, ChronoUnit.DAYS, 2014, 5, 26 },
-                { 2014, 5, 26, 8, ChronoUnit.DAYS, 2014, 6, 6 },
-                { 2014, 5, 26, -3, ChronoUnit.DAYS, 2014, 5, 23 },
-                { 2014, 5, 26, 0, ChronoUnit.WEEKS, 2014, 5, 26 },
-                { 2014, 5, 26, 3, ChronoUnit.WEEKS, 2014, 6, 19 },
-                { 2014, 5, 26, -5, ChronoUnit.WEEKS, 2014, 4, 19 },
-                { 2014, 5, 26, 0, ChronoUnit.MONTHS, 2014, 5, 26 },
-                { 2014, 5, 26, 3, ChronoUnit.MONTHS, 2014, 8, 26 },
-                { 2014, 5, 26, -5, ChronoUnit.MONTHS, 2013, 13, 26 },
-                { 2014, 5, 26, 0, ChronoUnit.YEARS, 2014, 5, 26 },
-                { 2014, 5, 26, 3, ChronoUnit.YEARS, 2017, 5, 26 },
-                { 2014, 5, 26, -5, ChronoUnit.YEARS, 2009, 5, 26 },
-                { 2014, 5, 26, 0, ChronoUnit.DECADES, 2014, 5, 26 },
-                { 2014, 5, 26, 3, ChronoUnit.DECADES, 2044, 5, 26 },
-                { 2014, 5, 26, -5, ChronoUnit.DECADES, 1964, 5, 26 },
-                { 2014, 5, 26, 0, ChronoUnit.CENTURIES, 2014, 5, 26 },
-                { 2014, 5, 26, 3, ChronoUnit.CENTURIES, 2314, 5, 26 },
-                { 2014, 5, 26, -5, ChronoUnit.CENTURIES, 1514, 5, 26 },
-                { 2014, 5, 26, 0, ChronoUnit.MILLENNIA, 2014, 5, 26 },
-                { 2014, 5, 26, 3, ChronoUnit.MILLENNIA, 5014, 5, 26 },
+                { 2014,  5, 26,  0, ChronoUnit.DAYS,      2014,  5, 26 },
+                { 2014,  5, 26,  8, ChronoUnit.DAYS,      2014,  6,  6 },
+                { 2014,  5, 26, -3, ChronoUnit.DAYS,      2014,  5, 23 },
+                { 2014,  5, 26,  0, ChronoUnit.WEEKS,     2014,  5, 26 },
+                { 2014,  5, 26,  3, ChronoUnit.WEEKS,     2014,  6, 19 },
+                { 2014,  5, 26, -5, ChronoUnit.WEEKS,     2014,  4, 19 },
+                { 2014,  5, 26,  0, ChronoUnit.MONTHS,    2014,  5, 26 },
+                { 2014,  5, 26,  3, ChronoUnit.MONTHS,    2014,  8, 26 },
+                { 2014,  5, 26, -5, ChronoUnit.MONTHS,    2013, 13, 26 },
+                { 2014,  5, 26,  0, ChronoUnit.YEARS,     2014,  5, 26 },
+                { 2014,  5, 26,  3, ChronoUnit.YEARS,     2017,  5, 26 },
+                { 2014,  5, 26, -5, ChronoUnit.YEARS,     2009,  5, 26 },
+                { 2014,  5, 26,  0, ChronoUnit.DECADES,   2014,  5, 26 },
+                { 2014,  5, 26,  3, ChronoUnit.DECADES,   2044,  5, 26 },
+                { 2014,  5, 26, -5, ChronoUnit.DECADES,   1964,  5, 26 },
+                { 2014,  5, 26,  0, ChronoUnit.CENTURIES, 2014,  5, 26 },
+                { 2014,  5, 26,  3, ChronoUnit.CENTURIES, 2314,  5, 26 },
+                { 2014,  5, 26, -5, ChronoUnit.CENTURIES, 1514,  5, 26 },
+                { 2014,  5, 26,  0, ChronoUnit.MILLENNIA, 2014,  5, 26 },
+                { 2014,  5, 26,  3, ChronoUnit.MILLENNIA, 5014,  5, 26 },
 
-                { 2012, 13, 6, 3, ChronoUnit.MONTHS, 2013, 3, 6 },
-                { 2011, 13, 26, 1, ChronoUnit.YEARS, 2012, 13, 26 },
-                { 2014, 13, 26, -2, ChronoUnit.YEARS, 2012, 13, 26 },
-                { 2012, 13, 26, -6, ChronoUnit.YEARS, 2006, 13, 26 },
-                { 2012, 13, 6, -6, ChronoUnit.YEARS, 2006, 13, 6 },
+                { 2012, 13,  6,  3, ChronoUnit.MONTHS, 2013,  3,  6 },
+                { 2011, 13, 26,  1, ChronoUnit.YEARS,  2012, 13, 26 },
+                { 2014, 13, 26, -2, ChronoUnit.YEARS,  2012, 13, 26 },
+                { 2012, 13, 26, -6, ChronoUnit.YEARS,  2006, 13, 26 },
+                { 2012, 13,  6, -6, ChronoUnit.YEARS,  2006, 13,  6 },
         };
     }
 
-    @DataProvider (name = "plusLeap")
-    Object[][] data_plus_leap () {
+    @DataProvider(name = "plusYearDay")
+    Object[][] data_plus_year_day() {
         return new Object[][] {
-                { 2012, 12, 26, 1, ChronoUnit.MONTHS, 2012, 13, 26 },
-                { 2012, 13, 26, -1, ChronoUnit.MONTHS, 2012, 12, 26 },
-                { 2012, 13, 6, 3, ChronoUnit.YEARS, 2015, 13, 6 },
+                { 2012, 13, 26,  1, ChronoUnit.MONTHS, 2013,  1, 26 },
+                { 2012, 13,  6,  3, ChronoUnit.YEARS,  2015, 13,  6 },
+                { 2015, 13,  6, -3, ChronoUnit.YEARS,  2012, 13,  6 },
         };
     }
 
-    @DataProvider (name = "minusLeap")
-    Object[][] data_minus_leap () {
-        return new Object[][] {
-                { 2012, 13, 7, -1, ChronoUnit.MONTHS, 2012, 12, 7 },
-                { 2012, 13, 7, 1, ChronoUnit.MONTHS, 2013, 1, 7 },
-                { 2012, 13, 6, 3, ChronoUnit.YEARS, 2015, 13, 6 },
-        };
-    }
-
-    @Test (dataProvider = "plus")
-    public void test_plus_TemporalUnit (
+    @Test(dataProvider = "plus")
+    public void test_plus_TemporalUnit(
             final int year,
             final int month,
             final int dom,
@@ -625,24 +793,11 @@ public class TestInternationalFixedChronology {
             final int expectedYear,
             final int expectedMonth,
             final int expectedDom) {
-        assertEquals (InternationalFixedDate.of (year, month, dom).plus (amount, unit), InternationalFixedDate.of (expectedYear, expectedMonth, expectedDom));
+        assertEquals(InternationalFixedDate.of(year, month, dom).plus(amount, unit), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @Test (dataProvider = "plusLeap")
-    public void test_plus_leap_TemporalUnit (
-            final int year,
-            final int month,
-            final int dom,
-            final long amount,
-            final TemporalUnit unit,
-            final int expectedYear,
-            final int expectedMonth,
-            final int expectedDom) {
-        test_plus_TemporalUnit (year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
-    }
-
-    @Test (dataProvider = "plus")
-    public void test_minus_TemporalUnit (
+    @Test(dataProvider = "plus")
+    public void test_minus_TemporalUnit(
             final int expectedYear,
             final int expectedMonth,
             final int expectedDom,
@@ -651,11 +806,41 @@ public class TestInternationalFixedChronology {
             final int year,
             final int month,
             final int dom) {
-        assertEquals (InternationalFixedDate.of (year, month, dom).minus (amount, unit), InternationalFixedDate.of (expectedYear, expectedMonth, expectedDom));
+        assertEquals(InternationalFixedDate.of(year, month, dom).minus(amount, unit), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @Test (dataProvider = "minusLeap")
-    public void test_minus_leap_TemporalUnit (
+    @DataProvider(name = "plusLeap")
+    Object[][] data_plus_leap() {
+        return new Object[][] {
+                { 2012,  1, ChronoUnit.MONTHS, 2012,  8,  1 },
+                { 2012,  3, ChronoUnit.YEARS,  2015,  7,  1 },
+        };
+    }
+
+    @Test(dataProvider = "plusLeap")
+    public void test_plus_leap_TemporalUnit(
+            final int year,
+            final long amount,
+            final TemporalUnit unit,
+            final int expectedYear,
+            final int expectedMonth,
+            final int expectedDom) {
+        InternationalFixedDate leapDate = InternationalFixedDate.of(year, true, false);
+        assertEquals(leapDate.plus(amount, unit), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @DataProvider(name = "minusYearDay")
+    Object[][] data_minus_year_day() {
+        return new Object[][] {
+                { 2012, 13,  7, -1, ChronoUnit.MONTHS, 2012, 12,  7 },
+                { 2013,  1, 26, -1, ChronoUnit.MONTHS, 2012, 13, 26 },
+                { 2012, 13,  7, -1, ChronoUnit.MONTHS, 2012, 12,  7 },
+                { 2012, 13,  6, -3, ChronoUnit.YEARS,  2009, 13,  6 },
+        };
+    }
+
+    @Test(dataProvider = "minusYearDay")
+    public void test_minus_year_day_TemporalUnit(
             final int year,
             final int month,
             final int dom,
@@ -664,59 +849,79 @@ public class TestInternationalFixedChronology {
             final int expectedYear,
             final int expectedMonth,
             final int expectedDom) {
-        test_minus_TemporalUnit (year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
+        test_minus_TemporalUnit(year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
     }
 
-    @Test (expectedExceptions = UnsupportedTemporalTypeException.class)
-    public void test_plus_TemporalUnit_unsupported () {
-        InternationalFixedDate.of (2012, 6, 10).plus (0, ChronoUnit.MINUTES);
+    @DataProvider(name = "minusLeap")
+    Object[][] data_minus_leap() {
+        return new Object[][] {
+                { 2012, 1, ChronoUnit.MONTHS, 2012,  6,  1 },
+                { 2012, 8, ChronoUnit.YEARS,  2004,  7,  1 },
+        };
+    }
+
+    @Test(dataProvider = "minusLeap")
+    public void test_minus_leap_TemporalUnit(
+            final int year,
+            final long amount,
+            final TemporalUnit unit,
+            final int expectedYear,
+            final int expectedMonth,
+            final int expectedDom) {
+        InternationalFixedDate leapDate = InternationalFixedDate.of(year, true, false);
+        assertEquals(leapDate.minus(amount, unit), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_plus_TemporalUnit_unsupported() {
+        InternationalFixedDate.of(2012, 6, 10).plus(0, ChronoUnit.MINUTES);
     }
 
     //-----------------------------------------------------------------------
     // InternationalFixedDate.until
     //-----------------------------------------------------------------------
-    @DataProvider (name = "until")
-    Object[][] data_until () {
+    @DataProvider(name = "until")
+    Object[][] data_until() {
         return new Object[][] {
-                { 2014, 5, 26, 2014, 5, 26, ChronoUnit.DAYS, 0 },
-                { 2014, 5, 26, 2014, 6, 4, ChronoUnit.DAYS, 6 },
-                { 2014, 5, 26, 2014, 5, 20, ChronoUnit.DAYS, -6 },
-                { 2014, 5, 26, 2014, 5, 26, ChronoUnit.WEEKS, 0 },
-                { 2014, 5, 26, 2014, 6, 4, ChronoUnit.WEEKS, 0 },
-                { 2014, 5, 26, 2014, 6, 5, ChronoUnit.WEEKS, 1 },
-                { 2014, 5, 26, 2014, 5, 26, ChronoUnit.MONTHS, 0 },
-                { 2014, 5, 26, 2014, 6, 25, ChronoUnit.MONTHS, 0 },
-                { 2014, 5, 26, 2014, 6, 26, ChronoUnit.MONTHS, 1 },
-                { 2014, 5, 26, 2014, 5, 26, ChronoUnit.YEARS, 0 },
-                { 2014, 5, 26, 2015, 5, 25, ChronoUnit.YEARS, 0 },
-                { 2014, 5, 26, 2015, 5, 26, ChronoUnit.YEARS, 1 },
-                { 2014, 5, 26, 2014, 5, 26, ChronoUnit.DECADES, 0 },
-                { 2014, 5, 26, 2024, 5, 25, ChronoUnit.DECADES, 0 },
-                { 2014, 5, 26, 2024, 5, 26, ChronoUnit.DECADES, 1 },
-                { 2014, 5, 26, 2014, 5, 26, ChronoUnit.CENTURIES, 0 },
-                { 2014, 5, 26, 2114, 5, 25, ChronoUnit.CENTURIES, 0 },
-                { 2014, 5, 26, 2114, 5, 26, ChronoUnit.CENTURIES, 1 },
-                { 2014, 5, 26, 2014, 5, 26, ChronoUnit.MILLENNIA, 0 },
-                { 2014, 5, 26, 3014, 5, 25, ChronoUnit.MILLENNIA, 0 },
-                { 2014, 5, 26, 3014, 5, 26, ChronoUnit.MILLENNIA, 1 },
+                { 2014,  5, 26, 2014,  5, 26, ChronoUnit.DAYS, 0 },
+                { 2014,  5, 26, 2014,  6,  4, ChronoUnit.DAYS, 6 },
+                { 2014,  5, 26, 2014,  5, 20, ChronoUnit.DAYS, -6 },
+                { 2014,  5, 26, 2014,  5, 26, ChronoUnit.WEEKS, 0 },
+                { 2014,  5, 26, 2014,  6,  4, ChronoUnit.WEEKS, 0 },
+                { 2014,  5, 26, 2014,  6,  5, ChronoUnit.WEEKS, 1 },
+                { 2014,  5, 26, 2014,  5, 26, ChronoUnit.MONTHS, 0 },
+                { 2014,  5, 26, 2014,  6, 25, ChronoUnit.MONTHS, 0 },
+                { 2014,  5, 26, 2014,  6, 26, ChronoUnit.MONTHS, 1 },
+                { 2014,  5, 26, 2014,  5, 26, ChronoUnit.YEARS, 0 },
+                { 2014,  5, 26, 2015,  5, 25, ChronoUnit.YEARS, 0 },
+                { 2014,  5, 26, 2015,  5, 26, ChronoUnit.YEARS, 1 },
+                { 2014,  5, 26, 2014,  5, 26, ChronoUnit.DECADES, 0 },
+                { 2014,  5, 26, 2024,  5, 25, ChronoUnit.DECADES, 0 },
+                { 2014,  5, 26, 2024,  5, 26, ChronoUnit.DECADES, 1 },
+                { 2014,  5, 26, 2014,  5, 26, ChronoUnit.CENTURIES, 0 },
+                { 2014,  5, 26, 2114,  5, 25, ChronoUnit.CENTURIES, 0 },
+                { 2014,  5, 26, 2114,  5, 26, ChronoUnit.CENTURIES, 1 },
+                { 2014,  5, 26, 2014,  5, 26, ChronoUnit.MILLENNIA, 0 },
+                { 2014,  5, 26, 3014,  5, 25, ChronoUnit.MILLENNIA, 0 },
+                { 2014,  5, 26, 3014,  5, 26, ChronoUnit.MILLENNIA, 1 },
 
                 { 2011, 13, 26, 2013, 13, 26, ChronoUnit.YEARS, 2 },
                 { 2011, 13, 26, 2012, 13, 26, ChronoUnit.YEARS, 1 },
                 { 2012, 13, 26, 2011, 13, 26, ChronoUnit.YEARS, -1 },
                 { 2012, 13, 26, 2013, 13, 26, ChronoUnit.YEARS, 1 },
-                { 2011, 13, 6, 2011, 13, 6, ChronoUnit.YEARS, 0 },
-                { 2012, 13, 6, 2012, 13, 6, ChronoUnit.YEARS, 0 },
-                { 2011, 13, 1, 2011, 13, 1, ChronoUnit.YEARS, 0 },
-                { 2012, 13, 7, 2012, 13, 7, ChronoUnit.YEARS, 0 },
-                { 2011, 12, 28, 2012, 13, 1, ChronoUnit.YEARS, 1 },
-                { 2012, 13, 1, 2011, 13, 1, ChronoUnit.YEARS, -1 },
-                { 2013, 13, 6, 2012, 13, 6, ChronoUnit.YEARS, -1 },
-                { 2012, 13, 6, 2013, 13, 6, ChronoUnit.YEARS, 1 },
+                { 2011, 13,  6, 2011, 13,  6, ChronoUnit.YEARS, 0 },
+                { 2012, 13,  6, 2012, 13,  6, ChronoUnit.YEARS, 0 },
+                { 2011, 13,  1, 2011, 13,  1, ChronoUnit.YEARS, 0 },
+                { 2012, 13,  7, 2012, 13,  7, ChronoUnit.YEARS, 0 },
+                { 2011, 12, 28, 2012, 12, 28, ChronoUnit.YEARS, 1 },
+                { 2012, 13,  1, 2011, 13,  1, ChronoUnit.YEARS, -1 },
+                { 2013, 13,  6, 2012, 13,  6, ChronoUnit.YEARS, -1 },
+                { 2012, 13,  6, 2013, 13,  6, ChronoUnit.YEARS, 1 },
         };
     }
 
-    @Test (dataProvider = "until")
-    public void test_until_TemporalUnit (
+    @Test(dataProvider = "until")
+    public void test_until_TemporalUnit(
             final int year1,
             final int month1,
             final int dom1,
@@ -725,78 +930,170 @@ public class TestInternationalFixedChronology {
             final int dom2,
             final TemporalUnit unit,
             final long expected) {
-        InternationalFixedDate start = InternationalFixedDate.of (year1, month1, dom1);
-        InternationalFixedDate end = InternationalFixedDate.of (year2, month2, dom2);
-
-        assertEquals (start.until (end, unit), expected);
-    }
-
-    @Test (expectedExceptions = UnsupportedTemporalTypeException.class)
-    public void test_until_TemporalUnit_unsupported () {
-        InternationalFixedDate start = InternationalFixedDate.of (2012, 6, 28);
-        InternationalFixedDate end = InternationalFixedDate.of (2012, 7, 1);
-        start.until (end, ChronoUnit.MINUTES);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_plus_Period () {
-        assertEquals (InternationalFixedDate.of (2014, 5, 26).plus (InternationalFixedChronology.INSTANCE.period (0, 2, 2)), InternationalFixedDate.of (2014, 7, 28));
-    }
-
-    @Test (expectedExceptions = DateTimeException.class)
-    public void test_plus_Period_ISO () {
-        assertEquals (InternationalFixedDate.of (2014, 5, 26).plus (Period.ofMonths (2)), InternationalFixedDate.of (2014, 7, 26));
+        InternationalFixedDate start = InternationalFixedDate.of(year1, month1, dom1);
+        InternationalFixedDate end = InternationalFixedDate.of(year2, month2, dom2);
+        assertEquals(start.until(end, unit), expected);
     }
 
     @Test
-    public void test_minus_Period () {
-        ChronoPeriod period = InternationalFixedChronology.INSTANCE.period (0, 2, 3);
-        assertEquals (InternationalFixedDate.of (2014, 5, 26).minus (period), InternationalFixedDate.of (2014, 3, 23));
+    public void test_until_leap() {
+        InternationalFixedDate leapDay = InternationalFixedDate.of(2008, true, false);
+        InternationalFixedDate yearDay = InternationalFixedDate.of(2008, false, true);
+        assertEquals(leapDay.until(yearDay, ChronoUnit.DAYS), InternationalFixedChronology.DAYS_IN_MONTH * 7 + 1);
+        assertEquals(leapDay.until(yearDay, ChronoUnit.MONTHS), 6);
+        assertEquals(yearDay.getDayOfYear(), InternationalFixedChronology.DAYS_IN_YEAR + 1);
     }
 
-    @Test (expectedExceptions = DateTimeException.class)
-    public void test_minus_Period_ISO () {
-        ChronoPeriod period = Period.ofMonths (2);
-        assertEquals (InternationalFixedDate.of (2014, 5, 26).minus (period), InternationalFixedDate.of (2014, 3, 26));
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_until_TemporalUnit_unsupported() {
+        InternationalFixedDate start = InternationalFixedDate.of(2012, 6, 28);
+        InternationalFixedDate end = InternationalFixedDate.of(2012, 7, 1);
+        start.until(end, ChronoUnit.MINUTES);
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // InternationalFixedDate.period
     //-----------------------------------------------------------------------
     @Test
-    void test_equals () {
-        InternationalFixedDate a1 = InternationalFixedDate.of (2000, 1, 3);
-        InternationalFixedDate a2 = InternationalFixedDate.of (2000, 1, 3);
-        InternationalFixedDate b = InternationalFixedDate.of (2000, 1, 4);
-        InternationalFixedDate c = InternationalFixedDate.of (2000, 2, 3);
-        InternationalFixedDate d = InternationalFixedDate.of (2001, 1, 3);
+    public void test_plus_Period() {
+        assertEquals(InternationalFixedDate.of(2014, 5, 26).plus(InternationalFixedChronology.INSTANCE.period(0, 2, 2)), InternationalFixedDate.of(2014, 7, 28));
+    }
 
-        assertEquals (a1.equals (a1), true);
-        assertEquals (a1.equals (a2), true);
-        assertEquals (a1.equals (b), false);
-        assertEquals (a1.equals (c), false);
-        assertEquals (a1.equals (d), false);
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_plus_Period_ISO() {
+        assertEquals(InternationalFixedDate.of(2014, 5, 26).plus(Period.ofMonths(2)), InternationalFixedDate.of(2014, 7, 26));
+    }
 
-        assertEquals (a1.equals (null), false);
-        assertEquals ("".equals (a1), false);
+    @Test
+    public void test_minus_Period() {
+        ChronoPeriod period = InternationalFixedChronology.INSTANCE.period(0, 2, 3);
+        assertEquals(InternationalFixedDate.of(2014, 5, 26).minus(period), InternationalFixedDate.of(2014, 3, 23));
+    }
 
-        assertEquals (a1.hashCode (), a2.hashCode ());
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_minus_Period_ISO() {
+        ChronoPeriod period = Period.ofMonths(2);
+        assertEquals(InternationalFixedDate.of(2014, 5, 26).minus(period), InternationalFixedDate.of(2014, 3, 26));
     }
 
     //-----------------------------------------------------------------------
-    // toString()
+    // InternationalFixedDate.equals
     //-----------------------------------------------------------------------
-    @DataProvider (name = "toString")
-    Object[][] data_toString () {
+    @Test
+    void test_equals() {
+        InternationalFixedDate a1 = InternationalFixedDate.of(2000, 1, 3);
+        InternationalFixedDate a2 = InternationalFixedDate.of(2000, 1, 3);
+        InternationalFixedDate b = InternationalFixedDate.of(2000, 1, 4);
+        InternationalFixedDate c = InternationalFixedDate.of(2000, 2, 3);
+        InternationalFixedDate d = InternationalFixedDate.of(2001, 1, 3);
+
+        assertEquals(a1.equals(a1), true);
+        assertEquals(a1.equals(a2), true);
+        assertEquals(a1.equals(b), false);
+        assertEquals(a1.equals(c), false);
+        assertEquals(a1.equals(d), false);
+
+        assertEquals(a1.equals(null), false);
+        assertEquals("".equals(a1), false);
+
+        assertEquals(a1.hashCode(), a2.hashCode());
+
+        InternationalFixedDate e = InternationalFixedDate.of(2001, false, true);
+        InternationalFixedDate f = (InternationalFixedDate) InternationalFixedDate.of(2001, 13, 28).plus(1, ChronoUnit.DAYS);
+        LocalDate iso = LocalDate.of(2001, 12, 31);
+
+        assertEquals(iso.toEpochDay(), e.toEpochDay());
+        assertEquals(iso.toEpochDay(), f.toEpochDay());
+        assertEquals(e, f);
+        assertEquals(e.toString(), f.toString());
+        assertEquals(e.toEpochDay(), f.toEpochDay());
+
+        e = InternationalFixedDate.of(2004, true, false);
+        f = (InternationalFixedDate) InternationalFixedDate.of(2004, 6, 28).plus(1, ChronoUnit.DAYS);
+        iso = LocalDate.of(2004, 6, 17);
+
+        assertEquals(iso.toEpochDay(), e.toEpochDay());
+        assertEquals(iso.toEpochDay(), f.toEpochDay());
+        assertEquals(e, f);
+        assertEquals(e.toString(), f.toString());
+        assertEquals(e.toEpochDay(), f.toEpochDay());
+
+        e = InternationalFixedDate.of(2004, false, true);
+        f = (InternationalFixedDate) InternationalFixedDate.of(2004, 13, 28).plus(1, ChronoUnit.DAYS);
+        iso = LocalDate.of(2004, 12, 31);
+
+        assertEquals(iso.toEpochDay(), e.toEpochDay());
+        assertEquals(iso.toEpochDay(), f.toEpochDay());
+        assertEquals(e, f);
+        assertEquals(e.toString(), f.toString());
+        assertEquals(e.toEpochDay(), f.toEpochDay());
+    }
+
+    //-----------------------------------------------------------------------
+    // InternationalFixedDate.toString
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "toString")
+    Object[][] data_toString() {
         return new Object[][] {
-                { InternationalFixedDate.of (1, 1, 1), "Ifc CE 1-01-01" },
-                { InternationalFixedDate.of (2012, 6, 23), "Ifc CE 2012-06-23" },
+                { InternationalFixedDate.of(   1,  1,  1), "Ifc CE 1-01-01" },
+                { InternationalFixedDate.of(2012,  6, 23), "Ifc CE 2012-06-23" },
+
+                { InternationalFixedDate.of(   1, false, true ), "Ifc CE 1-year-day" },
+                { InternationalFixedDate.of(2012, true , false), "Ifc CE 2012-leap-day" },
+                { InternationalFixedDate.of(2012, false, true ), "Ifc CE 2012-year-day" },
         };
     }
 
-    @Test (dataProvider = "toString")
-    public void test_toString (final InternationalFixedDate date, final String expected) {
-        assertEquals (date.toString (), expected);
+    @Test(dataProvider = "toString")
+    public void test_toString(final InternationalFixedDate date, final String expected) {
+        assertEquals(date.toString(), expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // InternationalFixedDate.getDayOfWeek
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_week_day () {
+        InternationalFixedDate date = InternationalFixedDate.of(1, 1, 1);
+        assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+
+        date = InternationalFixedDate.of(2004, 1, 1);
+        assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+
+        date = InternationalFixedDate.of(2004, false, true);
+        assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+        date = InternationalFixedDate.of(2004, true, false);
+        assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+        date = InternationalFixedDate.of(2003, false, true);
+        assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+
+        for (int year = 1; year < 3000; year++) {
+            for (int month = 10; month < 14; month++) {
+                date = InternationalFixedDate.of(year, month, 1);
+                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+                date = InternationalFixedDate.of(year, month, 4);
+                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.WEDNESDAY);
+                date = InternationalFixedDate.of(year, month, 7);
+                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SATURDAY);
+
+                date = InternationalFixedDate.of(year, month, 22);
+                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+                date = InternationalFixedDate.of(year, month, 26);
+                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.THURSDAY);
+
+                if (!InternationalFixedChronology.INSTANCE.isLeapYear(year)) {
+                    date = InternationalFixedDate.of(year, month, 28);
+                    assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SATURDAY);
+                }
+            }
+
+            if (InternationalFixedChronology.INSTANCE.isLeapYear(year)) {
+                date = InternationalFixedDate.of(year, true, false);
+                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+            }
+
+            date = InternationalFixedDate.of(year, false, true);
+            assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+        }
     }
 }
