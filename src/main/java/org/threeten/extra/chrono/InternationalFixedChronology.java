@@ -55,7 +55,7 @@ import java.util.List;
  * It shares the leap year rule with the Gregorian calendar.
  * Dates are aligned such that {@code 0001-01-01 (International Fixed)} is {@code 0001-01-01 (ISO)}.
  * <p>
- * This class is not proleptic. It implements only years starting at 1 onwards.
+ * This class is not proleptic.  It implements accepts only years greater or equal to 1.
  * <p>
  * This class implements a calendar where January 1st is the start of the year.
  * <p>
@@ -413,11 +413,11 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     @Override
     public int prolepticYear(final Era era, final int yearOfEra) {
         if (!(era instanceof InternationalFixedEra)) {
-            throw new ClassCastException("Invalid era:" + era);
+            throw new ClassCastException("Invalid era: " + era);
         }
 
         if (0 > yearOfEra) {
-            throw new DateTimeException("Invalid year of ear:" + yearOfEra);
+            throw new DateTimeException("Invalid year of era: " + yearOfEra);
         }
 
         return yearOfEra;
