@@ -1,4 +1,4 @@
-i/build/
+/build/
 /bin/
 /lib/
 /dist/
@@ -15,4 +15,3 @@ i/build/
 *.war
 *.ear
 **TempTest.java
-
