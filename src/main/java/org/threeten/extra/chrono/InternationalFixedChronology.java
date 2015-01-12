@@ -84,11 +84,11 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Serialization version UID.
      */
-    private static final long serialVersionUID = -4535518601999908130L;
+    private static final long serialVersionUID = -1050847936470712250L;
     /**
      * Standard 7-day week.
      */
-    private static final int DAYS_IN_WEEK = 7;
+    static final int DAYS_IN_WEEK = 7;
     /**
      * In all months, there are 4 complete weeks.
      */
@@ -101,6 +101,10 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * There are 4 weeks of 7 days, or 28 total days in a month.
      */
     static final int DAYS_IN_MONTH = WEEKS_IN_MONTH * DAYS_IN_WEEK;
+    /**
+     * Range of day-of-week.
+     */
+    static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(1, DAYS_IN_WEEK);
     /**
      * There are 13 months of 28 days, or 365 days in a (non-leap) year.
      */
@@ -136,17 +140,37 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      */
     static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(1, DAYS_IN_MONTH);
     /**
+     * Range of week of year.
+     */
+    static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(1, WEEKS_IN_YEAR);
+    /**
      * Range of aligned week of month, the weeks are always perfectly aligned.
      */
-    static final ValueRange ALIGNED_WEEK_OF_MONTH_RANGE = ValueRange.of(1, WEEKS_IN_MONTH);
+    static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(1, WEEKS_IN_MONTH);
     /**
      * Range of day of year.
+     */
+    static final ValueRange DAY_OF_YEAR_NORMAL_RANGE = ValueRange.of(1, DAYS_IN_YEAR);
+    /**
+     * Range of day of leap year.
+     */
+    static final ValueRange DAY_OF_YEAR_LEAP_RANGE = ValueRange.of(1, DAYS_IN_YEAR + 1);
+    /**
+     * Range of day of year, inclusive
      */
     static final ValueRange DAY_OF_YEAR_RANGE = ValueRange.of(1, DAYS_IN_YEAR, DAYS_IN_YEAR + 1);
     /**
      * Range of month of year.
      */
     static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(1, MONTHS_IN_YEAR);
+    /**
+     * Range of eras.
+     */
+    static final ValueRange ERA_RANGE = ValueRange.of(1, 1);
+    /**
+     * Empty range: [0, 0].
+     */
+    static final ValueRange EMPTY_RANGE = ValueRange.of(0, 0);
 
     /**
      * Public constructor, in order to satisfy the {@code ServiceLoader}.
@@ -395,6 +419,41 @@ public final class InternationalFixedChronology extends AbstractChronology imple
         return Arrays.<Era>asList(InternationalFixedEra.values());
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ValueRange range(final ChronoField field) {
+        switch (field) {
+            case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+            case DAY_OF_WEEK:
+                return DAY_OF_WEEK_RANGE;
+            case ALIGNED_WEEK_OF_MONTH:
+                return WEEK_OF_MONTH_RANGE;
+            case ALIGNED_WEEK_OF_YEAR:
+                return WEEK_OF_YEAR_RANGE;
+            case DAY_OF_MONTH:
+                return DAY_OF_MONTH_RANGE;
+            case DAY_OF_YEAR:
+                return DAY_OF_YEAR_RANGE;
+            case EPOCH_DAY:
+                return EPOCH_DAY_RANGE;
+            case ERA:
+                return ERA_RANGE;
+            case MONTH_OF_YEAR:
+                return MONTH_OF_YEAR_RANGE;
+            case PROLEPTIC_MONTH:
+                return PROLEPTIC_MONTH_RANGE;
+            case YEAR_OF_ERA:
+            case YEAR:
+                return YEAR_RANGE;
+            default:
+                return field.range();
+        }
+    }
+
     /**
      * Calculates the proleptic-year given the era and year-of-era.
      * <p>
@@ -421,45 +480,5 @@ public final class InternationalFixedChronology extends AbstractChronology imple
         }
 
         return yearOfEra;
-    }
-
-    /**
-     * Gets the range of valid values for the specified field.
-     * <p>
-     * All fields can be expressed as a {@code long} integer.
-     * This method returns an object that describes the valid range for that value.
-     * <p>
-     * Note that the result only describes the minimum and maximum valid values
-     * and it is important not to read too much into them. For example, there
-     * could be values within the range that are invalid for the field.
-     * <p>
-     * This method will return a result whether or not the chronology supports the field.
-     *
-     * @param field the field to get the range for, not null
-     * @return the range of valid values for the field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
-     */
-    @Override
-    public ValueRange range(final ChronoField field) {
-        switch(field) {
-            case PROLEPTIC_MONTH:
-                return PROLEPTIC_MONTH_RANGE;
-            case YEAR_OF_ERA:
-                return YEAR_RANGE;
-            case YEAR:
-                return YEAR_RANGE;
-            case DAY_OF_MONTH:
-                return DAY_OF_MONTH_RANGE;
-            case ALIGNED_WEEK_OF_MONTH:
-                return ALIGNED_WEEK_OF_MONTH_RANGE;
-            case DAY_OF_YEAR:
-                return DAY_OF_YEAR_RANGE;
-            case MONTH_OF_YEAR:
-                return MONTH_OF_YEAR_RANGE;
-            case EPOCH_DAY:
-                return EPOCH_DAY_RANGE;
-            default:
-                return field.range();
-        }
     }
 }
