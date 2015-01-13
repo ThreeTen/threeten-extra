@@ -62,7 +62,7 @@ import java.util.List;
  * The fields are defined as follows:
  * <ul>
  * <li>era - There is only one era, the current 'Common Era' (CE).
- * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year zero.
+ * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year 1.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the current era.
  * <li>month-of-year - There are 13 months in an International Fixed year, numbered from 1 to 13.
  * <li>day-of-month - There are 28 days in an International Fixed month, numbered from 1 to 28.
@@ -118,7 +118,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      */
     private static final int DAYS_PER_CYCLE = 146097;
     /**
-     * The number of days from year zero to year 1970.
+     * The number of days from year zero to year 1970, still the era only allows year 1 and higher.
      * There are five 400 year cycles from year zero to 2000.
      * There are 7 leap years from 1970 to 2000.
      */
