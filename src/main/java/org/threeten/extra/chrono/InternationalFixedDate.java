@@ -309,8 +309,21 @@ public final class InternationalFixedDate
             throw new DateTimeException("Invalid epoch: " + epochDay);
         }
 
+        // The two values work great for any dates, just not the first (xxxx-01-01 IFC) or the last of the year (xxxx-year-day).
         long year = (400 * zeroDay) / DAYS_PER_CYCLE;
         long doy = zeroDay - (InternationalFixedChronology.DAYS_IN_YEAR * year + getLeapYearsBefore(year));
+
+        // In some cases, N-01-01 (January 1st) results in (N-1)-year-day, i.e. -1 day off.
+        if (doy == 366 && !InternationalFixedChronology.INSTANCE.isLeapYear(year)) {
+            year += 1;
+            doy = 1;
+        }
+
+        // In some cases, N-year-day results in (N+1)-00-00 (rubbish), in a way +1 day off.
+        if (doy == 0) {
+            year -= 1;
+            doy = 365 + (InternationalFixedChronology.INSTANCE.isLeapYear(year) ? 1 : 0);
+        }
 
         return ofYearDay((int) year, (int) doy);
     }
