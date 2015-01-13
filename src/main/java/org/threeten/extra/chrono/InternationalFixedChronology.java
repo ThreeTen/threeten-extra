@@ -70,7 +70,7 @@ import java.util.List;
  *  The days are numbered accordingly.
  * <li>leap-year - Leap years occur every 4 years, but skips 3 out of four centuries, i.e. when the century is not divisible by 400.
  *  This is the same rule in use for the Gregorian calendar.
- * <li>Week day - every month starts on a Sunday.  Leap-day and year-day are considered month-less Sundays.
+ * <li>Week day - every month starts on a Sunday.  Leap-day and year-day are neither part of a week, nor of any month.
  * </ul>
  *
  * <h3>Implementation Requirements</h3>
