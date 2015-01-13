@@ -140,18 +140,12 @@ public final class InternationalFixedDate
      * Creates an instance from validated data.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param isLeapDay     is it leap-day, month-less day between end of June and beginning of Sol
-     * @param isYearDay     is it year-day, month-less day between end of December of the old year and beginning of January of the following year
+     * @param dayOfYear     the day of the year
      * @return the International fixed date
      */
-    private InternationalFixedDate(final int prolepticYear, final boolean isLeapDay, final boolean isYearDay) {
+    private InternationalFixedDate(final int prolepticYear, final int dayOfYear) {
         this.prolepticYear = prolepticYear;
-
-        if (isLeapDay) {
-            this.dayOfYear = InternationalFixedChronology.DAYS_IN_MONTH * 6 + 1;
-        } else {
-            this.dayOfYear = InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear() ? 1 : 0);
-        }
+        this.dayOfYear = dayOfYear;
     }
 
     /**
@@ -221,19 +215,32 @@ public final class InternationalFixedDate
 
     /**
      * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the month-less days of leap-day and year-day.
+     * system from the proleptic-year, for the month-less days of leap-day, which follows the last day in June and precedes Sol 1.
      * <p/>
      * This returns a {@code InternationalFixedDate} with the specified fields.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param isLeapDay     is it leap-day, month-less day between end of June and beginning of Sol
-     * @param isYearDay     is it year-day, month-less day between end of December of the old year and beginning of January of the following year
      * @return the date in International fixed calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
      *                           or if the day-of-month is invalid for the month-year
      */
-    public static InternationalFixedDate of(final int prolepticYear, final boolean isLeapDay, final boolean isYearDay) {
-        return create(prolepticYear, isLeapDay, isYearDay);
+    public static InternationalFixedDate leapDay(final int prolepticYear) {
+        return createLeapDay(prolepticYear);
+    }
+
+    /**
+     * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
+     * system from the proleptic-year, for the month-less days of year-day, which follows the last day in December.
+     * <p/>
+     * This returns a {@code InternationalFixedDate} with the specified fields.
+     *
+     * @param prolepticYear the International fixed proleptic-year
+     * @return the date in International fixed calendar system, not null
+     * @throws DateTimeException if the value of any field is out of range,
+     *                           or if the day-of-month is invalid for the month-year
+     */
+    public static InternationalFixedDate yearDay(final int prolepticYear) {
+        return createYearDay(prolepticYear);
     }
 
     //-----------------------------------------------------------------------
@@ -283,7 +290,7 @@ public final class InternationalFixedDate
         boolean isLeapDay = isLeapYear && dayOfYear == 169;
 
         if (isYearDay || isLeapDay) {
-            return of(prolepticYear, isLeapDay, isYearDay);
+            return new InternationalFixedDate(prolepticYear, dayOfYear);
         }
 
         int doy = (isLeapYear && dayOfYear > 169) ? dayOfYear - 2 : dayOfYear - 1;
@@ -313,8 +320,10 @@ public final class InternationalFixedDate
         long year = (400 * zeroDay) / DAYS_PER_CYCLE;
         long doy = zeroDay - (InternationalFixedChronology.DAYS_IN_YEAR * year + InternationalFixedChronology.getLeapYearsBefore(year));
 
+        boolean isLeapYear = InternationalFixedChronology.INSTANCE.isLeapYear(year);
+
         // In some cases, N-01-01 (January 1st) results in (N-1)-year-day, i.e. -1 day off.
-        if (doy == 366 && !InternationalFixedChronology.INSTANCE.isLeapYear(year)) {
+        if (doy == 366 && !isLeapYear) {
             year += 1;
             doy = 1;
         }
@@ -322,7 +331,7 @@ public final class InternationalFixedDate
         // In some cases, N-year-day results in (N+1)-00-00 (rubbish), in a way +1 day off.
         if (doy == 0) {
             year -= 1;
-            doy = 365 + (InternationalFixedChronology.INSTANCE.isLeapYear(year) ? 1 : 0);
+            doy = 365 + (isLeapYear ? 1 : 0);
         }
 
         return ofYearDay((int) year, (int) doy);
@@ -337,8 +346,7 @@ public final class InternationalFixedDate
 
     //-----------------------------------------------------------------------
     /**
-     * Factory method, validates the given triplet year, month and dayOfMonth
-     * Leap day or year day must be created with {@link InternationalFixedDate#create(int,boolean,boolean)}.
+     * Factory method, validates the given triplet year, month and dayOfMonth.
      *
      * @param prolepticYear the International fixed proleptic-year
      * @param month         the International fixed month, from 1 to 13
@@ -351,38 +359,43 @@ public final class InternationalFixedDate
         InternationalFixedChronology.MONTH_OF_YEAR_RANGE.checkValidValue(month, ChronoField.MONTH_OF_YEAR);
         InternationalFixedChronology.DAY_OF_MONTH_RANGE.checkValidValue(dayOfMonth, ChronoField.DAY_OF_MONTH);
 
-        if (1 > prolepticYear) {
-            throw new DateTimeException("Invalid date: " + prolepticYear + '-' + month + '-' + dayOfMonth);
+        if (month < 1 || dayOfMonth < 1) {
+            throw new DateTimeException("Invalid date: " + prolepticYear + '/' + month + '/' + dayOfMonth);
         }
 
         return new InternationalFixedDate(prolepticYear, month, dayOfMonth);
     }
 
     /**
-     * Factory method, validates the given triplet year, month and dayOfMonth
+     * Factory method, validates the given year, accepts only valid leap-years.
+     * Leap-day is a month-less day between end of June and beginning of Sol.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param isLeapDay     is it leap-day, month-less day between end of June and beginning of Sol
-     * @param isYearDay     is it year-day, month-less day between end of December of the old year and beginning of January of the following year
      * @return the International fixed date
      * @throws DateTimeException if the date is invalid
      */
-    static InternationalFixedDate create(final int prolepticYear, final boolean isLeapDay, final boolean isYearDay) {
+    static InternationalFixedDate createLeapDay(final int prolepticYear) {
         InternationalFixedChronology.YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
 
-        if (1 > prolepticYear) {
-            throw new DateTimeException("Invalid date: " + prolepticYear);
-        }
-
-        if (isLeapDay == isYearDay) {
-            throw new DateTimeException("Invalid date: " + prolepticYear + " both leap-day and year-day are " + isYearDay);
-        }
-
-        if (isLeapDay && !InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
+        if (!InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
             throw new DateTimeException("Invalid leap day for year: " + prolepticYear);
         }
 
-        return new InternationalFixedDate(prolepticYear, isLeapDay, isYearDay);
+        return ofYearDay(prolepticYear, 169);
+    }
+
+    /**
+     * Factory method, accepts any year, will be validated further down.
+     * Year-day is a month-less day following the last day of December.
+     *
+     * @param prolepticYear the International fixed proleptic-year
+     * @return the International fixed date
+     * @throws DateTimeException if the date is invalid
+     */
+    static InternationalFixedDate createYearDay(final int prolepticYear) {
+        InternationalFixedChronology.YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
+
+        return ofYearDay(prolepticYear, 365 + (InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear) ? 1 : 0));
     }
 
     /**
@@ -392,8 +405,8 @@ public final class InternationalFixedDate
      * @return the resolved date, not null
      */
     private Object readResolve() {
-        if (isLeapDay() || isYearDay()) {
-            return InternationalFixedDate.of(prolepticYear, isLeapDay(), isYearDay());
+        if (isYearDay() || isLeapDay()) {
+            return new InternationalFixedDate(prolepticYear, getDayOfYear());
         }
 
         return InternationalFixedDate.of(prolepticYear, getMonth(), getDayOfMonth());
@@ -583,7 +596,7 @@ public final class InternationalFixedDate
         int newYear = (int) Math.addExact(getProlepticYear(), yearsToAdd);
 
         if (isYearDay()) {
-            return create(newYear, false, true);
+            return createYearDay(newYear);
         }
 
         int day = getDayOfMonth();
@@ -591,7 +604,7 @@ public final class InternationalFixedDate
 
         if (isLeapDay()) {
             if ((yearsToAdd & 3) == 0) {
-                return create(newYear, true, false);
+                return createLeapDay(newYear);
             }
 
             day = 1;

@@ -138,7 +138,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of day of month.
      */
-    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(1, DAYS_IN_MONTH);
+    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(-1, DAYS_IN_MONTH);
     /**
      * Range of week of year.
      */
