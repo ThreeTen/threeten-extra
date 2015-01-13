@@ -449,7 +449,7 @@ public class TestInternationalFixedChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK),           ValueRange.of( 1,   7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK),           ValueRange.of( 0,   7));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_MONTH),          ValueRange.of( 1,  28));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_YEAR),           ValueRange.of( 1, 365, 366));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR),         ValueRange.of( 1,  13));
@@ -469,8 +469,8 @@ public class TestInternationalFixedChronology {
                 { 2011,  1, 23, ChronoField.DAY_OF_MONTH,          1,  28 },
                 { 2012,  1, 23, ChronoField.DAY_OF_MONTH,          1,  28 },
 
-                { 2011,  1,  1, ChronoField.DAY_OF_WEEK,           1,   7 },
-                { 2012,  1,  1, ChronoField.DAY_OF_WEEK,           1,   7 },
+                { 2011,  1,  1, ChronoField.DAY_OF_WEEK,           0,   7 },
+                { 2012,  1,  1, ChronoField.DAY_OF_WEEK,           0,   7 },
 
                 { 2011,  1, 23, ChronoField.DAY_OF_YEAR,           1, 365 },
                 { 2012,  1, 23, ChronoField.DAY_OF_YEAR,           1, 366 },
