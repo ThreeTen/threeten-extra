@@ -434,8 +434,12 @@ public final class InternationalFixedDate
      */
     @Override
     int getMonth() {
-        if (isYearDay() || isLeapDay()) {
+        if (isYearDay()) {
             return 0;
+        }
+
+        if (isLeapDay()) {
+            return -1;
         }
 
         int doy = getDayOfYearAdjusted() - 1;

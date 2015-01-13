@@ -449,7 +449,7 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK),           ValueRange.of( 0,   1, 7));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_MONTH),          ValueRange.of(-1,  28));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_YEAR),           ValueRange.of( 1, 365, 366));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR),         ValueRange.of( 1,  13));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR),         ValueRange.of(-1,  13));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.ALIGNED_WEEK_OF_MONTH), ValueRange.of( 1,   4));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.PROLEPTIC_MONTH),       ValueRange.of(13, 13_000_000 - 1));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.YEAR_OF_ERA),           ValueRange.of( 1,  1_000_000));
@@ -472,8 +472,8 @@ public class TestInternationalFixedChronology {
                 { InternationalFixedDate.of(2011,  1,  1), ChronoField.DAY_OF_WEEK,           ValueRange.of( 0,   1, 7) },
                 { InternationalFixedDate.of(2012,  1,  1), ChronoField.DAY_OF_WEEK,           ValueRange.of( 0,   1, 7) },
 
-                { InternationalFixedDate.of(2011,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of( 1,  13) },
-                { InternationalFixedDate.of(2012,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of( 1,  13) },
+                { InternationalFixedDate.of(2011,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of(-1,  13) },
+                { InternationalFixedDate.of(2012,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of(-1,  13) },
 
                 { InternationalFixedDate.of(2011,  1,  3), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
                 { InternationalFixedDate.of(2011,  1, 10), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
@@ -591,11 +591,11 @@ public class TestInternationalFixedChronology {
             { InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_WEEK_OF_YEAR, 0 },
 
             { InternationalFixedDate.yearDay(2007), ChronoField.MONTH_OF_YEAR,  0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.MONTH_OF_YEAR,  0 },
+            { InternationalFixedDate.leapDay(2008), ChronoField.MONTH_OF_YEAR, -1 },
             { InternationalFixedDate.yearDay(2008), ChronoField.MONTH_OF_YEAR,  0 },
 
             { InternationalFixedDate.yearDay(2007), ChronoField.PROLEPTIC_MONTH, 2007 * 13 - 1 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 - 1 },
+            { InternationalFixedDate.leapDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 - 2 },
             { InternationalFixedDate.yearDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 - 1 },
 
             { InternationalFixedDate.yearDay(2007), ChronoField.YEAR, 2007 },

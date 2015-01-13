@@ -162,7 +162,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of month of year.
      */
-    static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(1, MONTHS_IN_YEAR);
+    static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(-1, MONTHS_IN_YEAR);
     /**
      * Range of eras.
      */
