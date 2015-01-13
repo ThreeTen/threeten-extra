@@ -126,11 +126,11 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of year.
      */
-    static final ValueRange YEAR_RANGE = ValueRange.of(1, 999_999);
+    static final ValueRange YEAR_RANGE = ValueRange.of(1, 1_000_000L);
     /**
      * Epoch day range.
      */
-    static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(-1L * DAYS_0000_TO_1970, 1_000_000L * DAYS_IN_YEAR);
+    static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(-DAYS_0000_TO_1970, 1_000_000L * DAYS_IN_YEAR + getLeapYearsBefore(1_000_000L) - DAYS_0000_TO_1970);
     /**
      * Range of proleptic month.
      */
@@ -480,5 +480,18 @@ public final class InternationalFixedChronology extends AbstractChronology imple
         }
 
         return yearOfEra;
+    }
+
+    /**
+     * Get the count of leap years since International fixed year 1.
+     * <p/>
+     *
+     * @param prolepticYear The year.
+     * @return The number of leap years since International fixed year 1.
+     */
+    public static long getLeapYearsBefore(final long prolepticYear) {
+        long yearBefore = prolepticYear - 1;
+
+        return (yearBefore / 4) - (yearBefore / 100) + (yearBefore / 400);
     }
 }

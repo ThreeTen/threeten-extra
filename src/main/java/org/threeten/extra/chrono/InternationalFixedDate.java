@@ -311,7 +311,7 @@ public final class InternationalFixedDate
 
         // The two values work great for any dates, just not the first (xxxx-01-01 IFC) or the last of the year (xxxx-year-day).
         long year = (400 * zeroDay) / DAYS_PER_CYCLE;
-        long doy = zeroDay - (InternationalFixedChronology.DAYS_IN_YEAR * year + getLeapYearsBefore(year));
+        long doy = zeroDay - (InternationalFixedChronology.DAYS_IN_YEAR * year + InternationalFixedChronology.getLeapYearsBefore(year));
 
         // In some cases, N-01-01 (January 1st) results in (N-1)-year-day, i.e. -1 day off.
         if (doy == 366 && !InternationalFixedChronology.INSTANCE.isLeapYear(year)) {
@@ -336,19 +336,6 @@ public final class InternationalFixedDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Get the count of leap years since International fixed year 1.
-     * <p/>
-     *
-     * @param prolepticYear The year.
-     * @return The number of leap years since International fixed year 1.
-     */
-    private static long getLeapYearsBefore(final long prolepticYear) {
-        long yearBefore = prolepticYear - 1;
-
-        return (yearBefore / 4) - (yearBefore / 100) + (yearBefore / 400);
-    }
-
     /**
      * Factory method, validates the given triplet year, month and dayOfMonth
      * Leap day or year day must be created with {@link InternationalFixedDate#create(int,boolean,boolean)}.
@@ -861,7 +848,7 @@ public final class InternationalFixedDate
     public long toEpochDay() {
         long epochDay =
                 ((long) getProlepticYear()) * InternationalFixedChronology.DAYS_IN_YEAR +
-                getLeapYearsBefore(getProlepticYear()) + getDayOfYear();
+                        InternationalFixedChronology.getLeapYearsBefore(getProlepticYear()) + getDayOfYear();
 
         return epochDay - InternationalFixedChronology.DAYS_0000_TO_1970;
     }
