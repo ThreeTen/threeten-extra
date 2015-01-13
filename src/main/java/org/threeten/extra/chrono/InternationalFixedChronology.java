@@ -55,7 +55,7 @@ import java.util.List;
  * It shares the leap year rule with the Gregorian calendar.
  * Dates are aligned such that {@code 0001-01-01 (International Fixed)} is {@code 0001-01-01 (ISO)}.
  * <p>
- * This class is not proleptic.  It implements accepts only years greater or equal to 1.
+ * This class is proleptic.  It implements only years greater or equal to 1.
  * <p>
  * This class implements a calendar where January 1st is the start of the year.
  * <p>
