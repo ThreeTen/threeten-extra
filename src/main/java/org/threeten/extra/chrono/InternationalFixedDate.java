@@ -489,7 +489,7 @@ public final class InternationalFixedDate
      */
     @Override
     ValueRange rangeAlignedWeekOfMonth() {
-        return ValueRange.of(1, InternationalFixedChronology.WEEKS_IN_MONTH);
+        return month > 0 ? InternationalFixedChronology.WEEK_OF_MONTH_RANGE : InternationalFixedChronology.EMPTY_RANGE;
     }
 
     /**
