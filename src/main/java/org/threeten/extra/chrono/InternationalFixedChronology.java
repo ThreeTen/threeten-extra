@@ -116,7 +116,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * The number of days in a 400 year cycle.
      */
-    private static final int DAYS_PER_CYCLE = 146097;
+    static final int DAYS_PER_CYCLE = 146097;
     /**
      * The number of days from year zero to year 1970, still the era only allows year 1 and higher.
      * There are five 400 year cycles from year zero to 2000.

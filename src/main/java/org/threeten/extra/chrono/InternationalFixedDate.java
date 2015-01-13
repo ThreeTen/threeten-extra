@@ -89,10 +89,6 @@ public final class InternationalFixedDate
      */
     private static final long serialVersionUID = -908631218899744973L;
     /**
-     * The days per 400 year cycle.
-     */
-    private static final int DAYS_PER_CYCLE = 146097;
-    /**
      * Number of years in a decade.
      */
     private static final int YEARS_IN_DECADE = 10;
@@ -317,7 +313,7 @@ public final class InternationalFixedDate
         }
 
         // The two values work great for any dates, just not the first (xxxx-01-01 IFC) or the last of the year (xxxx-year-day).
-        long year = (400 * zeroDay) / DAYS_PER_CYCLE;
+        long year = (400 * zeroDay) / InternationalFixedChronology.DAYS_PER_CYCLE;
         long doy = zeroDay - (InternationalFixedChronology.DAYS_IN_YEAR * year + InternationalFixedChronology.getLeapYearsBefore(year));
 
         boolean isLeapYear = InternationalFixedChronology.INSTANCE.isLeapYear(year);
