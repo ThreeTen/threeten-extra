@@ -446,7 +446,7 @@ public class TestInternationalFixedChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK),           ValueRange.of( 0,   7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK),           ValueRange.of( 0,   1, 7));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_MONTH),          ValueRange.of(-1,  28));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_YEAR),           ValueRange.of( 1, 365, 366));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR),         ValueRange.of( 1,  13));
@@ -463,102 +463,83 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "ranges")
     Object[][] data_ranges() {
         return new Object[][] {
-                { 2011,  1, 23, ChronoField.DAY_OF_MONTH,         -1,  28 },
-                { 2012,  1, 23, ChronoField.DAY_OF_MONTH,         -1,  28 },
+                { InternationalFixedDate.of(2011,  1, 23), ChronoField.DAY_OF_MONTH,          ValueRange.of(-1,  28) },
+                { InternationalFixedDate.of(2012,  1, 23), ChronoField.DAY_OF_MONTH,          ValueRange.of(-1,  28) },
 
-                { 2011,  1,  1, ChronoField.DAY_OF_WEEK,           0,   7 },
-                { 2012,  1,  1, ChronoField.DAY_OF_WEEK,           0,   7 },
+                { InternationalFixedDate.of(2011,  1, 23), ChronoField.DAY_OF_YEAR,           ValueRange.of( 1, 365) },
+                { InternationalFixedDate.of(2012,  1, 23), ChronoField.DAY_OF_YEAR,           ValueRange.of( 1, 366) },
 
-                { 2011,  1, 23, ChronoField.DAY_OF_YEAR,           1, 365 },
-                { 2012,  1, 23, ChronoField.DAY_OF_YEAR,           1, 366 },
+                { InternationalFixedDate.of(2011,  1,  1), ChronoField.DAY_OF_WEEK,           ValueRange.of( 0,   1, 7) },
+                { InternationalFixedDate.of(2012,  1,  1), ChronoField.DAY_OF_WEEK,           ValueRange.of( 0,   1, 7) },
 
-                { 2011,  1, 23, ChronoField.MONTH_OF_YEAR,         1,  13 },
-                { 2012,  1, 23, ChronoField.MONTH_OF_YEAR,         1,  13 },
+                { InternationalFixedDate.of(2011,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of( 1,  13) },
+                { InternationalFixedDate.of(2012,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of( 1,  13) },
 
-                { 2011,  1,  3, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
-                { 2011,  1, 10, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
-                { 2011,  1, 17, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
-                { 2011,  1, 24, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
-                { 2012,  1,  3, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
-                { 2012,  1, 10, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
-                { 2012,  1, 17, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
-                { 2012,  1, 24, ChronoField.ALIGNED_WEEK_OF_MONTH, 1,   4 },
+                { InternationalFixedDate.of(2011,  1,  3), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
+                { InternationalFixedDate.of(2011,  1, 10), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
+                { InternationalFixedDate.of(2011,  1, 17), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
+                { InternationalFixedDate.of(2011,  1, 24), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
+                { InternationalFixedDate.of(2012,  1,  3), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
+                { InternationalFixedDate.of(2012,  1, 10), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
+                { InternationalFixedDate.of(2012,  1, 17), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
+                { InternationalFixedDate.of(2012,  1, 24), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
 
-                { 2011,  1, 23, ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
-                { 2012,  1, 23, ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
+                { InternationalFixedDate.of(2011,  1, 23), ChronoField.PROLEPTIC_MONTH,       ValueRange.of(13, 12_999_999) },
+                { InternationalFixedDate.of(2012,  1, 23), ChronoField.PROLEPTIC_MONTH,       ValueRange.of(13, 12_999_999) },
 
-                { 2011,  1, 23, ChronoField.YEAR_OF_ERA,           1,  1_000_000 },
-                { 2012,  1, 23, ChronoField.YEAR_OF_ERA,           1,  1_000_000 },
+                { InternationalFixedDate.of(2011,  1, 23), ChronoField.YEAR_OF_ERA,           ValueRange.of( 1,  1_000_000) },
+                { InternationalFixedDate.of(2012,  1, 23), ChronoField.YEAR_OF_ERA,           ValueRange.of( 1,  1_000_000) },
 
-                { 2011,  1, 23, ChronoField.YEAR,                  1,  1_000_000 },
-                { 2012,  1, 23, ChronoField.YEAR,                  1,  1_000_000 },
+                { InternationalFixedDate.of(2011,  1, 23), ChronoField.YEAR,                  ValueRange.of( 1,  1_000_000) },
+                { InternationalFixedDate.of(2012,  1, 23), ChronoField.YEAR,                  ValueRange.of( 1,  1_000_000) },
 
-                { 2011,  1, 23, ChronoField.EPOCH_DAY,      -719_528, 364_522_971 },
-                { 2012,  1, 23, ChronoField.EPOCH_DAY,      -719_528, 364_522_971 },
+                { InternationalFixedDate.of(2011,  1, 23), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
+                { InternationalFixedDate.of(2012,  1, 23), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_YEAR,         ValueRange.of(365, 365) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(169, 169) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(366, 366) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000) },
+
+                { InternationalFixedDate.yearDay(2011), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
         };
     }
 
     @Test(dataProvider = "ranges")
     public void test_range(
-            final int year,
-            final int month,
-            final int dom,
-            final TemporalField field,
-            final int expectedMin,
-            final int expectedMax) {
-        for (int m = month; m < 14; m++) {
-            assertEquals(InternationalFixedDate.of(year, m, dom).range(field), ValueRange.of(expectedMin, expectedMax));
-        }
-    }
-
-    @DataProvider(name = "rangesLeapAndYearDay")
-    Object[][] data_ranges_leap_and_year_day() {
-        return new Object[][] {
-                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_MONTH,          0,   0 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_MONTH,          0,   0 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_MONTH,          0,   0 },
-
-                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_WEEK,           0,   0 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_WEEK,           0,   0 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_WEEK,           0,   0 },
-
-                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_YEAR,         365, 365 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_YEAR,         169, 169 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_YEAR,         366, 366 },
-
-                { InternationalFixedDate.yearDay(2011), ChronoField.MONTH_OF_YEAR,         0,   0 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.MONTH_OF_YEAR,         0,   0 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.MONTH_OF_YEAR,         0,   0 },
-
-                { InternationalFixedDate.yearDay(2011), ChronoField.ALIGNED_WEEK_OF_MONTH, 0,  0 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.ALIGNED_WEEK_OF_MONTH, 0,  0 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.ALIGNED_WEEK_OF_MONTH, 0,  0 },
-
-                { InternationalFixedDate.yearDay(2011), ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.PROLEPTIC_MONTH,      13, 12_999_999 },
-
-                { InternationalFixedDate.yearDay(2011), ChronoField.YEAR_OF_ERA,           1,  1_000_000 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.YEAR_OF_ERA,           1,  1_000_000 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.YEAR_OF_ERA,           1,  1_000_000 },
-
-                { InternationalFixedDate.yearDay(2011), ChronoField.YEAR,                  1,  1_000_000 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.YEAR,                  1,  1_000_000 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.YEAR,                  1,  1_000_000 },
-
-                { InternationalFixedDate.yearDay(2011), ChronoField.EPOCH_DAY,      -719_528, 364_522_971 },
-                { InternationalFixedDate.leapDay(2012), ChronoField.EPOCH_DAY,      -719_528, 364_522_971 },
-                { InternationalFixedDate.yearDay(2012), ChronoField.EPOCH_DAY,      -719_528, 364_522_971 },
-        };
-    }
-
-    @Test(dataProvider = "rangesLeapAndYearDay")
-    public void test_range_leap_and_year_day(
             final InternationalFixedDate date,
             final TemporalField field,
-            final int expectedMin,
-            final int expectedMax) {
-        assertEquals(date.range(field), ValueRange.of(expectedMin, expectedMax));
+            final ValueRange expectedRange) {
+        assertEquals(date.range(field), expectedRange);
     }
 
     //-----------------------------------------------------------------------

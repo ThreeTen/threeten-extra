@@ -104,7 +104,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of day-of-week.
      */
-    static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, DAYS_IN_WEEK);
+    static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, DAYS_IN_WEEK);
     /**
      * There are 13 months of 28 days, or 365 days in a (non-leap) year.
      */
