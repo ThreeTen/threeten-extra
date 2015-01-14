@@ -616,18 +616,6 @@ public final class InternationalFixedDate
      * {@inheritDoc}
      */
     @Override
-    public InternationalFixedDate plusDays(final long daysToAdd) {
-        if (daysToAdd == 0) {
-            return this;
-        }
-
-        return ofEpochDay(toEpochDay() + daysToAdd);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ValueRange range(final TemporalField field) {
         boolean special = isYearDay() || isLeapDay();
 
