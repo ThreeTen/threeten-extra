@@ -326,10 +326,6 @@ public class TestInternationalFixedChronology {
     public void test_isLeapYear_specific() {
         assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(400), true);
         assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(100), false);
-        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(99), false);
-        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(7), false);
-        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(6), false);
-        assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(5), false);
         assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(4), true);
         assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(3), false);
         assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(2), false);
