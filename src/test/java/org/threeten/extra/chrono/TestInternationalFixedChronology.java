@@ -347,34 +347,44 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "lengthOfMonth")
     Object[][] data_lengthOfMonth() {
         return new Object[][] {
-                { 1900,  1, 28 },
-                { 1900,  2, 28 },
-                { 1900,  3, 28 },
-                { 1900,  4, 28 },
-                { 1900,  5, 28 },
-                { 1900,  6, 28 },
-                { 1900,  7, 28 },
-                { 1900,  8, 28 },
-                { 1900,  9, 28 },
-                { 1900, 10, 28 },
-                { 1900, 11, 28 },
-                { 1900, 12, 28 },
-                { 1900, 13, 28 },
+            { InternationalFixedDate.of(1900,  1,  1), 28 },
+            { InternationalFixedDate.of(1900,  2,  1), 28 },
+            { InternationalFixedDate.of(1900,  3,  1), 28 },
+            { InternationalFixedDate.of(1900,  4,  1), 28 },
+            { InternationalFixedDate.of(1900,  5,  1), 28 },
+            { InternationalFixedDate.of(1900,  6,  1), 28 },
+            { InternationalFixedDate.of(1900,  7,  1), 28 },
+            { InternationalFixedDate.of(1900,  8,  1), 28 },
+            { InternationalFixedDate.of(1900,  9,  1), 28 },
+            { InternationalFixedDate.of(1900, 10,  1), 28 },
+            { InternationalFixedDate.of(1900, 11,  1), 28 },
+            { InternationalFixedDate.of(1900, 12,  1), 28 },
+            { InternationalFixedDate.of(1900, 13,  1), 28 },
 
-                { 1901, 13, 28 },
-                { 1902, 13, 28 },
-                { 1903, 13, 28 },
-                { 1904, 13, 28 },
-                { 1905, 13, 28 },
-                { 1906, 13, 28 },
-                { 2000, 13, 28 },
-                { 2100, 13, 28 },
+            { InternationalFixedDate.of(2000,  1,  1), 28 },
+            { InternationalFixedDate.of(2000,  2,  1), 28 },
+            { InternationalFixedDate.of(2000,  3,  1), 28 },
+            { InternationalFixedDate.of(2000,  4,  1), 28 },
+            { InternationalFixedDate.of(2000,  5,  1), 28 },
+            { InternationalFixedDate.of(2000,  6,  1), 28 },
+            { InternationalFixedDate.of(2000,  7,  1), 28 },
+            { InternationalFixedDate.of(2000,  8,  1), 28 },
+            { InternationalFixedDate.of(2000,  9,  1), 28 },
+            { InternationalFixedDate.of(2000, 10,  1), 28 },
+            { InternationalFixedDate.of(2000, 11,  1), 28 },
+            { InternationalFixedDate.of(2000, 12,  1), 28 },
+            { InternationalFixedDate.of(2000, 13,  1), 28 },
+
+            { InternationalFixedDate.yearDay(1900), 1 },
+            { InternationalFixedDate.leapDay(2000), 1 },
+            { InternationalFixedDate.yearDay(2000), 1 },
         };
     }
 
     @Test(dataProvider = "lengthOfMonth")
-    public void test_lengthOfMonth(final int year, final int month, final int length) {
-        InternationalFixedDate date = InternationalFixedDate.of(year, month, 1);
+    public void test_lengthOfMonth(
+            final InternationalFixedDate date,
+            final int length) {
         assertEquals(date.lengthOfMonth(), length);
     }
 

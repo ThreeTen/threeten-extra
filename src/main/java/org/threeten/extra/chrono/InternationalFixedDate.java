@@ -147,7 +147,7 @@ public final class InternationalFixedDate
      * @return the International fixed date
      */
     private InternationalFixedDate(final int prolepticYear, final int dayOfYear) {
-        boolean isLeapYear = InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear);
+        boolean isLeapYear = getChronology().isLeapYear(prolepticYear);
         boolean isYearDay = dayOfYear == InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear ? 1 : 0);
         boolean isLeapDay = isLeapYear && dayOfYear == 169;
         int doy = isLeapYear && dayOfYear > 169 ? dayOfYear - 1 : dayOfYear;
@@ -533,11 +533,13 @@ public final class InternationalFixedDate
      * This returns the length of the month in days.
      * Month lengths do not match those of the ISO calendar system.
      *
+     * Since leap-day / year-day are not part of any month, their 'imaginary' month is of length 1.
+     *
      * @return the length of the month in days: 28
      */
     @Override
     public int lengthOfMonth() {
-        return InternationalFixedChronology.DAYS_IN_MONTH;
+        return month > 0 ? InternationalFixedChronology.DAYS_IN_MONTH : 1;
     }
 
     /**
