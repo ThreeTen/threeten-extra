@@ -1063,9 +1063,9 @@ public class TestInternationalFixedChronology {
                 { InternationalFixedDate.of(   1,  1,  1), "Ifc CE 1-01-01" },
                 { InternationalFixedDate.of(2012,  6, 23), "Ifc CE 2012-06-23" },
 
-                { InternationalFixedDate.yearDay(1), "Ifc CE 1-year-day" },
-                { InternationalFixedDate.leapDay(2012), "Ifc CE 2012-leap-day" },
-                { InternationalFixedDate.yearDay(2012), "Ifc CE 2012-year-day" },
+                { InternationalFixedDate.yearDay(1), "Ifc CE 1 Year Day" },
+                { InternationalFixedDate.leapDay(2012), "Ifc CE 2012 Leap Day" },
+                { InternationalFixedDate.yearDay(2012), "Ifc CE 2012 Year Day" },
         };
     }
 

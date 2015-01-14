@@ -859,9 +859,9 @@ public final class InternationalFixedDate
                 .append(getYearOfEra());
 
         if (isLeapDay()) {
-            buf.append("-leap-day");
+            buf.append(" Leap Day");
         } else if (isYearDay()) {
-            buf.append("-year-day");
+            buf.append(" Year Day");
         } else {
             buf.append(getMonth() < 10 ? "-0" : '-')
                     .append(getMonth())
