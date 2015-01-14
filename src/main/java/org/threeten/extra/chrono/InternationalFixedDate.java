@@ -645,11 +645,7 @@ public final class InternationalFixedDate
                     case DAY_OF_MONTH:
                         return special ? InternationalFixedChronology.EMPTY_RANGE : InternationalFixedChronology.DAY_OF_MONTH_RANGE;
                     case DAY_OF_YEAR:
-                        return special ?
-                                    ValueRange.of(getDayOfYear(), getDayOfYear()) :
-                                    isLeapYear() ?
-                                            InternationalFixedChronology.DAY_OF_YEAR_LEAP_RANGE :
-                                            InternationalFixedChronology.DAY_OF_YEAR_NORMAL_RANGE;
+                        return isLeapYear() ? InternationalFixedChronology.DAY_OF_YEAR_LEAP_RANGE : InternationalFixedChronology.DAY_OF_YEAR_NORMAL_RANGE;
                     case EPOCH_DAY:
                         return InternationalFixedChronology.EPOCH_DAY_RANGE;
                     case ERA:

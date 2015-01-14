@@ -512,9 +512,9 @@ public class TestInternationalFixedChronology {
                 { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0) },
                 { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0) },
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_YEAR,         ValueRange.of(365, 365) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(169, 169) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(366, 366) },
+                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 365) },
+                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 366) },
+                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 366) },
 
                 { InternationalFixedDate.yearDay(2011), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0) },
                 { InternationalFixedDate.leapDay(2012), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0) },
