@@ -603,7 +603,7 @@ public final class InternationalFixedDate
         }
 
         int day = isYearDay() ? InternationalFixedChronology.DAYS_IN_MONTH : getCalculatedDayOfMonth();
-        int newMonth = (int) Math.addExact(getCalculatedProlepticMonth(), months);
+        int newMonth = (int) Math.addExact(getProlepticMonth(), months);
         int year = newMonth / InternationalFixedChronology.MONTHS_IN_YEAR;
         newMonth = 1 + (newMonth % InternationalFixedChronology.MONTHS_IN_YEAR);
 
@@ -740,10 +740,6 @@ public final class InternationalFixedDate
      */
     @Override
     long getProlepticMonth() {
-        return getProlepticYear() * lengthOfYearInMonths() + getMonth() - 1;
-    }
-
-    private long getCalculatedProlepticMonth() {
         return getProlepticYear() * lengthOfYearInMonths() + getCalculatedMonth() - 1;
     }
 
@@ -826,8 +822,8 @@ public final class InternationalFixedDate
     @Override
     long monthsUntil(final AbstractDate end) {
         InternationalFixedDate date = InternationalFixedDate.from(end);
-        long monthStart = this.getCalculatedProlepticMonth() * 256L + this.getCalculatedDayOfMonth();
-        long monthEnd = date.getCalculatedProlepticMonth() * 256L + date.getCalculatedDayOfMonth();
+        long monthStart = this.getProlepticMonth() * 256L + this.getCalculatedDayOfMonth();
+        long monthEnd = date.getProlepticMonth() * 256L + date.getCalculatedDayOfMonth();
 
         return (monthEnd - monthStart) / 256L;
     }

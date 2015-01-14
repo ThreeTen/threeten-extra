@@ -602,9 +602,9 @@ public class TestInternationalFixedChronology {
             { InternationalFixedDate.leapDay(2008), ChronoField.MONTH_OF_YEAR, -1 },
             { InternationalFixedDate.yearDay(2008), ChronoField.MONTH_OF_YEAR,  0 },
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.PROLEPTIC_MONTH, 2007 * 13 - 1 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 - 2 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 - 1 },
+            { InternationalFixedDate.yearDay(2007), ChronoField.PROLEPTIC_MONTH, 2007 * 13 + 12 },
+            { InternationalFixedDate.leapDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 +  6 },
+            { InternationalFixedDate.yearDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 + 12 },
 
             { InternationalFixedDate.yearDay(2007), ChronoField.YEAR, 2007 },
             { InternationalFixedDate.leapDay(2008), ChronoField.YEAR, 2008 },
