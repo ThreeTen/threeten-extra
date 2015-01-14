@@ -236,6 +236,7 @@ public class TestInternationalFixedChronology {
                 { 1900, 10, 29 },
                 { 1900, 11, 29 },
                 { 1900, 12, 29 },
+                { 1900, 13, 29 },
         };
     }
 
