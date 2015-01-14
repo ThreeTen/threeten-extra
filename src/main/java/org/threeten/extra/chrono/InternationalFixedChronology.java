@@ -84,7 +84,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Serialization version UID.
      */
-    private static final long serialVersionUID = -1050847936470712250L;
+    private static final long serialVersionUID = -2670617783459258438L;
     /**
      * Standard 7-day week.
      */

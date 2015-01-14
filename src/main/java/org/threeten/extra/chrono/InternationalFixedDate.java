@@ -87,7 +87,7 @@ public final class InternationalFixedDate
     /**
      * Serialization version UID.
      */
-    private static final long serialVersionUID = -908631218899744973L;
+    private static final long serialVersionUID = 3697830095268896313L;
     /**
      * Number of years in a decade.
      */
@@ -116,7 +116,9 @@ public final class InternationalFixedDate
     private final int day;
 
     /**
-     * Dates for both leap day and year day may only be instantiated through {@link InternationalFixedDate#of(int,boolean,boolean)}.
+     * Dates for both leap day and year day may only be instantiated through
+     *   {@link InternationalFixedDate#leapDay(int)} and
+     *   {@link InternationalFixedDate#yearDay(int)} resp.
      * It is therefore not possible to instantiated leap day as 2004-07-01 or year day as 2005-13-29.
      *
      * For calculation purposes, internally leap day is treated as day-of-year 169,
