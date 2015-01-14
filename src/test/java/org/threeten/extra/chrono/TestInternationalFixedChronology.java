@@ -1074,51 +1074,24 @@ public class TestInternationalFixedChronology {
         assertEquals(date.toString(), expected);
     }
 
+
     //-----------------------------------------------------------------------
     // InternationalFixedDate.getDayOfWeek
     //-----------------------------------------------------------------------
-    @Test
-    public void test_week_day () {
-        InternationalFixedDate date = InternationalFixedDate.of(1, 1, 1);
-        assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+    @DataProvider(name = "getDayOfWeek")
+    Object[][] data_day_of_week() {
+        return new Object[][] {
+                { InternationalFixedDate.of(   1,  1,  1), 7 },
+                { InternationalFixedDate.of(2012,  1,  1), 7 },
 
-        date = InternationalFixedDate.of(2004, 1, 1);
-        assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
+                { InternationalFixedDate.yearDay(2011), 0 },
+                { InternationalFixedDate.leapDay(2012), 0 },
+                { InternationalFixedDate.yearDay(2012), 0 },
+        };
+    }
 
-        date = InternationalFixedDate.yearDay(2004);
-        assertEquals(date.getDayOfWeek(), 0);
-        date = InternationalFixedDate.leapDay(2004);
-        assertEquals(date.getDayOfWeek(), 0);
-        date = InternationalFixedDate.yearDay(2003);
-        assertEquals(date.getDayOfWeek(), 0);
-
-        for (int year = 1; year < 3000; year++) {
-            for (int month = 10; month < 14; month++) {
-                date = InternationalFixedDate.of(year, month, 1);
-                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
-                date = InternationalFixedDate.of(year, month, 4);
-                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.WEDNESDAY);
-                date = InternationalFixedDate.of(year, month, 7);
-                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SATURDAY);
-
-                date = InternationalFixedDate.of(year, month, 22);
-                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SUNDAY);
-                date = InternationalFixedDate.of(year, month, 26);
-                assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.THURSDAY);
-
-                if (!InternationalFixedChronology.INSTANCE.isLeapYear(year)) {
-                    date = InternationalFixedDate.of(year, month, 28);
-                    assertEquals(DayOfWeek.of(date.getDayOfWeek()), DayOfWeek.SATURDAY);
-                }
-            }
-
-            if (InternationalFixedChronology.INSTANCE.isLeapYear(year)) {
-                date = InternationalFixedDate.leapDay(year);
-                assertEquals(date.getDayOfWeek(), 0);
-            }
-
-            date = InternationalFixedDate.yearDay(year);
-            assertEquals(date.getDayOfWeek(), 0);
-        }
+    @Test(dataProvider = "getDayOfWeek")
+    public void test_week_day (final InternationalFixedDate date, final int weekDay) {
+        assertEquals(date.getDayOfWeek(), weekDay);
     }
 }
