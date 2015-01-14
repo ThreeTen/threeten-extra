@@ -561,21 +561,6 @@ public final class InternationalFixedDate
             return this;
         }
 
-        if (unit instanceof ChronoUnit) {
-            ChronoUnit f = (ChronoUnit) unit;
-
-            switch (f) {
-                case DAYS:
-                    return plusDays(amountToAdd);
-                case MONTHS:
-                    return plusMonths(amountToAdd);
-                case YEARS:
-                    return plusYears(amountToAdd);
-                default:
-                    break;
-            }
-        }
-
         return (InternationalFixedDate) super.plus(amountToAdd, unit);
     }
 
