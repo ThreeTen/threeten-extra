@@ -767,13 +767,13 @@ public final class InternationalFixedDate
                 case MONTHS:
                     return monthsUntil(end);
                 case YEARS:
-                    return monthsUntil(end) / InternationalFixedChronology.MONTHS_IN_YEAR;
+                    return yearsUntil(end);
                 case DECADES:
-                    return monthsUntil(end) / (InternationalFixedChronology.MONTHS_IN_YEAR * 10);
+                    return yearsUntil(end) / 10;
                 case CENTURIES:
-                    return monthsUntil(end) / (InternationalFixedChronology.MONTHS_IN_YEAR * 100);
+                    return yearsUntil(end) / 100;
                 case MILLENNIA:
-                    return monthsUntil(end) / (InternationalFixedChronology.MONTHS_IN_YEAR * 1000);
+                    return yearsUntil(end) / 1000;
                 case ERAS:
                     return end.getLong(ChronoField.ERA) - getLong(ChronoField.ERA);
             }
@@ -790,7 +790,7 @@ public final class InternationalFixedDate
      * @param end The end date.
      * @return The number of years from this date to the given day.
      */
-    long yearsUntil(final InternationalFixedDate end) {
+    private long yearsUntil(final InternationalFixedDate end) {
         long startYear = getProlepticYear() * 512L + getDayOfYear();
         long endYear = end.getProlepticYear() * 512L + end.getDayOfYear();
 
