@@ -292,12 +292,14 @@ public class TestInternationalFixedChronology {
 
             if (date.isYearDay() || date.isLeapDay()) {
                 // year day / leap day are not part of any months!
-                continue;
+                dayOfMonth = 0;
+                month = date.isLeapDay() ? -1 : 0;
             }
-
-            y = (i > 169 && date.isLeapYear()) ? i - 1 : i;
-            dayOfMonth = ((y - 1) % 28) + 1;
-            month = ((y - 1) / 28) + 1;
+            else {
+                y = (i > 169 && date.isLeapYear()) ? i - 1 : i;
+                dayOfMonth = ((y - 1) % 28) + 1;
+                month = ((y - 1) / 28) + 1;
+            }
 
             assertEquals(month, date.getMonth());
             assertEquals(dayOfMonth, date.getDayOfMonth());
