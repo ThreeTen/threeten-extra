@@ -523,27 +523,13 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "getLong")
     Object[][] data_getLong() {
         return new Object[][] {
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 4 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_MONTH, 26 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_YEAR, 5 * 28 - 2 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 5 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_MONTH, 4 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 20 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR, 5 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.PROLEPTIC_MONTH, 2014 * 13 + 4 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR, 2014 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.ERA, 1 },
-            { InternationalFixedDate.of(   1,  6,  8), ChronoField.ERA, 1 },
-            { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 4 },
-
             { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_WEEK, 0 },
             { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_WEEK, 0 },
             { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_WEEK, 0 },
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_MONTH,  0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_MONTH,  0 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_MONTH,  0 },
+            { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_MONTH, 0 },
+            { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_MONTH, 0 },
+            { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_MONTH, 0 },
 
             { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_YEAR, 365 },
             { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_YEAR, 169 },
@@ -580,10 +566,6 @@ public class TestInternationalFixedChronology {
             { InternationalFixedDate.yearDay(2007), ChronoField.ERA, 1 },
             { InternationalFixedDate.leapDay(2008), ChronoField.ERA, 1 },
             { InternationalFixedDate.yearDay(2008), ChronoField.ERA, 1 },
-
-            { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_WEEK, 0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_WEEK, 0 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_WEEK, 0 },
         };
     }
 
