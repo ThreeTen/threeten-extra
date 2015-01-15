@@ -31,6 +31,7 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -181,24 +182,29 @@ public class TestInternationalFixedChronology {
     }
 
     @Test(dataProvider = "samples")
-    public void test_plusDays(InternationalFixedDate fixed, LocalDate iso) {
-        assertEquals(LocalDate.from(fixed.plus(0, ChronoUnit.DAYS)), iso);
-        assertEquals(LocalDate.from(fixed.plus(1, ChronoUnit.DAYS)), iso.plusDays(1));
-        assertEquals(LocalDate.from(fixed.plus(35, ChronoUnit.DAYS)), iso.plusDays(35));
+    public void test_plusDays(final InternationalFixedDate fixed, final LocalDate iso) {
+        assertEquals(LocalDate.from(fixed.plus(0, DAYS)), iso);
+        assertEquals(LocalDate.from(fixed.plus(1, DAYS)), iso.plusDays(1));
+        assertEquals(LocalDate.from(fixed.plus(35, DAYS)), iso.plusDays(35));
+        assertEquals(LocalDate.from(fixed.plus(-1, DAYS)), iso.plusDays(-1));
+        assertEquals(LocalDate.from(fixed.plus(-60, DAYS)), iso.plusDays(-60));
     }
 
     @Test(dataProvider = "samples")
-    public void test_minusDays(InternationalFixedDate fixed, LocalDate iso) {
-        assertEquals(LocalDate.from(fixed.minus(0, ChronoUnit.DAYS)), iso);
-        assertEquals(LocalDate.from(fixed.minus(-1, ChronoUnit.DAYS)), iso.minusDays(-1));
-        assertEquals(LocalDate.from(fixed.minus(-60, ChronoUnit.DAYS)), iso.minusDays(-60));
+    public void test_minusDays(final InternationalFixedDate fixed, final LocalDate iso) {
+        assertEquals(LocalDate.from(fixed.minus(0, DAYS)), iso);
+        assertEquals(LocalDate.from(fixed.minus(1, DAYS)), iso.minusDays(1));
+        assertEquals(LocalDate.from(fixed.minus(35, DAYS)), iso.minusDays(35));
+        assertEquals(LocalDate.from(fixed.minus(-1, DAYS)), iso.minusDays(-1));
+        assertEquals(LocalDate.from(fixed.minus(-60, DAYS)), iso.minusDays(-60));
     }
 
     @Test(dataProvider = "samples")
-    public void test_until_DAYS(InternationalFixedDate fixed, LocalDate iso) {
-        assertEquals(fixed.until(iso.plusDays(0), ChronoUnit.DAYS), 0);
-        assertEquals(fixed.until(iso.plusDays(1), ChronoUnit.DAYS), 1);
-        assertEquals(fixed.until(iso.plusDays(35), ChronoUnit.DAYS), 35);
+    public void test_until_DAYS(final InternationalFixedDate fixed, final LocalDate iso) {
+        assertEquals(fixed.until(iso.plusDays(0), DAYS), 0);
+        assertEquals(fixed.until(iso.plusDays(1), DAYS), 1);
+        assertEquals(fixed.until(iso.plusDays(35), DAYS), 35);
+        assertEquals(fixed.until(iso.minusDays(40), DAYS), -40);
     }
 
     @DataProvider(name = "badDates")
