@@ -338,7 +338,7 @@ public class TestInternationalFixedChronology {
     // -----------------------------------------------------------------------
     @Test
     public void test_era_loop() {
-        for (int year = 1; year < 401; year++) {
+        for (int year = 1; year < 200; year++) {
             InternationalFixedDate base = InternationalFixedChronology.INSTANCE.date(year, 1, 1);
             assertEquals(year, base.get(ChronoField.YEAR));
             InternationalFixedEra era = InternationalFixedEra.CE;
@@ -351,7 +351,7 @@ public class TestInternationalFixedChronology {
 
     @Test
     public void test_era_yearDay_loop() {
-        for (int year = 1; year < 401; year++) {
+        for (int year = 1; year < 200; year++) {
             InternationalFixedDate base = InternationalFixedChronology.INSTANCE.dateYearDay(year, 1);
             assertEquals(year, base.get(ChronoField.YEAR));
             InternationalFixedEra era = InternationalFixedEra.CE;
