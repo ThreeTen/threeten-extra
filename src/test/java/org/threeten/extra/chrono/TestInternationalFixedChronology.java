@@ -295,24 +295,40 @@ public class TestInternationalFixedChronology {
     }
 
     // -----------------------------------------------------------------------
-    // InternationalFixedDate.era
-    // InternationalFixedDate.dateYearDay
-    // InternationalFixedDate.prolepticYear
+    // lengthOfMonth()
     // -----------------------------------------------------------------------
     @DataProvider(name = "lengthOfMonth")
     Object[][] data_lengthOfMonth() {
         return new Object[][] {
-            {InternationalFixedDate.yearDay(1900), 1},
-            {InternationalFixedDate.leapDay(2000), 1},
-            {InternationalFixedDate.yearDay(2000), 1},
+            {1900, 1, 28},
+            {1900, 2, 28},
+            {1900, 3, 28},
+            {1900, 4, 28},
+            {1900, 5, 28},
+            {1900, 6, 28},
+            {1900, 7, 28},
+            {1900, 8, 28},
+            {1900, 9, 28},
+            {1900, 10, 28},
+            {1900, 11, 28},
+            {1900, 12, 28},
+            {1900, 13, 28},
         };
     }
 
     @Test(dataProvider = "lengthOfMonth")
-    public void test_lengthOfMonth(
-            InternationalFixedDate date,
-            int length) {
-        assertEquals(date.lengthOfMonth(), length);
+    public void test_lengthOfMonth(int year, int month, int length) {
+        assertEquals(InternationalFixedDate.of(year, month, 1).lengthOfMonth(), length);
+    }
+
+    @Test
+    public void test_lengthOfMonth_specific() {
+        assertEquals(InternationalFixedDate.yearDay(1900).lengthOfMonth(), 1);
+        assertEquals(InternationalFixedDate.of(1900, 0, 0).lengthOfMonth(), 1);
+        assertEquals(InternationalFixedDate.yearDay(2000).lengthOfMonth(), 1);
+        assertEquals(InternationalFixedDate.of(2000, 0, 0).lengthOfMonth(), 1);
+        assertEquals(InternationalFixedDate.leapDay(2000).lengthOfMonth(), 1);
+        assertEquals(InternationalFixedDate.of(2000, -1, 0).lengthOfMonth(), 1);
     }
 
     // -----------------------------------------------------------------------
