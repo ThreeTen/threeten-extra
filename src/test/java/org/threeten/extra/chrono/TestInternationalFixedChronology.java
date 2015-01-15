@@ -141,64 +141,64 @@ public class TestInternationalFixedChronology {
     }
 
     @Test(dataProvider = "samples")
-    public void test_LocalDate_from_InternationalFixedDate(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(LocalDate.from(date), iso);
+    public void test_LocalDate_from_InternationalFixedDate(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(LocalDate.from(fixed), iso);
     }
 
     @Test(dataProvider = "samples")
-    public void test_InternationalFixedDate_from_LocalDate(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(InternationalFixedDate.from(iso), date);
+    public void test_InternationalFixedDate_from_LocalDate(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(InternationalFixedDate.from(iso), fixed);
     }
 
     @Test(dataProvider = "samples")
-    public void test_InternationalFixedDate_chronology_dateEpochDay(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(InternationalFixedChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), date);
+    public void test_InternationalFixedDate_chronology_dateEpochDay(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(InternationalFixedChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), fixed);
     }
 
     @Test(dataProvider = "samples")
-    public void test_InternationalFixedDate_toEpochDay(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(date.toEpochDay(), iso.toEpochDay());
+    public void test_InternationalFixedDate_toEpochDay(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(fixed.toEpochDay(), iso.toEpochDay());
     }
 
     @Test(dataProvider = "samples")
-    public void test_InternationalFixedDate_until_InternationalFixedDate(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(date.until(date), InternationalFixedChronology.INSTANCE.period(0, 0, 0));
+    public void test_InternationalFixedDate_until_InternationalFixedDate(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(fixed.until(fixed), InternationalFixedChronology.INSTANCE.period(0, 0, 0));
     }
 
     @Test(dataProvider = "samples")
-    public void test_InternationalFixedDate_until_LocalDate(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(date.until(iso), InternationalFixedChronology.INSTANCE.period(0, 0, 0));
+    public void test_InternationalFixedDate_until_LocalDate(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(fixed.until(iso), InternationalFixedChronology.INSTANCE.period(0, 0, 0));
     }
 
     @Test(dataProvider = "samples")
-    public void test_LocalDate_until_InternationalFixedDate(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(iso.until(date), Period.ZERO);
+    public void test_LocalDate_until_InternationalFixedDate(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(iso.until(fixed), Period.ZERO);
     }
 
     @Test(dataProvider = "samples")
-    public void test_Chronology_date_Temporal(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(InternationalFixedChronology.INSTANCE.date(iso), date);
+    public void test_Chronology_date_Temporal(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(InternationalFixedChronology.INSTANCE.date(iso), fixed);
     }
 
     @Test(dataProvider = "samples")
-    public void test_plusDays(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(LocalDate.from(date.plus(0, ChronoUnit.DAYS)), iso);
-        assertEquals(LocalDate.from(date.plus(1, ChronoUnit.DAYS)), iso.plusDays(1));
-        assertEquals(LocalDate.from(date.plus(35, ChronoUnit.DAYS)), iso.plusDays(35));
+    public void test_plusDays(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(LocalDate.from(fixed.plus(0, ChronoUnit.DAYS)), iso);
+        assertEquals(LocalDate.from(fixed.plus(1, ChronoUnit.DAYS)), iso.plusDays(1));
+        assertEquals(LocalDate.from(fixed.plus(35, ChronoUnit.DAYS)), iso.plusDays(35));
     }
 
     @Test(dataProvider = "samples")
-    public void test_minusDays(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(LocalDate.from(date.minus(0, ChronoUnit.DAYS)), iso);
-        assertEquals(LocalDate.from(date.minus(-1, ChronoUnit.DAYS)), iso.minusDays(-1));
-        assertEquals(LocalDate.from(date.minus(-60, ChronoUnit.DAYS)), iso.minusDays(-60));
+    public void test_minusDays(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(LocalDate.from(fixed.minus(0, ChronoUnit.DAYS)), iso);
+        assertEquals(LocalDate.from(fixed.minus(-1, ChronoUnit.DAYS)), iso.minusDays(-1));
+        assertEquals(LocalDate.from(fixed.minus(-60, ChronoUnit.DAYS)), iso.minusDays(-60));
     }
 
     @Test(dataProvider = "samples")
-    public void test_until_DAYS(InternationalFixedDate date, LocalDate iso) {
-        assertEquals(date.until(iso.plusDays(0), ChronoUnit.DAYS), 0);
-        assertEquals(date.until(iso.plusDays(1), ChronoUnit.DAYS), 1);
-        assertEquals(date.until(iso.plusDays(35), ChronoUnit.DAYS), 35);
+    public void test_until_DAYS(InternationalFixedDate fixed, LocalDate iso) {
+        assertEquals(fixed.until(iso.plusDays(0), ChronoUnit.DAYS), 0);
+        assertEquals(fixed.until(iso.plusDays(1), ChronoUnit.DAYS), 1);
+        assertEquals(fixed.until(iso.plusDays(35), ChronoUnit.DAYS), 35);
     }
 
     @DataProvider(name = "badDates")
