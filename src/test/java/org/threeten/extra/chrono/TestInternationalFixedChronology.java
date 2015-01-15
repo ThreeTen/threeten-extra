@@ -31,6 +31,19 @@
  */
 package org.threeten.extra.chrono;
 
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.ERA;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
+import static java.time.temporal.ChronoField.YEAR;
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -400,15 +413,19 @@ public class TestInternationalFixedChronology {
     // -----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK), ValueRange.of(0, 1, 7));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_MONTH), ValueRange.of(-1, 28));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_YEAR), ValueRange.of(1, 365, 366));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR), ValueRange.of(-1, 13));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.ALIGNED_WEEK_OF_MONTH), ValueRange.of(1, 4));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.PROLEPTIC_MONTH), ValueRange.of(13, 13_000_000 - 1));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.YEAR_OF_ERA), ValueRange.of(1, 1_000_000));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.YEAR), ValueRange.of(1, 1_000_000));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.EPOCH_DAY), ValueRange.of(-719528, 364_522_971));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(0, 1, 0, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(0, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(0, 1, 0, 4));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(0, 52));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(0, 1, 0, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(0, 1, 0, 28));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ERA), ValueRange.of(1, 1));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(EPOCH_DAY), ValueRange.of(-719_528, 1_000_000 * 365L + 242_499));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(-1, 0, 0, 13));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(PROLEPTIC_MONTH), ValueRange.of(13, 1_000_000 * 13L - 1));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(YEAR), ValueRange.of(1, 1_000_000));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(1, 1_000_000));
     }
 
     // -----------------------------------------------------------------------
