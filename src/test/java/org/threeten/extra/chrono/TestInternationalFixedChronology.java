@@ -489,58 +489,50 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "getLong")
     Object[][] data_getLong() {
         return new Object[][] {
-            {InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_WEEK, 0},
-            {InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_WEEK, 0},
-            {InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_WEEK, 0},
+            {2014, 5, 26, DAY_OF_WEEK, 5},
+            {2014, 5, 26, DAY_OF_MONTH, 26},
+            {2014, 5, 26, DAY_OF_YEAR, 28 + 28 + 28 + 28 + 26},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 4},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 20},
+            {2014, 5, 26, MONTH_OF_YEAR, 5},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2014 * 13 + 5 - 1},
+            {2014, 5, 26, YEAR, 2014},
+            {2014, 5, 26, ERA, 1},
+            {1, 5, 8, ERA, 1},
 
-            {InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_MONTH, 0},
-            {InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_MONTH, 0},
-            {InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_MONTH, 0},
+            {2014, 0, 0, DAY_OF_WEEK, 0},
+            {2014, 0, 0, DAY_OF_MONTH, 0},
+            {2014, 0, 0, DAY_OF_YEAR, 365},
+            {2012, 0, 0, DAY_OF_YEAR, 366},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 0},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 0},
+            {2014, 0, 0, MONTH_OF_YEAR, 0},
+            {2014, 0, 0, PROLEPTIC_MONTH, 2014 * 13 + 13 - 1},
 
-            {InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_YEAR, 365},
-            {InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_YEAR, 169},
-            {InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_YEAR, 366},
-
-            {InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
-            {InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
-            {InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
-
-            {InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
-            {InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
-            {InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
-
-            {InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_WEEK_OF_MONTH, 0},
-            {InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_WEEK_OF_MONTH, 0},
-            {InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_WEEK_OF_MONTH, 0},
-
-            {InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_WEEK_OF_YEAR, 0},
-            {InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_WEEK_OF_YEAR, 0},
-            {InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_WEEK_OF_YEAR, 0},
-
-            {InternationalFixedDate.yearDay(2007), ChronoField.MONTH_OF_YEAR, 0},
-            {InternationalFixedDate.leapDay(2008), ChronoField.MONTH_OF_YEAR, -1},
-            {InternationalFixedDate.yearDay(2008), ChronoField.MONTH_OF_YEAR, 0},
-
-            {InternationalFixedDate.yearDay(2007), ChronoField.PROLEPTIC_MONTH, 2007 * 13 + 12},
-            {InternationalFixedDate.leapDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 + 6},
-            {InternationalFixedDate.yearDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 + 12},
-
-            {InternationalFixedDate.yearDay(2007), ChronoField.YEAR, 2007},
-            {InternationalFixedDate.leapDay(2008), ChronoField.YEAR, 2008},
-            {InternationalFixedDate.yearDay(2008), ChronoField.YEAR, 2008},
-
-            {InternationalFixedDate.yearDay(2007), ChronoField.ERA, 1},
-            {InternationalFixedDate.leapDay(2008), ChronoField.ERA, 1},
-            {InternationalFixedDate.yearDay(2008), ChronoField.ERA, 1},
+            {2012, -1, 0, DAY_OF_WEEK, 0},
+            {2012, -1, 0, DAY_OF_MONTH, 0},
+            {2012, -1, 0, DAY_OF_YEAR, 169},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
+            {2012, -1, 0, ALIGNED_WEEK_OF_MONTH, 0},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
+            {2012, -1, 0, ALIGNED_WEEK_OF_YEAR, 0},
+            {2012, -1, 0, MONTH_OF_YEAR, 0},
+            {2012, -1, 0, PROLEPTIC_MONTH, 2014 * 13 + 7 - 1},
         };
     }
 
     @Test(dataProvider = "getLong")
-    public void test_data_getLong(
-            InternationalFixedDate date,
-            TemporalField field,
-            long expected) {
-        assertEquals(date.getLong(field), expected);
+    public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
+        assertEquals(InternationalFixedDate.of(year, month, dom).getLong(field), expected);
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_getLong_unsupported() {
+        InternationalFixedDate.of(2012, 6, 28).getLong(MINUTE_OF_DAY);
     }
 
     // -----------------------------------------------------------------------
