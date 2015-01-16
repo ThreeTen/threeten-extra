@@ -722,20 +722,37 @@ public class TestInternationalFixedChronology {
         assertEquals(test, InternationalFixedDate.of(2012, 13, 28));
     }
 
+    //-----------------------------------------------------------------------
+    // InternationalDate.with(TemporalAdjuster)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_adjust1() {
+        InternationalFixedDate base = InternationalFixedDate.of(2012, 6, 23);
+        InternationalFixedDate test = base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, InternationalFixedDate.of(2012, 6, 28));
+    }
+
+    @Test
+    public void test_adjust2() {
+        InternationalFixedDate base = InternationalFixedDate.of(2012, -1, 0);
+        InternationalFixedDate test = base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, InternationalFixedDate.of(2012, -1, 0));
+    }
+
     // -----------------------------------------------------------------------
     // InternationalFixedDate.with(Local*)
     // -----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
-        InternationalFixedDate date = InternationalFixedDate.of(2000, 1, 4);
-        InternationalFixedDate test = (InternationalFixedDate) date.with(LocalDate.of(2012, 7, 14));
+        InternationalFixedDate fixed = InternationalFixedDate.of(2000, 1, 4);
+        InternationalFixedDate test = fixed.with(LocalDate.of(2012, 7, 14));
         assertEquals(test, InternationalFixedDate.of(2012, 7, 27));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_adjust_toMonth() {
-        InternationalFixedDate date = InternationalFixedDate.of(2000, 1, 4);
-        date.with(Month.APRIL);
+        InternationalFixedDate fixed = InternationalFixedDate.of(2000, 1, 4);
+        fixed.with(Month.APRIL);
     }
 
     // -----------------------------------------------------------------------
