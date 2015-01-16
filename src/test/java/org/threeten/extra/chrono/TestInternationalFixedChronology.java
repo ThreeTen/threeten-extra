@@ -45,7 +45,14 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.DECADES;
+import static java.time.temporal.ChronoUnit.MILLENNIA;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.WEEKS;
+import static java.time.temporal.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -673,7 +680,7 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(year, month, dom).with(field, value), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @DataProvider(name = "withBad")
+    @DataProvider(name = "with_bad")
     Object[][] data_with_bad() {
         return new Object[][] {
             {2013, 1, 1, DAY_OF_WEEK, -1},
@@ -698,7 +705,7 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test(dataProvider = "withBad", expectedExceptions = DateTimeException.class)
+    @Test(dataProvider = "with_bad", expectedExceptions = DateTimeException.class)
     public void test_with_TemporalField_badValue(int year, int month, int dom, TemporalField field, long value) {
         InternationalFixedDate.of(year, month, dom).with(field, value);
     }
@@ -779,126 +786,153 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "plus")
     Object[][] data_plus() {
         return new Object[][] {
-            {InternationalFixedDate.of(2014, 5, 1), 0, ChronoUnit.DAYS, InternationalFixedDate.of(2014, 5, 1)},
-            {InternationalFixedDate.of(2014, 5, 26), 8, ChronoUnit.DAYS, InternationalFixedDate.of(2014, 6, 6)},
-            {InternationalFixedDate.of(2014, 5, 26), -3, ChronoUnit.DAYS, InternationalFixedDate.of(2014, 5, 23)},
-            {InternationalFixedDate.of(2014, 5, 26), 0, ChronoUnit.WEEKS, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), 3, ChronoUnit.WEEKS, InternationalFixedDate.of(2014, 6, 19)},
-            {InternationalFixedDate.of(2014, 5, 26), -5, ChronoUnit.WEEKS, InternationalFixedDate.of(2014, 4, 19)},
-            {InternationalFixedDate.of(2014, 5, 3), 0, ChronoUnit.MONTHS, InternationalFixedDate.of(2014, 5, 3)},
-            {InternationalFixedDate.of(2014, 5, 26), 3, ChronoUnit.MONTHS, InternationalFixedDate.of(2014, 8, 26)},
-            {InternationalFixedDate.of(2014, 5, 4), -5, ChronoUnit.MONTHS, InternationalFixedDate.of(2013, 13, 4)},
-            {InternationalFixedDate.of(2014, 5, 26), 0, ChronoUnit.YEARS, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), 3, ChronoUnit.YEARS, InternationalFixedDate.of(2017, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), -5, ChronoUnit.YEARS, InternationalFixedDate.of(2009, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), 0, ChronoUnit.DECADES, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), 3, ChronoUnit.DECADES, InternationalFixedDate.of(2044, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), -5, ChronoUnit.DECADES, InternationalFixedDate.of(1964, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), 0, ChronoUnit.CENTURIES, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), 3, ChronoUnit.CENTURIES, InternationalFixedDate.of(2314, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), -5, ChronoUnit.CENTURIES, InternationalFixedDate.of(1514, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), 0, ChronoUnit.MILLENNIA, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), 3, ChronoUnit.MILLENNIA, InternationalFixedDate.of(5014, 5, 26)},
+            {2014, 5, 26, 0, DAYS, 2014, 5, 26},
+            {2014, 5, 26, 8, DAYS, 2014, 6, 5},
+            {2014, 5, 26, -3, DAYS, 2014, 5, 23},
+            {2014, 5, 26, 0, WEEKS, 2014, 5, 26},
+            {2014, 5, 26, 3, WEEKS, 2014, 6, 19},
+            {2014, 5, 26, -5, WEEKS, 2014, 4, 19},
+            {2014, 5, 26, 0, MONTHS, 2014, 5, 26},
+            {2014, 5, 26, 3, MONTHS, 2014, 8, 26},
+            {2014, 5, 26, -5, MONTHS, 2013, 13, 26},
+            {2014, 5, 26, 0, YEARS, 2014, 5, 26},
+            {2014, 5, 26, 3, YEARS, 2017, 5, 26},
+            {2014, 5, 26, -5, YEARS, 2009, 5, 26},
+            {2014, 5, 26, 0, DECADES, 2014, 5, 26},
+            {2014, 5, 26, 3, DECADES, 2044, 5, 26},
+            {2014, 5, 26, -5, DECADES, 1964, 5, 26},
+            {2014, 5, 26, 0, CENTURIES, 2014, 5, 26},
+            {2014, 5, 26, 3, CENTURIES, 2314, 5, 26},
+            {2014, 5, 26, -5, CENTURIES, 1514, 5, 26},
+            {2014, 5, 26, 0, MILLENNIA, 2014, 5, 26},
+            {2014, 5, 26, 3, MILLENNIA, 5014, 5, 26},
+            {2014, 5, 26, -1, MILLENNIA, 2014 - 1000, 5, 26},
 
-            {InternationalFixedDate.of(2013, 1, 26), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 13, 26)},
-            {InternationalFixedDate.of(2011, 10, 6), 3, ChronoUnit.MONTHS, InternationalFixedDate.of(2011, 13, 6)},
-            {InternationalFixedDate.of(2012, 13, 6), 3, ChronoUnit.MONTHS, InternationalFixedDate.of(2013, 3, 6)},
-            {InternationalFixedDate.of(2012, 13, 7), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 7)},
-            {InternationalFixedDate.of(2013, 12, 7), 1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013, 13, 7)},
-            {InternationalFixedDate.of(2012, 13, 26), 1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013, 1, 26)},
+            {2014, 13, 26, 3, WEEKS, 2015, 1, 19},
+            {2014, 1, 26, -5, WEEKS, 2013, 13, 19},
 
-            {InternationalFixedDate.of(2012, 13, 6), -6, ChronoUnit.YEARS, InternationalFixedDate.of(2006, 13, 6)},
-            {InternationalFixedDate.of(2013, 13, 6), -3, ChronoUnit.YEARS, InternationalFixedDate.of(2010, 13, 6)},
-            {InternationalFixedDate.of(2011, 13, 26), 1, ChronoUnit.YEARS, InternationalFixedDate.of(2012, 13, 26)},
-            {InternationalFixedDate.of(2014, 13, 26), -2, ChronoUnit.YEARS, InternationalFixedDate.of(2012, 13, 26)},
-            {InternationalFixedDate.of(2012, 13, 26), -6, ChronoUnit.YEARS, InternationalFixedDate.of(2006, 13, 26)},
-            {InternationalFixedDate.of(2012, 13, 6), 3, ChronoUnit.YEARS, InternationalFixedDate.of(2015, 13, 6)},
-            {InternationalFixedDate.of(2015, 13, 6), -3, ChronoUnit.YEARS, InternationalFixedDate.of(2012, 13, 6)},
+            {2012, 6, 26, 3, WEEKS, 2012, 7, 19},
+            {2012, 7, 26, -5, WEEKS, 2012, 6, 19},
+        };
+    }
 
+    @DataProvider(name = "plus_leap_and_year_day")
+    Object[][] data_plus_leap_and_year_day() {
+        return new Object[][] {
+            {2014, 0, 0, 0, DAYS, 2014, 0, 0},
+            {2014, 0, 0, 8, DAYS, 2015, 1, 8},
+            {2014, 0, 0, -3, DAYS, 2014, 13, 26},
+            {2014, 0, 0, 0, WEEKS, 2014, 0, 0},
+            {2014, 0, 0, 3, WEEKS, 2015, 1, 21},
+            {2014, 0, 0, -5, WEEKS, 2014, 12, 21},
+            {2014, 0, 0, 52, WEEKS, 2015, 0, 0},
+            {2014, 0, 0, 0, MONTHS, 2014, 0, 0},
+            {2014, 0, 0, 3, MONTHS, 2015, 3, 28},
+            {2014, 0, 0, -5, MONTHS, 2014, 8, 28},
+            {2014, 0, 0, 13, MONTHS, 2015, 0, 0},
+            {2014, 0, 0, 0, YEARS, 2014, 0, 0},
+            {2014, 0, 0, 3, YEARS, 2017, 0, 0},
+            {2014, 0, 0, -5, YEARS, 2009, 0, 0},
+
+            {2011, 0, 0, 4 * 6, WEEKS, 2012, 6, 28},
+            {2012, 0, 0, 4 * -7, WEEKS, 2012, 6, 28},
+
+            {2012, -1, 0, 0, DAYS, 2012, -1, 0},
+            {2012, -1, 0, 8, DAYS, 2012, 7, 8},
+            {2012, -1, 0, -3, DAYS, 2012, 6, 26},
+            {2012, -1, 0, 0, WEEKS, 2012, -1, 0},
+            {2012, -1, 0, 3, WEEKS, 2012, 7, 21},
+            {2012, -1, 0, -5, WEEKS, 2012, 5, 21},
+            {2012, -1, 0, 52 * 4, WEEKS, 2016, 0, 0},
+            {2012, -1, 0, 0, MONTHS, 2012, -1, 0},
+            {2012, -1, 0, 3, MONTHS, 2012, 10, 1},
+            {2012, -1, 0, -5, MONTHS, 2012, 2, 1},
+            {2012, -1, 0, 13 * 4, MONTHS, 2016, 0, 0},
+            {2012, -1, 0, 0, YEARS, 2012, -1, 0},
+            {2012, -1, 0, 3, YEARS, 2015, 7, 1},
+            {2012, -1, 0, -5, YEARS, 2007, 7, 1},
+            {2012, -1, 0, 4, YEARS, 2016, -1, 0},
+
+            {2012, -1, 0, 4 * 7, WEEKS, 2013, 1, 1},
+            {2012, -1, 0, 4 * -6, WEEKS, 2012, 1, 1},
+        };
+    }
+
+    @DataProvider(name = "minus_leap_and_year_day")
+    Object[][] data_minus_leap_and_year_day() {
+        return new Object[][] {
+            {2014, 0, 0, 0, DAYS, 2014, 0, 0},
+            {2014, 13, 21, 8, DAYS, 2014, 0, 0},
+            {2015, 1, 3, -3, DAYS, 2014, 0, 0},
+            {2014, 0, 0, 0, WEEKS, 2014, 0, 0},
+            {2014, 13, 8, 3, WEEKS, 2014, 0, 0},
+            {2015, 2, 8, -5, WEEKS, 2014, 0, 0},
+            {2013, 0, 0, 52, WEEKS, 2014, 0, 0},
+            {2014, 0, 0, 0, MONTHS, 2014, 0, 0},
+            {2014, 10, 28, 3, MONTHS, 2014, 0, 0},
+            {2015, 5, 28, -5, MONTHS, 2014, 0, 0},
+            {2015, 0, 0, 13, MONTHS, 2014, 0, 0},
+            {2014, 0, 0, 0, YEARS, 2014, 0, 0},
+            {2011, 0, 0, 3, YEARS, 2014, 0, 0},
+            {2019, 0, 0, -5, YEARS, 2014, 0, 0},
+
+            {2011, 6, 28, 4 * -6, WEEKS, 2011, 0, 0},
+            {2012, 6, 28, 4 * 7, WEEKS, 2012, 0, 0},
+
+            {2012, -1, 0, 0, DAYS, 2012, -1, 0},
+            {2012, 6, 21, 8, DAYS, 2012, -1, 0},
+            {2012, 7, 3, -3, DAYS, 2012, -1, 0},
+            {2012, -1, 0, 0, WEEKS, 2012, -1, 0},
+            {2012, 6, 8, 3, WEEKS, 2012, -1, 0},
+            {2012, 8, 8, -5, WEEKS, 2012, -1, 0},
+            {2008, 0, 0, 52 * 4, WEEKS, 2012, -1, 0},
+            {2012, -1, 0, 0, MONTHS, 2012, -1, 0},
+            {2012, 4, 1, 3, MONTHS, 2012, -1, 0},
+            {2012, 10, 1, -5, MONTHS, 2012, -1, 0},
+            {2008, 0, 0, 13 * 4, MONTHS, 2012, -1, 0},
+            {2012, -1, 0, 0, YEARS, 2012, -1, 0},
+            {2009, 7, 1, 3, YEARS, 2012, -1, 0},
+            {2017, 7, 1, -5, YEARS, 2012, -1, 0},
+            {2008, 0, 0, 4, YEARS, 2012, -1, 0},
+
+            {2013, 1, 1, 4 * -7, WEEKS, 2012, -1, 0},
+            {2012, 1, 1, 4 * 6, WEEKS, 2012, -1, 0},
         };
     }
 
     @Test(dataProvider = "plus")
-    public void test_plus_TemporalUnit(
-            InternationalFixedDate start,
-            long amount,
-            TemporalUnit unit,
-            InternationalFixedDate end) {
-        assertEquals(start.plus(amount, unit), end);
+    public void test_plus_TemporalUnit(int year, int month, int dom,
+            long amount, TemporalUnit unit,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(InternationalFixedDate.of(year, month, dom).plus(amount, unit), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @Test(dataProvider = "plus_leap_and_year_day")
+    public void test_plus_leap_and_year_day_TemporalUnit(int year, int month, int dom,
+            long amount, TemporalUnit unit,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(InternationalFixedDate.of(year, month, dom).plus(amount, unit), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
     @Test(dataProvider = "plus")
     public void test_minus_TemporalUnit(
-            InternationalFixedDate start,
-            long amount,
-            TemporalUnit unit,
-            InternationalFixedDate end) {
-        assertEquals(end.minus(amount, unit), start);
+            int expectedYear, int expectedMonth, int expectedDom,
+            long amount, TemporalUnit unit,
+            int year, int month, int dom) {
+        assertEquals(InternationalFixedDate.of(year, month, dom).minus(amount, unit), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @DataProvider(name = "plusSpecial")
-    Object[][] data_plus_special() {
-        return new Object[][] {
-            {InternationalFixedDate.leapDay(2012), 1, ChronoUnit.DAYS, InternationalFixedDate.of(2012, 7, 1)},
-            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.DAYS, InternationalFixedDate.of(2012, 6, 28)},
-            {InternationalFixedDate.leapDay(2012), 1, ChronoUnit.WEEKS, InternationalFixedDate.of(2012, 7, 7)},
-            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.WEEKS, InternationalFixedDate.of(2012, 6, 22)},
-
-            {InternationalFixedDate.leapDay(2012), 1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 8, 1)},
-            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 6, 1)},
-            {InternationalFixedDate.leapDay(2012), 3, ChronoUnit.YEARS, InternationalFixedDate.of(2015, 7, 1)},
-            {InternationalFixedDate.leapDay(2012), 4, ChronoUnit.YEARS, InternationalFixedDate.leapDay(2016)},
-            {InternationalFixedDate.leapDay(2012), -8, ChronoUnit.YEARS, InternationalFixedDate.leapDay(2004)},
-
-            {InternationalFixedDate.yearDay(2012), 1, ChronoUnit.DAYS, InternationalFixedDate.of(2013, 1, 1)},
-            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.DAYS, InternationalFixedDate.of(2012, 13, 28)},
-            {InternationalFixedDate.yearDay(2012), 1, ChronoUnit.WEEKS, InternationalFixedDate.of(2013, 1, 7)},
-            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.WEEKS, InternationalFixedDate.of(2012, 13, 22)},
-            {InternationalFixedDate.yearDay(2012), 1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013, 1, 28)},
-            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 28)},
-            {InternationalFixedDate.yearDay(2012), 3, ChronoUnit.YEARS, InternationalFixedDate.yearDay(2015)},
-            {InternationalFixedDate.yearDay(2012), 4, ChronoUnit.YEARS, InternationalFixedDate.yearDay(2016)},
-            {InternationalFixedDate.yearDay(2012), -8, ChronoUnit.YEARS, InternationalFixedDate.yearDay(2004)},
-        };
+    @Test(dataProvider = "minus_leap_and_year_day")
+    public void test_minus_leap_and_year_day_TemporalUnit(
+            int expectedYear, int expectedMonth, int expectedDom,
+            long amount, TemporalUnit unit,
+            int year, int month, int dom) {
+        assertEquals(InternationalFixedDate.of(year, month, dom).minus(amount, unit), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @Test(dataProvider = "plusSpecial")
-    public void test_plus_TemporalUnit_Special(
-            InternationalFixedDate start,
-            long amount,
-            TemporalUnit unit,
-            InternationalFixedDate end) {
-        assertEquals(start.plus(amount, unit), end);
-    }
-
-    @DataProvider(name = "minusSpecial")
-    Object[][] data_minus_special() {
-        return new Object[][] {
-            {InternationalFixedDate.leapDay(2012), 1, ChronoUnit.DAYS, InternationalFixedDate.of(2012, 6, 28)},
-            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.DAYS, InternationalFixedDate.of(2012, 7, 1)},
-            {InternationalFixedDate.leapDay(2012), 1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 6, 1)},
-            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 8, 1)},
-            {InternationalFixedDate.leapDay(2012), 3, ChronoUnit.YEARS, InternationalFixedDate.of(2009, 7, 1)},
-            {InternationalFixedDate.leapDay(2012), 4, ChronoUnit.YEARS, InternationalFixedDate.leapDay(2008)},
-            {InternationalFixedDate.leapDay(2012), -8, ChronoUnit.YEARS, InternationalFixedDate.leapDay(2020)},
-
-            {InternationalFixedDate.yearDay(2012), 1, ChronoUnit.DAYS, InternationalFixedDate.of(2012, 13, 28)},
-            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.DAYS, InternationalFixedDate.of(2013, 1, 1)},
-            {InternationalFixedDate.yearDay(2012), 1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 28)},
-            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013, 1, 28)},
-            {InternationalFixedDate.yearDay(2012), 3, ChronoUnit.YEARS, InternationalFixedDate.yearDay(2009)},
-            {InternationalFixedDate.yearDay(2012), 4, ChronoUnit.YEARS, InternationalFixedDate.yearDay(2008)},
-            {InternationalFixedDate.yearDay(2012), -8, ChronoUnit.YEARS, InternationalFixedDate.yearDay(2020)},
-        };
-    }
-
-    @Test(dataProvider = "minusSpecial")
-    public void test_minus_TemporalUnit_Special(
-            InternationalFixedDate start,
-            long amount,
-            TemporalUnit unit,
-            InternationalFixedDate end) {
-        assertEquals(start.minus(amount, unit), end);
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_plus_TemporalUnit_unsupported() {
+        InternationalFixedDate.of(2012, 6, 28).plus(0, MINUTES);
     }
 
     // -----------------------------------------------------------------------
