@@ -760,15 +760,15 @@ public class TestInternationalFixedChronology {
     // -----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToInternationalFixedDate() {
-        InternationalFixedDate date = InternationalFixedDate.of(2012, 6, 15);
-        LocalDate test = LocalDate.MIN.with(date);
+        InternationalFixedDate fixed = InternationalFixedDate.of(2012, 6, 15);
+        LocalDate test = LocalDate.MIN.with(fixed);
         assertEquals(test, LocalDate.of(2012, 6, 3));
     }
 
     @Test
     public void test_LocalDateTime_adjustToInternationalFixedDate() {
-        InternationalFixedDate date = InternationalFixedDate.of(2012, 6, 15);
-        LocalDateTime test = LocalDateTime.MIN.with(date);
+        InternationalFixedDate fixed = InternationalFixedDate.of(2012, 6, 15);
+        LocalDateTime test = LocalDateTime.MIN.with(fixed);
         assertEquals(test, LocalDateTime.of(2012, 6, 3, 0, 0));
     }
 
