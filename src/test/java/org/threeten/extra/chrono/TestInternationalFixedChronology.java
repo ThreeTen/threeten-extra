@@ -541,49 +541,171 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "with")
     Object[][] data_with() {
         return new Object[][] {
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.DAY_OF_WEEK, 3, InternationalFixedDate.of(2014, 5, 25)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.DAY_OF_WEEK, 4, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.DAY_OF_MONTH, 28, InternationalFixedDate.of(2014, 5, 28)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.DAY_OF_MONTH, 26, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.DAY_OF_YEAR, 364, InternationalFixedDate.of(2014, 13, 28)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.DAY_OF_YEAR, 138, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, InternationalFixedDate.of(2014, 5, 24)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ALIGNED_WEEK_OF_MONTH, 1, InternationalFixedDate.of(2014, 5, 5)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ALIGNED_WEEK_OF_MONTH, 4, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, InternationalFixedDate.of(2014, 5, 24)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 23, InternationalFixedDate.of(2014, 6, 19)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 20, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.MONTH_OF_YEAR, 7, InternationalFixedDate.of(2014, 7, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.MONTH_OF_YEAR, 5, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 4, InternationalFixedDate.of(2013, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 5, InternationalFixedDate.of(2013, 6, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.YEAR, 2012, InternationalFixedDate.of(2012, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.YEAR, 2014, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.YEAR_OF_ERA, 2012, InternationalFixedDate.of(2012, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.YEAR_OF_ERA, 2014, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.ERA, 1, InternationalFixedDate.of(2014, 5, 26)},
-            {InternationalFixedDate.of(2011, 3, 28), ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(2011, 13, 28)},
-            {InternationalFixedDate.of(2012, 3, 28), ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(2012, 13, 28)},
-            {InternationalFixedDate.of(2012, 3, 28), ChronoField.MONTH_OF_YEAR, 6, InternationalFixedDate.of(2012, 6, 28)},
-            {InternationalFixedDate.of(2012, 13, 7), ChronoField.YEAR, 2011, InternationalFixedDate.of(2011, 13, 7)},
-            {InternationalFixedDate.of(2014, 5, 26), ChronoField.DAY_OF_WEEK, 3, InternationalFixedDate.of(2014, 5, 25)},
+            {2014, 5, 26, DAY_OF_WEEK, 1, 2014, 5, 22},
+            {2014, 5, 26, DAY_OF_WEEK, 5, 2014, 5, 26},
+            {2014, 5, 26, DAY_OF_MONTH, 28, 2014, 5, 28},
+            {2014, 5, 26, DAY_OF_MONTH, 26, 2014, 5, 26},
+            {2014, 5, 26, DAY_OF_YEAR, 364, 2014, 13, 28},
+            {2014, 5, 26, DAY_OF_YEAR, 138, 2014, 5, 26},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 5, 24},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, 2014, 5, 26},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 1, 2014, 5, 5},
+            {2014, 5, 26, ALIGNED_WEEK_OF_MONTH, 4, 2014, 5, 26},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 2014, 5, 23},
+            {2014, 5, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, 2014, 5, 26},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 23, 2014, 6, 19},
+            {2014, 5, 26, ALIGNED_WEEK_OF_YEAR, 20, 2014, 5, 26},
+            {2014, 5, 26, MONTH_OF_YEAR, 4, 2014, 4, 26},
+            {2014, 5, 26, MONTH_OF_YEAR, 5, 2014, 5, 26},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2013 * 13 + 3 - 1, 2013, 3, 26},
+            {2014, 5, 26, PROLEPTIC_MONTH, 2014 * 13 + 5 - 1, 2014, 5, 26},
+            {2014, 5, 26, YEAR, 2012, 2012, 5, 26},
+            {2014, 5, 26, YEAR, 2014, 2014, 5, 26},
+            {2014, 5, 26, YEAR_OF_ERA, 2012, 2012, 5, 26},
+            {2014, 5, 26, YEAR_OF_ERA, 2014, 2014, 5, 26},
+            {2014, 5, 26, ERA, 1, 2014, 5, 26},
+
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 2014, 13, 22},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 2, 2014, 13, 23},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2014, 13, 24},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 4, 2014, 13, 25},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, 2014, 13, 26},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 6, 2014, 13, 27},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 7, 2014, 13, 28},
+
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 1, 2014, 13, 22},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 2014, 13, 23},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2014, 13, 24},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 4, 2014, 13, 25},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, 2014, 13, 26},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 6, 2014, 13, 27},
+            {2014, 0, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 7, 2014, 13, 28},
+
+            {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 0, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_MONTH, 3, 2014, 13, 15},
+
+            {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 0, 2014, 0, 0},
+            {2014, 0, 0, ALIGNED_WEEK_OF_YEAR, 3, 2014, 1, 15},
+
+            {2014, 0, 0, DAY_OF_WEEK, 0, 2014, 0, 0},
+            {2014, 0, 0, DAY_OF_WEEK, 1, 2014, 13, 22},
+            {2014, 0, 0, DAY_OF_WEEK, 2, 2014, 13, 23},
+            {2014, 0, 0, DAY_OF_WEEK, 3, 2014, 13, 24},
+            {2014, 0, 0, DAY_OF_WEEK, 4, 2014, 13, 25},
+            {2014, 0, 0, DAY_OF_WEEK, 5, 2014, 13, 26},
+            {2014, 0, 0, DAY_OF_WEEK, 6, 2014, 13, 27},
+            {2014, 0, 0, DAY_OF_WEEK, 7, 2014, 13, 28},
+
+            {2014, 0, 0, DAY_OF_MONTH, 0, 2014, 0, 0},
+            {2014, 0, 0, DAY_OF_MONTH, 3, 2014, 13, 3},
+
+            {2014, 0, 0, MONTH_OF_YEAR, 0, 2014, 0, 0},
+            {2014, 0, 0, MONTH_OF_YEAR, 13, 2014, 13, 28},
+            {2014, 0, 0, MONTH_OF_YEAR, 2, 2014, 2, 28},
+
+            {2014, 0, 0, YEAR, 2014, 2014, 0, 0},
+            {2014, 0, 0, YEAR, 2013, 2013, 0, 0},
+
+            {2014, 3, 28, DAY_OF_MONTH, 0, 2014, 0, 0},
+            {2014, 1, 28, DAY_OF_MONTH, 0, 2014, 0, 0},
+            {2014, 3, 28, MONTH_OF_YEAR, 0, 2014, 0, 0},
+            {2014, 3, 28, DAY_OF_YEAR, 365, 2014, 0, 0},
+            {2012, 3, 28, DAY_OF_YEAR, 366, 2012, 0, 0},
+
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 2012, -1, 0},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 2012, 7, 1},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 2, 2012, 7, 2},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, 2012, 7, 3},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 4, 2012, 7, 4},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, 2012, 7, 5},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 6, 2012, 7, 6},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 7, 2012, 7, 7},
+
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0, 2012, -1, 0},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 1, 2012, 7, 1},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 2, 2012, 7, 2},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, 2012, 7, 3},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 4, 2012, 7, 4},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, 2012, 7, 5},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 6, 2012, 7, 6},
+            {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 7, 2012, 7, 7},
+
+            {2012, -1, 0, ALIGNED_WEEK_OF_MONTH, 0, 2012, -1, 0},
+            {2012, -1, 0, ALIGNED_WEEK_OF_MONTH, 3, 2012, 7, 15},
+
+            {2012, -1, 0, ALIGNED_WEEK_OF_YEAR, 0, 2012, -1, 0},
+            {2012, -1, 0, ALIGNED_WEEK_OF_YEAR, 3, 2012, 1, 15},
+
+            {2012, -1, 0, DAY_OF_WEEK, 0, 2012, -1, 0},
+            {2012, -1, 0, DAY_OF_WEEK, 1, 2012, 7, 1},
+            {2012, -1, 0, DAY_OF_WEEK, 2, 2012, 7, 2},
+            {2012, -1, 0, DAY_OF_WEEK, 3, 2012, 7, 3},
+            {2012, -1, 0, DAY_OF_WEEK, 4, 2012, 7, 4},
+            {2012, -1, 0, DAY_OF_WEEK, 5, 2012, 7, 5},
+            {2012, -1, 0, DAY_OF_WEEK, 6, 2012, 7, 6},
+            {2012, -1, 0, DAY_OF_WEEK, 7, 2012, 7, 7},
+
+            {2012, -1, 0, DAY_OF_MONTH, 0, 2012, -1, 0},
+            {2012, -1, 0, DAY_OF_MONTH, 3, 2012, 7, 3},
+
+            {2012, -1, 0, MONTH_OF_YEAR, -1, 2012, -1, 0},
+            {2012, -1, 0, MONTH_OF_YEAR, 7, 2012, 7, 1},
+            {2012, -1, 0, MONTH_OF_YEAR, 2, 2012, 2, 1},
+
+            {2012, -1, 0, YEAR, 2012, 2012, -1, 0},
+            {2012, -1, 0, YEAR, 2013, 2013, 7, 1},
+            {2012, -1, 0, YEAR, 2011, 2011, 7, 1},
+            {2012, -1, 0, YEAR, 2018, 2016, -1, 0},
+
+            {2012, 3, 28, MONTH_OF_YEAR, -1, 2012, -1, 0},
+            {2012, 3, 28, DAY_OF_YEAR, 169, 2012, -1, 0},
+            {2013, 3, 28, DAY_OF_YEAR, 169, 2013, 7, 1},
+            {2013, 7, 1, YEAR, 2012, 2012, 7, 1},
         };
     }
 
     @Test(dataProvider = "with")
-    public void test_with_TemporalField(
-            InternationalFixedDate date,
-            TemporalField field,
-            long value,
-            InternationalFixedDate expectedDate) {
-        assertEquals(date.with(field, value), expectedDate);
+    public void test_with_TemporalField(int year, int month, int dom,
+            TemporalField field, long value,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(InternationalFixedDate.of(year, month, dom).with(field, value), InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom));
+    }
+
+    @DataProvider(name = "withBad")
+    Object[][] data_with_bad() {
+        return new Object[][] {
+            {2013, 1, 1, DAY_OF_WEEK, -1},
+            {2013, 1, 1, DAY_OF_WEEK, 8},
+            {2012, 1, 1, DAY_OF_WEEK, -1},
+            {2012, 1, 1, DAY_OF_WEEK, 8},
+
+            {2013, 1, 1, DAY_OF_MONTH, -1},
+            {2013, 1, 1, DAY_OF_MONTH, 29},
+            {2012, 1, 1, DAY_OF_MONTH, -1},
+            {2012, 1, 1, DAY_OF_MONTH, 29},
+
+            {2013, 1, 1, DAY_OF_YEAR, 0},
+            {2012, 1, 1, DAY_OF_YEAR, 0},
+            {2013, 1, 1, DAY_OF_YEAR, 366},
+            {2012, 1, 1, DAY_OF_YEAR, 367},
+
+            {2013, 1, 1, MONTH_OF_YEAR, -1},
+            {2013, 1, 1, MONTH_OF_YEAR, 14},
+            {2012, 1, 1, MONTH_OF_YEAR, -2},
+            {2012, 1, 1, MONTH_OF_YEAR, 14},
+        };
+    }
+
+    @Test(dataProvider = "withBad", expectedExceptions = DateTimeException.class)
+    public void test_with_TemporalField_badValue(int year, int month, int dom, TemporalField field, long value) {
+        InternationalFixedDate.of(year, month, dom).with(field, value);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
     public void test_with_TemporalField_unsupported() {
-        InternationalFixedDate.of(2012, 6, 28).with(ChronoField.MINUTE_OF_DAY, 0);
+        InternationalFixedDate.of(2012, 6, 28).with(MINUTE_OF_DAY, 0);
     }
 
     // -----------------------------------------------------------------------
