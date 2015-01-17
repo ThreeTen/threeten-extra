@@ -73,7 +73,7 @@ import java.util.Locale;
  * The International fixed differs from the Gregorian in terms of month count and length, and the leap year rule.
  * Dates are aligned such that {@code 0001-01-01 (International fixed)} is {@code 0001-01-01 (ISO)}.</p>
  * <p>
- * More information is available in the <a href='https://en.wikipedia.org/wiki/International_Fixed_Calendar'>International fixed Calendar</a> Wikipedia article.</p>
+ * More information is available in the <a href='https://en.wikipedia.org/wiki/International_Fixed_Calendar'>International Fixed Calendar</a> Wikipedia article.</p>
  * <p>
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
@@ -87,7 +87,7 @@ public final class InternationalFixedDate
     /**
      * Serialization version UID.
      */
-    private static final long serialVersionUID = 3697830095268896313L;
+    private static final long serialVersionUID = 1846403497617429687L;
     /**
      * Number of years in a decade.
      */
@@ -795,11 +795,11 @@ public final class InternationalFixedDate
                 case YEARS:
                     return yearsUntil(end);
                 case DECADES:
-                    return yearsUntil(end) / 10;
+                    return yearsUntil(end) / YEARS_IN_DECADE;
                 case CENTURIES:
-                    return yearsUntil(end) / 100;
+                    return yearsUntil(end) / YEARS_IN_CENTURY;
                 case MILLENNIA:
-                    return yearsUntil(end) / 1000;
+                    return yearsUntil(end) / YEARS_IN_MILLENNIUM;
                 case ERAS:
                     return end.getLong(ChronoField.ERA) - getLong(ChronoField.ERA);
             }
