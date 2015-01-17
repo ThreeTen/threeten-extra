@@ -140,7 +140,7 @@ public class TestInternationalFixedChronology {
             {InternationalFixedDate.of(4, 13, 27), LocalDate.of(4, 12, 29)},
             {InternationalFixedDate.of(4, 0, 0), LocalDate.of(4, 12, 31)},
             {InternationalFixedDate.yearDay(4), LocalDate.of(4, 12, 31)},
-            {InternationalFixedDate.of(4, 1, 1), LocalDate.of(5, 1, 1)},
+            {InternationalFixedDate.of(5, 1, 1), LocalDate.of(5, 1, 1)},
 
             {InternationalFixedDate.of(100, 6, 27), LocalDate.of(100, 6, 16)},
             {InternationalFixedDate.of(100, 6, 28), LocalDate.of(100, 6, 17)},
@@ -208,15 +208,19 @@ public class TestInternationalFixedChronology {
         assertEquals(LocalDate.from(fixed.plus(0, DAYS)), iso);
         assertEquals(LocalDate.from(fixed.plus(1, DAYS)), iso.plusDays(1));
         assertEquals(LocalDate.from(fixed.plus(35, DAYS)), iso.plusDays(35));
-        assertEquals(LocalDate.from(fixed.plus(-1, DAYS)), iso.plusDays(-1));
-        assertEquals(LocalDate.from(fixed.plus(-60, DAYS)), iso.plusDays(-60));
+        if (LocalDate.ofYearDay(1, 60).isBefore(iso)) {
+            assertEquals(LocalDate.from(fixed.plus(-1, DAYS)), iso.plusDays(-1));
+            assertEquals(LocalDate.from(fixed.plus(-60, DAYS)), iso.plusDays(-60));
+        }
     }
 
     @Test(dataProvider = "samples")
     public void test_minusDays(final InternationalFixedDate fixed, final LocalDate iso) {
         assertEquals(LocalDate.from(fixed.minus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(fixed.minus(1, DAYS)), iso.minusDays(1));
-        assertEquals(LocalDate.from(fixed.minus(35, DAYS)), iso.minusDays(35));
+        if (LocalDate.ofYearDay(1, 35).isBefore(iso)) {
+            assertEquals(LocalDate.from(fixed.minus(1, DAYS)), iso.minusDays(1));
+            assertEquals(LocalDate.from(fixed.minus(35, DAYS)), iso.minusDays(35));
+        }
         assertEquals(LocalDate.from(fixed.minus(-1, DAYS)), iso.minusDays(-1));
         assertEquals(LocalDate.from(fixed.minus(-60, DAYS)), iso.minusDays(-60));
     }
@@ -226,7 +230,9 @@ public class TestInternationalFixedChronology {
         assertEquals(fixed.until(iso.plusDays(0), DAYS), 0);
         assertEquals(fixed.until(iso.plusDays(1), DAYS), 1);
         assertEquals(fixed.until(iso.plusDays(35), DAYS), 35);
-        assertEquals(fixed.until(iso.minusDays(40), DAYS), -40);
+        if (LocalDate.ofYearDay(1, 40).isBefore(iso)) {
+            assertEquals(fixed.until(iso.minusDays(40), DAYS), -40);
+        }
     }
 
     @DataProvider(name = "badDates")
@@ -463,10 +469,10 @@ public class TestInternationalFixedChronology {
             {2012, 1, 23, DAY_OF_YEAR, 1, 366},
             // Leap Day is still in same year, so (-1 to 13) in leap year
             {2012, 1, 23, MONTH_OF_YEAR, -1, 13},
-            // Leap Day/Year Day in own months, so (0 to 0) or (1 to 4)
+            // Leap Day/Year Day in own months, so (0 to 0) or (1 to 7)
             {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
             {2012, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
-            {2012, 1, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 4},
+            {2012, 1, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 7},
             // Leap Day/Year Day in own months, so (0 to 0) or (1 to 4)
             {2012, -1, 0, ALIGNED_WEEK_OF_MONTH, 0, 0},
             {2012, 0, 0, ALIGNED_WEEK_OF_MONTH, 0, 0},
@@ -528,8 +534,8 @@ public class TestInternationalFixedChronology {
             {2012, -1, 0, ALIGNED_WEEK_OF_MONTH, 0},
             {2012, -1, 0, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
             {2012, -1, 0, ALIGNED_WEEK_OF_YEAR, 0},
-            {2012, -1, 0, MONTH_OF_YEAR, 0},
-            {2012, -1, 0, PROLEPTIC_MONTH, 2014 * 13 + 7 - 1},
+            {2012, -1, 0, MONTH_OF_YEAR, -1},
+            {2012, -1, 0, PROLEPTIC_MONTH, 2012 * 13 + 7 - 1},
         };
     }
 
@@ -665,7 +671,7 @@ public class TestInternationalFixedChronology {
             {2012, -1, 0, YEAR, 2012, 2012, -1, 0},
             {2012, -1, 0, YEAR, 2013, 2013, 7, 1},
             {2012, -1, 0, YEAR, 2011, 2011, 7, 1},
-            {2012, -1, 0, YEAR, 2018, 2016, -1, 0},
+            {2012, -1, 0, YEAR, 2016, 2016, -1, 0},
 
             {2012, 3, 28, MONTH_OF_YEAR, -1, 2012, -1, 0},
             {2012, 3, 28, DAY_OF_YEAR, 169, 2012, -1, 0},
@@ -722,11 +728,11 @@ public class TestInternationalFixedChronology {
     @Test
     public void test_adjust_toLastDayOfMonth() {
         InternationalFixedDate base = InternationalFixedDate.of(2012, 6, 23);
-        InternationalFixedDate test = (InternationalFixedDate) base.with(TemporalAdjusters.lastDayOfMonth());
+        InternationalFixedDate test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, InternationalFixedDate.of(2012, 6, 28));
 
         base = InternationalFixedDate.of(2012, 13, 2);
-        test = (InternationalFixedDate) base.with(TemporalAdjusters.lastDayOfMonth());
+        test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, InternationalFixedDate.of(2012, 13, 28));
     }
 
@@ -788,7 +794,7 @@ public class TestInternationalFixedChronology {
     Object[][] data_plus() {
         return new Object[][] {
             {2014, 5, 26, 0, DAYS, 2014, 5, 26},
-            {2014, 5, 26, 8, DAYS, 2014, 6, 5},
+            {2014, 5, 26, 8, DAYS, 2014, 6, 6},
             {2014, 5, 26, -3, DAYS, 2014, 5, 23},
             {2014, 5, 26, 0, WEEKS, 2014, 5, 26},
             {2014, 5, 26, 3, WEEKS, 2014, 6, 19},
@@ -886,15 +892,15 @@ public class TestInternationalFixedChronology {
             {2012, -1, 0, 0, WEEKS, 2012, -1, 0},
             {2012, 6, 8, 3, WEEKS, 2012, -1, 0},
             {2012, 8, 8, -5, WEEKS, 2012, -1, 0},
-            {2008, 0, 0, 52 * 4, WEEKS, 2012, -1, 0},
+            {2008, -1, 0, 52 * 4, WEEKS, 2012, -1, 0},
             {2012, -1, 0, 0, MONTHS, 2012, -1, 0},
             {2012, 4, 1, 3, MONTHS, 2012, -1, 0},
             {2012, 10, 1, -5, MONTHS, 2012, -1, 0},
-            {2008, 0, 0, 13 * 4, MONTHS, 2012, -1, 0},
+            {2008, -1, 0, 13 * 4, MONTHS, 2012, -1, 0},
             {2012, -1, 0, 0, YEARS, 2012, -1, 0},
             {2009, 7, 1, 3, YEARS, 2012, -1, 0},
             {2017, 7, 1, -5, YEARS, 2012, -1, 0},
-            {2008, 0, 0, 4, YEARS, 2012, -1, 0},
+            {2008, -1, 0, 4, YEARS, 2012, -1, 0},
 
             {2013, 1, 1, 4 * -7, WEEKS, 2012, -1, 0},
             {2012, 1, 1, 4 * 6, WEEKS, 2012, -1, 0},
@@ -949,8 +955,8 @@ public class TestInternationalFixedChronology {
             {2014, 5, 26, 2014, 6, 4, WEEKS, 0},
             {2014, 5, 26, 2014, 6, 5, WEEKS, 1},
             {2014, 5, 26, 2014, 5, 26, MONTHS, 0},
-            {2014, 5, 26, 2015, 6, 25, MONTHS, 0},
-            {2014, 5, 26, 2015, 6, 26, MONTHS, 1},
+            {2014, 5, 26, 2014, 6, 25, MONTHS, 0},
+            {2014, 5, 26, 2014, 6, 26, MONTHS, 1},
             {2014, 5, 26, 2014, 5, 26, YEARS, 0},
             {2014, 5, 26, 2015, 5, 25, YEARS, 0},
             {2014, 5, 26, 2015, 5, 26, YEARS, 1},
@@ -1072,8 +1078,8 @@ public class TestInternationalFixedChronology {
             int year1, int month1, int dom1,
             int year2, int month2, int dom2,
             TemporalUnit unit, long expected) {
-        DiscordianDate start = DiscordianDate.of(year1, month1, dom1);
-        DiscordianDate end = DiscordianDate.of(year2, month2, dom2);
+        InternationalFixedDate start = InternationalFixedDate.of(year1, month1, dom1);
+        InternationalFixedDate end = InternationalFixedDate.of(year2, month2, dom2);
         assertEquals(start.until(end, unit), expected);
     }
 
