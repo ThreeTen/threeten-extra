@@ -373,10 +373,11 @@ public final class InternationalFixedDate
     //-----------------------------------------------------------------------
     /**
      * Factory method, validates the given triplet year, month and dayOfMonth.
+     * Special values are required for Year Day (NNNN/0/0) and Leap Day (NNNN/-1/-1).
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month, from 1 to 13
-     * @param dayOfMonth    the International fixed day-of-month, from 1 to 28
+     * @param month         the International fixed month, from -1 to 13
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28
      * @return the International fixed date
      * @throws DateTimeException if the date is invalid
      */
@@ -385,7 +386,7 @@ public final class InternationalFixedDate
         InternationalFixedChronology.MONTH_OF_YEAR_RANGE.checkValidValue(month, ChronoField.MONTH_OF_YEAR);
         InternationalFixedChronology.DAY_OF_MONTH_RANGE.checkValidValue(dayOfMonth, ChronoField.DAY_OF_MONTH);
 
-        if (month < 1 || dayOfMonth < 1) {
+        if ((month < 1 || dayOfMonth < 1) && (dayOfMonth != month)) {
             throw new DateTimeException("Invalid date: " + prolepticYear + '/' + month + '/' + dayOfMonth);
         }
 
