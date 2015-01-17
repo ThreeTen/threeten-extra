@@ -292,7 +292,7 @@ public class TestInternationalFixedChronology {
 
             if (date.isYearDay() || date.isLeapDay()) {
                 // year day / leap day are not part of any months!
-                dayOfMonth = 0;
+                dayOfMonth = date.isLeapDay() ? -1 : 0;
                 month = date.isLeapDay() ? -1 : 0;
             }
             else {
@@ -551,9 +551,9 @@ public class TestInternationalFixedChronology {
             { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_WEEK, 0 },
             { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_WEEK, 0 },
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_MONTH, 0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_MONTH, 0 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_MONTH, 0 },
+            { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_MONTH,  0 },
+            { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_MONTH, -1 },
+            { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_MONTH,  0 },
 
             { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_YEAR, 365 },
             { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_YEAR, 169 },
@@ -611,6 +611,8 @@ public class TestInternationalFixedChronology {
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 4, InternationalFixedDate.of(2014, 5, 26) },
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_MONTH, 28, InternationalFixedDate.of(2014, 5, 28) },
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_MONTH, 26, InternationalFixedDate.of(2014, 5, 26) },
+                { InternationalFixedDate.leapDay(2000),    ChronoField.DAY_OF_MONTH, 10, InternationalFixedDate.of(2000,  7, 10) },
+                { InternationalFixedDate.yearDay(1999),    ChronoField.DAY_OF_MONTH, 13, InternationalFixedDate.of(1999, 13, 13) },
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_YEAR, 138, InternationalFixedDate.of(2014, 5, 26) },
                 { InternationalFixedDate.of(1999,  1,  1), ChronoField.DAY_OF_YEAR, 365, InternationalFixedDate.yearDay(1999) },
                 { InternationalFixedDate.of(2000,  1,  1), ChronoField.DAY_OF_YEAR, 169, InternationalFixedDate.leapDay(2000) },
@@ -623,8 +625,13 @@ public class TestInternationalFixedChronology {
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, InternationalFixedDate.of(2014, 5, 26) },
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 23, InternationalFixedDate.of(2014, 6, 19) },
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 20, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR, 7, InternationalFixedDate.of(2014, 7, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR, 5, InternationalFixedDate.of(2014, 5, 26) },
+                { InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR,  7, InternationalFixedDate.of(2014,  7, 26) },
+                { InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR,  5, InternationalFixedDate.of(2014,  5, 26) },
+                { InternationalFixedDate.leapDay(2000),    ChronoField.MONTH_OF_YEAR, 10, InternationalFixedDate.of(2000, 10,  1) },
+                { InternationalFixedDate.leapDay(2000),    ChronoField.MONTH_OF_YEAR,  7, InternationalFixedDate.of(2000,  7,  1) },
+                { InternationalFixedDate.yearDay(1999),    ChronoField.MONTH_OF_YEAR,  9, InternationalFixedDate.of(1999,  9, 28) },
+                { InternationalFixedDate.yearDay(1999),    ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(1999, 13, 28) },
+
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 4, InternationalFixedDate.of(2013, 5, 26) },
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 5, InternationalFixedDate.of(2013, 6, 26) },
                 { InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR, 2012, InternationalFixedDate.of(2012, 5, 26) },
