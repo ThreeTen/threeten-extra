@@ -572,37 +572,43 @@ public final class InternationalFixedDate
 
     @Override
     public InternationalFixedDate plus(final long amountToAdd, final TemporalUnit unit) {
+        if (amountToAdd == 0) {
+            return this;
+        }
+
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
-            InternationalFixedDate date = null;
-            int dayOfWeek = getDayOfWeek();
-            long epoch = toEpochDay();
 
             switch (f) {
                 case WEEKS:
-                    epoch += InternationalFixedChronology.DAYS_IN_WEEK * amountToAdd;
-                    break;
+                    return plusWeeks(amountToAdd);
                 case MONTHS:
-                    epoch += InternationalFixedChronology.DAYS_IN_MONTH * amountToAdd;
-                    break;
+                    return plusWeeks(amountToAdd * 4);
                 default:
                     break;
-            }
-
-            if (date != null) {
-                InternationalFixedDate newDate = InternationalFixedDate.ofEpochDay(epoch);
-                int newDayOfWeek = newDate.getDayOfWeek();
-
-                if ((dayOfWeek == newDayOfWeek) || (dayOfWeek == 0)) {
-                    return newDate;
-                }
-
-                epoch += (dayOfWeek > newDayOfWeek) ? 1 : -1;
-                return InternationalFixedDate.ofEpochDay(epoch);
             }
         }
 
         return (InternationalFixedDate) super.plus(amountToAdd, unit);
+    }
+
+
+    private InternationalFixedDate plusWeeks(final long weeks) {
+        if (weeks % 4 == 0) {
+            return (InternationalFixedDate) plusMonths(weeks / 4);
+        }
+
+        int dayOfWeek = getDayOfWeek();
+        long epoch = toEpochDay() + InternationalFixedChronology.DAYS_IN_WEEK * weeks;
+        InternationalFixedDate newDate = InternationalFixedDate.ofEpochDay(epoch);
+        int newDayOfWeek = newDate.getDayOfWeek();
+
+        if ((dayOfWeek == newDayOfWeek) || (dayOfWeek == 0)) {
+            return newDate;
+        }
+
+        epoch += Math.signum(weeks); // (dayOfWeek > newDayOfWeek) ? 1 : -1;
+        return InternationalFixedDate.ofEpochDay(epoch);
     }
 
     /**
@@ -612,6 +618,10 @@ public final class InternationalFixedDate
     public InternationalFixedDate plusMonths(final long months) {
         if (months == 0) {
             return this;
+        }
+
+        if (months % 13 == 0) {
+            return (InternationalFixedDate) plusYears(months / 13);
         }
 
         int day = isYearDay() ? InternationalFixedChronology.DAYS_IN_MONTH : getCalculatedDayOfMonth();
