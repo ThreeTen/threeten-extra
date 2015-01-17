@@ -333,9 +333,7 @@ public class TestInternationalFixedChronology {
     }
 
     //-----------------------------------------------------------------------
-    // InternationalFixedDate.era
-    // InternationalFixedDate.dateYearDay
-    // InternationalFixedDate.prolepticYear
+    // InternationalFixedDate.lengthOfMonth
     //-----------------------------------------------------------------------
     @DataProvider(name = "lengthOfMonth")
     Object[][] data_lengthOfMonth() {
@@ -343,15 +341,8 @@ public class TestInternationalFixedChronology {
             { InternationalFixedDate.yearDay(1900), 1 },
             { InternationalFixedDate.leapDay(2000), 1 },
             { InternationalFixedDate.yearDay(2000), 1 },
-
-            { InternationalFixedDate.of(1901, 13, 28), 28 },
-            { InternationalFixedDate.of(1902, 13, 28), 28 },
-            { InternationalFixedDate.of(1903, 13, 28), 28 },
-            { InternationalFixedDate.of(1904, 13, 28), 28 },
-            { InternationalFixedDate.of(1905, 13, 28), 28 },
-            { InternationalFixedDate.of(1906, 13, 28), 28 },
-            { InternationalFixedDate.of(2000, 13, 28), 28 },
-            { InternationalFixedDate.of(2001, 13, 28), 28 },
+            { InternationalFixedDate.of(2000,  5,  5), 28 },
+            { InternationalFixedDate.of(2001, 11, 11), 28 },
         };
     }
 
@@ -364,8 +355,9 @@ public class TestInternationalFixedChronology {
 
     //-----------------------------------------------------------------------
     // InternationalFixedDate.era
-    // InternationalFixedDate.dateYearDay
-    // InternationalFixedDate.prolepticYear
+    // InternationalFixedDate.get
+    // InternationalFixedChronology.date
+    // InternationalFixedChronology.dateYearDay
     //-----------------------------------------------------------------------
     @Test
     public void test_era_loop() {
@@ -394,9 +386,8 @@ public class TestInternationalFixedChronology {
     }
 
     //-----------------------------------------------------------------------
-    // InternationalFixedChronology.prolepticYear()
+    // InternationalFixedChronology.prolepticYear
     //-----------------------------------------------------------------------
-
     @DataProvider(name = "prolepticYear")
     Object[][] data_prolepticYear() {
         return new Object[][] {
