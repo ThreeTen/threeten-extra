@@ -80,6 +80,15 @@ public class TestInternationalFixedChronology {
         assertEquals (chronology.getCalendarType(), "ifc");
     }
 
+    @Test
+    public void test_chronology_of_name_id() {
+        Chronology chronology = Chronology.of("ifc");
+        assertNotNull(chronology);
+        assertEquals(chronology, InternationalFixedChronology.INSTANCE);
+        assertEquals(chronology.getId(), "Ifc");
+        assertEquals(chronology.getCalendarType(), "ifc");
+    }
+
     // -----------------------------------------------------------------------
     // InternationalFixedDate.of
     // -----------------------------------------------------------------------
