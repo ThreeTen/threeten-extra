@@ -31,11 +31,10 @@
  */
 package org.threeten.extra.chrono;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -57,21 +56,21 @@ import java.time.temporal.ValueRange;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 /**
  * Test.
  */
 @Test
-@SuppressWarnings({ "static-method", "javadoc" })
+@SuppressWarnings({"static-method", "javadoc"})
 public class TestInternationalFixedChronology {
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // Chronology.of(String)
     // Chronology.getId
     // Chronology.getCalendarType
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_chronology() {
         Chronology chronology = Chronology.of("Ifc");
@@ -81,56 +80,56 @@ public class TestInternationalFixedChronology {
         assertEquals (chronology.getCalendarType(), "ifc");
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.of
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
-                { InternationalFixedDate.of(1, 1, 1), LocalDate.of(1, 1, 1) },
-                { InternationalFixedDate.of(1, 1, 2), LocalDate.of(1, 1, 2) },
+                {InternationalFixedDate.of(1,  1,  1), LocalDate.of(1,  1,  1)},
+                {InternationalFixedDate.of(1,  1,  2), LocalDate.of(1,  1,  2)},
 
-                { InternationalFixedDate.of(1, 1, 27), LocalDate.of(1, 1, 27) },
-                { InternationalFixedDate.of(1, 1, 28), LocalDate.of(1, 1, 28) },
-                { InternationalFixedDate.of(1, 2,  1), LocalDate.of(1, 1, 29) },
-                { InternationalFixedDate.of(1, 2,  2), LocalDate.of(1, 1, 30) },
+                {InternationalFixedDate.of(1,  1, 27), LocalDate.of(1,  1, 27)},
+                {InternationalFixedDate.of(1,  1, 28), LocalDate.of(1,  1, 28)},
+                {InternationalFixedDate.of(1,  2,  1), LocalDate.of(1,  1, 29)},
+                {InternationalFixedDate.of(1,  2,  2), LocalDate.of(1,  1, 30)},
 
-                { InternationalFixedDate.of(1, 13, 28), LocalDate.of(1, 12, 30) },
-                { InternationalFixedDate.of(1, 13, 27), LocalDate.of(1, 12, 29) },
-                { InternationalFixedDate.yearDay(1), LocalDate.of(1, 12, 31) },
-                { InternationalFixedDate.of(2,  1,  1), LocalDate.of(2,  1,  1) },
+                {InternationalFixedDate.of(1, 13, 28), LocalDate.of(1, 12, 30)},
+                {InternationalFixedDate.of(1, 13, 27), LocalDate.of(1, 12, 29)},
+                {InternationalFixedDate.yearDay(1),    LocalDate.of(1, 12, 31)},
+                {InternationalFixedDate.of(2,  1,  1), LocalDate.of(2,  1,  1)},
 
-                { InternationalFixedDate.of(6, 12, 27), LocalDate.of(6, 12,  1) },
-                { InternationalFixedDate.of(6, 12, 28), LocalDate.of(6, 12,  2) },
-                { InternationalFixedDate.of(6, 13,  1), LocalDate.of(6, 12,  3) },
-                { InternationalFixedDate.of(6, 13,  2), LocalDate.of(6, 12,  4) },
-                { InternationalFixedDate.of(6, 13,  3), LocalDate.of(6, 12,  5) },
-                { InternationalFixedDate.of(6, 13, 27), LocalDate.of(6, 12, 29) },
-                { InternationalFixedDate.of(6, 13, 28), LocalDate.of(6, 12, 30) },
-                { InternationalFixedDate.yearDay(6), LocalDate.of(6, 12, 31) },
-                { InternationalFixedDate.of(7,  1,  1), LocalDate.of(7,  1,  1) },
+                {InternationalFixedDate.of(6, 12, 27), LocalDate.of(6, 12,  1)},
+                {InternationalFixedDate.of(6, 12, 28), LocalDate.of(6, 12,  2)},
+                {InternationalFixedDate.of(6, 13,  1), LocalDate.of(6, 12,  3)},
+                {InternationalFixedDate.of(6, 13,  2), LocalDate.of(6, 12,  4)},
+                {InternationalFixedDate.of(6, 13,  3), LocalDate.of(6, 12,  5)},
+                {InternationalFixedDate.of(6, 13, 27), LocalDate.of(6, 12, 29)},
+                {InternationalFixedDate.of(6, 13, 28), LocalDate.of(6, 12, 30)},
+                {InternationalFixedDate.yearDay(6),    LocalDate.of(6, 12, 31)},
+                {InternationalFixedDate.of(7,  1,  1), LocalDate.of(7,  1,  1)},
 
-                { InternationalFixedDate.of(399, 13,  1), LocalDate.of(399, 12,  3) },
-                { InternationalFixedDate.of(399, 13,  2), LocalDate.of(399, 12,  4) },
-                { InternationalFixedDate.of(399, 13,  3), LocalDate.of(399, 12,  5) },
-                { InternationalFixedDate.of(399, 13,  4), LocalDate.of(399, 12,  6) },
-                { InternationalFixedDate.of(399, 13,  5), LocalDate.of(399, 12,  7) },
+                {InternationalFixedDate.of(399, 13,  1), LocalDate.of(399, 12,  3)},
+                {InternationalFixedDate.of(399, 13,  2), LocalDate.of(399, 12,  4)},
+                {InternationalFixedDate.of(399, 13,  3), LocalDate.of(399, 12,  5)},
+                {InternationalFixedDate.of(399, 13,  4), LocalDate.of(399, 12,  6)},
+                {InternationalFixedDate.of(399, 13,  5), LocalDate.of(399, 12,  7)},
 
-                { InternationalFixedDate.of(400,  1,  1), LocalDate.of(400,  1,  1) },
-                { InternationalFixedDate.of(400,  1,  2), LocalDate.of(400,  1,  2) },
-                { InternationalFixedDate.leapDay(400), LocalDate.of(400,  6, 17) },
-                { InternationalFixedDate.of(400, 13, 27), LocalDate.of(400, 12, 29) },
-                { InternationalFixedDate.of(400, 13, 28), LocalDate.of(400, 12, 30) },
-                { InternationalFixedDate.yearDay(400), LocalDate.of(400, 12, 31) },
-                { InternationalFixedDate.of(401,  1,  1), LocalDate.of(401,  1,  1) },
-                { InternationalFixedDate.of(401,  1,  2), LocalDate.of(401,  1,  2) },
+                {InternationalFixedDate.of(400,  1,  1), LocalDate.of(400,  1,  1)},
+                {InternationalFixedDate.of(400,  1,  2), LocalDate.of(400,  1,  2)},
+                {InternationalFixedDate.leapDay(400),    LocalDate.of(400,  6, 17)},
+                {InternationalFixedDate.of(400, 13, 27), LocalDate.of(400, 12, 29)},
+                {InternationalFixedDate.of(400, 13, 28), LocalDate.of(400, 12, 30)},
+                {InternationalFixedDate.yearDay(400),    LocalDate.of(400, 12, 31)},
+                {InternationalFixedDate.of(401,  1,  1), LocalDate.of(401,  1,  1)},
+                {InternationalFixedDate.of(401,  1,  2), LocalDate.of(401,  1,  2)},
 
-                { InternationalFixedDate.of(1582,  9, 28), LocalDate.of(1582,  9,  9) },
-                { InternationalFixedDate.of(1582, 10,  1), LocalDate.of(1582,  9, 10) },
-                { InternationalFixedDate.of(1945, 10, 27), LocalDate.of(1945, 10,  6) },
+                {InternationalFixedDate.of(1582,  9, 28), LocalDate.of(1582,  9,  9)},
+                {InternationalFixedDate.of(1582, 10,  1), LocalDate.of(1582,  9, 10)},
+                {InternationalFixedDate.of(1945, 10, 27), LocalDate.of(1945, 10,  6)},
 
-                { InternationalFixedDate.of(2012,  6, 15), LocalDate.of(2012,  6,  3) },
-                { InternationalFixedDate.of(2012,  6, 16), LocalDate.of(2012,  6,  4) },
+                {InternationalFixedDate.of(2012,  6, 15), LocalDate.of(2012,  6,  3)},
+                {InternationalFixedDate.of(2012,  6, 16), LocalDate.of(2012,  6,  4)},
         };
     }
 
@@ -198,45 +197,45 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "badDates")
     Object[][] data_badDates() {
         return new Object[][] {
-                {    0,  1,  1 },
+                {   0,  1,  1},
 
-                { 1900,  0,  0 },
-                { 1900, -1,  1 },
-                { 1900,  0,  1 },
-                { 1900, 15,  1 },
-                { 1900, 16,  1 },
+                {1900,  0,  0},
+                {1900, -1,  1},
+                {1900,  0,  1},
+                {1900, 15,  1},
+                {1900, 16,  1},
 
-                { 1900,  1, -1 },
-                { 1900,  1,  0 },
-                { 1900,  1, 29 },
+                {1900,  1, -1},
+                {1900,  1,  0},
+                {1900,  1, 29},
 
-                { 1900, 13, -1 },
-                { 1900, 13,  0 },
-                { 1900, 14, -1 },
-                { 1900, 14,  0 },
-                { 1900, 14,  1 },
-                { 1900, 14, 29 },
-                { 1900, 14, 30 },
+                {1900, 13, -1},
+                {1900, 13,  0},
+                {1900, 14, -1},
+                {1900, 14,  0},
+                {1900, 14,  1},
+                {1900, 14, 29},
+                {1900, 14, 30},
 
-                { 1898, 13, -1 },
-                { 1898, 13, 0 },
-                { 1898, 14, 29 },
-                { 1898, 14, 30 },
-                { 1898, 14, 1 },
-                { 1898, 14, 2 },
+                {1898, 13, -1},
+                {1898, 13, 0},
+                {1898, 14, 29},
+                {1898, 14, 30},
+                {1898, 14, 1},
+                {1898, 14, 2},
 
-                { 1900,  2, 29 },
-                { 1900,  3, 29 },
-                { 1900,  4, 29 },
-                { 1900,  5, 29 },
-                { 1900,  6, 29 },
-                { 1900,  7, 29 },
-                { 1900,  8, 29 },
-                { 1900,  9, 29 },
-                { 1900, 10, 29 },
-                { 1900, 11, 29 },
-                { 1900, 12, 29 },
-                { 1900, 13, 29 },
+                {1900,  2, 29},
+                {1900,  3, 29},
+                {1900,  4, 29},
+                {1900,  5, 29},
+                {1900,  6, 29},
+                {1900,  7, 29},
+                {1900,  8, 29},
+                {1900,  9, 29},
+                {1900, 10, 29},
+                {1900, 11, 29},
+                {1900, 12, 29},
+                {1900, 13, 29},
         };
     }
 
@@ -267,9 +266,9 @@ public class TestInternationalFixedChronology {
         InternationalFixedChronology.INSTANCE.dateYearDay(2000, 999);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.getDayOfYear
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_dateYearDay() {
         checkYearDateForYear(2001, 365);
@@ -294,8 +293,7 @@ public class TestInternationalFixedChronology {
                 // year day / leap day are not part of any months!
                 dayOfMonth = date.isLeapDay() ? -1 : 0;
                 month = date.isLeapDay() ? -1 : 0;
-            }
-            else {
+            } else {
                 y = (i > 169 && date.isLeapYear()) ? i - 1 : i;
                 dayOfMonth = ((y - 1) % 28) + 1;
                 month = ((y - 1) / 28) + 1;
@@ -306,16 +304,16 @@ public class TestInternationalFixedChronology {
         }
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.isLeapYear
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_isLeapYear_loop() {
         Predicate<Integer> isLeapYear = year -> {
-            return ((year & 3) == 0) &&((year % 100) != 0 ||(year % 400) == 0);
+            return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
         };
 
-        for(int year = 1; year < 1001; year++) {
+        for (int year = 1; year < 1001; year++) {
             InternationalFixedDate base = InternationalFixedDate.of(year, 1, 1);
             assertEquals(base.isLeapYear(), isLeapYear.test(year), "Year " + year + " is failing");
             assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year), "Year " + year + " is failing leap-year test");
@@ -332,17 +330,17 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(1), false);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.lengthOfMonth
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "lengthOfMonth")
     Object[][] data_lengthOfMonth() {
         return new Object[][] {
-            { InternationalFixedDate.yearDay(1900), 1 },
-            { InternationalFixedDate.leapDay(2000), 1 },
-            { InternationalFixedDate.yearDay(2000), 1 },
-            { InternationalFixedDate.of(2000,  5,  5), 28 },
-            { InternationalFixedDate.of(2001, 11, 11), 28 },
+            {InternationalFixedDate.yearDay(1900), 1},
+            {InternationalFixedDate.leapDay(2000), 1},
+            {InternationalFixedDate.yearDay(2000), 1},
+            {InternationalFixedDate.of(2000,  5,  5), 28},
+            {InternationalFixedDate.of(2001, 11, 11), 28},
         };
     }
 
@@ -353,15 +351,15 @@ public class TestInternationalFixedChronology {
         assertEquals(date.lengthOfMonth(), length);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.era
     // InternationalFixedDate.get
     // InternationalFixedChronology.date
     // InternationalFixedChronology.dateYearDay
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_era_loop() {
-        for(int year = 1; year < 401; year++) {
+        for (int year = 1; year < 401; year++) {
             InternationalFixedDate base = InternationalFixedChronology.INSTANCE.date(year, 1, 1);
             assertEquals(year, base.get(ChronoField.YEAR));
             InternationalFixedEra era = InternationalFixedEra.CE;
@@ -374,7 +372,7 @@ public class TestInternationalFixedChronology {
 
     @Test
     public void test_era_yearDay_loop() {
-        for(int year = 1; year < 401; year++) {
+        for (int year = 1; year < 401; year++) {
             InternationalFixedDate base = InternationalFixedChronology.INSTANCE.dateYearDay(year, 1);
             assertEquals(year, base.get(ChronoField.YEAR));
             InternationalFixedEra era = InternationalFixedEra.CE;
@@ -385,19 +383,19 @@ public class TestInternationalFixedChronology {
         }
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedChronology.prolepticYear
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "prolepticYear")
     Object[][] data_prolepticYear() {
         return new Object[][] {
-                { InternationalFixedEra.CE, 1 },
-                { InternationalFixedEra.CE, 2 },
-                { InternationalFixedEra.CE, 3 },
-                { InternationalFixedEra.CE, 4 },
-                { InternationalFixedEra.CE, 1581 },
-                { InternationalFixedEra.CE, 1582 },
-                { InternationalFixedEra.CE, 2000 },
+                {InternationalFixedEra.CE, 1},
+                {InternationalFixedEra.CE, 2},
+                {InternationalFixedEra.CE, 3},
+                {InternationalFixedEra.CE, 4},
+                {InternationalFixedEra.CE, 1581},
+                {InternationalFixedEra.CE, 1582},
+                {InternationalFixedEra.CE, 2000},
         };
     }
 
@@ -409,12 +407,12 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "prolepticYearBad")
     Object[][] data_prolepticYear_bad() {
         return new Object[][] {
-                { InternationalFixedEra.CE, -10 },
-                { InternationalFixedEra.CE, -1 },
-                { InternationalFixedEra.CE, 0 },
-                { IsoEra.CE, 4 },
-                { JulianEra.AD, 1581 },
-                { PaxEra.CE, 2000 },
+                {InternationalFixedEra.CE, -10},
+                {InternationalFixedEra.CE, -1},
+                {InternationalFixedEra.CE, 0},
+                {IsoEra.CE, 4},
+                {JulianEra.AD, 1581},
+                {PaxEra.CE, 2000},
         };
     }
 
@@ -440,9 +438,9 @@ public class TestInternationalFixedChronology {
         assertEquals(eras.contains(InternationalFixedEra.CE), true);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // Chronology.range
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK),           ValueRange.of( 0,   1, 7));
@@ -456,80 +454,80 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedChronology.INSTANCE.range(ChronoField.EPOCH_DAY),             ValueRange.of(-719528, 364_522_971));
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.range
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "ranges")
     Object[][] data_ranges() {
         return new Object[][] {
-                { InternationalFixedDate.of(2011,  1, 23), ChronoField.DAY_OF_MONTH,          ValueRange.of(-1,  28) },
-                { InternationalFixedDate.of(2012,  1, 23), ChronoField.DAY_OF_MONTH,          ValueRange.of(-1,  28) },
+                {InternationalFixedDate.of(2011,  1, 23), ChronoField.DAY_OF_MONTH,          ValueRange.of(-1,  28)},
+                {InternationalFixedDate.of(2012,  1, 23), ChronoField.DAY_OF_MONTH,          ValueRange.of(-1,  28)},
 
-                { InternationalFixedDate.of(2011,  1, 23), ChronoField.DAY_OF_YEAR,           ValueRange.of( 1, 365) },
-                { InternationalFixedDate.of(2012,  1, 23), ChronoField.DAY_OF_YEAR,           ValueRange.of( 1, 366) },
+                {InternationalFixedDate.of(2011,  1, 23), ChronoField.DAY_OF_YEAR,           ValueRange.of( 1, 365)},
+                {InternationalFixedDate.of(2012,  1, 23), ChronoField.DAY_OF_YEAR,           ValueRange.of( 1, 366)},
 
-                { InternationalFixedDate.of(2011,  1,  1), ChronoField.DAY_OF_WEEK,           ValueRange.of( 0,   1, 7) },
-                { InternationalFixedDate.of(2012,  1,  1), ChronoField.DAY_OF_WEEK,           ValueRange.of( 0,   1, 7) },
+                {InternationalFixedDate.of(2011,  1,  1), ChronoField.DAY_OF_WEEK,           ValueRange.of( 0,   1, 7)},
+                {InternationalFixedDate.of(2012,  1,  1), ChronoField.DAY_OF_WEEK,           ValueRange.of( 0,   1, 7)},
 
-                { InternationalFixedDate.of(2011,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of(-1,  13) },
-                { InternationalFixedDate.of(2012,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of(-1,  13) },
+                {InternationalFixedDate.of(2011,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of(-1,  13)},
+                {InternationalFixedDate.of(2012,  1, 23), ChronoField.MONTH_OF_YEAR,         ValueRange.of(-1,  13)},
 
-                { InternationalFixedDate.of(2011,  1,  3), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
-                { InternationalFixedDate.of(2011,  1, 10), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
-                { InternationalFixedDate.of(2011,  1, 17), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
-                { InternationalFixedDate.of(2011,  1, 24), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
-                { InternationalFixedDate.of(2012,  1,  3), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
-                { InternationalFixedDate.of(2012,  1, 10), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
-                { InternationalFixedDate.of(2012,  1, 17), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
-                { InternationalFixedDate.of(2012,  1, 24), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4) },
+                {InternationalFixedDate.of(2011,  1,  3), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4)},
+                {InternationalFixedDate.of(2011,  1, 10), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4)},
+                {InternationalFixedDate.of(2011,  1, 17), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4)},
+                {InternationalFixedDate.of(2011,  1, 24), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4)},
+                {InternationalFixedDate.of(2012,  1,  3), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4)},
+                {InternationalFixedDate.of(2012,  1, 10), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4)},
+                {InternationalFixedDate.of(2012,  1, 17), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4)},
+                {InternationalFixedDate.of(2012,  1, 24), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of( 1,   4)},
 
-                { InternationalFixedDate.of(2011,  1, 23), ChronoField.PROLEPTIC_MONTH,       ValueRange.of(13, 12_999_999) },
-                { InternationalFixedDate.of(2012,  1, 23), ChronoField.PROLEPTIC_MONTH,       ValueRange.of(13, 12_999_999) },
+                {InternationalFixedDate.of(2011,  1, 23), ChronoField.PROLEPTIC_MONTH,       ValueRange.of(13, 12_999_999)},
+                {InternationalFixedDate.of(2012,  1, 23), ChronoField.PROLEPTIC_MONTH,       ValueRange.of(13, 12_999_999)},
 
-                { InternationalFixedDate.of(2011,  1, 23), ChronoField.YEAR_OF_ERA,           ValueRange.of( 1,  1_000_000) },
-                { InternationalFixedDate.of(2012,  1, 23), ChronoField.YEAR_OF_ERA,           ValueRange.of( 1,  1_000_000) },
+                {InternationalFixedDate.of(2011,  1, 23), ChronoField.YEAR_OF_ERA,           ValueRange.of( 1,  1_000_000)},
+                {InternationalFixedDate.of(2012,  1, 23), ChronoField.YEAR_OF_ERA,           ValueRange.of( 1,  1_000_000)},
 
-                { InternationalFixedDate.of(2011,  1, 23), ChronoField.YEAR,                  ValueRange.of( 1,  1_000_000) },
-                { InternationalFixedDate.of(2012,  1, 23), ChronoField.YEAR,                  ValueRange.of( 1,  1_000_000) },
+                {InternationalFixedDate.of(2011,  1, 23), ChronoField.YEAR,                  ValueRange.of( 1,  1_000_000)},
+                {InternationalFixedDate.of(2012,  1, 23), ChronoField.YEAR,                  ValueRange.of( 1,  1_000_000)},
 
-                { InternationalFixedDate.of(2011,  1, 23), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
-                { InternationalFixedDate.of(2012,  1, 23), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
+                {InternationalFixedDate.of(2011,  1, 23), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971)},
+                {InternationalFixedDate.of(2012,  1, 23), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_MONTH,        ValueRange.of(  0,   0)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_WEEK,         ValueRange.of(  0,   0)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 365) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 366) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 366) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 365)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 366)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.DAY_OF_YEAR,         ValueRange.of(  1, 366)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.MONTH_OF_YEAR,       ValueRange.of(  0,   0)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.YEAR,                 ValueRange.of( 1,  1_000_000)},
 
-                { InternationalFixedDate.yearDay(2011), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
-                { InternationalFixedDate.leapDay(2012), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
-                { InternationalFixedDate.yearDay(2012), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971) },
+                {InternationalFixedDate.yearDay(2011), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971)},
+                {InternationalFixedDate.leapDay(2012), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971)},
+                {InternationalFixedDate.yearDay(2012), ChronoField.EPOCH_DAY,      ValueRange.of(-719_528, 364_522_971)},
         };
     }
 
@@ -541,55 +539,55 @@ public class TestInternationalFixedChronology {
         assertEquals(date.range(field), expectedRange);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.getLong
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "getLong")
     Object[][] data_getLong() {
         return new Object[][] {
-            { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_WEEK, 0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_WEEK, 0 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_WEEK, 0 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_WEEK, 0},
+            {InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_WEEK, 0},
+            {InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_WEEK, 0},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_MONTH,  0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_MONTH, -1 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_MONTH,  0 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_MONTH,  0},
+            {InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_MONTH, -1},
+            {InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_MONTH,  0},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_YEAR, 365 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_YEAR, 169 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_YEAR, 366 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.DAY_OF_YEAR, 365},
+            {InternationalFixedDate.leapDay(2008), ChronoField.DAY_OF_YEAR, 169},
+            {InternationalFixedDate.yearDay(2008), ChronoField.DAY_OF_YEAR, 366},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
+            {InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
+            {InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
+            {InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
+            {InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_WEEK_OF_MONTH, 0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_WEEK_OF_MONTH, 0 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_WEEK_OF_MONTH, 0 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_WEEK_OF_MONTH, 0},
+            {InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_WEEK_OF_MONTH, 0},
+            {InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_WEEK_OF_MONTH, 0},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_WEEK_OF_YEAR, 0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_WEEK_OF_YEAR, 0 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_WEEK_OF_YEAR, 0 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.ALIGNED_WEEK_OF_YEAR, 0},
+            {InternationalFixedDate.leapDay(2008), ChronoField.ALIGNED_WEEK_OF_YEAR, 0},
+            {InternationalFixedDate.yearDay(2008), ChronoField.ALIGNED_WEEK_OF_YEAR, 0},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.MONTH_OF_YEAR,  0 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.MONTH_OF_YEAR, -1 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.MONTH_OF_YEAR,  0 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.MONTH_OF_YEAR,  0},
+            {InternationalFixedDate.leapDay(2008), ChronoField.MONTH_OF_YEAR, -1},
+            {InternationalFixedDate.yearDay(2008), ChronoField.MONTH_OF_YEAR,  0},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.PROLEPTIC_MONTH, 2007 * 13 + 12 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 +  6 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 + 12 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.PROLEPTIC_MONTH, 2007 * 13 + 12},
+            {InternationalFixedDate.leapDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 +  6},
+            {InternationalFixedDate.yearDay(2008), ChronoField.PROLEPTIC_MONTH, 2008 * 13 + 12},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.YEAR, 2007 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.YEAR, 2008 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.YEAR, 2008 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.YEAR, 2007},
+            {InternationalFixedDate.leapDay(2008), ChronoField.YEAR, 2008},
+            {InternationalFixedDate.yearDay(2008), ChronoField.YEAR, 2008},
 
-            { InternationalFixedDate.yearDay(2007), ChronoField.ERA, 1 },
-            { InternationalFixedDate.leapDay(2008), ChronoField.ERA, 1 },
-            { InternationalFixedDate.yearDay(2008), ChronoField.ERA, 1 },
+            {InternationalFixedDate.yearDay(2007), ChronoField.ERA, 1},
+            {InternationalFixedDate.leapDay(2008), ChronoField.ERA, 1},
+            {InternationalFixedDate.yearDay(2008), ChronoField.ERA, 1},
         };
     }
 
@@ -601,49 +599,49 @@ public class TestInternationalFixedChronology {
         assertEquals(date.getLong(field), expected);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.with
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "with")
     Object[][] data_with() {
         return new Object[][] {
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 3, InternationalFixedDate.of(2014, 5, 25) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 4, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_MONTH, 28, InternationalFixedDate.of(2014, 5, 28) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_MONTH, 26, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.leapDay(2000),    ChronoField.DAY_OF_MONTH, 10, InternationalFixedDate.of(2000,  7, 10) },
-                { InternationalFixedDate.yearDay(1999),    ChronoField.DAY_OF_MONTH, 13, InternationalFixedDate.of(1999, 13, 13) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_YEAR, 138, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(1999,  1,  1), ChronoField.DAY_OF_YEAR, 365, InternationalFixedDate.yearDay(1999) },
-                { InternationalFixedDate.of(2000,  1,  1), ChronoField.DAY_OF_YEAR, 169, InternationalFixedDate.leapDay(2000) },
-                { InternationalFixedDate.of(2000,  1,  1), ChronoField.DAY_OF_YEAR, 366, InternationalFixedDate.yearDay(2000) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, InternationalFixedDate.of(2014, 5, 24) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_MONTH, 1, InternationalFixedDate.of(2014, 5, 5) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_MONTH, 4, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, InternationalFixedDate.of(2014, 5, 24) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 23, InternationalFixedDate.of(2014, 6, 19) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 20, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR,  7, InternationalFixedDate.of(2014,  7, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR,  5, InternationalFixedDate.of(2014,  5, 26) },
-                { InternationalFixedDate.leapDay(2000),    ChronoField.MONTH_OF_YEAR, 10, InternationalFixedDate.of(2000, 10,  1) },
-                { InternationalFixedDate.leapDay(2000),    ChronoField.MONTH_OF_YEAR,  7, InternationalFixedDate.of(2000,  7,  1) },
-                { InternationalFixedDate.yearDay(1999),    ChronoField.MONTH_OF_YEAR,  9, InternationalFixedDate.of(1999,  9, 28) },
-                { InternationalFixedDate.yearDay(1999),    ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(1999, 13, 28) },
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 3, InternationalFixedDate.of(2014, 5, 25)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 4, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_MONTH, 28, InternationalFixedDate.of(2014, 5, 28)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_MONTH, 26, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.leapDay(2000),    ChronoField.DAY_OF_MONTH, 10, InternationalFixedDate.of(2000,  7, 10)},
+            {InternationalFixedDate.yearDay(1999),    ChronoField.DAY_OF_MONTH, 13, InternationalFixedDate.of(1999, 13, 13)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_YEAR, 138, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(1999,  1,  1), ChronoField.DAY_OF_YEAR, 365, InternationalFixedDate.yearDay(1999)},
+            {InternationalFixedDate.of(2000,  1,  1), ChronoField.DAY_OF_YEAR, 169, InternationalFixedDate.leapDay(2000)},
+            {InternationalFixedDate.of(2000,  1,  1), ChronoField.DAY_OF_YEAR, 366, InternationalFixedDate.yearDay(2000)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, InternationalFixedDate.of(2014, 5, 24)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH, 5, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_MONTH, 1, InternationalFixedDate.of(2014, 5, 5)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_MONTH, 4, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 3, InternationalFixedDate.of(2014, 5, 24)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR, 5, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 23, InternationalFixedDate.of(2014, 6, 19)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ALIGNED_WEEK_OF_YEAR, 20, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR,  7, InternationalFixedDate.of(2014,  7, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.MONTH_OF_YEAR,  5, InternationalFixedDate.of(2014,  5, 26)},
+            {InternationalFixedDate.leapDay(2000),    ChronoField.MONTH_OF_YEAR, 10, InternationalFixedDate.of(2000, 10,  1)},
+            {InternationalFixedDate.leapDay(2000),    ChronoField.MONTH_OF_YEAR,  7, InternationalFixedDate.of(2000,  7,  1)},
+            {InternationalFixedDate.yearDay(1999),    ChronoField.MONTH_OF_YEAR,  9, InternationalFixedDate.of(1999,  9, 28)},
+            {InternationalFixedDate.yearDay(1999),    ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(1999, 13, 28)},
 
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 4, InternationalFixedDate.of(2013, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 5, InternationalFixedDate.of(2013, 6, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR, 2012, InternationalFixedDate.of(2012, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR, 2014, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR_OF_ERA, 2012, InternationalFixedDate.of(2012, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR_OF_ERA, 2014, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.ERA, 1, InternationalFixedDate.of(2014, 5, 26) },
-                { InternationalFixedDate.of(2011,  3, 28), ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(2011, 13, 28) },
-                { InternationalFixedDate.of(2012,  3, 28), ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(2012, 13, 28) },
-                { InternationalFixedDate.of(2012,  3, 28), ChronoField.MONTH_OF_YEAR, 6, InternationalFixedDate.of(2012, 6, 28) },
-                { InternationalFixedDate.of(2012, 13,  7), ChronoField.YEAR, 2011, InternationalFixedDate.of(2011, 13, 7) },
-                { InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 3, InternationalFixedDate.of(2014, 5, 25) },
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 4, InternationalFixedDate.of(2013, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.PROLEPTIC_MONTH, 2013 * 13 + 5, InternationalFixedDate.of(2013, 6, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR, 2012, InternationalFixedDate.of(2012, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR, 2014, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR_OF_ERA, 2012, InternationalFixedDate.of(2012, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.YEAR_OF_ERA, 2014, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.ERA, 1, InternationalFixedDate.of(2014, 5, 26)},
+            {InternationalFixedDate.of(2011,  3, 28), ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(2011, 13, 28)},
+            {InternationalFixedDate.of(2012,  3, 28), ChronoField.MONTH_OF_YEAR, 13, InternationalFixedDate.of(2012, 13, 28)},
+            {InternationalFixedDate.of(2012,  3, 28), ChronoField.MONTH_OF_YEAR, 6, InternationalFixedDate.of(2012, 6, 28)},
+            {InternationalFixedDate.of(2012, 13,  7), ChronoField.YEAR, 2011, InternationalFixedDate.of(2011, 13, 7)},
+            {InternationalFixedDate.of(2014,  5, 26), ChronoField.DAY_OF_WEEK, 3, InternationalFixedDate.of(2014, 5, 25)},
         };
     }
 
@@ -661,9 +659,9 @@ public class TestInternationalFixedChronology {
         InternationalFixedDate.of(2012, 6, 28).with(ChronoField.MINUTE_OF_DAY, 0);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.with(TemporalAdjuster)
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_adjust_toLastDayOfMonth() {
         InternationalFixedDate base = InternationalFixedDate.of(2012, 6, 23);
@@ -675,9 +673,9 @@ public class TestInternationalFixedChronology {
         assertEquals(test, InternationalFixedDate.of(2012, 13, 28));
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.with(Local*)
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
         InternationalFixedDate date = InternationalFixedDate.of(2000, 1, 4);
@@ -691,9 +689,9 @@ public class TestInternationalFixedChronology {
         date.with(Month.APRIL);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // LocalDate.with(InternationalFixedDate)
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToInternationalFixedDate() {
         InternationalFixedDate date = InternationalFixedDate.of(2012, 6, 15);
@@ -708,48 +706,48 @@ public class TestInternationalFixedChronology {
         assertEquals(test, LocalDateTime.of(2012, 6, 3, 0, 0));
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.plus
     // InternationalFixedDate.minus
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "plus")
     Object[][] data_plus() {
         return new Object[][] {
-            { InternationalFixedDate.of(2014,  5,  1),  0, ChronoUnit.DAYS,      InternationalFixedDate.of(2014,  5,  1) },
-            { InternationalFixedDate.of(2014,  5, 26),  8, ChronoUnit.DAYS,      InternationalFixedDate.of(2014,  6,  6) },
-            { InternationalFixedDate.of(2014,  5, 26), -3, ChronoUnit.DAYS,      InternationalFixedDate.of(2014,  5, 23) },
-            { InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.WEEKS,     InternationalFixedDate.of(2014,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.WEEKS,     InternationalFixedDate.of(2014,  6, 19) },
-            { InternationalFixedDate.of(2014,  5, 26), -5, ChronoUnit.WEEKS,     InternationalFixedDate.of(2014,  4, 19) },
-            { InternationalFixedDate.of(2014,  5,  3),  0, ChronoUnit.MONTHS,    InternationalFixedDate.of(2014,  5,  3) },
-            { InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.MONTHS,    InternationalFixedDate.of(2014,  8, 26) },
-            { InternationalFixedDate.of(2014,  5,  4), -5, ChronoUnit.MONTHS,    InternationalFixedDate.of(2013, 13,  4) },
-            { InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.YEARS,     InternationalFixedDate.of(2014,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.YEARS,     InternationalFixedDate.of(2017,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26), -5, ChronoUnit.YEARS,     InternationalFixedDate.of(2009,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.DECADES,   InternationalFixedDate.of(2014,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.DECADES,   InternationalFixedDate.of(2044,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26), -5, ChronoUnit.DECADES,   InternationalFixedDate.of(1964,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.CENTURIES, InternationalFixedDate.of(2014,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.CENTURIES, InternationalFixedDate.of(2314,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26), -5, ChronoUnit.CENTURIES, InternationalFixedDate.of(1514,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.MILLENNIA, InternationalFixedDate.of(2014,  5, 26) },
-            { InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.MILLENNIA, InternationalFixedDate.of(5014,  5, 26) },
+            {InternationalFixedDate.of(2014,  5,  1),  0, ChronoUnit.DAYS,      InternationalFixedDate.of(2014,  5,  1)},
+            {InternationalFixedDate.of(2014,  5, 26),  8, ChronoUnit.DAYS,      InternationalFixedDate.of(2014,  6,  6)},
+            {InternationalFixedDate.of(2014,  5, 26), -3, ChronoUnit.DAYS,      InternationalFixedDate.of(2014,  5, 23)},
+            {InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.WEEKS,     InternationalFixedDate.of(2014,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.WEEKS,     InternationalFixedDate.of(2014,  6, 19)},
+            {InternationalFixedDate.of(2014,  5, 26), -5, ChronoUnit.WEEKS,     InternationalFixedDate.of(2014,  4, 19)},
+            {InternationalFixedDate.of(2014,  5,  3),  0, ChronoUnit.MONTHS,    InternationalFixedDate.of(2014,  5,  3)},
+            {InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.MONTHS,    InternationalFixedDate.of(2014,  8, 26)},
+            {InternationalFixedDate.of(2014,  5,  4), -5, ChronoUnit.MONTHS,    InternationalFixedDate.of(2013, 13,  4)},
+            {InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.YEARS,     InternationalFixedDate.of(2014,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.YEARS,     InternationalFixedDate.of(2017,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), -5, ChronoUnit.YEARS,     InternationalFixedDate.of(2009,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.DECADES,   InternationalFixedDate.of(2014,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.DECADES,   InternationalFixedDate.of(2044,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), -5, ChronoUnit.DECADES,   InternationalFixedDate.of(1964,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.CENTURIES, InternationalFixedDate.of(2014,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.CENTURIES, InternationalFixedDate.of(2314,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26), -5, ChronoUnit.CENTURIES, InternationalFixedDate.of(1514,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26),  0, ChronoUnit.MILLENNIA, InternationalFixedDate.of(2014,  5, 26)},
+            {InternationalFixedDate.of(2014,  5, 26),  3, ChronoUnit.MILLENNIA, InternationalFixedDate.of(5014,  5, 26)},
 
-            { InternationalFixedDate.of(2013,  1, 26), -1, ChronoUnit.MONTHS,    InternationalFixedDate.of(2012, 13, 26) },
-            { InternationalFixedDate.of(2011, 10,  6),  3, ChronoUnit.MONTHS,    InternationalFixedDate.of(2011, 13,  6) },
-            { InternationalFixedDate.of(2012, 13,  6),  3, ChronoUnit.MONTHS,    InternationalFixedDate.of(2013,  3,  6) },
-            { InternationalFixedDate.of(2012, 13,  7), -1, ChronoUnit.MONTHS,    InternationalFixedDate.of(2012, 12,  7) },
-            { InternationalFixedDate.of(2013, 12,  7),  1, ChronoUnit.MONTHS,    InternationalFixedDate.of(2013, 13,  7) },
-            { InternationalFixedDate.of(2012, 13, 26),  1, ChronoUnit.MONTHS,    InternationalFixedDate.of(2013,  1, 26) },
+            {InternationalFixedDate.of(2013,  1, 26), -1, ChronoUnit.MONTHS,    InternationalFixedDate.of(2012, 13, 26)},
+            {InternationalFixedDate.of(2011, 10,  6),  3, ChronoUnit.MONTHS,    InternationalFixedDate.of(2011, 13,  6)},
+            {InternationalFixedDate.of(2012, 13,  6),  3, ChronoUnit.MONTHS,    InternationalFixedDate.of(2013,  3,  6)},
+            {InternationalFixedDate.of(2012, 13,  7), -1, ChronoUnit.MONTHS,    InternationalFixedDate.of(2012, 12,  7)},
+            {InternationalFixedDate.of(2013, 12,  7),  1, ChronoUnit.MONTHS,    InternationalFixedDate.of(2013, 13,  7)},
+            {InternationalFixedDate.of(2012, 13, 26),  1, ChronoUnit.MONTHS,    InternationalFixedDate.of(2013,  1, 26)},
 
-            { InternationalFixedDate.of(2012, 13,  6), -6, ChronoUnit.YEARS,     InternationalFixedDate.of(2006, 13,  6) },
-            { InternationalFixedDate.of(2013, 13,  6), -3, ChronoUnit.YEARS,     InternationalFixedDate.of(2010, 13,  6) },
-            { InternationalFixedDate.of(2011, 13, 26),  1, ChronoUnit.YEARS,     InternationalFixedDate.of(2012, 13, 26) },
-            { InternationalFixedDate.of(2014, 13, 26), -2, ChronoUnit.YEARS,     InternationalFixedDate.of(2012, 13, 26) },
-            { InternationalFixedDate.of(2012, 13, 26), -6, ChronoUnit.YEARS,     InternationalFixedDate.of(2006, 13, 26) },
-            { InternationalFixedDate.of(2012, 13,  6),  3, ChronoUnit.YEARS,     InternationalFixedDate.of(2015, 13,  6) },
-            { InternationalFixedDate.of(2015, 13,  6), -3, ChronoUnit.YEARS,     InternationalFixedDate.of(2012, 13,  6) },
+            {InternationalFixedDate.of(2012, 13,  6), -6, ChronoUnit.YEARS,     InternationalFixedDate.of(2006, 13,  6)},
+            {InternationalFixedDate.of(2013, 13,  6), -3, ChronoUnit.YEARS,     InternationalFixedDate.of(2010, 13,  6)},
+            {InternationalFixedDate.of(2011, 13, 26),  1, ChronoUnit.YEARS,     InternationalFixedDate.of(2012, 13, 26)},
+            {InternationalFixedDate.of(2014, 13, 26), -2, ChronoUnit.YEARS,     InternationalFixedDate.of(2012, 13, 26)},
+            {InternationalFixedDate.of(2012, 13, 26), -6, ChronoUnit.YEARS,     InternationalFixedDate.of(2006, 13, 26)},
+            {InternationalFixedDate.of(2012, 13,  6),  3, ChronoUnit.YEARS,     InternationalFixedDate.of(2015, 13,  6)},
+            {InternationalFixedDate.of(2015, 13,  6), -3, ChronoUnit.YEARS,     InternationalFixedDate.of(2012, 13,  6)},
 
         };
     }
@@ -775,30 +773,30 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "plusSpecial")
     Object[][] data_plus_special() {
         return new Object[][] {
-                { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  7,  1) },
-                { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  6, 28) },
-                { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  7,  7) },
-                { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 22) },
-                { InternationalFixedDate.of(2012, 6, 28), 1, ChronoUnit.WEEKS, InternationalFixedDate.of(2012,  7,  7) },
-                { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  8,  1) },
-                { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  6,  1) },
-                { InternationalFixedDate.leapDay(2012), 52, ChronoUnit.MONTHS, InternationalFixedDate.leapDay(2016) },
-                { InternationalFixedDate.leapDay(1896), 52, ChronoUnit.MONTHS, InternationalFixedDate.of(1900, 7, 1) },
-                { InternationalFixedDate.leapDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.of(2015,  7,  1) },
-                { InternationalFixedDate.leapDay(2012),  4, ChronoUnit.YEARS,  InternationalFixedDate.leapDay(2016) },
-                { InternationalFixedDate.leapDay(2012), -8, ChronoUnit.YEARS,  InternationalFixedDate.leapDay(2004) },
+            {InternationalFixedDate.leapDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  7,  1)},
+            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  6, 28)},
+            {InternationalFixedDate.leapDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  7,  7)},
+            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 22)},
+            {InternationalFixedDate.of(2012, 6, 28), 1, ChronoUnit.WEEKS, InternationalFixedDate.of(2012,  7,  7)},
+            {InternationalFixedDate.leapDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  8,  1)},
+            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  6,  1)},
+            {InternationalFixedDate.leapDay(2012), 52, ChronoUnit.MONTHS, InternationalFixedDate.leapDay(2016)},
+            {InternationalFixedDate.leapDay(1896), 52, ChronoUnit.MONTHS, InternationalFixedDate.of(1900, 7, 1)},
+            {InternationalFixedDate.leapDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.of(2015,  7,  1)},
+            {InternationalFixedDate.leapDay(2012),  4, ChronoUnit.YEARS,  InternationalFixedDate.leapDay(2016)},
+            {InternationalFixedDate.leapDay(2012), -8, ChronoUnit.YEARS,  InternationalFixedDate.leapDay(2004)},
 
-                { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2013,  1,  1) },
-                { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012, 13, 28) },
-                { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2013,  1,  7) },
-                { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012, 13, 22) },
-                { InternationalFixedDate.of(2012, 13, 28), 1, ChronoUnit.WEEKS, InternationalFixedDate.of(2013,  1, 7) },
-                { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013,  1, 28) },
-                { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 28) },
-                { InternationalFixedDate.yearDay(2012), 13, ChronoUnit.MONTHS, InternationalFixedDate.yearDay(2013) },
-                { InternationalFixedDate.yearDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2015) },
-                { InternationalFixedDate.yearDay(2012),  4, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2016) },
-                { InternationalFixedDate.yearDay(2012), -8, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2004) },
+            {InternationalFixedDate.yearDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2013,  1,  1)},
+            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012, 13, 28)},
+            {InternationalFixedDate.yearDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2013,  1,  7)},
+            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012, 13, 22)},
+            {InternationalFixedDate.of(2012, 13, 28), 1, ChronoUnit.WEEKS, InternationalFixedDate.of(2013,  1, 7)},
+            {InternationalFixedDate.yearDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013,  1, 28)},
+            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 28)},
+            {InternationalFixedDate.yearDay(2012), 13, ChronoUnit.MONTHS, InternationalFixedDate.yearDay(2013)},
+            {InternationalFixedDate.yearDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2015)},
+            {InternationalFixedDate.yearDay(2012),  4, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2016)},
+            {InternationalFixedDate.yearDay(2012), -8, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2004)},
         };
     }
 
@@ -814,30 +812,30 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "minusSpecial")
     Object[][] data_minus_special() {
         return new Object[][] {
-                { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  6, 28) },
-                { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  7,  1) },
-                { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 22) },
-                { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  7,  7) },
-                { InternationalFixedDate.of(2012, 7, 7), 1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 28) },
-                { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  6,  1) },
-                { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 8, 1) },
-                { InternationalFixedDate.leapDay(2016), 52, ChronoUnit.MONTHS, InternationalFixedDate.leapDay(2012) },
-                { InternationalFixedDate.leapDay(2104), 52, ChronoUnit.MONTHS, InternationalFixedDate.of(2100,  7,  1) },
-                { InternationalFixedDate.leapDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.of(2009,  7,  1) },
-                { InternationalFixedDate.leapDay(2012),  4, ChronoUnit.YEARS,  InternationalFixedDate.leapDay(2008) },
-                { InternationalFixedDate.leapDay(2012), -8, ChronoUnit.YEARS,  InternationalFixedDate.leapDay(2020) },
+            {InternationalFixedDate.leapDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  6, 28)},
+            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  7,  1)},
+            {InternationalFixedDate.leapDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 22)},
+            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  7,  7)},
+            {InternationalFixedDate.of(2012, 7, 7), 1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 28)},
+            {InternationalFixedDate.leapDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  6,  1)},
+            {InternationalFixedDate.leapDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 8, 1)},
+            {InternationalFixedDate.leapDay(2016), 52, ChronoUnit.MONTHS, InternationalFixedDate.leapDay(2012)},
+            {InternationalFixedDate.leapDay(2104), 52, ChronoUnit.MONTHS, InternationalFixedDate.of(2100,  7,  1)},
+            {InternationalFixedDate.leapDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.of(2009,  7,  1)},
+            {InternationalFixedDate.leapDay(2012),  4, ChronoUnit.YEARS,  InternationalFixedDate.leapDay(2008)},
+            {InternationalFixedDate.leapDay(2012), -8, ChronoUnit.YEARS,  InternationalFixedDate.leapDay(2020)},
 
-                { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012, 13, 28) },
-                { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2013,  1,  1) },
-                { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012, 13, 22) },
-                { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2013,  1,  7) },
-                { InternationalFixedDate.of(2012, 1, 7), 1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2011, 13, 28) },
-                { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 28) },
-                { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013,  1, 28) },
-                { InternationalFixedDate.yearDay(2012), 13, ChronoUnit.MONTHS, InternationalFixedDate.yearDay(2011) },
-                { InternationalFixedDate.yearDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2009) },
-                { InternationalFixedDate.yearDay(2012),  4, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2008) },
-                { InternationalFixedDate.yearDay(2012), -8, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2020) },
+            {InternationalFixedDate.yearDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012, 13, 28)},
+            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2013,  1,  1)},
+            {InternationalFixedDate.yearDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012, 13, 22)},
+            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2013,  1,  7)},
+            {InternationalFixedDate.of(2012, 1, 7), 1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2011, 13, 28)},
+            {InternationalFixedDate.yearDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 28)},
+            {InternationalFixedDate.yearDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013,  1, 28)},
+            {InternationalFixedDate.yearDay(2012), 13, ChronoUnit.MONTHS, InternationalFixedDate.yearDay(2011)},
+            {InternationalFixedDate.yearDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2009)},
+            {InternationalFixedDate.yearDay(2012),  4, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2008)},
+            {InternationalFixedDate.yearDay(2012), -8, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2020)},
         };
     }
 
@@ -850,150 +848,150 @@ public class TestInternationalFixedChronology {
         assertEquals(start.minus(amount, unit), end);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.until
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "until")
     Object[][] data_until() {
         return new Object[][] {
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.DAYS, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6,  4), ChronoUnit.DAYS, 6 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 20), ChronoUnit.DAYS, -6 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.DAYS, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6,  4), ChronoUnit.DAYS, 6 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 20), ChronoUnit.DAYS, -6 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.DAYS, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  7,  1), ChronoUnit.DAYS, 1 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  6, 21), ChronoUnit.DAYS, -8 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.DAYS, 197 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.DAYS, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2013,  1,  1), ChronoUnit.DAYS, 1 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2012, 13, 21), ChronoUnit.DAYS, -8 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.DAYS, 0 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2012,  1,  1), ChronoUnit.DAYS, 1 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2011, 13, 21), ChronoUnit.DAYS, -8 },
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.DAYS, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6,  4), ChronoUnit.DAYS, 6},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 20), ChronoUnit.DAYS, -6},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.DAYS, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6,  4), ChronoUnit.DAYS, 6},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 20), ChronoUnit.DAYS, -6},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.DAYS, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  7,  1), ChronoUnit.DAYS, 1},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  6, 21), ChronoUnit.DAYS, -8},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.DAYS, 197},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.DAYS, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2013,  1,  1), ChronoUnit.DAYS, 1},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2012, 13, 21), ChronoUnit.DAYS, -8},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.DAYS, 0},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2012,  1,  1), ChronoUnit.DAYS, 1},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2011, 13, 21), ChronoUnit.DAYS, -8},
 
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.WEEKS, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6,  4), ChronoUnit.WEEKS, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6,  5), ChronoUnit.WEEKS, 1 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.WEEKS, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6,  4), ChronoUnit.WEEKS, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6,  5), ChronoUnit.WEEKS, 1 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.WEEKS, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  7,  7), ChronoUnit.WEEKS, 1 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  5,  1), ChronoUnit.WEEKS, -8 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.WEEKS, 28 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.WEEKS, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2013,  1,  9), ChronoUnit.WEEKS, 1 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2012, 11, 17), ChronoUnit.WEEKS, -9 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.WEEKS, 0 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2012,  3, 13), ChronoUnit.WEEKS, 9 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2011,  9,  6), ChronoUnit.WEEKS, -19 },
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.WEEKS, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6,  4), ChronoUnit.WEEKS, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6,  5), ChronoUnit.WEEKS, 1},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.WEEKS, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6,  4), ChronoUnit.WEEKS, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6,  5), ChronoUnit.WEEKS, 1},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.WEEKS, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  7,  7), ChronoUnit.WEEKS, 1},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  5,  1), ChronoUnit.WEEKS, -8},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.WEEKS, 28},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.WEEKS, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2013,  1,  9), ChronoUnit.WEEKS, 1},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2012, 11, 17), ChronoUnit.WEEKS, -9},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.WEEKS, 0},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2012,  3, 13), ChronoUnit.WEEKS, 9},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2011,  9,  6), ChronoUnit.WEEKS, -19},
 
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.MONTHS, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6, 25), ChronoUnit.MONTHS, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6, 26), ChronoUnit.MONTHS, 1 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.MONTHS, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6, 25), ChronoUnit.MONTHS, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6, 26), ChronoUnit.MONTHS, 1 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.MONTHS, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012, 10,  7), ChronoUnit.MONTHS, 3 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  2, 19), ChronoUnit.MONTHS, -4 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.MONTHS, 6 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.MONTHS, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2013,  1,  9), ChronoUnit.MONTHS, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2012,  4, 17), ChronoUnit.MONTHS, -9 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.MONTHS, 0 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2012,  3, 23), ChronoUnit.MONTHS, 2 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2011,  8,  6), ChronoUnit.MONTHS, -5 },
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.MONTHS, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6, 25), ChronoUnit.MONTHS, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  6, 26), ChronoUnit.MONTHS, 1},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.MONTHS, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6, 25), ChronoUnit.MONTHS, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  6, 26), ChronoUnit.MONTHS, 1},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.MONTHS, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012, 10,  7), ChronoUnit.MONTHS, 3},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2012,  2, 19), ChronoUnit.MONTHS, -4},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.MONTHS, 6},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.MONTHS, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2013,  1,  9), ChronoUnit.MONTHS, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2012,  4, 17), ChronoUnit.MONTHS, -9},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.MONTHS, 0},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2012,  3, 23), ChronoUnit.MONTHS, 2},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2011,  8,  6), ChronoUnit.MONTHS, -5},
 
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2012,  5, 25), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2012,  5, 26), ChronoUnit.YEARS, 1 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2015,  5, 25), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2015,  5, 26), ChronoUnit.YEARS, 1 },
-            { InternationalFixedDate.of(2011, 13, 26), InternationalFixedDate.of(2013, 13, 26), ChronoUnit.YEARS, 2 },
-            { InternationalFixedDate.of(2011, 13, 26), InternationalFixedDate.of(2012, 13, 26), ChronoUnit.YEARS, 1 },
-            { InternationalFixedDate.of(2012, 13, 26), InternationalFixedDate.of(2011, 13, 26), ChronoUnit.YEARS, -1 },
-            { InternationalFixedDate.of(2012, 13, 26), InternationalFixedDate.of(2013, 13, 26), ChronoUnit.YEARS, 1 },
-            { InternationalFixedDate.of(2011, 13,  6), InternationalFixedDate.of(2011, 13,  6), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.of(2012, 13,  6), InternationalFixedDate.of(2012, 13,  6), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.of(2011, 13,  1), InternationalFixedDate.of(2011, 13,  1), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.of(2012, 13,  7), InternationalFixedDate.of(2012, 13,  7), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.of(2011, 12, 28), InternationalFixedDate.of(2012, 12, 28), ChronoUnit.YEARS, 1 },
-            { InternationalFixedDate.of(2012, 13,  1), InternationalFixedDate.of(2011, 13,  1), ChronoUnit.YEARS, -1 },
-            { InternationalFixedDate.of(2013, 13,  6), InternationalFixedDate.of(2012, 13,  6), ChronoUnit.YEARS, -1 },
-            { InternationalFixedDate.of(2012, 13,  6), InternationalFixedDate.of(2013, 13,  6), ChronoUnit.YEARS, 1 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2015, 10,  7), ChronoUnit.YEARS, 3 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2008,  2, 19), ChronoUnit.YEARS, -4 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2018), ChronoUnit.YEARS, 6 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2013, 13, 28), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2014), ChronoUnit.YEARS, 2 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2004,  4, 17), ChronoUnit.YEARS, -8 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.YEARS, 0 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2015,  3, 23), ChronoUnit.YEARS, 3 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2007,  8,  6), ChronoUnit.YEARS, -4 },
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2012,  5, 25), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2012,  5, 26), ChronoUnit.YEARS, 1},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2015,  5, 25), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2015,  5, 26), ChronoUnit.YEARS, 1},
+            {InternationalFixedDate.of(2011, 13, 26), InternationalFixedDate.of(2013, 13, 26), ChronoUnit.YEARS, 2},
+            {InternationalFixedDate.of(2011, 13, 26), InternationalFixedDate.of(2012, 13, 26), ChronoUnit.YEARS, 1},
+            {InternationalFixedDate.of(2012, 13, 26), InternationalFixedDate.of(2011, 13, 26), ChronoUnit.YEARS, -1},
+            {InternationalFixedDate.of(2012, 13, 26), InternationalFixedDate.of(2013, 13, 26), ChronoUnit.YEARS, 1},
+            {InternationalFixedDate.of(2011, 13,  6), InternationalFixedDate.of(2011, 13,  6), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.of(2012, 13,  6), InternationalFixedDate.of(2012, 13,  6), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.of(2011, 13,  1), InternationalFixedDate.of(2011, 13,  1), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.of(2012, 13,  7), InternationalFixedDate.of(2012, 13,  7), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.of(2011, 12, 28), InternationalFixedDate.of(2012, 12, 28), ChronoUnit.YEARS, 1},
+            {InternationalFixedDate.of(2012, 13,  1), InternationalFixedDate.of(2011, 13,  1), ChronoUnit.YEARS, -1},
+            {InternationalFixedDate.of(2013, 13,  6), InternationalFixedDate.of(2012, 13,  6), ChronoUnit.YEARS, -1},
+            {InternationalFixedDate.of(2012, 13,  6), InternationalFixedDate.of(2013, 13,  6), ChronoUnit.YEARS, 1},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2015, 10,  7), ChronoUnit.YEARS, 3},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2008,  2, 19), ChronoUnit.YEARS, -4},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2018), ChronoUnit.YEARS, 6},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2013, 13, 28), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2014), ChronoUnit.YEARS, 2},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2004,  4, 17), ChronoUnit.YEARS, -8},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.YEARS, 0},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2015,  3, 23), ChronoUnit.YEARS, 3},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2007,  8,  6), ChronoUnit.YEARS, -4},
 
-            { InternationalFixedDate.of(2013,  5, 26), InternationalFixedDate.of(2013,  5, 26), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.of(2013,  5, 26), InternationalFixedDate.of(2023,  5, 25), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.of(2013,  5, 26), InternationalFixedDate.of(2023,  5, 26), ChronoUnit.DECADES, 1 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2024,  5, 25), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2024,  5, 26), ChronoUnit.DECADES, 1 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2020), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2045, 10,  7), ChronoUnit.DECADES, 3 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(1978,  2, 19), ChronoUnit.DECADES, -3 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2078), ChronoUnit.DECADES, 6 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2022, 13, 28), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2038), ChronoUnit.DECADES, 2 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(1924,  4, 17), ChronoUnit.DECADES, -8 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.DECADES, 0 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2045,  3, 23), ChronoUnit.DECADES, 3 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(1987,  8,  6), ChronoUnit.DECADES, -2 },
+            {InternationalFixedDate.of(2013,  5, 26), InternationalFixedDate.of(2013,  5, 26), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.of(2013,  5, 26), InternationalFixedDate.of(2023,  5, 25), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.of(2013,  5, 26), InternationalFixedDate.of(2023,  5, 26), ChronoUnit.DECADES, 1},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2024,  5, 25), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2024,  5, 26), ChronoUnit.DECADES, 1},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2020), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2045, 10,  7), ChronoUnit.DECADES, 3},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(1978,  2, 19), ChronoUnit.DECADES, -3},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2078), ChronoUnit.DECADES, 6},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2022, 13, 28), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2038), ChronoUnit.DECADES, 2},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(1924,  4, 17), ChronoUnit.DECADES, -8},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.DECADES, 0},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2045,  3, 23), ChronoUnit.DECADES, 3},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(1987,  8,  6), ChronoUnit.DECADES, -2},
 
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2111,  5, 25), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2111,  5, 26), ChronoUnit.CENTURIES, 1 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2114,  5, 25), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2114,  5, 26), ChronoUnit.CENTURIES, 1 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2108), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2312, 10,  7), ChronoUnit.CENTURIES, 3 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(1639,  2, 19), ChronoUnit.CENTURIES, -3 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2678), ChronoUnit.CENTURIES, 6 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2022, 13, 28), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2238), ChronoUnit.CENTURIES, 2 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(1124,  4, 17), ChronoUnit.CENTURIES, -8 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.CENTURIES, 0 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2345,  3, 23), ChronoUnit.CENTURIES, 3 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(1787,  8,  6), ChronoUnit.CENTURIES, -2 },
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2111,  5, 25), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2111,  5, 26), ChronoUnit.CENTURIES, 1},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2114,  5, 25), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2114,  5, 26), ChronoUnit.CENTURIES, 1},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2108), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(2312, 10,  7), ChronoUnit.CENTURIES, 3},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(1639,  2, 19), ChronoUnit.CENTURIES, -3},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(2678), ChronoUnit.CENTURIES, 6},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2022, 13, 28), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2238), ChronoUnit.CENTURIES, 2},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(1124,  4, 17), ChronoUnit.CENTURIES, -8},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.CENTURIES, 0},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(2345,  3, 23), ChronoUnit.CENTURIES, 3},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(1787,  8,  6), ChronoUnit.CENTURIES, -2},
 
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(3011,  5, 25), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(5011,  5, 26), ChronoUnit.MILLENNIA, 3 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(3014,  5, 25), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(5014,  5, 26), ChronoUnit.MILLENNIA, 3 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(3012,  6, 28), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(6012,  5,  7), ChronoUnit.MILLENNIA, 3 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(  12,  2, 19), ChronoUnit.MILLENNIA, -2 },
-            { InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(4678), ChronoUnit.MILLENNIA, 2 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2022, 13, 28), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(4238), ChronoUnit.MILLENNIA, 2 },
-            { InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(   4,  4, 17), ChronoUnit.MILLENNIA, -2 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(3011, 13, 28), ChronoUnit.MILLENNIA, 0 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(3456,  3, 23), ChronoUnit.MILLENNIA, 1 },
-            { InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(   1,  8,  6), ChronoUnit.MILLENNIA, -2 },
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(2011,  5, 26), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(3011,  5, 25), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.of(2011,  5, 26), InternationalFixedDate.of(5011,  5, 26), ChronoUnit.MILLENNIA, 3},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(2014,  5, 26), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(3014,  5, 25), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.of(2014,  5, 26), InternationalFixedDate.of(5014,  5, 26), ChronoUnit.MILLENNIA, 3},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.leapDay(2012), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(3012,  6, 28), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(6012,  5,  7), ChronoUnit.MILLENNIA, 3},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.of(  12,  2, 19), ChronoUnit.MILLENNIA, -2},
+            {InternationalFixedDate.leapDay(2012), InternationalFixedDate.yearDay(4678), ChronoUnit.MILLENNIA, 2},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(2012), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(2022, 13, 28), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.yearDay(4238), ChronoUnit.MILLENNIA, 2},
+            {InternationalFixedDate.yearDay(2012), InternationalFixedDate.of(   4,  4, 17), ChronoUnit.MILLENNIA, -2},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.yearDay(2011), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(3011, 13, 28), ChronoUnit.MILLENNIA, 0},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(3456,  3, 23), ChronoUnit.MILLENNIA, 1},
+            {InternationalFixedDate.yearDay(2011), InternationalFixedDate.of(   1,  8,  6), ChronoUnit.MILLENNIA, -2},
         };
     }
 
@@ -1022,9 +1020,9 @@ public class TestInternationalFixedChronology {
         start.until(end, ChronoUnit.MINUTES);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.period
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     public void test_plus_Period() {
         assertEquals(InternationalFixedDate.of(2014, 5, 26).plus(InternationalFixedChronology.INSTANCE.period(0, 2, 2)), InternationalFixedDate.of(2014, 7, 28));
@@ -1047,9 +1045,9 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(2014, 5, 26).minus(period), InternationalFixedDate.of(2014, 3, 26));
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.equals
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Test
     void test_equals() {
         InternationalFixedDate a1 = InternationalFixedDate.of(2000, 1, 3);
@@ -1070,7 +1068,7 @@ public class TestInternationalFixedChronology {
         assertEquals(a1.hashCode(), a2.hashCode());
 
         InternationalFixedDate e = InternationalFixedDate.yearDay(2001);
-        InternationalFixedDate f = (InternationalFixedDate) InternationalFixedDate.of(2001, 13, 28).plus(1, ChronoUnit.DAYS);
+        InternationalFixedDate f = InternationalFixedDate.of(2001, 13, 28).plus(1, ChronoUnit.DAYS);
         LocalDate iso = LocalDate.of(2001, 12, 31);
 
         assertEquals(iso.toEpochDay(), e.toEpochDay());
@@ -1080,7 +1078,7 @@ public class TestInternationalFixedChronology {
         assertEquals(e.toEpochDay(), f.toEpochDay());
 
         e = InternationalFixedDate.leapDay(2004);
-        f = (InternationalFixedDate) InternationalFixedDate.of(2004, 6, 28).plus(1, ChronoUnit.DAYS);
+        f = InternationalFixedDate.of(2004, 6, 28).plus(1, ChronoUnit.DAYS);
         iso = LocalDate.of(2004, 6, 17);
 
         assertEquals(iso.toEpochDay(), e.toEpochDay());
@@ -1090,7 +1088,7 @@ public class TestInternationalFixedChronology {
         assertEquals(e.toEpochDay(), f.toEpochDay());
 
         e = InternationalFixedDate.yearDay(2004);
-        f = (InternationalFixedDate) InternationalFixedDate.of(2004, 13, 28).plus(1, ChronoUnit.DAYS);
+        f = InternationalFixedDate.of(2004, 13, 28).plus(1, ChronoUnit.DAYS);
         iso = LocalDate.of(2004, 12, 31);
 
         assertEquals(iso.toEpochDay(), e.toEpochDay());
@@ -1100,18 +1098,18 @@ public class TestInternationalFixedChronology {
         assertEquals(e.toEpochDay(), f.toEpochDay());
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.toString
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "toString")
     Object[][] data_toString() {
         return new Object[][] {
-                { InternationalFixedDate.of(   1,  1,  1), "Ifc CE 1-01-01" },
-                { InternationalFixedDate.of(2012,  6, 23), "Ifc CE 2012-06-23" },
+            {InternationalFixedDate.of(   1,  1,  1), "Ifc CE 1-01-01"},
+            {InternationalFixedDate.of(2012,  6, 23), "Ifc CE 2012-06-23"},
 
-                { InternationalFixedDate.yearDay(1), "Ifc CE 1 Year Day" },
-                { InternationalFixedDate.leapDay(2012), "Ifc CE 2012 Leap Day" },
-                { InternationalFixedDate.yearDay(2012), "Ifc CE 2012 Year Day" },
+            {InternationalFixedDate.yearDay(1), "Ifc CE 1 Year Day"},
+            {InternationalFixedDate.leapDay(2012), "Ifc CE 2012 Leap Day"},
+            {InternationalFixedDate.yearDay(2012), "Ifc CE 2012 Year Day"},
         };
     }
 
@@ -1121,23 +1119,23 @@ public class TestInternationalFixedChronology {
     }
 
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // InternationalFixedDate.getDayOfWeek
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @DataProvider(name = "getDayOfWeek")
     Object[][] data_day_of_week() {
         return new Object[][] {
-                { InternationalFixedDate.of(   1,  1,  1), 7 },
-                { InternationalFixedDate.of(2012,  1,  1), 7 },
+            {InternationalFixedDate.of(   1,  1,  1), 7},
+            {InternationalFixedDate.of(2012,  1,  1), 7},
 
-                { InternationalFixedDate.yearDay(2011), 0 },
-                { InternationalFixedDate.leapDay(2012), 0 },
-                { InternationalFixedDate.yearDay(2012), 0 },
+            {InternationalFixedDate.yearDay(2011), 0},
+            {InternationalFixedDate.leapDay(2012), 0},
+            {InternationalFixedDate.yearDay(2012), 0},
         };
     }
 
     @Test(dataProvider = "getDayOfWeek")
-    public void test_week_day (final InternationalFixedDate date, final int weekDay) {
+    public void test_week_day(final InternationalFixedDate date, final int weekDay) {
         assertEquals(date.getDayOfWeek(), weekDay);
     }
 }
