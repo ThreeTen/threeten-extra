@@ -467,15 +467,14 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * @param yearOfEra the chronology year-of-era
      * @return the proleptic-year
      * @throws DateTimeException  if unable to convert to a proleptic-year, such as if the year is invalid for the era
-     * @throws ClassCastException if the {@code era} is not of the correct type for the chronology
      */
     @Override
     public int prolepticYear(final Era era, final int yearOfEra) {
         if (!(era instanceof InternationalFixedEra)) {
-            throw new ClassCastException("Invalid era: " + era);
+            throw new DateTimeException("Invalid era: " + era);
         }
 
-        if (0 > yearOfEra) {
+        if (yearOfEra < 1) {
             throw new DateTimeException("Invalid year of era: " + yearOfEra);
         }
 

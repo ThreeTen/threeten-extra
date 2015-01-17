@@ -343,6 +343,15 @@ public class TestInternationalFixedChronology {
             { InternationalFixedDate.yearDay(1900), 1 },
             { InternationalFixedDate.leapDay(2000), 1 },
             { InternationalFixedDate.yearDay(2000), 1 },
+
+            { InternationalFixedDate.of(1901, 13, 28), 28 },
+            { InternationalFixedDate.of(1902, 13, 28), 28 },
+            { InternationalFixedDate.of(1903, 13, 28), 28 },
+            { InternationalFixedDate.of(1904, 13, 28), 28 },
+            { InternationalFixedDate.of(1905, 13, 28), 28 },
+            { InternationalFixedDate.of(1906, 13, 28), 28 },
+            { InternationalFixedDate.of(2000, 13, 28), 28 },
+            { InternationalFixedDate.of(2001, 13, 28), 28 },
         };
     }
 
@@ -384,19 +393,43 @@ public class TestInternationalFixedChronology {
         }
     }
 
-    @Test
-    public void test_prolepticYear_specific() {
-        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE,    4),    4);
-        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE,    3),    3);
-        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE,    2),    2);
-        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE,    1),    1);
-        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE, 2000), 2000);
-        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE, 1582), 1582);
+    //-----------------------------------------------------------------------
+    // InternationalFixedChronology.prolepticYear()
+    //-----------------------------------------------------------------------
+
+    @DataProvider(name = "prolepticYear")
+    Object[][] data_prolepticYear() {
+        return new Object[][] {
+                { InternationalFixedEra.CE, 1 },
+                { InternationalFixedEra.CE, 2 },
+                { InternationalFixedEra.CE, 3 },
+                { InternationalFixedEra.CE, 4 },
+                { InternationalFixedEra.CE, 1581 },
+                { InternationalFixedEra.CE, 1582 },
+                { InternationalFixedEra.CE, 2000 },
+        };
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
-    public void test_prolepticYear_badEra() {
-        InternationalFixedChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
+    @Test(dataProvider = "prolepticYear")
+    public void test_prolepticYear(final Era era, final int year) {
+        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(era, year), year);
+    }
+
+    @DataProvider(name = "prolepticYearBad")
+    Object[][] data_prolepticYear_bad() {
+        return new Object[][] {
+                { InternationalFixedEra.CE, -10 },
+                { InternationalFixedEra.CE, -1 },
+                { InternationalFixedEra.CE, 0 },
+                { IsoEra.CE, 4 },
+                { JulianEra.AD, 1581 },
+                { PaxEra.CE, 2000 },
+        };
+    }
+
+    @Test(dataProvider = "prolepticYearBad", expectedExceptions = DateTimeException.class)
+    public void test_prolepticYearBad(final Era era, final int year) {
+        assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(era, year), year);
     }
 
     @Test
