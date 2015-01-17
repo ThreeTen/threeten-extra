@@ -779,7 +779,7 @@ public class TestInternationalFixedChronology {
                 { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  6, 28) },
                 { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  7,  7) },
                 { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 22) },
-
+                { InternationalFixedDate.of(2012, 6, 28), 1, ChronoUnit.WEEKS, InternationalFixedDate.of(2012,  7,  6) },
                 { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  8,  1) },
                 { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  6,  1) },
                 { InternationalFixedDate.leapDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.of(2015,  7,  1) },
@@ -790,6 +790,7 @@ public class TestInternationalFixedChronology {
                 { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012, 13, 28) },
                 { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2013,  1,  7) },
                 { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012, 13, 22) },
+                { InternationalFixedDate.of(2012, 13, 28), 1, ChronoUnit.WEEKS, InternationalFixedDate.of(2013,  1,  6) },
                 { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013,  1, 28) },
                 { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 28) },
                 { InternationalFixedDate.yearDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2015) },
@@ -812,6 +813,9 @@ public class TestInternationalFixedChronology {
         return new Object[][] {
                 { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  6, 28) },
                 { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012,  7,  1) },
+                { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 22) },
+                { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  7,  7) },
+                { InternationalFixedDate.of(2012, 7, 6), 1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012,  6, 28) },
                 { InternationalFixedDate.leapDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  6,  1) },
                 { InternationalFixedDate.leapDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012,  8,  1) },
                 { InternationalFixedDate.leapDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.of(2009,  7,  1) },
@@ -820,6 +824,9 @@ public class TestInternationalFixedChronology {
 
                 { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.DAYS,   InternationalFixedDate.of(2012, 13, 28) },
                 { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.DAYS,   InternationalFixedDate.of(2013,  1,  1) },
+                { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2012, 13, 22) },
+                { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2013,  1,  7) },
+                { InternationalFixedDate.of(2012, 1, 6), 1, ChronoUnit.WEEKS,  InternationalFixedDate.of(2011, 13, 28) },
                 { InternationalFixedDate.yearDay(2012),  1, ChronoUnit.MONTHS, InternationalFixedDate.of(2012, 12, 28) },
                 { InternationalFixedDate.yearDay(2012), -1, ChronoUnit.MONTHS, InternationalFixedDate.of(2013,  1, 28) },
                 { InternationalFixedDate.yearDay(2012),  3, ChronoUnit.YEARS,  InternationalFixedDate.yearDay(2009) },
