@@ -1112,14 +1112,21 @@ public class TestInternationalFixedChronology {
     // -----------------------------------------------------------------------
     // InternationalFixedDate.equals
     // -----------------------------------------------------------------------
-    @Test
-    void test_equals() {
-        InternationalFixedDate a1 = InternationalFixedDate.of(2000, 1, 3);
-        InternationalFixedDate a2 = InternationalFixedDate.of(2000, 1, 3);
-        InternationalFixedDate b = InternationalFixedDate.of(2000, 1, 4);
-        InternationalFixedDate c = InternationalFixedDate.of(2000, 2, 3);
-        InternationalFixedDate d = InternationalFixedDate.of(2001, 1, 3);
+    @DataProvider(name = "equals")
+    Object[][] data_equals() {
+        return new Object[][] {
+            {InternationalFixedDate.of(2000, 1, 3), InternationalFixedDate.of(2000, 1, 3),
+                InternationalFixedDate.of(2000, 1, 4), InternationalFixedDate.of(2000, 2, 3), InternationalFixedDate.of(2001, 1, 3)},
+            {InternationalFixedDate.of(2000, 0, 0), InternationalFixedDate.yearDay(2000),
+                InternationalFixedDate.of(2000, 13, 28), InternationalFixedDate.of(2001, 1, 1), InternationalFixedDate.of(2001, 0, 0)},
+            {InternationalFixedDate.of(2000, -1, 0), InternationalFixedDate.leapDay(2000),
+                InternationalFixedDate.of(2000, 6, 28), InternationalFixedDate.of(2000, 7, 1), InternationalFixedDate.of(2004, -1, 0)},
+        };
+    }
 
+    @Test(dataProvider = "equals")
+    void test_equals(InternationalFixedDate a1, InternationalFixedDate a2,
+            InternationalFixedDate b, InternationalFixedDate c, InternationalFixedDate d) {
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
         assertEquals(a1.equals(b), false);
@@ -1130,36 +1137,6 @@ public class TestInternationalFixedChronology {
         assertEquals("".equals(a1), false);
 
         assertEquals(a1.hashCode(), a2.hashCode());
-
-        InternationalFixedDate e = InternationalFixedDate.yearDay(2001);
-        InternationalFixedDate f = InternationalFixedDate.of(2001, 13, 28).plus(1, ChronoUnit.DAYS);
-        LocalDate iso = LocalDate.of(2001, 12, 31);
-
-        assertEquals(iso.toEpochDay(), e.toEpochDay());
-        assertEquals(iso.toEpochDay(), f.toEpochDay());
-        assertEquals(e, f);
-        assertEquals(e.toString(), f.toString());
-        assertEquals(e.toEpochDay(), f.toEpochDay());
-
-        e = InternationalFixedDate.leapDay(2004);
-        f = InternationalFixedDate.of(2004, 6, 28).plus(1, ChronoUnit.DAYS);
-        iso = LocalDate.of(2004, 6, 17);
-
-        assertEquals(iso.toEpochDay(), e.toEpochDay());
-        assertEquals(iso.toEpochDay(), f.toEpochDay());
-        assertEquals(e, f);
-        assertEquals(e.toString(), f.toString());
-        assertEquals(e.toEpochDay(), f.toEpochDay());
-
-        e = InternationalFixedDate.yearDay(2004);
-        f = InternationalFixedDate.of(2004, 13, 28).plus(1, ChronoUnit.DAYS);
-        iso = LocalDate.of(2004, 12, 31);
-
-        assertEquals(iso.toEpochDay(), e.toEpochDay());
-        assertEquals(iso.toEpochDay(), f.toEpochDay());
-        assertEquals(e, f);
-        assertEquals(e.toString(), f.toString());
-        assertEquals(e.toEpochDay(), f.toEpochDay());
     }
 
     // -----------------------------------------------------------------------
