@@ -336,10 +336,23 @@ public final class InternationalFixedDate
     }
 
     private static InternationalFixedDate resolvePreviousValid(final int prolepticYear, final int month, final int day) {
+        if (month == 0) {
+            return createYearDay(prolepticYear);
+        }
+
         int monthR = Math.min(month, InternationalFixedChronology.MONTHS_IN_YEAR);
         int dayR = Math.min(day, InternationalFixedChronology.DAYS_IN_MONTH);
 
-        return InternationalFixedDate.of(prolepticYear, monthR, dayR);
+        if (month == -1) {
+            if (InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
+                return createLeapDay(prolepticYear);
+            }
+
+            monthR = 7;
+            dayR = 1;
+        }
+
+        return of(prolepticYear, monthR, dayR);
     }
 
     //-----------------------------------------------------------------------
@@ -559,40 +572,37 @@ public final class InternationalFixedDate
 
     @Override
     public InternationalFixedDate plus(final long amountToAdd, final TemporalUnit unit) {
-        if (amountToAdd == 0) {
-            return this;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
+            InternationalFixedDate date = null;
+            int dayOfWeek = getDayOfWeek();
+            long epoch = toEpochDay();
+
+            switch (f) {
+                case WEEKS:
+                    epoch += InternationalFixedChronology.DAYS_IN_WEEK * amountToAdd;
+                    break;
+                case MONTHS:
+                    epoch += InternationalFixedChronology.DAYS_IN_MONTH * amountToAdd;
+                    break;
+                default:
+                    break;
+            }
+
+            if (date != null) {
+                InternationalFixedDate newDate = InternationalFixedDate.ofEpochDay(epoch);
+                int newDayOfWeek = newDate.getDayOfWeek();
+
+                if ((dayOfWeek == newDayOfWeek) || (dayOfWeek == 0)) {
+                    return newDate;
+                }
+
+                epoch += (dayOfWeek > newDayOfWeek) ? 1 : -1;
+                return InternationalFixedDate.ofEpochDay(epoch);
+            }
         }
 
         return (InternationalFixedDate) super.plus(amountToAdd, unit);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    InternationalFixedDate plusYears(final long yearsToAdd) {
-        if (yearsToAdd == 0) {
-            return this;
-        }
-
-        int newYear = (int) Math.addExact(getProlepticYear(), yearsToAdd);
-
-        if (isYearDay()) {
-            return createYearDay(newYear);
-        }
-
-        int day = getDayOfMonth();
-        int newMonth = getCalculatedMonth();
-
-        if (isLeapDay()) {
-            if ((yearsToAdd & 3) == 0) {
-                return createLeapDay(newYear);
-            }
-
-            day = 1;
-        }
-
-        return create(newYear, newMonth, day);
     }
 
     /**
@@ -797,7 +807,7 @@ public final class InternationalFixedDate
         InternationalFixedDate end = InternationalFixedDate.from(endDateExclusive);
         int years = Math.toIntExact(yearsUntil(end));
         // Get to the same "whole" year.
-        InternationalFixedDate sameYearEnd = end.plusYears(years);
+        InternationalFixedDate sameYearEnd = (InternationalFixedDate) end.plusYears(years);
         int months = (int) monthsUntil(sameYearEnd);
         int days = (int) daysUntil(sameYearEnd.plusMonths(months));
 
