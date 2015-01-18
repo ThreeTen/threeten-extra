@@ -907,11 +907,12 @@ public final class InternationalFixedDate
      */
     @Override
     long monthsUntil(final AbstractDate end) {
-        InternationalFixedDate date = InternationalFixedDate.from(end);
-        long monthStart = this.getProlepticMonth() * 256L + this.getCalculatedDayOfMonth();
-        long monthEnd = date.getProlepticMonth() * 256L + date.getCalculatedDayOfMonth();
+        InternationalFixedDate date = (InternationalFixedDate) end;
+        long monthStart = this.getProlepticMonth() * 256L + this.getCalculatedDayOfMonth(); //+ (getMonth() < 1 && isBefore(date) ? 1 : 0);
+        long monthEnd = date.getProlepticMonth() * 256L + date.getCalculatedDayOfMonth(); // + (date.getMonth() < 1 && date.isBefore(this) ? 1 : 0);;
+        long until = (monthEnd - monthStart);
 
-        return (monthEnd - monthStart) / 256L;
+        return until >> 8;
     }
 
     //-----------------------------------------------------------------------
