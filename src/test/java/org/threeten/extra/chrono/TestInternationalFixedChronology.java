@@ -745,14 +745,17 @@ public class TestInternationalFixedChronology {
     // InternationalFixedDate.with(TemporalAdjuster)
     // -----------------------------------------------------------------------
     @Test
-    public void test_adjust_toLastDayOfMonth() {
+    public void test_adjust1() {
         InternationalFixedDate base = InternationalFixedDate.of(2012, 6, 23);
         InternationalFixedDate test = (InternationalFixedDate) base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, InternationalFixedDate.of(2012, 6, 28));
+    }
 
-        base = InternationalFixedDate.of(2012, 13, 2);
-        test = (InternationalFixedDate) base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, InternationalFixedDate.of(2012, 13, 28));
+    @Test
+    public void test_adjust2() {
+        InternationalFixedDate base = InternationalFixedDate.of(2012, -1, -1);
+        InternationalFixedDate test = (InternationalFixedDate) base.with(TemporalAdjusters.lastDayOfMonth());
+        assertEquals(test, InternationalFixedDate.of(2012, -1, -1));
     }
 
     // -----------------------------------------------------------------------
