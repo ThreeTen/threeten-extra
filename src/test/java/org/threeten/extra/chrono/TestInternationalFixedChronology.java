@@ -763,15 +763,15 @@ public class TestInternationalFixedChronology {
     // -----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
-        InternationalFixedDate date = InternationalFixedDate.of(2000, 1, 4);
-        InternationalFixedDate test = (InternationalFixedDate) date.with(LocalDate.of(2012, 7, 14));
+        InternationalFixedDate fixed = InternationalFixedDate.of(2000, 1, 4);
+        InternationalFixedDate test = (InternationalFixedDate) fixed.with(LocalDate.of(2012, 7, 14));
         assertEquals(test, InternationalFixedDate.of(2012, 7, 27));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_adjust_toMonth() {
-        InternationalFixedDate date = InternationalFixedDate.of(2000, 1, 4);
-        date.with(Month.APRIL);
+        InternationalFixedDate fixed = InternationalFixedDate.of(2000, 1, 4);
+        fixed.with(Month.APRIL);
     }
 
     // -----------------------------------------------------------------------
@@ -779,15 +779,15 @@ public class TestInternationalFixedChronology {
     // -----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToInternationalFixedDate() {
-        InternationalFixedDate date = InternationalFixedDate.of(2012, 6, 15);
-        LocalDate test = LocalDate.MIN.with(date);
+        InternationalFixedDate fixed = InternationalFixedDate.of(2012, 6, 15);
+        LocalDate test = LocalDate.MIN.with(fixed);
         assertEquals(test, LocalDate.of(2012, 6, 3));
     }
 
     @Test
     public void test_LocalDateTime_adjustToInternationalFixedDate() {
-        InternationalFixedDate date = InternationalFixedDate.of(2012, 6, 15);
-        LocalDateTime test = LocalDateTime.MIN.with(date);
+        InternationalFixedDate fixed = InternationalFixedDate.of(2012, 6, 15);
+        LocalDateTime test = LocalDateTime.MIN.with(fixed);
         assertEquals(test, LocalDateTime.of(2012, 6, 3, 0, 0));
     }
 
@@ -1199,8 +1199,8 @@ public class TestInternationalFixedChronology {
     }
 
     @Test(dataProvider = "toString")
-    public void test_toString(InternationalFixedDate date, String expected) {
-        assertEquals(date.toString(), expected);
+    public void test_toString(InternationalFixedDate fixed, String expected) {
+        assertEquals(fixed.toString(), expected);
     }
 
 
@@ -1220,7 +1220,7 @@ public class TestInternationalFixedChronology {
     }
 
     @Test(dataProvider = "getDayOfWeek")
-    public void test_week_day(InternationalFixedDate date, int weekDay) {
-        assertEquals(date.getDayOfWeek(), weekDay);
+    public void test_week_day(InternationalFixedDate fixed, int weekDay) {
+        assertEquals(fixed.getDayOfWeek(), weekDay);
     }
 }
