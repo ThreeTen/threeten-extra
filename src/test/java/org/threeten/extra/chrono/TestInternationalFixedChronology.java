@@ -465,83 +465,52 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "ranges")
     Object[][] data_ranges() {
         return new Object[][] {
-                {InternationalFixedDate.of(2011,  1, 23), DAY_OF_MONTH,          ValueRange.of(-1, 0, -1, 28)},
-                {InternationalFixedDate.of(2012,  1, 23), DAY_OF_MONTH,          ValueRange.of(-1, 0, -1, 28)},
+            // Leap Day and Year Day are in their own 'months', so (0 to 0), (-1 to -1) or (1 to 28)
+            {2012, -1, -1, DAY_OF_MONTH, -1, -1},
+            {2012, 0, 0, DAY_OF_MONTH, 0, 0},
+            {2012, 1, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 2, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 3, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 4, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 5, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 6, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 7, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 8, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 9, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 10, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 11, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 12, 23, DAY_OF_MONTH, 1, 28},
+            {2012, 13, 23, DAY_OF_MONTH, 1, 28},
 
-                {InternationalFixedDate.of(2011,  1, 23), DAY_OF_YEAR,           ValueRange.of( 1, 365)},
-                {InternationalFixedDate.of(2012,  1, 23), DAY_OF_YEAR,           ValueRange.of( 1, 366)},
+            {2012, 1, 23, DAY_OF_YEAR, 1, 366},
+            // Leap Day is still in same year, so (-1 to 13) in leap year
+            {2012, 1, 23, MONTH_OF_YEAR, -1, 13},
+            // Leap Day/Year Day in own months, so (0 to 0) or (1 to 7)
+            {2012, -1, -1, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
+            {2012, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
+            {2012, 1, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 7},
+            // Leap Day/Year Day in own months, so (0 to 0) or (1 to 4)
+            {2012, -1, -1, ALIGNED_WEEK_OF_MONTH, 0, 0},
+            {2012, 0, 0, ALIGNED_WEEK_OF_MONTH, 0, 0},
+            {2012, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 4}, // TODO
+            // Leap Day and Year Day in own 'week's, so (0 to 0) or (1 to 7)
+            {2012, -1, -1, DAY_OF_WEEK, 0, 0},
+            {2012, 0, 0, DAY_OF_WEEK, 0, 0},
+            {2012, 1, 23, DAY_OF_WEEK, 1, 7},
 
-                {InternationalFixedDate.of(2011,  1,  1), DAY_OF_WEEK,           ValueRange.of(0, 1, 0, 7)},
-                {InternationalFixedDate.of(2012,  1,  1), DAY_OF_WEEK,           ValueRange.of(0, 1, 0, 7)},
-
-                {InternationalFixedDate.of(2011,  1, 23), MONTH_OF_YEAR,         ValueRange.of(-1, 0, -1, 13)},
-                {InternationalFixedDate.of(2012,  1, 23), MONTH_OF_YEAR,         ValueRange.of(-1, 0, -1, 13)},
-
-                {InternationalFixedDate.of(2011,  1,  3), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 1, 0, 4)},
-                {InternationalFixedDate.of(2011,  1, 10), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 1, 0, 4)},
-                {InternationalFixedDate.of(2011,  1, 17), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 1, 0, 4)},
-                {InternationalFixedDate.of(2011,  1, 24), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 1, 0, 4)},
-                {InternationalFixedDate.of(2012,  1,  3), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 1, 0, 4)},
-                {InternationalFixedDate.of(2012,  1, 10), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 1, 0, 4)},
-                {InternationalFixedDate.of(2012,  1, 17), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 1, 0, 4)},
-                {InternationalFixedDate.of(2012,  1, 24), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 1, 0, 4)},
-
-                {InternationalFixedDate.of(2011,  1, 23), PROLEPTIC_MONTH,       ValueRange.of(13, 12_999_999)},
-                {InternationalFixedDate.of(2012,  1, 23), PROLEPTIC_MONTH,       ValueRange.of(13, 12_999_999)},
-
-                {InternationalFixedDate.of(2011,  1, 23), YEAR_OF_ERA,           ValueRange.of( 1,  1_000_000)},
-                {InternationalFixedDate.of(2012,  1, 23), YEAR_OF_ERA,           ValueRange.of( 1,  1_000_000)},
-
-                {InternationalFixedDate.of(2011,  1, 23), YEAR,                  ValueRange.of( 1,  1_000_000)},
-                {InternationalFixedDate.of(2012,  1, 23), YEAR,                  ValueRange.of( 1,  1_000_000)},
-
-                {InternationalFixedDate.of(2011,  1, 23), EPOCH_DAY,      ValueRange.of(-719_528, 1_000_000 * 365L + 242_499 - 719_528)},
-                {InternationalFixedDate.of(2012,  1, 23), EPOCH_DAY,      ValueRange.of(-719_528, 1_000_000 * 365L + 242_499 - 719_528)},
-
-                {InternationalFixedDate.yearDay(2011), DAY_OF_MONTH,        ValueRange.of(  0,   0)},
-                {InternationalFixedDate.leapDay(2012), DAY_OF_MONTH,        ValueRange.of(  0,   0)},
-                {InternationalFixedDate.yearDay(2012), DAY_OF_MONTH,        ValueRange.of(  0,   0)},
-
-                {InternationalFixedDate.yearDay(2011), DAY_OF_WEEK,         ValueRange.of(  0,   0)},
-                {InternationalFixedDate.leapDay(2012), DAY_OF_WEEK,         ValueRange.of(  0,   0)},
-                {InternationalFixedDate.yearDay(2012), DAY_OF_WEEK,         ValueRange.of(  0,   0)},
-
-                {InternationalFixedDate.yearDay(2011), DAY_OF_YEAR,         ValueRange.of(  1, 365)},
-                {InternationalFixedDate.leapDay(2012), DAY_OF_YEAR,         ValueRange.of(  1, 366)},
-                {InternationalFixedDate.yearDay(2012), DAY_OF_YEAR,         ValueRange.of(  1, 366)},
-
-                {InternationalFixedDate.yearDay(2011), MONTH_OF_YEAR,       ValueRange.of(  0,   0)},
-                {InternationalFixedDate.leapDay(2012), MONTH_OF_YEAR,       ValueRange.of(  0,   0)},
-                {InternationalFixedDate.yearDay(2012), MONTH_OF_YEAR,       ValueRange.of(  0,   0)},
-
-                {InternationalFixedDate.yearDay(2011), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0)},
-                {InternationalFixedDate.leapDay(2012), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0)},
-                {InternationalFixedDate.yearDay(2012), ALIGNED_WEEK_OF_MONTH, ValueRange.of(0,  0)},
-
-                {InternationalFixedDate.yearDay(2011), PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999)},
-                {InternationalFixedDate.leapDay(2012), PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999)},
-                {InternationalFixedDate.yearDay(2012), PROLEPTIC_MONTH,      ValueRange.of(13, 12_999_999)},
-
-                {InternationalFixedDate.yearDay(2011), YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000)},
-                {InternationalFixedDate.leapDay(2012), YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000)},
-                {InternationalFixedDate.yearDay(2012), YEAR_OF_ERA,          ValueRange.of( 1,  1_000_000)},
-
-                {InternationalFixedDate.yearDay(2011), YEAR,                 ValueRange.of( 1,  1_000_000)},
-                {InternationalFixedDate.leapDay(2012), YEAR,                 ValueRange.of( 1,  1_000_000)},
-                {InternationalFixedDate.yearDay(2012), YEAR,                 ValueRange.of( 1,  1_000_000)},
-
-                {InternationalFixedDate.yearDay(2011), EPOCH_DAY,      ValueRange.of(-719_528, 1_000_000 * 365L + 242_499 - 719_528)},
-                {InternationalFixedDate.leapDay(2012), EPOCH_DAY,      ValueRange.of(-719_528, 1_000_000 * 365L + 242_499 - 719_528)},
-                {InternationalFixedDate.yearDay(2012), EPOCH_DAY,      ValueRange.of(-719_528, 1_000_000 * 365L + 242_499 - 719_528)},
+            {2011, 13, 23, DAY_OF_YEAR, 1, 365},
+            {2011, 13, 23, MONTH_OF_YEAR, 0, 13},
         };
     }
 
     @Test(dataProvider = "ranges")
-    public void test_range(
-            InternationalFixedDate date,
-            TemporalField field,
-            ValueRange expectedRange) {
-        assertEquals(date.range(field), expectedRange);
+    public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
+        assertEquals(InternationalFixedDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+    }
+
+    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    public void test_range_unsupported() {
+        InternationalFixedDate.of(2012, 6, 28).range(MINUTE_OF_DAY);
     }
 
     // -----------------------------------------------------------------------

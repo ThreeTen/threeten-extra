@@ -669,13 +669,15 @@ public final class InternationalFixedDate
                     case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                     case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                     case DAY_OF_WEEK:
-                        return special ? InternationalFixedChronology.EMPTY_RANGE : InternationalFixedChronology.DAY_OF_WEEK_RANGE;
+                        return special ? InternationalFixedChronology.EMPTY_RANGE : ValueRange.of(1, InternationalFixedChronology.DAYS_IN_WEEK);
                     case ALIGNED_WEEK_OF_MONTH:
-                        return special ? InternationalFixedChronology.EMPTY_RANGE : InternationalFixedChronology.WEEK_OF_MONTH_RANGE;
+                        return special ? InternationalFixedChronology.EMPTY_RANGE : ValueRange.of(1, InternationalFixedChronology.WEEKS_IN_MONTH);
                     case ALIGNED_WEEK_OF_YEAR:
                         return special ? InternationalFixedChronology.EMPTY_RANGE : InternationalFixedChronology.WEEK_OF_YEAR_RANGE;
                     case DAY_OF_MONTH:
-                        return special ? InternationalFixedChronology.EMPTY_RANGE : InternationalFixedChronology.DAY_OF_MONTH_RANGE;
+                        return isYearDay() ? InternationalFixedChronology.EMPTY_RANGE
+                                           : isLeapDay() ? ValueRange.of(-1, -1)
+                                                         : ValueRange.of( 1, InternationalFixedChronology.DAYS_IN_MONTH);
                     case DAY_OF_YEAR:
                         return isLeapYear() ? InternationalFixedChronology.DAY_OF_YEAR_LEAP_RANGE : InternationalFixedChronology.DAY_OF_YEAR_NORMAL_RANGE;
                     case EPOCH_DAY:
@@ -683,7 +685,9 @@ public final class InternationalFixedDate
                     case ERA:
                         return InternationalFixedChronology.ERA_RANGE;
                     case MONTH_OF_YEAR:
-                        return special ? InternationalFixedChronology.EMPTY_RANGE : InternationalFixedChronology.MONTH_OF_YEAR_RANGE;
+                        return isYearDay() ? InternationalFixedChronology.EMPTY_RANGE
+                                           : isLeapDay() ? ValueRange.of(-1, -1)
+                                                         : ValueRange.of(InternationalFixedChronology.INSTANCE.isLeapYear(getProlepticYear()) ? -1 : 0, InternationalFixedChronology.MONTHS_IN_YEAR);
                     default:
                         break;
                 }
