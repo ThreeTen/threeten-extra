@@ -51,6 +51,7 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.DECADES;
+import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.MILLENNIA;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
@@ -948,22 +949,145 @@ public class TestInternationalFixedChronology {
         InternationalFixedDate.of(2012, 6, 28).plus(-1, MINUTES);
     }
 
-    @Test(dataProvider = "until")
-    public void test_until_TemporalUnit(
-            InternationalFixedDate start,
-            InternationalFixedDate end,
-            TemporalUnit unit,
-            long expected) {
-        assertEquals(start.until(end, unit), expected);
+    // -----------------------------------------------------------------------
+    // InternationalFixedDate.until
+    // -----------------------------------------------------------------------
+    @DataProvider(name = "until")
+    Object[][] data_until() {
+        return new Object[][] {
+            {2014, 5, 26, 2014, 5, 26, DAYS, 0},
+            {2014, 5, 26, 2014, 6, 4, DAYS, 6},
+            {2014, 5, 26, 2014, 5, 20, DAYS, -6},
+            {2014, 5, 26, 2014, 5, 26, WEEKS, 0},
+            {2014, 5, 26, 2014, 6, 4, WEEKS, 0},
+            {2014, 5, 26, 2014, 6, 5, WEEKS, 1},
+            {2014, 5, 26, 2014, 5, 26, MONTHS, 0},
+            {2014, 5, 26, 2015, 6, 25, MONTHS, 13},
+            {2014, 5, 26, 2015, 6, 26, MONTHS, 14},
+            {2014, 5, 26, 2014, 5, 26, YEARS, 0},
+            {2014, 5, 26, 2015, 5, 25, YEARS, 0},
+            {2014, 5, 26, 2015, 5, 26, YEARS, 1},
+            {2014, 5, 26, 2014, 5, 26, DECADES, 0},
+            {2014, 5, 26, 2024, 5, 25, DECADES, 0},
+            {2014, 5, 26, 2024, 5, 26, DECADES, 1},
+            {2014, 5, 26, 2014, 5, 26, CENTURIES, 0},
+            {2014, 5, 26, 2114, 5, 25, CENTURIES, 0},
+            {2014, 5, 26, 2114, 5, 26, CENTURIES, 1},
+            {2014, 5, 26, 2014, 5, 26, MILLENNIA, 0},
+            {2014, 5, 26, 3014, 5, 25, MILLENNIA, 0},
+            {2014, 5, 26, 3014, 5, 26, MILLENNIA, 1},
+            {2014, 5, 26, 3014, 5, 26, ERAS, 0},
+
+            {2014, 13, 28, 2015, 1, 1, DAYS, 2},
+            {2014, 13, 28, 2014, 0, 0, DAYS, 1},
+            {2014, 0, 0, 2015, 1, 1, DAYS, 1},
+            {2015, 1, 1, 2014, 13, 24, DAYS, -6},
+            {2014, 0, 0, 2014, 0, 0, WEEKS, 0},
+            {2015, 1, 1, 2015, 1, 1, WEEKS, 0},
+            {2015, 1, 1, 2014, 13, 28, WEEKS, 0},
+            {2015, 1, 1, 2014, 13, 23, WEEKS, -1},
+            {2015, 1, 1, 2014, 13, 22, WEEKS, -1},
+            {2014, 0, 0, 2014, 13, 21, WEEKS, -1},
+            {2014, 0, 0, 2014, 13, 22, WEEKS, -1},
+            {2014, 0, 0, 2015, 1, 7, WEEKS, 1},
+            {2014, 0, 0, 2015, 1, 8, WEEKS, 1},
+            {2014, 13, 21, 2014, 0, 0, WEEKS, 1},
+            {2014, 13, 22, 2014, 0, 0, WEEKS, 1},
+            {2015, 1, 7, 2014, 0, 0, WEEKS, -1},
+            {2015, 1, 8, 2014, 0, 0, WEEKS, -1},
+            {2014, 0, 0, 2014, 0, 0, MONTHS, 0},
+            {2014, 0, 0, 2015, 1, 28, MONTHS, 0},
+            {2014, 0, 0, 2015, 2, 1, MONTHS, 1},
+            {2015, 2, 1, 2014, 0, 0, MONTHS, -1},
+            {2015, 1, 28, 2014, 0, 0, MONTHS, 0},
+            {2014, 12, 28, 2014, 0, 0, MONTHS, 1},
+            {2014, 13, 1, 2014, 0, 0, MONTHS, 0},
+            {2014, 13, 1, 2015, 1, 1, MONTHS, 1},
+            {2014, 0, 0, 2014, 0, 0, YEARS, 0},
+            {2014, 0, 0, 2015, 13, 28, YEARS, 0},
+            {2014, 0, 0, 2015, 0, 0, YEARS, 1},
+            {2014, 0, 0, 2016, 1, 1, YEARS, 1},
+            {2014, 1, 1, 2014, 0, 0, YEARS, 0},
+            {2013, 0, 0, 2014, 0, 0, YEARS, 1},
+            {2013, 13, 28, 2014, 0, 0, YEARS, 1},
+
+            {2012, 6, 28, 2012, 7, 1, DAYS, 2},
+            {2012, 6, 28, 2012, -1, -1, DAYS, 1},
+            {2012, -1, -1, 2012, 7, 1, DAYS, 1},
+            {2012, 7, 1, 2012, 6, 24, DAYS, -6},
+            {2012, -1, -1, 2012, -1, -1, WEEKS, 0},
+            {2012, 7, 1, 2012, 7, 1, WEEKS, 0},
+            {2012, 7, 1, 2012, 6, 28, WEEKS, 0},
+            {2012, 7, 1, 2012, 6, 23, WEEKS, -1},
+            {2012, 7, 1, 2012, 6, 22, WEEKS, -1},
+            {2012, -1, -1, 2012, 6, 21, WEEKS, -1},
+            {2012, -1, -1, 2012, 6, 22, WEEKS, -1},
+            {2012, -1, -1, 2012, 7, 7, WEEKS, 1},
+            {2012, -1, -1, 2012, 7, 8, WEEKS, 1},
+            {2012, 1, 21, 2012, -1, -1, WEEKS, 21},
+            {2012, 1, 22, 2012, -1, -1, WEEKS, 21},
+            {2012, 7, 7, 2012, -1, -1, WEEKS, -1},
+            {2012, 7, 8, 2012, -1, -1, WEEKS, -1},
+            {2012, -1, -1, 2012, -1, -1, MONTHS, 0},
+            {2012, -1, -1, 2012, 7, 28, MONTHS, 0},
+            {2012, -1, -1, 2012, 8, 1, MONTHS, 1},
+            {2012, 8, 1, 2012, -1, -1, MONTHS, -1},
+            {2012, 7, 28, 2012, -1, -1, MONTHS, 0},
+            {2012, 5, 28, 2012, -1, -1, MONTHS, 1},
+            {2012, 6, 1, 2012, -1, -1, MONTHS, 1},
+            {2012, 6, 1, 2012, 7, 1, MONTHS, 1},
+            {2012, -1, -1, 2012, -1, -1, YEARS, 0},
+            {2012, -1, -1, 2013, 6, 28, YEARS, 0},
+            {2012, -1, -1, 2013, 7, 1, YEARS, 1},
+            {2011, 7, 1, 2012, -1, -1, YEARS, 1},
+            {2011, 6, 28, 2012, -1, -1, YEARS, 1},
+            {2011, 7, 1, 2012, 7, 1, YEARS, 1},
+            {2012, -1, -1, 2011, 6, 28, YEARS, -1},
+            {2012, -1, -1, 2011, 7, 1, YEARS, -1},
+            {2013, 7, 1, 2012, -1, -1, YEARS, -1},
+            {2013, 6, 28, 2012, -1, -1, YEARS, 0},
+            {2016, -1, -1, 2012, -1, -1, YEARS, -4},
+            {2012, -1, -1, 2016, -1, -1, YEARS, 4},
+
+            // The order is the 28th, Year Day, Leap Day, the 1st.
+            // Year Day is "after the 28th"
+            // Leap Day is "before the 1st"
+            {2012, -1, -1, 2012, 0, 0, DAYS, 197},
+            {2012, -1, -1, 2012, 13, 28, WEEKS, 28},
+            {2012, -1, -1, 2012, 0, 0, WEEKS, 28},
+            {2012, -1, -1, 2013, 1, 1, WEEKS, 28},
+            {2012, -1, -1, 2011, 13, 28, WEEKS, -24},
+            {2012, -1, -1, 2011, 0, 0, WEEKS, -24},
+            {2012, -1, -1, 2012, 1, 1, WEEKS, -24},
+            {2012, 0, 0, 2012, 6, 28, WEEKS, -28},
+            {2012, 0, 0, 2012, -1, -1, WEEKS, -28},
+            {2012, 0, 0, 2012, 7, 1, WEEKS, -28},
+            {2011, 0, 0, 2012, 6, 28, WEEKS, 24},
+            {2011, 0, 0, 2012, -1, -1, WEEKS, 24},
+            {2011, 0, 0, 2012, 7, 1, WEEKS, 24},
+            {2012, -1, -1, 2012, 13, 28, MONTHS, 6},
+            {2012, -1, -1, 2012, 0, 0, MONTHS, 6},
+            {2012, -1, -1, 2013, 1, 1, MONTHS, 7},
+            {2012, -1, -1, 2011, 13, 28, MONTHS, -6},
+            {2012, -1, -1, 2011, 0, 0, MONTHS, -6},
+            {2012, -1, -1, 2012, 1, 1, MONTHS, -6},
+            {2012, 0, 0, 2012, 6, 28, MONTHS, -7},
+            {2012, 0, 0, 2012, -1, -1, MONTHS, -6},
+            {2012, 0, 0, 2012, 7, 1, MONTHS, -6},
+            {2011, 0, 0, 2012, 6, 28, MONTHS, 5},
+            {2011, 0, 0, 2012, -1, -1, MONTHS, 6},
+            {2011, 0, 0, 2012, 7, 1, MONTHS, 6},
+        };
     }
 
-    @Test
-    public void test_until_leap() {
-        InternationalFixedDate leapDay = InternationalFixedDate.leapDay(2008);
-        InternationalFixedDate yearDay = InternationalFixedDate.yearDay(2008);
-        assertEquals(leapDay.until(yearDay, DAYS), InternationalFixedChronology.DAYS_IN_MONTH * 7 + 1);
-        assertEquals(leapDay.until(yearDay, MONTHS), 6);
-        assertEquals(yearDay.getDayOfYear(), InternationalFixedChronology.DAYS_IN_YEAR + 1);
+    @Test(dataProvider = "until")
+    public void test_until_TemporalUnit(
+            int year1, int month1, int dom1,
+            int year2, int month2, int dom2,
+            TemporalUnit unit, long expected) {
+        InternationalFixedDate start = InternationalFixedDate.of(year1, month1, dom1);
+        InternationalFixedDate end = InternationalFixedDate.of(year2, month2, dom2);
+        assertEquals(start.until(end, unit), expected);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
