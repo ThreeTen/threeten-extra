@@ -69,7 +69,7 @@ public enum InternationalFixedEra implements Era {
      * @return the era singleton, not null
      */
     public static InternationalFixedEra of(final int era) {
-        if (0 == era) {
+        if (1 == era) {
             return CE;
         }
 

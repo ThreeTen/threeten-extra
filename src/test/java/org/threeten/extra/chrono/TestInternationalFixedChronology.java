@@ -422,11 +422,13 @@ public class TestInternationalFixedChronology {
 
     @Test
     public void test_Chronology_eraOf() {
-        assertEquals(InternationalFixedChronology.INSTANCE.eraOf(0), InternationalFixedEra.CE);
+        assertEquals(InternationalFixedChronology.INSTANCE.eraOf(1), InternationalFixedEra.CE);
     }
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_Chronology_eraOf_invalid() {
+        InternationalFixedChronology.INSTANCE.eraOf(-1);
+        InternationalFixedChronology.INSTANCE.eraOf(0);
         InternationalFixedChronology.INSTANCE.eraOf(2);
     }
 
