@@ -288,44 +288,6 @@ public class TestInternationalFixedChronology {
     }
 
     // -----------------------------------------------------------------------
-    // InternationalFixedDate.getDayOfYear
-    // -----------------------------------------------------------------------
-    @Test
-    public void test_dateYearDay() {
-        checkYearDateForYear(2001, 365);
-        checkYearDateForYear(2004, 366);
-
-        assertEquals(InternationalFixedChronology.INSTANCE.dateYearDay(2001, 365), InternationalFixedDate.yearDay(2001));
-        assertEquals(InternationalFixedChronology.INSTANCE.dateYearDay(2004, 169), InternationalFixedDate.leapDay(2004));
-        assertEquals(InternationalFixedChronology.INSTANCE.dateYearDay(2004, 366), InternationalFixedDate.yearDay(2004));
-    }
-
-    private void checkYearDateForYear(int year, int daysInYear) {
-        InternationalFixedDate date = null;
-        int month = 0;
-        int dayOfMonth = 0;
-        int y = 0;
-
-        for (int i = 1; i <= daysInYear; i++) {
-            date = InternationalFixedChronology.INSTANCE.dateYearDay(year, i);
-            assertEquals(date.getDayOfYear(), i);
-
-            if (date.isYearDay() || date.isLeapDay()) {
-                // year day / leap day are not part of any months!
-                dayOfMonth = date.isLeapDay() ? -1 : 0;
-                month = date.isLeapDay() ? -1 : 0;
-            } else {
-                y = (i > 169 && date.isLeapYear()) ? i - 1 : i;
-                dayOfMonth = ((y - 1) % 28) + 1;
-                month = ((y - 1) / 28) + 1;
-            }
-
-            assertEquals(month, date.getMonth());
-            assertEquals(dayOfMonth, date.getDayOfMonth());
-        }
-    }
-
-    // -----------------------------------------------------------------------
     // InternationalFixedDate.isLeapYear
     // -----------------------------------------------------------------------
     @Test
