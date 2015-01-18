@@ -33,6 +33,8 @@ package org.threeten.extra.chrono;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
 import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
@@ -1140,14 +1142,14 @@ public class TestInternationalFixedChronology {
     @Test(dataProvider = "equals")
     void test_equals(InternationalFixedDate a1, InternationalFixedDate a2,
                      InternationalFixedDate b, InternationalFixedDate c, InternationalFixedDate d) {
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a1.equals(b), false);
-        assertEquals(a1.equals(c), false);
-        assertEquals(a1.equals(d), false);
+        assertTrue(a1.equals(a1));
+        assertTrue(a1.equals(a2));
+        assertFalse(a1.equals(b));
+        assertFalse(a1.equals(c));
+        assertFalse(a1.equals(d));
 
-        assertEquals(a1.equals(null), false);
-        assertEquals("".equals(a1), false);
+        assertFalse(a1.equals(null));
+        assertFalse("".equals(a1));
 
         assertEquals(a1.hashCode(), a2.hashCode());
     }
@@ -1162,8 +1164,11 @@ public class TestInternationalFixedChronology {
                 {InternationalFixedDate.of(2012, 6, 23), "Ifc CE 2012-06-23"},
 
                 {InternationalFixedDate.yearDay(1), "Ifc CE 1 Year Day"},
+                {InternationalFixedDate.of(1, 0, 0), "Ifc CE 1 Year Day"},
                 {InternationalFixedDate.leapDay(2012), "Ifc CE 2012 Leap Day"},
+                {InternationalFixedDate.of(2012, -1, -1), "Ifc CE 2012 Leap Day"},
                 {InternationalFixedDate.yearDay(2012), "Ifc CE 2012 Year Day"},
+                {InternationalFixedDate.of(2012, 0, 0), "Ifc CE 2012 Year Day"},
         };
     }
 
