@@ -104,7 +104,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of day-of-week.
      */
-    static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, DAYS_IN_WEEK);
+    static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, 0, DAYS_IN_WEEK);
     /**
      * There are 13 months of 28 days, or 365 days in a (non-leap) year.
      */
@@ -138,15 +138,15 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of day of month.
      */
-    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(-1, DAYS_IN_MONTH);
+    static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(-1, 0, -1, DAYS_IN_MONTH);
     /**
      * Range of week of year.
      */
-    static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(1, WEEKS_IN_YEAR);
+    static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, WEEKS_IN_YEAR);
     /**
      * Range of aligned week of month, the weeks are always perfectly aligned.
      */
-    static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(1, WEEKS_IN_MONTH);
+    static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(0, 1, 0, WEEKS_IN_MONTH);
     /**
      * Range of day of year.
      */
@@ -162,7 +162,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of month of year.
      */
-    static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(-1, MONTHS_IN_YEAR);
+    static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(-1, 0, -1, MONTHS_IN_YEAR);
     /**
      * Range of eras.
      */
