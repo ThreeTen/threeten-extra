@@ -299,6 +299,10 @@ public final class InternationalFixedDate
         InternationalFixedChronology.YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
         InternationalFixedChronology.DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, ChronoField.DAY_OF_YEAR);
 
+        if (dayOfYear == InternationalFixedChronology.DAYS_IN_YEAR + 1 && !InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
+            throw new DateTimeException("Invalid year/year day: " + prolepticYear + '/' + dayOfYear);
+        }
+
         return new InternationalFixedDate(prolepticYear, dayOfYear);
     }
 

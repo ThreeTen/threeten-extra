@@ -284,15 +284,7 @@ public class TestInternationalFixedChronology {
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_chronology_dateYearDay_badDate() {
-        InternationalFixedChronology.INSTANCE.dateYearDay(2001, 0);
-        InternationalFixedChronology.INSTANCE.dateYearDay(2001, -1);
         InternationalFixedChronology.INSTANCE.dateYearDay(2001, 366);
-        InternationalFixedChronology.INSTANCE.dateYearDay(2001, 999);
-
-        InternationalFixedChronology.INSTANCE.dateYearDay(2000, 0);
-        InternationalFixedChronology.INSTANCE.dateYearDay(2000, -1);
-        InternationalFixedChronology.INSTANCE.dateYearDay(2000, 367);
-        InternationalFixedChronology.INSTANCE.dateYearDay(2000, 999);
     }
 
     // -----------------------------------------------------------------------
