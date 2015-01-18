@@ -119,48 +119,51 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "samples")
     Object[][] data_samples() {
         return new Object[][] {
-                {InternationalFixedDate.of(1,  6, 27), LocalDate.of(1,  6, 16)},
-                {InternationalFixedDate.of(1,  6, 28), LocalDate.of(1,  6, 17)},
-                {InternationalFixedDate.of(1,  7,  1), LocalDate.of(1,  6, 18)},
-                {InternationalFixedDate.of(1,  7,  2), LocalDate.of(1,  6, 19)},
+            {InternationalFixedDate.of(1, 1, 1), LocalDate.of(1, 1, 1)},
+            {InternationalFixedDate.of(1, 1, 2), LocalDate.of(1, 1, 2)},
 
-                {InternationalFixedDate.of(1, 13, 28), LocalDate.of(1, 12, 30)},
-                {InternationalFixedDate.of(1, 13, 27), LocalDate.of(1, 12, 29)},
-                {InternationalFixedDate.of(1,  0,  0), LocalDate.of(1, 12, 31)},
-                {InternationalFixedDate.yearDay(1),    LocalDate.of(1, 12, 31)},
-                {InternationalFixedDate.of(2,  1,  1), LocalDate.of(2,  1,  1)},
+            {InternationalFixedDate.of(1,  6, 27), LocalDate.of(1,  6, 16)},
+            {InternationalFixedDate.of(1,  6, 28), LocalDate.of(1,  6, 17)},
+            {InternationalFixedDate.of(1,  7,  1), LocalDate.of(1,  6, 18)},
+            {InternationalFixedDate.of(1,  7,  2), LocalDate.of(1,  6, 19)},
 
-                {InternationalFixedDate.of(4,  6, 27), LocalDate.of(4,  6, 15)},
-                {InternationalFixedDate.of(4,  6, 28), LocalDate.of(4,  6, 16)},
-                {InternationalFixedDate.of(4, -1, -1), LocalDate.of(4,  6, 17)},
-                {InternationalFixedDate.leapDay(4),    LocalDate.of(4,  6, 17)},
-                {InternationalFixedDate.of(4,  7,  1), LocalDate.of(4,  6, 18)},
-                {InternationalFixedDate.of(4,  7,  2), LocalDate.of(4,  6, 19)},
+            {InternationalFixedDate.of(1, 13, 28), LocalDate.of(1, 12, 30)},
+            {InternationalFixedDate.of(1, 13, 27), LocalDate.of(1, 12, 29)},
+            {InternationalFixedDate.of(1,  0,  0), LocalDate.of(1, 12, 31)},
+            {InternationalFixedDate.yearDay(1),    LocalDate.of(1, 12, 31)},
+            {InternationalFixedDate.of(2,  1,  1), LocalDate.of(2,  1,  1)},
 
-                {InternationalFixedDate.of(4,  1,  1), LocalDate.of(4,  1,  1)},
-                {InternationalFixedDate.of(4, 13, 28), LocalDate.of(4, 12, 30)},
-                {InternationalFixedDate.of(4, 13, 27), LocalDate.of(4, 12, 29)},
-                {InternationalFixedDate.of(4,  0,  0), LocalDate.of(4, 12, 31)},
-                {InternationalFixedDate.yearDay(4),    LocalDate.of(4, 12, 31)},
+            {InternationalFixedDate.of(4,  6, 27), LocalDate.of(4,  6, 15)},
+            {InternationalFixedDate.of(4,  6, 28), LocalDate.of(4,  6, 16)},
+            {InternationalFixedDate.of(4, -1, -1), LocalDate.of(4,  6, 17)},
+            {InternationalFixedDate.leapDay(4),    LocalDate.of(4,  6, 17)},
+            {InternationalFixedDate.of(4,  7,  1), LocalDate.of(4,  6, 18)},
+            {InternationalFixedDate.of(4,  7,  2), LocalDate.of(4,  6, 19)},
 
-                {InternationalFixedDate.of(100,  6, 27), LocalDate.of(100,  6, 16)},
-                {InternationalFixedDate.of(100,  6, 28), LocalDate.of(100,  6, 17)},
-                {InternationalFixedDate.of(100,  7,  1), LocalDate.of(100,  6, 18)},
-                {InternationalFixedDate.of(100,  7,  2), LocalDate.of(100,  6, 19)},
+            {InternationalFixedDate.of(4,  1,  1), LocalDate.of(4,  1,  1)},
+            {InternationalFixedDate.of(4, 13, 28), LocalDate.of(4, 12, 30)},
+            {InternationalFixedDate.of(4, 13, 27), LocalDate.of(4, 12, 29)},
+            {InternationalFixedDate.of(4,  0,  0), LocalDate.of(4, 12, 31)},
+            {InternationalFixedDate.yearDay(4),    LocalDate.of(4, 12, 31)},
 
-                {InternationalFixedDate.of(400,  6, 27), LocalDate.of(400,  6, 15)},
-                {InternationalFixedDate.of(400,  6, 28), LocalDate.of(400,  6, 16)},
-                {InternationalFixedDate.of(400, -1, -1), LocalDate.of(400,  6, 17)},
-                {InternationalFixedDate.leapDay(400),    LocalDate.of(400,  6, 17)},
-                {InternationalFixedDate.of(400,  7,  1), LocalDate.of(400,  6, 18)},
-                {InternationalFixedDate.of(400,  7,  2), LocalDate.of(400,  6, 19)},
+            {InternationalFixedDate.of(100,  6, 27), LocalDate.of(100,  6, 16)},
+            {InternationalFixedDate.of(100,  6, 28), LocalDate.of(100,  6, 17)},
+            {InternationalFixedDate.of(100,  7,  1), LocalDate.of(100,  6, 18)},
+            {InternationalFixedDate.of(100,  7,  2), LocalDate.of(100,  6, 19)},
 
-                {InternationalFixedDate.of(1582,  9, 28), LocalDate.of(1582,  9,  9)},
-                {InternationalFixedDate.of(1582, 10,  1), LocalDate.of(1582,  9, 10)},
-                {InternationalFixedDate.of(1945, 10, 27), LocalDate.of(1945, 10,  6)},
+            {InternationalFixedDate.of(400,  6, 27), LocalDate.of(400,  6, 15)},
+            {InternationalFixedDate.of(400,  6, 28), LocalDate.of(400,  6, 16)},
+            {InternationalFixedDate.of(400, -1, -1), LocalDate.of(400,  6, 17)},
+            {InternationalFixedDate.leapDay(400),    LocalDate.of(400,  6, 17)},
+            {InternationalFixedDate.of(400,  7,  1), LocalDate.of(400,  6, 18)},
+            {InternationalFixedDate.of(400,  7,  2), LocalDate.of(400,  6, 19)},
 
-                {InternationalFixedDate.of(2012,  6, 15), LocalDate.of(2012,  6,  3)},
-                {InternationalFixedDate.of(2012,  6, 16), LocalDate.of(2012,  6,  4)},
+            {InternationalFixedDate.of(1582,  9, 28), LocalDate.of(1582,  9,  9)},
+            {InternationalFixedDate.of(1582, 10,  1), LocalDate.of(1582,  9, 10)},
+            {InternationalFixedDate.of(1945, 10, 27), LocalDate.of(1945, 10,  6)},
+
+            {InternationalFixedDate.of(2012,  6, 15), LocalDate.of(2012,  6,  3)},
+            {InternationalFixedDate.of(2012,  6, 16), LocalDate.of(2012,  6,  4)},
         };
     }
 
@@ -209,15 +212,22 @@ public class TestInternationalFixedChronology {
         assertEquals(LocalDate.from(fixed.plus(0, DAYS)), iso);
         assertEquals(LocalDate.from(fixed.plus(1, DAYS)), iso.plusDays(1));
         assertEquals(LocalDate.from(fixed.plus(35, DAYS)), iso.plusDays(35));
-        assertEquals(LocalDate.from(fixed.plus(-1, DAYS)), iso.plusDays(-1));
-        assertEquals(LocalDate.from(fixed.plus(-60, DAYS)), iso.plusDays(-60));
+
+        if (LocalDate.ofYearDay(1, 60).isBefore(iso)) {
+            assertEquals(LocalDate.from(fixed.plus(-1, DAYS)), iso.plusDays(-1));
+            assertEquals(LocalDate.from(fixed.plus(-60, DAYS)), iso.plusDays(-60));
+        }
     }
 
     @Test(dataProvider = "samples")
     public void test_minusDays(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(LocalDate.from(fixed.minus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(fixed.minus(1, DAYS)), iso.minusDays(1));
-        assertEquals(LocalDate.from(fixed.minus(35, DAYS)), iso.minusDays(35));
+
+        if (LocalDate.ofYearDay(1, 35).isBefore(iso)) {
+            assertEquals(LocalDate.from(fixed.minus(1, DAYS)), iso.minusDays(1));
+            assertEquals(LocalDate.from(fixed.minus(35, DAYS)), iso.minusDays(35));
+        }
+
         assertEquals(LocalDate.from(fixed.minus(-1, DAYS)), iso.minusDays(-1));
         assertEquals(LocalDate.from(fixed.minus(-60, DAYS)), iso.minusDays(-60));
     }
@@ -227,7 +237,10 @@ public class TestInternationalFixedChronology {
         assertEquals(fixed.until(iso.plusDays(0), DAYS), 0);
         assertEquals(fixed.until(iso.plusDays(1), DAYS), 1);
         assertEquals(fixed.until(iso.plusDays(35), DAYS), 35);
-        assertEquals(fixed.until(iso.minusDays(40), DAYS), -40);
+
+        if (LocalDate.ofYearDay(1, 40).isBefore(iso)) {
+            assertEquals(fixed.until(iso.minusDays(40), DAYS), -40);
+        }
     }
 
     @DataProvider(name = "badDates")
