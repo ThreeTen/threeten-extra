@@ -386,7 +386,8 @@ public final class InternationalFixedDate
         InternationalFixedChronology.MONTH_OF_YEAR_RANGE.checkValidValue(month, ChronoField.MONTH_OF_YEAR);
         InternationalFixedChronology.DAY_OF_MONTH_RANGE.checkValidValue(dayOfMonth, ChronoField.DAY_OF_MONTH);
 
-        if ((month < 1 || dayOfMonth < 1) && (dayOfMonth != month)) {
+        if (((month < 1 || dayOfMonth < 1) && (dayOfMonth != month)) ||
+            ((month == -1) && (dayOfMonth == -1) && !InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear))) {
             throw new DateTimeException("Invalid date: " + prolepticYear + '/' + month + '/' + dayOfMonth);
         }
 
