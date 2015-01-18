@@ -1176,24 +1176,4 @@ public class TestInternationalFixedChronology {
     public void test_toString(InternationalFixedDate date, String expected) {
         assertEquals(date.toString(), expected);
     }
-
-    // -----------------------------------------------------------------------
-    // InternationalFixedDate.getDayOfWeek
-    // -----------------------------------------------------------------------
-    @DataProvider(name = "getDayOfWeek")
-    Object[][] data_day_of_week() {
-        return new Object[][] {
-            {InternationalFixedDate.of(   1,  1,  1), 7},
-            {InternationalFixedDate.of(2012,  1,  1), 7},
-
-            {InternationalFixedDate.yearDay(2011), 0},
-            {InternationalFixedDate.leapDay(2012), 0},
-            {InternationalFixedDate.yearDay(2012), 0},
-        };
-    }
-
-    @Test(dataProvider = "getDayOfWeek")
-    public void test_week_day(InternationalFixedDate fixed, int weekDay) {
-        assertEquals(fixed.getDayOfWeek(), weekDay);
-    }
 }
