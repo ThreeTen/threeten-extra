@@ -1147,8 +1147,8 @@ public class TestInternationalFixedChronology {
                   InternationalFixedDate.of(2000, 1, 4), InternationalFixedDate.of(2000, 2, 3), InternationalFixedDate.of(2001, 1, 3) },
                 { InternationalFixedDate.of(2000, 0, 0), InternationalFixedDate.yearDay(2000),
                   InternationalFixedDate.of(2000, 13, 28), InternationalFixedDate.of(2001, 1, 1), InternationalFixedDate.of(2001, 0, 0) },
-                { InternationalFixedDate.of(2000, -1, 0), InternationalFixedDate.leapDay(2000),
-                  InternationalFixedDate.of(2000, 6, 28), InternationalFixedDate.of(2000, 7, 1), InternationalFixedDate.of(2004, -1, 0) },
+                { InternationalFixedDate.of(2000, -1, -1), InternationalFixedDate.leapDay(2000),
+                  InternationalFixedDate.of(2000, 6, 28), InternationalFixedDate.of(2000, 7, 1), InternationalFixedDate.of(2004, -1, -1) },
         };
     }
 
