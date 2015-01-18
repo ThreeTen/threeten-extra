@@ -296,7 +296,7 @@ public class TestInternationalFixedChronology {
             return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
         };
 
-        for (int year = 1; year < 1001; year++) {
+        for (int year = 1; year <= 500; year++) {
             InternationalFixedDate base = InternationalFixedDate.of(year, 1, 1);
             assertEquals(base.isLeapYear(), isLeapYear.test(year), "Year " + year + " is failing");
             assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year), "Year " + year + " is failing leap-year test");
