@@ -811,13 +811,21 @@ public final class InternationalFixedDate
      */
     @Override
     public int getDayOfWeek() {
-        if (isLeapDay() || isYearDay()) {
+        if (month < 1) {
             return 0;
         }
 
         int doy = getDayOfYearAdjusted();
 
         return 1 + ((5 + doy) % 7);
+    }
+
+    private int getCalculatedDayOfWeek() {
+        if (month < 1) {
+            return 0;
+        }
+
+        return 1 + ((day - 1) % InternationalFixedChronology.DAYS_IN_WEEK);
     }
 
     /**
@@ -827,6 +835,12 @@ public final class InternationalFixedDate
     @Override
     long getProlepticMonth() {
         return getProlepticYear() * lengthOfYearInMonths() + getCalculatedMonth() - 1;
+    }
+
+    long getProlepticWeek() {
+        return ((long) prolepticYear) * InternationalFixedChronology.WEEKS_IN_YEAR +
+                getCalculatedMonth() * InternationalFixedChronology.WEEKS_IN_MONTH +
+                ((getCalculatedDayOfMonth() - 1) / InternationalFixedChronology.DAYS_IN_WEEK) - 1;
     }
 
     //-------------------------------------------------------------------------
@@ -842,32 +856,20 @@ public final class InternationalFixedDate
      */
     @Override
     public long until(final Temporal endExclusive, final TemporalUnit unit) {
-        InternationalFixedDate end = InternationalFixedDate.from(endExclusive);
+        return until(InternationalFixedDate.from(endExclusive), unit);
+    }
 
+    long until(final InternationalFixedDate end, final TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
-                case DAYS:
-                    return daysUntil(end);
                 case WEEKS:
-                    return daysUntil(end) / InternationalFixedChronology.DAYS_IN_WEEK;
-                case MONTHS:
-                    return monthsUntil(end);
-                case YEARS:
-                    return yearsUntil(end);
-                case DECADES:
-                    return yearsUntil(end) / YEARS_IN_DECADE;
-                case CENTURIES:
-                    return yearsUntil(end) / YEARS_IN_CENTURY;
-                case MILLENNIA:
-                    return yearsUntil(end) / YEARS_IN_MILLENNIUM;
-                case ERAS:
-                    return end.getLong(ChronoField.ERA) - getLong(ChronoField.ERA);
+                    return weeksUntil(end);
+                default:
+                    break;
             }
-
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
 
-        return unit.between(this, end);
+        return super.until(end, unit);
     }
 
     /**
@@ -900,6 +902,13 @@ public final class InternationalFixedDate
         return getChronology().period(years, months, days);
     }
 
+    private long weeksUntil(final InternationalFixedDate fixed) {
+        long start = this.getProlepticWeek() * 8L + this.getCalculatedDayOfWeek() - (this.month < 1 ? 1 : 0);
+        long end = fixed.getProlepticWeek() * 8L + fixed.getCalculatedDayOfWeek() - (fixed.month < 1 ? 1 : 0);
+
+        return (end - start) / 8L;
+    }
+
     /**
      * {@inheritDoc}
      * @param end
@@ -907,12 +916,11 @@ public final class InternationalFixedDate
      */
     @Override
     long monthsUntil(final AbstractDate end) {
-        InternationalFixedDate date = (InternationalFixedDate) end;
-        long monthStart = this.getProlepticMonth() * 256L + this.getCalculatedDayOfMonth(); //+ (getMonth() < 1 && isBefore(date) ? 1 : 0);
-        long monthEnd = date.getProlepticMonth() * 256L + date.getCalculatedDayOfMonth(); // + (date.getMonth() < 1 && date.isBefore(this) ? 1 : 0);;
-        long until = (monthEnd - monthStart);
+        InternationalFixedDate date = InternationalFixedDate.from(end);
+        long monthStart = this.getProlepticMonth() * 32L + this.getCalculatedDayOfMonth();
+        long monthEnd = date.getProlepticMonth() * 32L + date.getCalculatedDayOfMonth();
 
-        return until >> 8;
+        return (monthEnd - monthStart) / 32L;
     }
 
     //-----------------------------------------------------------------------
