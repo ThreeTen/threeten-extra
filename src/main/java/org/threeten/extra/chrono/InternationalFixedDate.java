@@ -87,7 +87,7 @@ public final class InternationalFixedDate
     /**
      * Serialization version UID.
      */
-    private static final long serialVersionUID = 1846403497617429687L;
+    private static final long serialVersionUID = 1401538136526706196L;
     /**
      * Number of years in a decade.
      */
@@ -130,8 +130,8 @@ public final class InternationalFixedDate
      * Creates an instance from validated data.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month, from 1 to 13
-     * @param dayOfMonth    the International fixed day-of-month, from 1 to 28
+     * @param month         the International fixed month, from -1 to 13 (-1 for leap-day, 0 for year-day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for leap-day, 0 for year-day)
      * @return the International fixed date
      */
     private InternationalFixedDate(final int prolepticYear, final int month, final int dayOfMonth) {
@@ -213,8 +213,8 @@ public final class InternationalFixedDate
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month-of-year, from 1 to 13
-     * @param dayOfMonth    the International fixed day-of-month, from 1 to 28
+     * @param month         the International fixed month-of-year, from -1 to 13 (-1 for leap-day, 0 for year-day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for leap-day, 0 for year-day)
      * @return the date in International fixed calendar system, not null
      * @throws DateTimeException if the value of any field is out of range, or if the day-of-month is invalid for the month-year
      */
@@ -375,8 +375,8 @@ public final class InternationalFixedDate
      * Special values are required for Year Day (NNNN/0/0) and Leap Day (NNNN/-1/-1).
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month, from -1 to 13
-     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28
+     * @param month         the International fixed month, from -1 to 13 (-1 for leap-day, 0 for year-day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for leap-day, 0 for year-day)
      * @return the International fixed date
      * @throws DateTimeException if the date is invalid
      */
