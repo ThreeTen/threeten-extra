@@ -450,7 +450,7 @@ public class TestInternationalFixedChronology {
     Object[][] data_ranges() {
         return new Object[][] {
             // Leap Day and Year Day are in their own 'months', so (0 to 0) or (1 to 28)
-            {2012, -1, -1, DAY_OF_MONTH, 0, 0},
+            {2012, -1, -1, DAY_OF_MONTH, -1, -1},
             {2012, 0, 0, DAY_OF_MONTH, 0, 0},
             {2012, 1, 23, DAY_OF_MONTH, 1, 28},
             {2012, 2, 23, DAY_OF_MONTH, 1, 28},
@@ -515,6 +515,15 @@ public class TestInternationalFixedChronology {
             {2014, 5, 26, YEAR, 2014},
             {2014, 5, 26, ERA, 1},
             {1, 5, 8, ERA, 1},
+
+            {2012, 9, 26, DAY_OF_WEEK, 5},
+            {2012, 9, 26, DAY_OF_YEAR, 28 + 28 + 28 + 28 + 28 + 28 + 1 + 28 + 28 + 26},
+            {2012, 9, 26, ALIGNED_DAY_OF_WEEK_IN_MONTH, 5},
+            {2012, 9, 26, ALIGNED_WEEK_OF_MONTH, 4},
+            // TODO: Remove the following test after you figure out why it fails, yet the line after succeeds.
+            {2014, 9, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5},
+            {2012, 9, 26, ALIGNED_DAY_OF_WEEK_IN_YEAR, 5},
+            {2012, 9, 26, ALIGNED_WEEK_OF_YEAR, 36},
 
             {2014, 0, 0, DAY_OF_WEEK, 0},
             {2014, 0, 0, DAY_OF_MONTH, 0},
@@ -671,7 +680,7 @@ public class TestInternationalFixedChronology {
             {2012, -1, -1, YEAR, 2012, 2012, -1, -1},
             {2012, -1, -1, YEAR, 2013, 2013, 7, 1},
             {2012, -1, -1, YEAR, 2011, 2011, 7, 1},
-            {2012, -1, -1, YEAR, 2016, 2016, -1, 0},
+            {2012, -1, -1, YEAR, 2016, 2016, -1, -1},
 
             {2012, 3, 28, DAY_OF_MONTH, -1, 2012, -1, -1},
             {2012, 1, 28, DAY_OF_MONTH, -1, 2012, -1, -1},
@@ -880,12 +889,12 @@ public class TestInternationalFixedChronology {
             {2014, 0, 0, 0, MONTHS, 2014, 0, 0},
             {2014, 10, 28, 3, MONTHS, 2014, 0, 0},
             {2015, 5, 28, -5, MONTHS, 2014, 0, 0},
-            {2015, 0, 0, 13, MONTHS, 2014, 0, 0},
+            {2013, 0, 0, 13, MONTHS, 2014, 0, 0},
             {2014, 0, 0, 0, YEARS, 2014, 0, 0},
             {2011, 0, 0, 3, YEARS, 2014, 0, 0},
             {2019, 0, 0, -5, YEARS, 2014, 0, 0},
 
-            {2011, 6, 28, 4 * -6, WEEKS, 2011, 0, 0},
+            {2012, 6, 28, 4 * -6, WEEKS, 2011, 0, 0},
             {2012, 6, 28, 4 * 7, WEEKS, 2012, 0, 0},
 
             {2012, -1, -1, 0, DAYS, 2012, -1, -1},
@@ -897,7 +906,7 @@ public class TestInternationalFixedChronology {
             {2008, -1, -1, 52 * 4, WEEKS, 2012, -1, -1},
             {2012, -1, -1, 0, MONTHS, 2012, -1, -1},
             {2012, 4, 1, 3, MONTHS, 2012, -1, -1},
-            {2012, 10, 1, -5, MONTHS, 2012, -1, -1},
+            {2012, 12, 1, -5, MONTHS, 2012, -1, -1},
             {2008, -1, -1, 13 * 4, MONTHS, 2012, -1, -1},
             {2012, -1, -1, 0, YEARS, 2012, -1, -1},
             {2009, 7, 1, 3, YEARS, 2012, -1, -1},
@@ -1019,8 +1028,8 @@ public class TestInternationalFixedChronology {
             {2012, -1, -1, 2012, 6, 22, WEEKS, 0},
             {2012, -1, -1, 2012, 7, 7, WEEKS, 0},
             {2012, -1, -1, 2012, 7, 8, WEEKS, 1},
-            {2012, 1, 21, 2012, -1, -1, WEEKS, 1},
-            {2012, 1, 22, 2012, -1, -1, WEEKS, 0},
+            {2012, 7, 21, 2012, -1, -1, WEEKS, 1},
+            {2012, 7, 22, 2012, -1, -1, WEEKS, 0},
             {2012, 7, 7, 2012, -1, -1, WEEKS, 0},
             {2012, 7, 8, 2012, -1, -1, WEEKS, -1},
             {2012, -1, -1, 2012, -1, -1, MONTHS, 0},
