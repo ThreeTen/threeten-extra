@@ -48,6 +48,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
@@ -591,6 +592,15 @@ public final class InternationalFixedDate
         return InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear() ? 1 : 0);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InternationalFixedDate with(final TemporalAdjuster adjuster) {
+        return (InternationalFixedDate) adjuster.adjustInto(this);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -622,18 +632,26 @@ public final class InternationalFixedDate
                 case DAY_OF_WEEK:
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                    if (newValue == 0) {
+                        return this;
+                    }
                     return resolvePreviousValid(getProlepticYear(), getMonth(), dom + nval);
                 case ALIGNED_WEEK_OF_MONTH:
+                    if (newValue == 0) {
+                        return this;
+                    }
                     return resolvePreviousValid(getProlepticYear(), getMonth(), (nval - 1) * 7 + d);
                 case ALIGNED_WEEK_OF_YEAR:
+                    if (newValue == 0) {
+                        return this;
+                    }
                     return ofYearDay(getProlepticYear(), (nval - 1) * 7 + d);
                 default:
-                    // DAY_OF_MONTH, MONTH_OF_YEAR are handled in the parent
-                    return (InternationalFixedDate) super.with(field, newValue);
+                    break;
             }
         }
 
-        return field.adjustInto(this, newValue);
+        return (InternationalFixedDate) super.with(field, newValue);
     }
 
     /**
@@ -715,9 +733,10 @@ public final class InternationalFixedDate
 
                 switch (f) {
                     case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                     case DAY_OF_WEEK:
                         return special ? InternationalFixedChronology.EMPTY_RANGE : ValueRange.of(1, InternationalFixedChronology.DAYS_IN_WEEK);
+                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                        return InternationalFixedChronology.ALIGNED_DAY_OF_WEEK_RANGE;
                     case ALIGNED_WEEK_OF_MONTH:
                         return special ? InternationalFixedChronology.EMPTY_RANGE : ValueRange.of(1, InternationalFixedChronology.WEEKS_IN_MONTH);
                     case ALIGNED_WEEK_OF_YEAR:
@@ -807,7 +826,7 @@ public final class InternationalFixedDate
      * In particular, each months starts with Sunday.
      * Leap-day and year-day are not considered week-days, thus return 0.
      *
-     * @return the day of the week enumeration: between 1 (Monday) and 7 (Sunday), or 0 (leap-day, year-day)
+     * @return the day of the week enumeration: between 1 and 7, or 0 (leap-day, year-day)
      */
     @Override
     public int getDayOfWeek() {

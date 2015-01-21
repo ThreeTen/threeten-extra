@@ -102,6 +102,10 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      */
     static final int DAYS_IN_MONTH = WEEKS_IN_MONTH * DAYS_IN_WEEK;
     /**
+     * Range of aligned day-of-week.
+     */
+    static final ValueRange ALIGNED_DAY_OF_WEEK_RANGE = ValueRange.of(0, DAYS_IN_WEEK);
+    /**
      * Range of day-of-week.
      */
     static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, 0, DAYS_IN_WEEK);
@@ -427,6 +431,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     public ValueRange range(final ChronoField field) {
         switch (field) {
             case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                return ALIGNED_DAY_OF_WEEK_RANGE;
             case ALIGNED_DAY_OF_WEEK_IN_MONTH:
             case DAY_OF_WEEK:
                 return DAY_OF_WEEK_RANGE;
