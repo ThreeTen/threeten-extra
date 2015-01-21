@@ -49,6 +49,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
@@ -618,10 +619,6 @@ public final class InternationalFixedDate
                 if (newValue == -1) {
                     return createLeapDay(getProlepticYear());
                 }
-            } else {
-                if (newValue == 0) {
-                    return this;
-                }
             }
 
             int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / 7) * 7;
@@ -657,6 +654,13 @@ public final class InternationalFixedDate
     /**
      * {@inheritDoc}
      */
+    public InternationalFixedDate plus(final TemporalAmount amount) {
+        return (InternationalFixedDate) amount.addTo(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public InternationalFixedDate plus(final long amountToAdd, final TemporalUnit unit) {
         if (amountToAdd == 0) {
@@ -670,7 +674,7 @@ public final class InternationalFixedDate
                 case WEEKS:
                     return plusWeeks(amountToAdd);
                 case MONTHS:
-                    return plusWeeks(amountToAdd * InternationalFixedChronology.WEEKS_IN_MONTH);
+                    return plusMonths(amountToAdd);
                 default:
                     break;
             }
@@ -681,6 +685,10 @@ public final class InternationalFixedDate
 
 
     private InternationalFixedDate plusWeeks(final long weeks) {
+        if (weeks == 0) {
+            return this;
+        }
+
         if (weeks % InternationalFixedChronology.WEEKS_IN_MONTH == 0) {
             return plusMonths(weeks / InternationalFixedChronology.WEEKS_IN_MONTH);
         }
@@ -860,6 +868,22 @@ public final class InternationalFixedDate
         return ((long) prolepticYear) * InternationalFixedChronology.WEEKS_IN_YEAR +
                 getCalculatedMonth() * InternationalFixedChronology.WEEKS_IN_MONTH +
                 ((getCalculatedDayOfMonth() - 1) / InternationalFixedChronology.DAYS_IN_WEEK) - 1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InternationalFixedDate minus(final TemporalAmount amount) {
+        return (InternationalFixedDate) amount.subtractFrom(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InternationalFixedDate minus(final long amountToSubtract, final TemporalUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
