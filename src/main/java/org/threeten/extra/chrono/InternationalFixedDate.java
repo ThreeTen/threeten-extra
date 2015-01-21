@@ -347,9 +347,9 @@ public final class InternationalFixedDate
      *   {@link #until(AbstractDate, TemporalUnit)} or
      *   {@link #with(TemporalField, long)}.
      *
-     * @param prolepticYear
-     * @param month
-     * @param day
+     * @param prolepticYear the International fixed proleptic-year
+     * @param month         the International fixed month, from -1 to 13 (-1 for leap-day, 0 for year-day)
+     * @param day           the International fixed day-of-month, from -1 to 28 (-1 for leap-day, 0 for year-day)
      * @return
      */
     private static InternationalFixedDate resolvePreviousValid(final int prolepticYear, final int month, final int day) {
@@ -509,6 +509,9 @@ public final class InternationalFixedDate
         return isLeapYear() && month > 6 ? d - 1 : d;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     InternationalFixedDate withDayOfYear(final int value) {
         return ofYearDay(getProlepticYear(), value);
@@ -654,6 +657,7 @@ public final class InternationalFixedDate
     /**
      * {@inheritDoc}
      */
+    @Override
     public InternationalFixedDate plus(final TemporalAmount amount) {
         return (InternationalFixedDate) amount.addTo(this);
     }
@@ -682,7 +686,6 @@ public final class InternationalFixedDate
 
         return (InternationalFixedDate) super.plus(amountToAdd, unit);
     }
-
 
     private InternationalFixedDate plusWeeks(final long weeks) {
         if (weeks == 0) {
@@ -857,7 +860,6 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     long getProlepticMonth() {
@@ -967,6 +969,9 @@ public final class InternationalFixedDate
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long toEpochDay() {
         long epochDay =
