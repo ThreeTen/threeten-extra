@@ -121,9 +121,9 @@ public final class InternationalFixedDate
     private final int day;
 
     /**
-     * For calculation purposes, internally leap day is treated as day-of-year 169,
+     * For calculation purposes, internally Leap Day is treated as day-of-year 169,
      * squeezed between end of month 6 and beginning of month 7.
-     * Similarly, year day is treated as day-of-year 365 - or 366 in a leap year.
+     * Similarly, Year Day is treated as day-of-year 365 - or 366 in a leap year.
      */
 
     //-----------------------------------------------------------------------
@@ -296,7 +296,7 @@ public final class InternationalFixedDate
         InternationalFixedChronology.DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, ChronoField.DAY_OF_YEAR);
 
         if (dayOfYear == InternationalFixedChronology.DAYS_IN_YEAR + 1 && !InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
-            throw new DateTimeException("Invalid year/year day: " + prolepticYear + '/' + dayOfYear);
+            throw new DateTimeException("Invalid Year Day: " + prolepticYear + '/' + dayOfYear);
         }
 
         return new InternationalFixedDate(prolepticYear, dayOfYear);
@@ -406,7 +406,7 @@ public final class InternationalFixedDate
         InternationalFixedChronology.YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
 
         if (!InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
-            throw new DateTimeException("Invalid leap day for year: " + prolepticYear);
+            throw new DateTimeException("Invalid Leap Day for year: " + prolepticYear);
         }
 
         return create(prolepticYear, -1, -1);
@@ -462,8 +462,8 @@ public final class InternationalFixedDate
     }
 
     /**
-     * For calculation purposes, consider leap day to be associated with month Sol.
-     * In the same spirit, associate year day with the last month of the year.
+     * For calculation purposes, consider Leap Day to be associated with month Sol.
+     * In the same spirit, associate Year Day with the last month of the year.
      * @return
      */
     private int getCalculatedMonth() {
