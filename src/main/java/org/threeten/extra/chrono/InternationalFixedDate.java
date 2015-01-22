@@ -481,17 +481,11 @@ public final class InternationalFixedDate
      */
     @Override
     int getDayOfMonth() {
-        if (day < 1) {
             return day;
-        }
-
-        int doy = getDayOfYearAdjusted() - 1;
-
-        return 1 + (doy % InternationalFixedChronology.DAYS_IN_MONTH);
     }
 
     private int getCalculatedDayOfMonth() {
-        return isYearDay() ? InternationalFixedChronology.DAYS_IN_MONTH + 1 : isLeapDay() ? 1 : getDayOfMonth();
+        return isYearDay() ? InternationalFixedChronology.DAYS_IN_MONTH + 1 : isLeapDay() ? 0 : getDayOfMonth();
     }
 
     /**
@@ -667,10 +661,6 @@ public final class InternationalFixedDate
      */
     @Override
     public InternationalFixedDate plus(final long amountToAdd, final TemporalUnit unit) {
-        if (amountToAdd == 0) {
-            return this;
-        }
-
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
 
@@ -687,6 +677,7 @@ public final class InternationalFixedDate
         return (InternationalFixedDate) super.plus(amountToAdd, unit);
     }
 
+
     private InternationalFixedDate plusWeeks(final long weeks) {
         if (weeks == 0) {
             return this;
@@ -696,12 +687,12 @@ public final class InternationalFixedDate
             return plusMonths(weeks / InternationalFixedChronology.WEEKS_IN_MONTH);
         }
 
-        int dayOfWeek = getDayOfWeek();
+        int dayOfWeek = getCalculatedDayOfWeek();
         long epoch = toEpochDay() + InternationalFixedChronology.DAYS_IN_WEEK * weeks;
         InternationalFixedDate newDate = InternationalFixedDate.ofEpochDay(epoch);
-        int newDayOfWeek = newDate.getDayOfWeek();
+        int newDayOfWeek = newDate.getCalculatedDayOfWeek();
 
-        if ((dayOfWeek == newDayOfWeek) || (dayOfWeek == 0)) {
+        if (dayOfWeek == newDayOfWeek) {
             return newDate;
         }
 
@@ -723,12 +714,12 @@ public final class InternationalFixedDate
             return (InternationalFixedDate) plusYears(months / InternationalFixedChronology.MONTHS_IN_YEAR);
         }
 
-        int day = isYearDay() ? InternationalFixedChronology.DAYS_IN_MONTH : getCalculatedDayOfMonth();
+        int newDay = isLeapDay() ? 1 : getCalculatedDayOfMonth();
         int newMonth = (int) Math.addExact(getProlepticMonth(), months);
-        int year = newMonth / InternationalFixedChronology.MONTHS_IN_YEAR;
+        int newYear = newMonth / InternationalFixedChronology.MONTHS_IN_YEAR;
         newMonth = 1 + (newMonth % InternationalFixedChronology.MONTHS_IN_YEAR);
 
-        return create(year, newMonth, day);
+        return resolvePreviousValid(newYear, newMonth, newDay);
     }
 
     /**
@@ -832,12 +823,9 @@ public final class InternationalFixedDate
     /**
      * Returns the day of the week represented by this date.
      * <p/>
-     * This returns the ordinal of the enum {@link DayOfWeek}.
-     * Day-of-week do not match those of the ISO calendar system.
-     * In particular, each months starts with Sunday.
      * Leap-day and year-day are not considered week-days, thus return 0.
      *
-     * @return the day of the week enumeration: between 1 and 7, or 0 (leap-day, year-day)
+     * @return the day of the week: between 1 and 7, or 0 (leap-day, year-day)
      */
     @Override
     public int getDayOfWeek() {
@@ -845,17 +833,11 @@ public final class InternationalFixedDate
             return 0;
         }
 
-        int doy = getDayOfYearAdjusted();
-
-        return 1 + ((5 + doy) % 7);
+        return 1 + ((day - 1) % InternationalFixedChronology.DAYS_IN_WEEK);
     }
 
     private int getCalculatedDayOfWeek() {
-        if (month < 1) {
-            return 0;
-        }
-
-        return 1 + ((day - 1) % InternationalFixedChronology.DAYS_IN_WEEK);
+        return (day == 0) ? 7 : day == -1 ? 1 : 1 + (day - 1) % InternationalFixedChronology.DAYS_IN_WEEK;
     }
 
     /**
@@ -889,6 +871,9 @@ public final class InternationalFixedDate
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     @Override  // for covariant return type
     @SuppressWarnings ("unchecked")
     public ChronoLocalDateTime<InternationalFixedDate> atTime(final LocalTime localTime) {
@@ -909,6 +894,8 @@ public final class InternationalFixedDate
             switch ((ChronoUnit) unit) {
                 case WEEKS:
                     return weeksUntil(end);
+                case MONTHS:
+                    return monthsUntil(end);
                 default:
                     break;
             }
@@ -948,10 +935,11 @@ public final class InternationalFixedDate
     }
 
     private long weeksUntil(final InternationalFixedDate fixed) {
-        long start = this.getProlepticWeek() * 8L + this.getCalculatedDayOfWeek() - (this.month < 1 ? 1 : 0);
-        long end = fixed.getProlepticWeek() * 8L + fixed.getCalculatedDayOfWeek() - (fixed.month < 1 ? 1 : 0);
+        int offset = (day < 1 || fixed.day < 1) && isLeapYear() && fixed.isLeapYear() ? (this.isBefore(fixed) ? 1 : -1) : 0;
+        long start = this.getProlepticWeek() * 8L + this.getDayOfWeek();
+        long end = fixed.getProlepticWeek() * 8L + fixed.getDayOfWeek();
 
-        return (end - start) / 8L;
+        return (end - start - offset) / 8L;
     }
 
     /**
