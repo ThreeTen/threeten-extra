@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import java.time.Clock;
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -73,7 +72,7 @@ import java.util.Locale;
  * This date operates using the {@linkplain InternationalFixedChronology International fixed calendar}.
  * This calendar system is a proposed reform calendar system, and is not in common use.
  * The International fixed differs from the Gregorian in terms of month count and length, and the leap year rule.
- * Dates are aligned such that {@code 0001-01-01 (International fixed)} is {@code 0001-01-01 (ISO)}.</p>
+ * Dates are aligned such that {@code 0001/01/01 (International fixed)} is {@code 0001-01-01 (ISO)}.</p>
  * <p>
  * More information is available in the <a href='https://en.wikipedia.org/wiki/International_Fixed_Calendar'>International Fixed Calendar</a> Wikipedia article.</p>
  * <p>
@@ -132,8 +131,8 @@ public final class InternationalFixedDate
      * Creates an instance from validated data.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month, from -1 to 13 (-1 for leap-day, 0 for year-day)
-     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for leap-day, 0 for year-day)
+     * @param month         the International fixed month, from -1 to 13 (-1 for Leap Day, 0 for Year Day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for Leap Day, 0 for Year Day)
      * @return the International fixed date
      */
     private InternationalFixedDate(final int prolepticYear, final int month, final int dayOfMonth) {
@@ -215,8 +214,8 @@ public final class InternationalFixedDate
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month-of-year, from -1 to 13 (-1 for leap-day, 0 for year-day)
-     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for leap-day, 0 for year-day)
+     * @param month         the International fixed month-of-year, from -1 to 13 (-1 for Leap Day, 0 for Year Day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for Leap Day, 0 for Year Day)
      * @return the date in International fixed calendar system, not null
      * @throws DateTimeException if the value of any field is out of range, or if the day-of-month is invalid for the month-year
      */
@@ -226,7 +225,7 @@ public final class InternationalFixedDate
 
     /**
      * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the month-less days of leap-day, which follows the last day in June and precedes Sol 1.
+     * system from the proleptic-year, for the month-less days of Leap Day, which follows the last day in June and precedes Sol 1.
      * <p/>
      * This returns a {@code InternationalFixedDate} with the specified fields.
      *
@@ -241,7 +240,7 @@ public final class InternationalFixedDate
 
     /**
      * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the month-less days of year-day, which follows the last day in December.
+     * system from the proleptic-year, for the month-less days of Year Day, which follows the last day in December.
      * <p/>
      * This returns a {@code InternationalFixedDate} with the specified fields.
      *
@@ -319,19 +318,19 @@ public final class InternationalFixedDate
             throw new DateTimeException("Invalid epoch: " + epochDay);
         }
 
-        // The two values work great for any dates, just not the first (xxxx-01-01 IFC) or the last of the year (xxxx-year-day).
+        // The two values work great for any dates, just not the first (N/01/01) or the last of the year (N/0/0).
         long year = (400 * zeroDay) / InternationalFixedChronology.DAYS_PER_CYCLE;
         long doy = zeroDay - (InternationalFixedChronology.DAYS_IN_YEAR * year + InternationalFixedChronology.getLeapYearsBefore(year));
 
         boolean isLeapYear = InternationalFixedChronology.INSTANCE.isLeapYear(year);
 
-        // In some cases, N-01-01 (January 1st) results in (N-1)-year-day, i.e. -1 day off.
+        // In some cases, N/01/01 (January 1st) results in (N-1)/0/0, i.e. -1 day off.
         if (doy == (InternationalFixedChronology.DAYS_IN_YEAR + 1) && !isLeapYear) {
             year += 1;
             doy = 1;
         }
 
-        // In some cases, N-year-day results in (N+1)-00-00 (rubbish), in a way +1 day off.
+        // In some cases, N/0/0 results in (N+1)/0/0 (rubbish), in a way +1 year off.
         if (doy == 0) {
             year -= 1;
             doy = InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear ? 1 : 0);
@@ -348,8 +347,8 @@ public final class InternationalFixedDate
      *   {@link #with(TemporalField, long)}.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month, from -1 to 13 (-1 for leap-day, 0 for year-day)
-     * @param day           the International fixed day-of-month, from -1 to 28 (-1 for leap-day, 0 for year-day)
+     * @param month         the International fixed month, from -1 to 13 (-1 for Leap Day, 0 for Year Day)
+     * @param day           the International fixed day-of-month, from -1 to 28 (-1 for Leap Day, 0 for Year Day)
      * @return
      */
     private static InternationalFixedDate resolvePreviousValid(final int prolepticYear, final int month, final int day) {
@@ -374,11 +373,11 @@ public final class InternationalFixedDate
     //-----------------------------------------------------------------------
     /**
      * Factory method, validates the given triplet year, month and dayOfMonth.
-     * Special values are required for Year Day (NNNN/0/0) and Leap Day (NNNN/-1/-1).
+     * Special values are required for Year Day (N/0/0) and Leap Day (N/-1/-1).
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month, from -1 to 13 (-1 for leap-day, 0 for year-day)
-     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for leap-day, 0 for year-day)
+     * @param month         the International fixed month, from -1 to 13 (-1 for Leap Day, 0 for Year Day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for Leap Day, 0 for Year Day)
      * @return the International fixed date
      * @throws DateTimeException if the date is invalid
      */
@@ -397,7 +396,7 @@ public final class InternationalFixedDate
 
     /**
      * Factory method, validates the given year, accepts only valid leap-years.
-     * Leap-day is a month-less day between end of June and beginning of Sol.
+     * Leap Day is a month-less day between end of June and beginning of Sol.
      *
      * @param prolepticYear the International fixed proleptic-year
      * @return the International fixed date
@@ -415,7 +414,7 @@ public final class InternationalFixedDate
 
     /**
      * Factory method, accepts any year, will be validated further down.
-     * Year-day is a month-less day following the last day of December.
+     * Year Day is a month-less day following the last day of December.
      *
      * @param prolepticYear the International fixed proleptic-year
      * @return the International fixed date
@@ -481,7 +480,7 @@ public final class InternationalFixedDate
      */
     @Override
     int getDayOfMonth() {
-            return day;
+        return day;
     }
 
     private int getCalculatedDayOfMonth() {
@@ -568,7 +567,7 @@ public final class InternationalFixedDate
      * This returns the length of the month in days.
      * Month lengths do not match those of the ISO calendar system.
      *
-     * Since leap-day / year-day are not part of any month, their 'imaginary' month is of length 1.
+     * Since Leap Day / Year Day are not part of any month, their 'imaginary' month is of length 1.
      *
      * @return the length of the month in days: 28
      */
@@ -823,9 +822,9 @@ public final class InternationalFixedDate
     /**
      * Returns the day of the week represented by this date.
      * <p/>
-     * Leap-day and year-day are not considered week-days, thus return 0.
+     * Leap Day and Year Day are not considered week-days, thus return 0.
      *
-     * @return the day of the week: between 1 and 7, or 0 (leap-day, year-day)
+     * @return the day of the week: between 1 and 7, or 0 (Leap Day, Year Day)
      */
     @Override
     public int getDayOfWeek() {
@@ -971,33 +970,23 @@ public final class InternationalFixedDate
 
     /**
      * Display the date in human-readable format.
-     * Note: leap-day and year-day are not part of any month, thus they appear as "2008-leap-day" / "2004-year-day".
-     *
-     * TODO: the string "leap-day" and "year-day" depends on a {@link Locale}, should be loaded from a resource bundle.
-     * TODO: Some languages may prefer the wording "leap-day of 2008" rather than "2008-leap-day".
+     * Note: Leap Day and Year Day are not part of any month; Leap Day is displayed as "N/-1/-1", Year Day as "N/0/0".
      *
      * @return The number of years from this date to the given day.
      */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(30);
-        buf.append(getChronology().toString())
+
+        return buf.append(getChronology().toString())
                 .append(' ')
                 .append(getEra())
                 .append(' ')
-                .append(getYearOfEra());
-
-        if (isLeapDay()) {
-            buf.append(" Leap Day");
-        } else if (isYearDay()) {
-            buf.append(" Year Day");
-        } else {
-            buf.append(getMonth() < 10 ? "-0" : '-')
-                    .append(getMonth())
-                    .append(getDayOfMonth() < 10 ? "-0" : '-')
-                    .append(getDayOfMonth());
-        }
-
-        return buf.toString();
+                .append(getYearOfEra())
+                .append(month < 10 && month > 0 ? "/0" : '/')
+                .append(month)
+                .append(day < 10 && day > 0 ? "/0" : '/')
+                .append(day)
+                .toString();
     }
 }

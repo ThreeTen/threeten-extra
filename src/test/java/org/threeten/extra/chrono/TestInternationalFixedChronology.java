@@ -1162,15 +1162,15 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {InternationalFixedDate.of(1, 1, 1), "Ifc CE 1-01-01"},
-            {InternationalFixedDate.of(2012, 6, 23), "Ifc CE 2012-06-23"},
+            {InternationalFixedDate.of(1, 1, 1), "Ifc CE 1/01/01"},
+            {InternationalFixedDate.of(2012, 6, 23), "Ifc CE 2012/06/23"},
 
-            {InternationalFixedDate.yearDay(1), "Ifc CE 1 Year Day"},
-            {InternationalFixedDate.of(1, 0, 0), "Ifc CE 1 Year Day"},
-            {InternationalFixedDate.leapDay(2012), "Ifc CE 2012 Leap Day"},
-            {InternationalFixedDate.of(2012, -1, -1), "Ifc CE 2012 Leap Day"},
-            {InternationalFixedDate.yearDay(2012), "Ifc CE 2012 Year Day"},
-            {InternationalFixedDate.of(2012, 0, 0), "Ifc CE 2012 Year Day"},
+            {InternationalFixedDate.yearDay(1), "Ifc CE 1/0/0"},
+            {InternationalFixedDate.of(1, 0, 0), "Ifc CE 1/0/0"},
+            {InternationalFixedDate.leapDay(2012), "Ifc CE 2012/-1/-1"},
+            {InternationalFixedDate.of(2012, -1, -1), "Ifc CE 2012/-1/-1"},
+            {InternationalFixedDate.yearDay(2012), "Ifc CE 2012/0/0"},
+            {InternationalFixedDate.of(2012, 0, 0), "Ifc CE 2012/0/0"},
         };
     }
 
