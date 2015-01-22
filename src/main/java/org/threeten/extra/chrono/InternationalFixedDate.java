@@ -55,8 +55,6 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 
-import java.util.Locale;
-
 /**
  * A date in the International fixed calendar system.
  * <p>
@@ -88,7 +86,7 @@ public final class InternationalFixedDate
     /**
      * Serialization version UID.
      */
-    private static final long serialVersionUID = 1401538136526706196L;
+    private static final long serialVersionUID = -5501342824322148215L;
     /**
      * Number of years in a decade.
      */
