@@ -400,7 +400,7 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE, 1582), 1582);
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_prolepticYear_badEra() {
         InternationalFixedChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
     }
@@ -433,11 +433,11 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(0, 1, 0, 4));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(0, 52));
         assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(0, 1, 0, 7));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(0, 1, 0, 28));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(-1, 0, -1, 28));
         assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ERA), ValueRange.of(1, 1));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(EPOCH_DAY), ValueRange.of(-719_528, 1_000_000 * 365L + 242_499));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(-1, 0, 0, 13));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(EPOCH_DAY), ValueRange.of(-719_528, 1_000_000 * 365L + 242_499 - 719_528));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(-1, 0, -1, 13));
         assertEquals(InternationalFixedChronology.INSTANCE.range(PROLEPTIC_MONTH), ValueRange.of(13, 1_000_000 * 13L - 1));
         assertEquals(InternationalFixedChronology.INSTANCE.range(YEAR), ValueRange.of(1, 1_000_000));
         assertEquals(InternationalFixedChronology.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(1, 1_000_000));
@@ -1028,8 +1028,8 @@ public class TestInternationalFixedChronology {
             {2012, -1, -1, 2012, 6, 22, WEEKS, 0},
             {2012, -1, -1, 2012, 7, 7, WEEKS, 0},
             {2012, -1, -1, 2012, 7, 8, WEEKS, 1},
-            {2012, 7, 21, 2012, -1, -1, WEEKS, 1},
-            {2012, 7, 22, 2012, -1, -1, WEEKS, 0},
+            {2012, 6, 21, 2012, -1, -1, WEEKS, 1},
+            {2012, 6, 22, 2012, -1, -1, WEEKS, 0},
             {2012, 7, 7, 2012, -1, -1, WEEKS, 0},
             {2012, 7, 8, 2012, -1, -1, WEEKS, -1},
             {2012, -1, -1, 2012, -1, -1, MONTHS, 0},
@@ -1136,8 +1136,8 @@ public class TestInternationalFixedChronology {
                         InternationalFixedDate.of(2000, 1, 4), InternationalFixedDate.of(2000, 2, 3), InternationalFixedDate.of(2001, 1, 3)},
                 {InternationalFixedDate.of(2000, 0, 0), InternationalFixedDate.yearDay(2000),
                         InternationalFixedDate.of(2000, 13, 28), InternationalFixedDate.of(2001, 1, 1), InternationalFixedDate.of(2001, 0, 0)},
-                {InternationalFixedDate.of(2000, -1, 0), InternationalFixedDate.leapDay(2000),
-                        InternationalFixedDate.of(2000, 6, 28), InternationalFixedDate.of(2000, 7, 1), InternationalFixedDate.of(2004, -1, 0)},
+                {InternationalFixedDate.of(2000, -1, -1), InternationalFixedDate.leapDay(2000),
+                        InternationalFixedDate.of(2000, 6, 28), InternationalFixedDate.of(2000, 7, 1), InternationalFixedDate.of(2004, -1, -1)},
         };
     }
 
