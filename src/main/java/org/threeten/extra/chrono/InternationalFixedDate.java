@@ -409,7 +409,7 @@ public final class InternationalFixedDate
             throw new DateTimeException("Invalid leap day for year: " + prolepticYear);
         }
 
-        return ofYearDay(prolepticYear, LEAP_DAY_AS_DAY_OF_YEAR);
+        return create(prolepticYear, -1, -1);
     }
 
     /**
@@ -423,7 +423,7 @@ public final class InternationalFixedDate
     static InternationalFixedDate createYearDay(final int prolepticYear) {
         InternationalFixedChronology.YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
 
-        return ofYearDay(prolepticYear, InternationalFixedChronology.DAYS_IN_YEAR + (InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear) ? 1 : 0));
+        return create(prolepticYear, 0, 0);
     }
 
     /**
@@ -433,11 +433,7 @@ public final class InternationalFixedDate
      * @return the resolved date, not null
      */
     private Object readResolve() {
-        if (isYearDay() || isLeapDay()) {
-            return new InternationalFixedDate(prolepticYear, getDayOfYear());
-        }
-
-        return InternationalFixedDate.of(prolepticYear, getMonth(), getDayOfMonth());
+        return InternationalFixedDate.of(prolepticYear, month, day);
     }
 
     //-----------------------------------------------------------------------
@@ -726,7 +722,7 @@ public final class InternationalFixedDate
      */
     @Override
     public ValueRange range(final TemporalField field) {
-        boolean special = isYearDay() || isLeapDay();
+        boolean special = day < 1;
 
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
@@ -769,11 +765,10 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public int getAlignedDayOfWeekInMonth() {
-        if (isYearDay() || isLeapDay()) {
+        if (day < 1) {
             return 0;
         }
 
@@ -782,11 +777,10 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     int getAlignedDayOfWeekInYear() {
-        if (isYearDay() || isLeapDay()) {
+        if (day < 1) {
             return 0;
         }
 
@@ -795,11 +789,10 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     int getAlignedWeekOfMonth() {
-        if (isYearDay() || isLeapDay()) {
+        if (day < 1) {
             return 0;
         }
 
@@ -808,11 +801,10 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     int getAlignedWeekOfYear() {
-        if (isYearDay() || isLeapDay()) {
+        if (day < 1) {
             return 0;
         }
 
@@ -828,7 +820,7 @@ public final class InternationalFixedDate
      */
     @Override
     public int getDayOfWeek() {
-        if (month < 1) {
+        if (day < 1) {
             return 0;
         }
 
@@ -881,7 +873,6 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return number of TemporalUnit until given Temporal
      */
     @Override
     public long until(final Temporal endExclusive, final TemporalUnit unit) {
@@ -918,8 +909,6 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @param endDateExclusive
-     * @return period up to that date
      */
     @Override
     public ChronoPeriod until(final ChronoLocalDate endDateExclusive) {
@@ -943,8 +932,6 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @param end
-     * @return period up to that date
      */
     @Override
     long monthsUntil(final AbstractDate end) {
