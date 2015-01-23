@@ -84,7 +84,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Serialization version UID.
      */
-    private static final long serialVersionUID = -2670617783459258438L;
+    private static final long serialVersionUID = -8252657100538813526L;
     /**
      * Standard 7-day week.
      */
@@ -101,6 +101,10 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * There are 4 weeks of 7 days, or 28 total days in a month.
      */
     static final int DAYS_IN_MONTH = WEEKS_IN_MONTH * DAYS_IN_WEEK;
+    /**
+     * Range of aligned day-of-week.
+     */
+    static final ValueRange ALIGNED_DAY_OF_WEEK_RANGE = ValueRange.of(0, DAYS_IN_WEEK);
     /**
      * Range of day-of-week.
      */
@@ -427,6 +431,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     public ValueRange range(final ChronoField field) {
         switch (field) {
             case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                return ALIGNED_DAY_OF_WEEK_RANGE;
             case ALIGNED_DAY_OF_WEEK_IN_MONTH:
             case DAY_OF_WEEK:
                 return DAY_OF_WEEK_RANGE;

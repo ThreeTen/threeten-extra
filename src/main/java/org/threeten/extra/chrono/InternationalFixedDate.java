@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import java.time.Clock;
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -48,13 +47,13 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
-
-import java.util.Locale;
 
 /**
  * A date in the International fixed calendar system.
@@ -71,7 +70,7 @@ import java.util.Locale;
  * This date operates using the {@linkplain InternationalFixedChronology International fixed calendar}.
  * This calendar system is a proposed reform calendar system, and is not in common use.
  * The International fixed differs from the Gregorian in terms of month count and length, and the leap year rule.
- * Dates are aligned such that {@code 0001-01-01 (International fixed)} is {@code 0001-01-01 (ISO)}.</p>
+ * Dates are aligned such that {@code 0001/01/01 (International fixed)} is {@code 0001-01-01 (ISO)}.</p>
  * <p>
  * More information is available in the <a href='https://en.wikipedia.org/wiki/International_Fixed_Calendar'>International Fixed Calendar</a> Wikipedia article.</p>
  * <p>
@@ -87,7 +86,7 @@ public final class InternationalFixedDate
     /**
      * Serialization version UID.
      */
-    private static final long serialVersionUID = 1846403497617429687L;
+    private static final long serialVersionUID = -5501342824322148215L;
     /**
      * Number of years in a decade.
      */
@@ -120,14 +119,9 @@ public final class InternationalFixedDate
     private final int day;
 
     /**
-     * Dates for both leap day and year day may only be instantiated through
-     *   {@link InternationalFixedDate#leapDay(int)} and
-     *   {@link InternationalFixedDate#yearDay(int)} resp.
-     * It is therefore not possible to instantiated leap day as 2004-07-01 or year day as 2005-13-29.
-     *
-     * For calculation purposes, internally leap day is treated as day-of-year 169,
+     * For calculation purposes, internally Leap Day is treated as day-of-year 169,
      * squeezed between end of month 6 and beginning of month 7.
-     * Similarly, year day is treated as day-of-year 365 - or 366 in a leap year.
+     * Similarly, Year Day is treated as day-of-year 365 - or 366 in a leap year.
      */
 
     //-----------------------------------------------------------------------
@@ -135,8 +129,8 @@ public final class InternationalFixedDate
      * Creates an instance from validated data.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month, from 1 to 13
-     * @param dayOfMonth    the International fixed day-of-month, from 1 to 28
+     * @param month         the International fixed month, from -1 to 13 (-1 for Leap Day, 0 for Year Day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for Leap Day, 0 for Year Day)
      * @return the International fixed date
      */
     private InternationalFixedDate(final int prolepticYear, final int month, final int dayOfMonth) {
@@ -218,8 +212,8 @@ public final class InternationalFixedDate
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month-of-year, from 1 to 13
-     * @param dayOfMonth    the International fixed day-of-month, from 1 to 28
+     * @param month         the International fixed month-of-year, from -1 to 13 (-1 for Leap Day, 0 for Year Day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for Leap Day, 0 for Year Day)
      * @return the date in International fixed calendar system, not null
      * @throws DateTimeException if the value of any field is out of range, or if the day-of-month is invalid for the month-year
      */
@@ -229,7 +223,7 @@ public final class InternationalFixedDate
 
     /**
      * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the month-less days of leap-day, which follows the last day in June and precedes Sol 1.
+     * system from the proleptic-year, for the month-less days of Leap Day, which follows the last day in June and precedes Sol 1.
      * <p/>
      * This returns a {@code InternationalFixedDate} with the specified fields.
      *
@@ -244,7 +238,7 @@ public final class InternationalFixedDate
 
     /**
      * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the month-less days of year-day, which follows the last day in December.
+     * system from the proleptic-year, for the month-less days of Year Day, which follows the last day in December.
      * <p/>
      * This returns a {@code InternationalFixedDate} with the specified fields.
      *
@@ -300,7 +294,7 @@ public final class InternationalFixedDate
         InternationalFixedChronology.DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, ChronoField.DAY_OF_YEAR);
 
         if (dayOfYear == InternationalFixedChronology.DAYS_IN_YEAR + 1 && !InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
-            throw new DateTimeException("Invalid year/year day: " + prolepticYear + '/' + dayOfYear);
+            throw new DateTimeException("Invalid Year Day: " + prolepticYear + '/' + dayOfYear);
         }
 
         return new InternationalFixedDate(prolepticYear, dayOfYear);
@@ -322,19 +316,19 @@ public final class InternationalFixedDate
             throw new DateTimeException("Invalid epoch: " + epochDay);
         }
 
-        // The two values work great for any dates, just not the first (xxxx-01-01 IFC) or the last of the year (xxxx-year-day).
+        // The two values work great for any dates, just not the first (N/01/01) or the last of the year (N/0/0).
         long year = (400 * zeroDay) / InternationalFixedChronology.DAYS_PER_CYCLE;
         long doy = zeroDay - (InternationalFixedChronology.DAYS_IN_YEAR * year + InternationalFixedChronology.getLeapYearsBefore(year));
 
         boolean isLeapYear = InternationalFixedChronology.INSTANCE.isLeapYear(year);
 
-        // In some cases, N-01-01 (January 1st) results in (N-1)-year-day, i.e. -1 day off.
+        // In some cases, N/01/01 (January 1st) results in (N-1)/0/0, i.e. -1 day off.
         if (doy == (InternationalFixedChronology.DAYS_IN_YEAR + 1) && !isLeapYear) {
             year += 1;
             doy = 1;
         }
 
-        // In some cases, N-year-day results in (N+1)-00-00 (rubbish), in a way +1 day off.
+        // In some cases, N/0/0 results in (N+1)/0/0 (rubbish), in a way +1 year off.
         if (doy == 0) {
             year -= 1;
             doy = InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear ? 1 : 0);
@@ -350,9 +344,9 @@ public final class InternationalFixedDate
      *   {@link #until(AbstractDate, TemporalUnit)} or
      *   {@link #with(TemporalField, long)}.
      *
-     * @param prolepticYear
-     * @param month
-     * @param day
+     * @param prolepticYear the International fixed proleptic-year
+     * @param month         the International fixed month, from -1 to 13 (-1 for Leap Day, 0 for Year Day)
+     * @param day           the International fixed day-of-month, from -1 to 28 (-1 for Leap Day, 0 for Year Day)
      * @return
      */
     private static InternationalFixedDate resolvePreviousValid(final int prolepticYear, final int month, final int day) {
@@ -377,11 +371,11 @@ public final class InternationalFixedDate
     //-----------------------------------------------------------------------
     /**
      * Factory method, validates the given triplet year, month and dayOfMonth.
-     * Special values are required for Year Day (NNNN/0/0) and Leap Day (NNNN/-1/-1).
+     * Special values are required for Year Day (N/0/0) and Leap Day (N/-1/-1).
      *
      * @param prolepticYear the International fixed proleptic-year
-     * @param month         the International fixed month, from -1 to 13
-     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28
+     * @param month         the International fixed month, from -1 to 13 (-1 for Leap Day, 0 for Year Day)
+     * @param dayOfMonth    the International fixed day-of-month, from -1 to 28 (-1 for Leap Day, 0 for Year Day)
      * @return the International fixed date
      * @throws DateTimeException if the date is invalid
      */
@@ -400,7 +394,7 @@ public final class InternationalFixedDate
 
     /**
      * Factory method, validates the given year, accepts only valid leap-years.
-     * Leap-day is a month-less day between end of June and beginning of Sol.
+     * Leap Day is a month-less day between end of June and beginning of Sol.
      *
      * @param prolepticYear the International fixed proleptic-year
      * @return the International fixed date
@@ -410,15 +404,15 @@ public final class InternationalFixedDate
         InternationalFixedChronology.YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
 
         if (!InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
-            throw new DateTimeException("Invalid leap day for year: " + prolepticYear);
+            throw new DateTimeException("Invalid Leap Day for year: " + prolepticYear);
         }
 
-        return ofYearDay(prolepticYear, LEAP_DAY_AS_DAY_OF_YEAR);
+        return create(prolepticYear, -1, -1);
     }
 
     /**
      * Factory method, accepts any year, will be validated further down.
-     * Year-day is a month-less day following the last day of December.
+     * Year Day is a month-less day following the last day of December.
      *
      * @param prolepticYear the International fixed proleptic-year
      * @return the International fixed date
@@ -427,7 +421,7 @@ public final class InternationalFixedDate
     static InternationalFixedDate createYearDay(final int prolepticYear) {
         InternationalFixedChronology.YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
 
-        return ofYearDay(prolepticYear, InternationalFixedChronology.DAYS_IN_YEAR + (InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear) ? 1 : 0));
+        return create(prolepticYear, 0, 0);
     }
 
     /**
@@ -437,11 +431,7 @@ public final class InternationalFixedDate
      * @return the resolved date, not null
      */
     private Object readResolve() {
-        if (isYearDay() || isLeapDay()) {
-            return new InternationalFixedDate(prolepticYear, getDayOfYear());
-        }
-
-        return InternationalFixedDate.of(prolepticYear, getMonth(), getDayOfMonth());
+        return InternationalFixedDate.of(prolepticYear, month, day);
     }
 
     //-----------------------------------------------------------------------
@@ -470,8 +460,8 @@ public final class InternationalFixedDate
     }
 
     /**
-     * For calculation purposes, consider leap day to be associated with month Sol.
-     * In the same spirit, associate year day with the last month of the year.
+     * For calculation purposes, consider Leap Day to be associated with month Sol.
+     * In the same spirit, associate Year Day with the last month of the year.
      * @return
      */
     private int getCalculatedMonth() {
@@ -484,17 +474,11 @@ public final class InternationalFixedDate
      */
     @Override
     int getDayOfMonth() {
-        if (day < 1) {
-            return day;
-        }
-
-        int doy = getDayOfYearAdjusted() - 1;
-
-        return 1 + (doy % InternationalFixedChronology.DAYS_IN_MONTH);
+        return day;
     }
 
     private int getCalculatedDayOfMonth() {
-        return isYearDay() ? InternationalFixedChronology.DAYS_IN_MONTH + 1 : isLeapDay() ? 1 : getDayOfMonth();
+        return isYearDay() ? InternationalFixedChronology.DAYS_IN_MONTH + 1 : isLeapDay() ? 0 : getDayOfMonth();
     }
 
     /**
@@ -510,6 +494,14 @@ public final class InternationalFixedDate
         int d = getDayOfYear();
 
         return isLeapYear() && month > 6 ? d - 1 : d;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    InternationalFixedDate withDayOfYear(final int value) {
+        return ofYearDay(getProlepticYear(), value);
     }
 
     /**
@@ -569,7 +561,7 @@ public final class InternationalFixedDate
      * This returns the length of the month in days.
      * Month lengths do not match those of the ISO calendar system.
      *
-     * Since leap-day / year-day are not part of any month, their 'imaginary' month is of length 1.
+     * Since Leap Day / Year Day are not part of any month, their 'imaginary' month is of length 1.
      *
      * @return the length of the month in days: 28
      */
@@ -591,12 +583,77 @@ public final class InternationalFixedDate
         return InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear() ? 1 : 0);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public InternationalFixedDate plus(final long amountToAdd, final TemporalUnit unit) {
-        if (amountToAdd == 0) {
-            return this;
+    public InternationalFixedDate with(final TemporalAdjuster adjuster) {
+        return (InternationalFixedDate) adjuster.adjustInto(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InternationalFixedDate with(final TemporalField field, final long newValue) {
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
+            getChronology().range(f).checkValidValue(newValue, f);
+
+            if (f == ChronoField.DAY_OF_MONTH || f == ChronoField.MONTH_OF_YEAR) {
+                if (newValue == 0) {
+                    return createYearDay(getProlepticYear());
+                }
+
+                if (newValue == -1) {
+                    return createLeapDay(getProlepticYear());
+                }
+            }
+
+            int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / 7) * 7;
+            int d = getDayOfYearAdjusted() % 7;
+            int nval = (int) newValue;
+
+            switch (f) {
+                case DAY_OF_WEEK:
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                    if (newValue == 0) {
+                        return this;
+                    }
+                    return resolvePreviousValid(getProlepticYear(), getMonth(), dom + nval);
+                case ALIGNED_WEEK_OF_MONTH:
+                    if (newValue == 0) {
+                        return this;
+                    }
+                    return resolvePreviousValid(getProlepticYear(), getMonth(), (nval - 1) * 7 + d);
+                case ALIGNED_WEEK_OF_YEAR:
+                    if (newValue == 0) {
+                        return this;
+                    }
+                    return ofYearDay(getProlepticYear(), (nval - 1) * 7 + d);
+                default:
+                    break;
+            }
         }
 
+        return (InternationalFixedDate) super.with(field, newValue);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InternationalFixedDate plus(final TemporalAmount amount) {
+        return (InternationalFixedDate) amount.addTo(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InternationalFixedDate plus(final long amountToAdd, final TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
 
@@ -604,7 +661,7 @@ public final class InternationalFixedDate
                 case WEEKS:
                     return plusWeeks(amountToAdd);
                 case MONTHS:
-                    return plusWeeks(amountToAdd * InternationalFixedChronology.WEEKS_IN_MONTH);
+                    return plusMonths(amountToAdd);
                 default:
                     break;
             }
@@ -615,16 +672,20 @@ public final class InternationalFixedDate
 
 
     private InternationalFixedDate plusWeeks(final long weeks) {
+        if (weeks == 0) {
+            return this;
+        }
+
         if (weeks % InternationalFixedChronology.WEEKS_IN_MONTH == 0) {
             return plusMonths(weeks / InternationalFixedChronology.WEEKS_IN_MONTH);
         }
 
-        int dayOfWeek = getDayOfWeek();
+        int dayOfWeek = getCalculatedDayOfWeek();
         long epoch = toEpochDay() + InternationalFixedChronology.DAYS_IN_WEEK * weeks;
         InternationalFixedDate newDate = InternationalFixedDate.ofEpochDay(epoch);
-        int newDayOfWeek = newDate.getDayOfWeek();
+        int newDayOfWeek = newDate.getCalculatedDayOfWeek();
 
-        if ((dayOfWeek == newDayOfWeek) || (dayOfWeek == 0)) {
+        if (dayOfWeek == newDayOfWeek) {
             return newDate;
         }
 
@@ -646,12 +707,12 @@ public final class InternationalFixedDate
             return (InternationalFixedDate) plusYears(months / InternationalFixedChronology.MONTHS_IN_YEAR);
         }
 
-        int day = isYearDay() ? InternationalFixedChronology.DAYS_IN_MONTH : getCalculatedDayOfMonth();
+        int newDay = isLeapDay() ? 1 : getCalculatedDayOfMonth();
         int newMonth = (int) Math.addExact(getProlepticMonth(), months);
-        int year = newMonth / InternationalFixedChronology.MONTHS_IN_YEAR;
+        int newYear = newMonth / InternationalFixedChronology.MONTHS_IN_YEAR;
         newMonth = 1 + (newMonth % InternationalFixedChronology.MONTHS_IN_YEAR);
 
-        return create(year, newMonth, day);
+        return resolvePreviousValid(newYear, newMonth, newDay);
     }
 
     /**
@@ -659,7 +720,7 @@ public final class InternationalFixedDate
      */
     @Override
     public ValueRange range(final TemporalField field) {
-        boolean special = isYearDay() || isLeapDay();
+        boolean special = day < 1;
 
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
@@ -667,9 +728,10 @@ public final class InternationalFixedDate
 
                 switch (f) {
                     case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                     case DAY_OF_WEEK:
                         return special ? InternationalFixedChronology.EMPTY_RANGE : ValueRange.of(1, InternationalFixedChronology.DAYS_IN_WEEK);
+                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                        return InternationalFixedChronology.ALIGNED_DAY_OF_WEEK_RANGE;
                     case ALIGNED_WEEK_OF_MONTH:
                         return special ? InternationalFixedChronology.EMPTY_RANGE : ValueRange.of(1, InternationalFixedChronology.WEEKS_IN_MONTH);
                     case ALIGNED_WEEK_OF_YEAR:
@@ -677,7 +739,7 @@ public final class InternationalFixedDate
                     case DAY_OF_MONTH:
                         return isYearDay() ? InternationalFixedChronology.EMPTY_RANGE
                                            : isLeapDay() ? ValueRange.of(-1, -1)
-                                                         : ValueRange.of( 1, InternationalFixedChronology.DAYS_IN_MONTH);
+                                                         : ValueRange.of(1, InternationalFixedChronology.DAYS_IN_MONTH);
                     case DAY_OF_YEAR:
                         return isLeapYear() ? InternationalFixedChronology.DAY_OF_YEAR_LEAP_RANGE : InternationalFixedChronology.DAY_OF_YEAR_NORMAL_RANGE;
                     case EPOCH_DAY:
@@ -691,6 +753,8 @@ public final class InternationalFixedDate
                     default:
                         break;
                 }
+            } else {
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
             }
         }
 
@@ -699,11 +763,10 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public int getAlignedDayOfWeekInMonth() {
-        if (isYearDay() || isLeapDay()) {
+        if (day < 1) {
             return 0;
         }
 
@@ -712,11 +775,10 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     int getAlignedDayOfWeekInYear() {
-        if (isYearDay() || isLeapDay()) {
+        if (day < 1) {
             return 0;
         }
 
@@ -725,11 +787,10 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     int getAlignedWeekOfMonth() {
-        if (isYearDay() || isLeapDay()) {
+        if (day < 1) {
             return 0;
         }
 
@@ -738,11 +799,10 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     int getAlignedWeekOfYear() {
-        if (isYearDay() || isLeapDay()) {
+        if (day < 1) {
             return 0;
         }
 
@@ -752,34 +812,57 @@ public final class InternationalFixedDate
     /**
      * Returns the day of the week represented by this date.
      * <p/>
-     * This returns the ordinal of the enum {@link DayOfWeek}.
-     * Day-of-week do not match those of the ISO calendar system.
-     * In particular, each months starts with Sunday.
-     * Leap-day and year-day are not considered week-days, thus return 0.
+     * Leap Day and Year Day are not considered week-days, thus return 0.
      *
-     * @return the day of the week enumeration: between 1 (Monday) and 7 (Sunday), or 0 (leap-day, year-day)
+     * @return the day of the week: between 1 and 7, or 0 (Leap Day, Year Day)
      */
     @Override
     public int getDayOfWeek() {
-        if (isLeapDay() || isYearDay()) {
+        if (day < 1) {
             return 0;
         }
 
-        int doy = getDayOfYearAdjusted();
+        return 1 + ((day - 1) % InternationalFixedChronology.DAYS_IN_WEEK);
+    }
 
-        return 1 + ((5 + doy) % 7);
+    private int getCalculatedDayOfWeek() {
+        return (day == 0) ? 7 : day == -1 ? 1 : 1 + (day - 1) % InternationalFixedChronology.DAYS_IN_WEEK;
     }
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     long getProlepticMonth() {
         return getProlepticYear() * lengthOfYearInMonths() + getCalculatedMonth() - 1;
     }
 
+    long getProlepticWeek() {
+        return ((long) prolepticYear) * InternationalFixedChronology.WEEKS_IN_YEAR +
+                getCalculatedMonth() * InternationalFixedChronology.WEEKS_IN_MONTH +
+                ((getCalculatedDayOfMonth() - 1) / InternationalFixedChronology.DAYS_IN_WEEK) - 1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InternationalFixedDate minus(final TemporalAmount amount) {
+        return (InternationalFixedDate) amount.subtractFrom(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InternationalFixedDate minus(final long amountToSubtract, final TemporalUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
+    }
+
     //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     @Override  // for covariant return type
     @SuppressWarnings ("unchecked")
     public ChronoLocalDateTime<InternationalFixedDate> atTime(final LocalTime localTime) {
@@ -788,36 +871,25 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @return number of TemporalUnit until given Temporal
      */
     @Override
     public long until(final Temporal endExclusive, final TemporalUnit unit) {
-        InternationalFixedDate end = InternationalFixedDate.from(endExclusive);
+        return until(InternationalFixedDate.from(endExclusive), unit);
+    }
 
+    long until(final InternationalFixedDate end, final TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
-                case DAYS:
-                    return daysUntil(end);
                 case WEEKS:
-                    return daysUntil(end) / InternationalFixedChronology.DAYS_IN_WEEK;
+                    return weeksUntil(end);
                 case MONTHS:
                     return monthsUntil(end);
-                case YEARS:
-                    return yearsUntil(end);
-                case DECADES:
-                    return yearsUntil(end) / YEARS_IN_DECADE;
-                case CENTURIES:
-                    return yearsUntil(end) / YEARS_IN_CENTURY;
-                case MILLENNIA:
-                    return yearsUntil(end) / YEARS_IN_MILLENNIUM;
-                case ERAS:
-                    return end.getLong(ChronoField.ERA) - getLong(ChronoField.ERA);
+                default:
+                    break;
             }
-
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
 
-        return unit.between(this, end);
+        return super.until(end, unit);
     }
 
     /**
@@ -835,8 +907,6 @@ public final class InternationalFixedDate
 
     /**
      * {@inheritDoc}
-     * @param endDateExclusive
-     * @return period up to that date
      */
     @Override
     public ChronoPeriod until(final ChronoLocalDate endDateExclusive) {
@@ -850,21 +920,30 @@ public final class InternationalFixedDate
         return getChronology().period(years, months, days);
     }
 
+    private long weeksUntil(final InternationalFixedDate fixed) {
+        int offset = (day < 1 || fixed.day < 1) && isLeapYear() && fixed.isLeapYear() ? (this.isBefore(fixed) ? 1 : -1) : 0;
+        long start = this.getProlepticWeek() * 8L + this.getDayOfWeek();
+        long end = fixed.getProlepticWeek() * 8L + fixed.getDayOfWeek();
+
+        return (end - start - offset) / 8L;
+    }
+
     /**
      * {@inheritDoc}
-     * @param end
-     * @return period up to that date
      */
     @Override
     long monthsUntil(final AbstractDate end) {
         InternationalFixedDate date = InternationalFixedDate.from(end);
-        long monthStart = this.getProlepticMonth() * 256L + this.getCalculatedDayOfMonth();
-        long monthEnd = date.getProlepticMonth() * 256L + date.getCalculatedDayOfMonth();
+        long monthStart = this.getProlepticMonth() * 32L + this.getCalculatedDayOfMonth();
+        long monthEnd = date.getProlepticMonth() * 32L + date.getCalculatedDayOfMonth();
 
-        return (monthEnd - monthStart) / 256L;
+        return (monthEnd - monthStart) / 32L;
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long toEpochDay() {
         long epochDay =
@@ -876,33 +955,23 @@ public final class InternationalFixedDate
 
     /**
      * Display the date in human-readable format.
-     * Note: leap-day and year-day are not part of any month, thus they appear as "2008-leap-day" / "2004-year-day".
-     *
-     * TODO: the string "leap-day" and "year-day" depends on a {@link Locale}, should be loaded from a resource bundle.
-     * TODO: Some languages may prefer the wording "leap-day of 2008" rather than "2008-leap-day".
+     * Note: Leap Day and Year Day are not part of any month; Leap Day is displayed as "N/-1/-1", Year Day as "N/0/0".
      *
      * @return The number of years from this date to the given day.
      */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(30);
-        buf.append(getChronology().toString())
+
+        return buf.append(getChronology().toString())
                 .append(' ')
                 .append(getEra())
                 .append(' ')
-                .append(getYearOfEra());
-
-        if (isLeapDay()) {
-            buf.append(" Leap Day");
-        } else if (isYearDay()) {
-            buf.append(" Year Day");
-        } else {
-            buf.append(getMonth() < 10 ? "-0" : '-')
-                    .append(getMonth())
-                    .append(getDayOfMonth() < 10 ? "-0" : '-')
-                    .append(getDayOfMonth());
-        }
-
-        return buf.toString();
+                .append(getYearOfEra())
+                .append(month < 10 && month > 0 ? "/0" : '/')
+                .append(month)
+                .append(day < 10 && day > 0 ? "/0" : '/')
+                .append(day)
+                .toString();
     }
 }
