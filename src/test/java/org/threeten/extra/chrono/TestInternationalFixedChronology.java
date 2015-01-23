@@ -465,46 +465,46 @@ public class TestInternationalFixedChronology {
     Object[][] data_ranges() {
         return new Object[][] {
             // Leap Day and Year Day are in their own 'months', so (0 to 0), (-1 to -1), or (1 to 28)
-            {2012, -1, -1, DAY_OF_MONTH, -1, -1},
-            {2012, 0, 0, DAY_OF_MONTH, 0, 0},
-            {2012, 1, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 2, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 3, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 4, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 5, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 6, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 7, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 8, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 9, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 10, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 11, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 12, 23, DAY_OF_MONTH, 1, 28},
-            {2012, 13, 23, DAY_OF_MONTH, 1, 28},
+            {2012, -1, -1, DAY_OF_MONTH, ValueRange.of(-1, -1)},
+            {2012, 0, 0, DAY_OF_MONTH, ValueRange.of(0, 0)},
+            {2012, 1, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 2, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 3, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 4, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 5, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 6, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 7, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 8, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 9, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 10, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 11, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 12, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
+            {2012, 13, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
 
-            {2012, 1, 23, DAY_OF_YEAR, 1, 366},
+            {2012, 1, 23, DAY_OF_YEAR, ValueRange.of(1, 366)},
             // Leap Day is still in same year, so (-1 to 13) in leap year
-            {2012, 1, 23, MONTH_OF_YEAR, -1, 13},
+            {2012, 1, 23, MONTH_OF_YEAR, ValueRange.of(-1, 0, 13, 13)},
             // Leap Day/Year Day in own months, so (0 to 0) or (1 to 7)
-            {2012, -1, -1, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
-            {2012, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0, 0},
-            {2012, 1, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, 7},
+            {2012, -1, -1, ALIGNED_DAY_OF_WEEK_IN_MONTH, ValueRange.of(0, 0)},
+            {2012, 0, 0, ALIGNED_DAY_OF_WEEK_IN_MONTH, ValueRange.of(0, 0)},
+            {2012, 1, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, ValueRange.of(1, 7)},
             // Leap Day/Year Day in own months, so (0 to 0) or (1 to 4)
-            {2012, -1, -1, ALIGNED_WEEK_OF_MONTH, 0, 0},
-            {2012, 0, 0, ALIGNED_WEEK_OF_MONTH, 0, 0},
-            {2012, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
+            {2012, -1, -1, ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 0)},
+            {2012, 0, 0, ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 0)},
+            {2012, 1, 23, ALIGNED_WEEK_OF_MONTH, ValueRange.of(1, 4)},
             // Leap Day and Year Day in own 'week's, so (0 to 0) or (1 to 7)
-            {2012, -1, -1, DAY_OF_WEEK, 0, 0},
-            {2012, 0, 0, DAY_OF_WEEK, 0, 0},
-            {2012, 1, 23, DAY_OF_WEEK, 1, 7},
+            {2012, -1, -1, DAY_OF_WEEK, ValueRange.of(0, 0)},
+            {2012, 0, 0, DAY_OF_WEEK, ValueRange.of(0, 0)},
+            {2012, 1, 23, DAY_OF_WEEK, ValueRange.of(1, 7)},
 
-            {2011, 13, 23, DAY_OF_YEAR, 1, 365},
-            {2011, 13, 23, MONTH_OF_YEAR, 0, 13},
+            {2011, 13, 23, DAY_OF_YEAR, ValueRange.of(1, 365)},
+            {2011, 13, 23, MONTH_OF_YEAR, ValueRange.of(-1, 0, 13, 13)},
         };
     }
 
     @Test(dataProvider = "ranges")
-    public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
-        assertEquals(InternationalFixedDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+    public void test_range(int year, int month, int dom, TemporalField field, ValueRange range) {
+        assertEquals(InternationalFixedDate.of(year, month, dom).range(field), range);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)

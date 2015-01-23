@@ -88,6 +88,7 @@ public final class InternationalFixedDate
      */
     private static final long serialVersionUID = -5501342824322148215L;
     /**
+    /**
      * Number of years in a decade.
      */
     private static final int YEARS_IN_DECADE = 10;
@@ -747,9 +748,7 @@ public final class InternationalFixedDate
                     case ERA:
                         return InternationalFixedChronology.ERA_RANGE;
                     case MONTH_OF_YEAR:
-                        return isYearDay() ? InternationalFixedChronology.EMPTY_RANGE
-                                           : isLeapDay() ? ValueRange.of(-1, -1)
-                                                         : ValueRange.of(InternationalFixedChronology.INSTANCE.isLeapYear(getProlepticYear()) ? -1 : 0, InternationalFixedChronology.MONTHS_IN_YEAR);
+                        return InternationalFixedChronology.MONTH_OF_YEAR_RANGE;
                     default:
                         break;
                 }
@@ -806,7 +805,7 @@ public final class InternationalFixedDate
             return 0;
         }
 
-        return ((getDayOfYear() - 1) / lengthOfWeek()) + 1;
+        return 1 + (month - 1) * InternationalFixedChronology.WEEKS_IN_MONTH + ((day - 1) / InternationalFixedChronology.DAYS_IN_WEEK);
     }
 
     /**

@@ -166,7 +166,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of month of year.
      */
-    static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(-1, 0, -1, MONTHS_IN_YEAR);
+    static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(-1, 0, MONTHS_IN_YEAR, MONTHS_IN_YEAR);
     /**
      * Range of eras.
      */
@@ -460,23 +460,12 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     }
 
     /**
-     * Calculates the proleptic-year given the era and year-of-era.
-     * <p>
-     * The International Fixed calendar only knows common era years, thus negative years are invalid.
-     * <p>
-     * If the chronology makes active use of eras, such as {@code JapaneseChronology}
-     * then the year-of-era will be validated against the era.
-     * For other chronologies, validation is optional.
-     *
-     * @param era       the era of the correct type for the chronology, not null
-     * @param yearOfEra the chronology year-of-era
-     * @return the proleptic-year
-     * @throws DateTimeException  if unable to convert to a proleptic-year, such as if the year is invalid for the era
+     * {@inheritdoc}
      */
     @Override
     public int prolepticYear(final Era era, final int yearOfEra) {
         if (!(era instanceof InternationalFixedEra)) {
-            throw new DateTimeException("Invalid era: " + era);
+            throw new ClassCastException("Invalid era: " + era);
         }
 
         if (yearOfEra < 1) {
