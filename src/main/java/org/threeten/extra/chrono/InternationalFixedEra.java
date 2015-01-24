@@ -42,7 +42,7 @@ import java.time.chrono.Era;
  * The current era, for years from 1 onwards, is known as 'Current Era'.
  * All previous years are invalid.
  * <p>
- * The start of the International Fixed epoch {@code 0001-01-01 (International Fixed)} is {@code 0001-01-01 (ISO)}.
+ * The start of the International Fixed epoch {@code 0001/01/01 (IFC)} is {@code 0001-01-01 (ISO)}.
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code InternationalFixedEra}.
  * Use {@code getValue()} instead.</b>
@@ -53,7 +53,7 @@ import java.time.chrono.Era;
 public enum InternationalFixedEra implements Era {
     /**
      * The singleton instance for the current era, 'Current Era',
-     * which has the numeric value 0.
+     * which has the numeric value 1.
      */
     CE;
 
@@ -80,9 +80,9 @@ public enum InternationalFixedEra implements Era {
     /**
      * Gets the numeric era {@code int} value.
      * <p>
-     * The era CE has the value 0.
+     * The era CE has the value 1.
      *
-     * @return the era value, only 0 (CE)
+     * @return the era value, only 1 (CE)
      */
     @Override
     public int getValue() {
