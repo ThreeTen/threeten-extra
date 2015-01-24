@@ -460,7 +460,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     @Override
     public int prolepticYear(final Era era, final int yearOfEra) {
