@@ -88,19 +88,6 @@ public final class InternationalFixedDate
      */
     private static final long serialVersionUID = -5501342824322148215L;
     /**
-    /**
-     * Number of years in a decade.
-     */
-    private static final int YEARS_IN_DECADE = 10;
-    /**
-     * Number of years in a century.
-     */
-    private static final int YEARS_IN_CENTURY = 100;
-    /**
-     * Number of years in a millennium.
-     */
-    private static final int YEARS_IN_MILLENNIUM = 1000;
-    /**
      * Leap Day as day-of-year
      */
     private static final int LEAP_DAY_AS_DAY_OF_YEAR = 6 * InternationalFixedChronology.DAYS_IN_MONTH + 1;
@@ -118,6 +105,10 @@ public final class InternationalFixedDate
      * Leap Day is encoded as day-of-month -1, Year Day is encoded as day-of-month 0.
      */
     private final int day;
+    /**
+     * The day of year.
+     */
+    private final transient int dayOfYear;
 
     /**
      * For calculation purposes, internally Leap Day is treated as day-of-year 169,
@@ -126,6 +117,7 @@ public final class InternationalFixedDate
      */
 
     //-----------------------------------------------------------------------
+
     /**
      * Creates an instance from validated data.
      *
@@ -138,6 +130,8 @@ public final class InternationalFixedDate
         this.prolepticYear = prolepticYear;
         this.month = month;
         this.day = dayOfMonth;
+        this.dayOfYear = day == -1 ? LEAP_DAY_AS_DAY_OF_YEAR : day == 0 ? InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear() ? 1 : 0) :
+                (month - 1) * InternationalFixedChronology.DAYS_IN_MONTH + day + (isLeapYear() && month > 6 ? 1 : 0);
     }
 
     /**
@@ -153,8 +147,10 @@ public final class InternationalFixedDate
         boolean isLeapDay = isLeapYear && dayOfYear == LEAP_DAY_AS_DAY_OF_YEAR;
         int doy = isLeapYear && dayOfYear > LEAP_DAY_AS_DAY_OF_YEAR ? dayOfYear - 1 : dayOfYear;
         this.prolepticYear = prolepticYear;
-        this.month = isYearDay ? 0 : isLeapDay ? -1 : 1 + ((doy - 1)  / InternationalFixedChronology.DAYS_IN_MONTH);
+        this.month = isYearDay ? 0 : isLeapDay ? -1 : 1 + ((doy - 1) / InternationalFixedChronology.DAYS_IN_MONTH);
         this.day = isYearDay ? 0 : isLeapDay ? -1 : 1 + ((doy - 1) % InternationalFixedChronology.DAYS_IN_MONTH);
+        this.dayOfYear = day == -1 ? LEAP_DAY_AS_DAY_OF_YEAR : day == 0 ? InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear ? 1 : 0) :
+                (month - 1) * InternationalFixedChronology.DAYS_IN_MONTH + day + (isLeapYear && month > 6 ? 1 : 0);
     }
 
     /**
@@ -487,14 +483,7 @@ public final class InternationalFixedDate
      */
     @Override
     public int getDayOfYear() {
-        return isLeapDay() ? LEAP_DAY_AS_DAY_OF_YEAR : isYearDay() ? InternationalFixedChronology.DAYS_IN_YEAR + (isLeapYear() ? 1 : 0) :
-                (month - 1) * InternationalFixedChronology.DAYS_IN_MONTH + day + (isLeapYear() && month > 6 ? 1 : 0);
-    }
-
-    private int getDayOfYearAdjusted() {
-        int d = getDayOfYear();
-
-        return isLeapYear() && month > 6 ? d - 1 : d;
+        return dayOfYear;
     }
 
     /**
@@ -613,7 +602,7 @@ public final class InternationalFixedDate
             }
 
             int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / 7) * 7;
-            int d = getDayOfYearAdjusted() % 7;
+            int d = day < 1 ? 1 : day % 7;
             int nval = (int) newValue;
 
             switch (f) {
@@ -769,7 +758,7 @@ public final class InternationalFixedDate
             return 0;
         }
 
-        return ((getDayOfMonth() - 1) % lengthOfWeek()) + 1;
+        return ((day - 1) % lengthOfWeek()) + 1;
     }
 
     /**
@@ -781,7 +770,7 @@ public final class InternationalFixedDate
             return 0;
         }
 
-        return ((getDayOfYearAdjusted() - 1) % lengthOfWeek()) + 1;
+        return ((day - 1) % lengthOfWeek()) + 1;
     }
 
     /**
@@ -793,7 +782,7 @@ public final class InternationalFixedDate
             return 0;
         }
 
-        return ((getDayOfMonth() - 1) / lengthOfWeek()) + 1;
+        return ((day - 1) / lengthOfWeek()) + 1;
     }
 
     /**
