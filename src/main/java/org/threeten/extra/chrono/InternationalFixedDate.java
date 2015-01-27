@@ -220,7 +220,7 @@ public final class InternationalFixedDate
 
     /**
      * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the month-less days of Leap Day, which follows the last day in June and precedes Sol 1.
+     * system from the proleptic-year, for the out-of-month day of Leap Day, which follows the last day in June and precedes Sol 1.
      * <p/>
      * This returns a {@code InternationalFixedDate} with the specified fields.
      *
@@ -235,7 +235,7 @@ public final class InternationalFixedDate
 
     /**
      * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the month-less days of Year Day, which follows the last day in December.
+     * system from the proleptic-year, for the out-of-month day of Year Day, which follows the last day in December.
      * <p/>
      * This returns a {@code InternationalFixedDate} with the specified fields.
      *
