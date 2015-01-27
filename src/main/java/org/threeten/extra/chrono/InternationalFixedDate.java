@@ -867,29 +867,15 @@ public final class InternationalFixedDate
     }
 
     /**
-     * Get the number of years from this date to the given day.
-     *
-     * @param end The end date.
-     * @return The number of years from this date to the given day.
-     */
-    private long yearsUntil(final InternationalFixedDate end) {
-        long startYear = getProlepticYear() * 512L + getDayOfYear();
-        long endYear = end.getProlepticYear() * 512L + end.getDayOfYear();
-
-        return (endYear - startYear) / 512L;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public ChronoPeriod until(final ChronoLocalDate endDateExclusive) {
-        InternationalFixedDate end = InternationalFixedDate.from(endDateExclusive);
-        int years = Math.toIntExact(yearsUntil(end));
-        // Get to the same "whole" year.
-        InternationalFixedDate sameYearEnd = (InternationalFixedDate) end.plusYears(years);
-        int months = (int) monthsUntil(sameYearEnd);
-        int days = (int) daysUntil(sameYearEnd.plusMonths(months));
+        long monthsUntil = monthsUntil(DiscordianDate.from(endDateExclusive));
+
+        int years = Math.toIntExact(monthsUntil / MONTHS_IN_YEAR);
+        int months = (int) (monthsUntil % MONTHS_IN_YEAR);
+        int days = (int) this.plusMonths(monthsUntil).daysUntil(endDateExclusive);
 
         return getChronology().period(years, months, days);
     }
