@@ -354,22 +354,15 @@ public final class InternationalFixedDate
      * @return
      */
     private static InternationalFixedDate resolvePreviousValid(final int prolepticYear, final int month, final int day) {
-        if (month == 0 && day == 0) {
-            return createYearDay(prolepticYear);
+        if ((month == 0 && day == 0) || (month == -1 && day == -1 && INSTANCE.isLeapYear(prolepticYear))) {
+            // create valid Year Day or Leap Day
+            return create(prolepticYear, month, day);
         }
 
-        if (month == -1 && day == -1 && INSTANCE.isLeapYear(prolepticYear)) {
-            return createLeapDay(prolepticYear);
-        }
+        int monthR = month == -1 ? 7 : month == 0 ? MONTHS_IN_YEAR : Math.min(month, MONTHS_IN_YEAR);
+        int dayR = day == -1 ? 1 : day == 0 ? DAYS_IN_MONTH : Math.min(day, DAYS_IN_MONTH);
 
-        int monthR = month == -1 ? 7
-                                 : month == 0 ? MONTHS_IN_YEAR
-                                              : Math.min(month, MONTHS_IN_YEAR);
-        int dayR = day == -1 ? 1
-                             : day == 0 ? DAYS_IN_MONTH
-                                        : Math.min(day, DAYS_IN_MONTH);
-
-        return of(prolepticYear, monthR, dayR);
+        return create(prolepticYear, monthR, dayR);
     }
 
     //-----------------------------------------------------------------------
