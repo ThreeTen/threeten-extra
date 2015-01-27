@@ -593,7 +593,6 @@ public final class InternationalFixedDate
                 }
             }
 
-            int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / 7) * 7;
             int d = day < 1 ? 1 : day % 7;
             int nval = (int) newValue;
 
@@ -604,6 +603,7 @@ public final class InternationalFixedDate
                     if (newValue == 0) {
                         return this;
                     }
+                    int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / 7) * 7;
                     return resolvePreviousValid(getProlepticYear(), getMonth(), dom + nval);
                 case ALIGNED_WEEK_OF_MONTH:
                     if (newValue == 0) {
@@ -689,12 +689,11 @@ public final class InternationalFixedDate
             return (InternationalFixedDate) plusYears(months / MONTHS_IN_YEAR);
         }
 
-        int newDay = isLeapDay() ? 1 : getCalculatedDayOfMonth();
         int newMonth = (int) Math.addExact(getProlepticMonth(), months);
         int newYear = newMonth / MONTHS_IN_YEAR;
         newMonth = 1 + (newMonth % MONTHS_IN_YEAR);
 
-        return resolvePreviousValid(newYear, newMonth, newDay);
+        return resolvePreviousValid(newYear, newMonth, day);
     }
 
     /**
