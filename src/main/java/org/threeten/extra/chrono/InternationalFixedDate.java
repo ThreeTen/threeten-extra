@@ -118,12 +118,10 @@ public final class InternationalFixedDate
     private final int prolepticYear;
     /**
      * The month of the year.
-     * Leap Day is encoded as month -1, Year Day is encoded as month 0.
      */
     private final int month;
     /**
      * The day of the month.
-     * Leap Day is encoded as day-of-month -1, Year Day is encoded as day-of-month 0.
      */
     private final int day;
     /**
