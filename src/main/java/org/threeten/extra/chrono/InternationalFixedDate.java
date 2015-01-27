@@ -288,7 +288,7 @@ public final class InternationalFixedDate
      */
     static InternationalFixedDate ofYearDay(final int prolepticYear, final int dayOfYear) {
         InternationalFixedChronology.YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
-        InternationalFixedChronology.DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, ChronoField.DAY_OF_YEAR);
+        ChronoField.DAY_OF_YEAR.checkValidValue(dayOfYear);
 
         if (dayOfYear == InternationalFixedChronology.DAYS_IN_YEAR + 1 && !InternationalFixedChronology.INSTANCE.isLeapYear(prolepticYear)) {
             throw new DateTimeException("Invalid Year Day: " + prolepticYear + '/' + dayOfYear);
@@ -721,7 +721,7 @@ public final class InternationalFixedDate
                     case DAY_OF_WEEK:
                         return special ? InternationalFixedChronology.EMPTY_RANGE : ValueRange.of(1, InternationalFixedChronology.DAYS_IN_WEEK);
                     case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                        return InternationalFixedChronology.ALIGNED_DAY_OF_WEEK_RANGE;
+                        return InternationalFixedChronology.ALIGNED_DAY_OF_WEEK_IN_YEAR_RANGE;
                     case ALIGNED_WEEK_OF_MONTH:
                         return special ? InternationalFixedChronology.EMPTY_RANGE : ValueRange.of(1, InternationalFixedChronology.WEEKS_IN_MONTH);
                     case ALIGNED_WEEK_OF_YEAR:

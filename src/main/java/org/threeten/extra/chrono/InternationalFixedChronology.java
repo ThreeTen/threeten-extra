@@ -104,7 +104,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Range of aligned day-of-week.
      */
-    static final ValueRange ALIGNED_DAY_OF_WEEK_RANGE = ValueRange.of(0, DAYS_IN_WEEK);
+    static final ValueRange ALIGNED_DAY_OF_WEEK_IN_YEAR_RANGE = ValueRange.of(0, DAYS_IN_WEEK);
     /**
      * Range of day-of-week.
      */
@@ -159,10 +159,6 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Range of day of leap year.
      */
     static final ValueRange DAY_OF_YEAR_LEAP_RANGE = ValueRange.of(1, DAYS_IN_YEAR + 1);
-    /**
-     * Range of day of year, inclusive
-     */
-    static final ValueRange DAY_OF_YEAR_RANGE = ValueRange.of(1, DAYS_IN_YEAR, DAYS_IN_YEAR + 1);
     /**
      * Range of month of year.
      */
@@ -431,7 +427,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     public ValueRange range(final ChronoField field) {
         switch (field) {
             case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                return ALIGNED_DAY_OF_WEEK_RANGE;
+                return ALIGNED_DAY_OF_WEEK_IN_YEAR_RANGE;
             case ALIGNED_DAY_OF_WEEK_IN_MONTH:
             case DAY_OF_WEEK:
                 return DAY_OF_WEEK_RANGE;
@@ -442,7 +438,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
             case DAY_OF_MONTH:
                 return DAY_OF_MONTH_RANGE;
             case DAY_OF_YEAR:
-                return DAY_OF_YEAR_RANGE;
+                return ChronoField.DAY_OF_YEAR.range();
             case EPOCH_DAY:
                 return EPOCH_DAY_RANGE;
             case ERA:
