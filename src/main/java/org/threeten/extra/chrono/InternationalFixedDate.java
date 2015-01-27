@@ -662,18 +662,13 @@ public final class InternationalFixedDate
             return plusMonths(weeks / WEEKS_IN_MONTH);
         }
 
-        int dayOfWeek = getCalculatedDayOfWeek();
-        long epoch = toEpochDay() + DAYS_IN_WEEK * weeks;
-        InternationalFixedDate newDate = InternationalFixedDate.ofEpochDay(epoch);
-        int newDayOfWeek = newDate.getCalculatedDayOfWeek();
+        long calcEm = Math.addExact(getProlepticWeek(), weeks);
+        int newYear = Math.toIntExact(Math.floorDiv(calcEm, WEEKS_IN_YEAR));
+        int newWeek = Math.toIntExact(Math.floorMod(calcEm, WEEKS_IN_YEAR));
+        int newMonth = 1 + Math.floorDiv(newWeek, WEEKS_IN_MONTH);
+        int newDay = 1 + ((newWeek * DAYS_IN_WEEK + 8 + ((day == -1) ? 0 : (day == 0) ? -1 : (day - 1) % DAYS_IN_WEEK) - 1) % DAYS_IN_MONTH);
 
-        if (dayOfWeek == newDayOfWeek) {
-            return newDate;
-        }
-
-        epoch += Math.signum(weeks);
-
-        return InternationalFixedDate.ofEpochDay(epoch);
+        return create(newYear, newMonth, newDay);
     }
 
     /**
@@ -818,7 +813,7 @@ public final class InternationalFixedDate
 
     long getProlepticWeek() {
         return ((long) prolepticYear) * WEEKS_IN_YEAR +
-                getCalculatedMonth() * WEEKS_IN_MONTH +
+                (getCalculatedMonth() - 1) * WEEKS_IN_MONTH +
                 ((getCalculatedDayOfMonth() - 1) / DAYS_IN_WEEK) - 1;
     }
 

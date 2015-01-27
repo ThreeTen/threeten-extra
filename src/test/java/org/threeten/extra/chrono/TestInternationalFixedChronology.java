@@ -835,6 +835,9 @@ public class TestInternationalFixedChronology {
 
             {2012, 6, 26, 3, WEEKS, 2012, 7, 19},
             {2012, 7, 26, -5, WEEKS, 2012, 6, 19},
+
+            {2012, 6, 21, 52 + 1, WEEKS, 2013, 6, 28},
+            {2013, 6, 21, 6 * 52 + 1, WEEKS, 2019, 6, 28},
         };
     }
 
