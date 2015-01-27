@@ -476,7 +476,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * @param prolepticYear The year.
      * @return The number of leap years since International fixed year 1.
      */
-    public static long getLeapYearsBefore(final long prolepticYear) {
+    static long getLeapYearsBefore(final long prolepticYear) {
         long yearBefore = prolepticYear - 1;
 
         return (yearBefore / 4) - (yearBefore / 100) + (yearBefore / 400);
