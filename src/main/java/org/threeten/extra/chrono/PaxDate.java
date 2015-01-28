@@ -73,7 +73,7 @@ import java.time.temporal.ValueRange;
  * Dates are aligned such that {@code 0001-01-01 (Pax)} is {@code 0000-12-31 (ISO)}.
  * <p>
  * More information is available in the <a href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
- * 
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  * <p>
@@ -668,9 +668,9 @@ public final class PaxDate
         PaxDate end = PaxDate.from(endDateExclusive);
         int years = Math.toIntExact(yearsUntil(end));
         // Get to the same "whole" year.
-        PaxDate sameYearEnd = end.plusYears(years);
-        int months = (int) monthsUntil(sameYearEnd);
-        int days = (int) daysUntil(sameYearEnd.plusMonths(months));
+        PaxDate sameYearEnd = this.plusYears(years);
+        int months = (int) sameYearEnd.monthsUntil(end);
+        int days = (int) sameYearEnd.plusMonths(months).daysUntil(end);
         return getChronology().period(years, months, days);
     }
 
