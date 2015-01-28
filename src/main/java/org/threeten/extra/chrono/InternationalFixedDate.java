@@ -408,11 +408,21 @@ public final class InternationalFixedDate
         return prolepticYear;
     }
 
-    public boolean isLeapDay() {
+    /**
+     * Leap Day is a day is neither part of a week nor a month.
+     *
+     * @return boolean whether the date is Leap Day
+     */
+    boolean isLeapDay() {
         return month == -1;
     }
 
-    public boolean isYearDay() {
+    /**
+     * The last day of the year is Year Day, it is neither part of a week nor a month.
+     *
+     * @return boolean whether the date is Year Day
+     */
+    boolean isYearDay() {
         return month == 0;
     }
 
