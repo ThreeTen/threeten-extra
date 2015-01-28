@@ -292,7 +292,7 @@ public final class InternationalFixedDate
         ChronoField.DAY_OF_YEAR.checkValidValue(dayOfYear);
 
         if (dayOfYear == DAYS_IN_YEAR + 1 && !INSTANCE.isLeapYear(prolepticYear)) {
-            throw new DateTimeException("Invalid Year Day: " + prolepticYear + '/' + dayOfYear);
+            throw new DateTimeException("Invalid date 'DayOfYear 366' as '" + prolepticYear + "' is not a leap year");
         }
 
         boolean isLeapYear = INSTANCE.isLeapYear(prolepticYear);
