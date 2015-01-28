@@ -444,11 +444,11 @@ public class TestInternationalFixedChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(0, 1, 0, 7));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(0, 7));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(0, 1, 0, 4));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(1, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(1, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(1, 4));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(0, 52));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(0, 1, 0, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(1, 7));
         assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(-1, 0, -1, 28));
         assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ERA), ValueRange.of(1, 1));
@@ -688,12 +688,12 @@ public class TestInternationalFixedChronology {
             {2012, -1, -1, DAY_OF_WEEK, 6, 2012, 7, 6},
             {2012, -1, -1, DAY_OF_WEEK, 7, 2012, 7, 7},
 
-            {2012, -1, -1, DAY_OF_MONTH, 0, 2012, 0, 0},
+            {2012, -1, -1, DAY_OF_MONTH, 0, 2012, -1, -1},
             {2012, -1, -1, DAY_OF_MONTH, -1, 2012, -1, -1},
             {2012, -1, -1, DAY_OF_MONTH, 3, 2012, 7, 3},
 
             {2012, -1, -1, MONTH_OF_YEAR, -1, 2012, -1, -1},
-            {2012, -1, -1, MONTH_OF_YEAR, 0, 2012, 0, 0},
+            {2012, -1, -1, MONTH_OF_YEAR, 0, 2012, -1, -1},
             {2012, -1, -1, MONTH_OF_YEAR, 7, 2012, 7, 1},
             {2012, -1, -1, MONTH_OF_YEAR, 2, 2012, 2, 1},
 
@@ -721,11 +721,30 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "with_bad")
     Object[][] data_with_bad() {
         return new Object[][] {
-            {2013, 1, 1, DAY_OF_WEEK, -1},
-            {2013, 1, 1, DAY_OF_WEEK, 8},
-            {2012, 1, 1, DAY_OF_WEEK, -1},
-            {2012, 1, 1, DAY_OF_WEEK, 8},
+            {2013, 1, 1, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
+            {2013, 1, 1, ALIGNED_DAY_OF_WEEK_IN_MONTH, 8},
+            {2012, 1, 1, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
+            {2012, 1, 1, ALIGNED_DAY_OF_WEEK_IN_MONTH, 8},
 
+            {2013, 1, 1, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
+            {2013, 1, 1, ALIGNED_DAY_OF_WEEK_IN_YEAR, 8},
+            {2012, 1, 1, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
+            {2012, 1, 1, ALIGNED_DAY_OF_WEEK_IN_YEAR, 8},
+
+            {2013, 1, 1, ALIGNED_WEEK_OF_MONTH, 0},
+            {2013, 1, 1, ALIGNED_WEEK_OF_MONTH, 5},
+            {2012, 1, 1, ALIGNED_WEEK_OF_MONTH, 0},
+            {2012, 1, 1, ALIGNED_WEEK_OF_MONTH, 5},
+
+            {2013, 1, 1, ALIGNED_WEEK_OF_YEAR, 0},
+            {2013, 1, 1, ALIGNED_WEEK_OF_YEAR, 53},
+            {2012, 1, 1, ALIGNED_WEEK_OF_YEAR, 0},
+            {2012, 1, 1, ALIGNED_WEEK_OF_YEAR, 53},
+
+            {2013, 1, 1, DAY_OF_WEEK, 0},
+            {2013, 1, 1, DAY_OF_WEEK, 8},
+            {2012, 1, 1, DAY_OF_WEEK, 0},
+            {2012, 1, 1, DAY_OF_WEEK, 8},
             {2013, 1, 1, DAY_OF_MONTH, -1},
             {2013, 1, 1, DAY_OF_MONTH, 29},
             {2012, 1, 1, DAY_OF_MONTH, -2},
@@ -740,6 +759,8 @@ public class TestInternationalFixedChronology {
             {2013, 1, 1, MONTH_OF_YEAR, 14},
             {2012, 1, 1, MONTH_OF_YEAR, -2},
             {2012, 1, 1, MONTH_OF_YEAR, 14},
+
+            {2013, 1, 1, YEAR, 0}
         };
     }
 

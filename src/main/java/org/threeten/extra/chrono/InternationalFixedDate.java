@@ -41,6 +41,7 @@ import static org.threeten.extra.chrono.InternationalFixedChronology.DAYS_IN_YEA
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAY_OF_MONTH_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAY_OF_YEAR_LEAP_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAY_OF_YEAR_NORMAL_RANGE;
+import static org.threeten.extra.chrono.InternationalFixedChronology.DAY_OF_WEEK_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAYS_PER_CYCLE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.EMPTY_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.EPOCH_DAY_RANGE;
@@ -580,8 +581,11 @@ public final class InternationalFixedDate
     @Override
     public InternationalFixedDate with(final TemporalField field, final long newValue) {
         if (field instanceof ChronoField) {
+            if (newValue == 0 && day < 1) {
+                return this;
+            }
+
             ChronoField f = (ChronoField) field;
-            getChronology().range(f).checkValidValue(newValue, f);
 
             if (f == ChronoField.DAY_OF_MONTH || f == ChronoField.MONTH_OF_YEAR) {
                 if (newValue == 0) {
@@ -593,30 +597,21 @@ public final class InternationalFixedDate
                 }
             }
 
+            getChronology().range(f).checkValidValue(newValue, f);
             int nval = (int) newValue;
 
             switch (f) {
-                case DAY_OF_WEEK:
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                    if (newValue == 0) {
-                        return this;
-                    }
+                case DAY_OF_WEEK:
                     int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / DAYS_IN_WEEK) * DAYS_IN_WEEK;
                     return resolvePreviousValid(getProlepticYear(), getMonth(), dom + nval);
                 case ALIGNED_WEEK_OF_MONTH:
-                    if (newValue == 0) {
-                        return this;
-                    }
                     int d = day < 1 ? 1 : day % DAYS_IN_WEEK;
                     return resolvePreviousValid(getProlepticYear(), getMonth(), (nval - 1) * DAYS_IN_WEEK + d);
                 case ALIGNED_WEEK_OF_YEAR:
-                    if (newValue == 0) {
-                        return this;
-                    }
-
                     int newMonth = 1 + ((nval - 1) / WEEKS_IN_MONTH);
-                    int newDay = ((nval - 1 ) % WEEKS_IN_MONTH) * DAYS_IN_WEEK + 1 + ((day < 1) ? 0 : (day - 1) % DAYS_IN_WEEK);
+                    int newDay = ((nval - 1) % WEEKS_IN_MONTH) * DAYS_IN_WEEK + 1 + ((day < 1) ? 0 : (day - 1) % DAYS_IN_WEEK);
                     return resolvePreviousValid(getProlepticYear(), newMonth, newDay);
                 default:
                     break;
@@ -707,14 +702,13 @@ public final class InternationalFixedDate
 
                 switch (f) {
                     case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                     case DAY_OF_WEEK:
                         return special ? EMPTY_RANGE : ValueRange.of(1, DAYS_IN_WEEK);
-                    case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                        return ALIGNED_DAY_OF_WEEK_IN_YEAR_RANGE;
                     case ALIGNED_WEEK_OF_MONTH:
                         return special ? EMPTY_RANGE : ValueRange.of(1, WEEKS_IN_MONTH);
                     case ALIGNED_WEEK_OF_YEAR:
-                        return special ? EMPTY_RANGE : WEEK_OF_YEAR_RANGE;
+                        return special ? EMPTY_RANGE : ValueRange.of(1, WEEKS_IN_YEAR);
                     case DAY_OF_MONTH:
                         return isYearDay() ? EMPTY_RANGE
                                            : isLeapDay() ? ValueRange.of(-1, -1)
