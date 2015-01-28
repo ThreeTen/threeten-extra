@@ -231,7 +231,7 @@ public final class InternationalFixedDate
      *                           or if the day-of-month is invalid for the month-year
      */
     public static InternationalFixedDate leapDay(final int prolepticYear) {
-        return createLeapDay(prolepticYear);
+        return create(prolepticYear, -1, -1);
     }
 
     /**
@@ -246,7 +246,7 @@ public final class InternationalFixedDate
      *                           or if the day-of-month is invalid for the month-year
      */
     public static InternationalFixedDate yearDay(final int prolepticYear) {
-        return createYearDay(prolepticYear);
+        return create(prolepticYear, 0, 0);
     }
 
     //-----------------------------------------------------------------------
@@ -387,30 +387,6 @@ public final class InternationalFixedDate
         }
 
         return new InternationalFixedDate(prolepticYear, month, dayOfMonth);
-    }
-
-    /**
-     * Factory method, validates the given year, accepts only valid leap-years.
-     * Leap Day is a month-less day between end of June and beginning of Sol.
-     *
-     * @param prolepticYear the International fixed proleptic-year
-     * @return the International fixed date
-     * @throws DateTimeException if the date is invalid
-     */
-    static InternationalFixedDate createLeapDay(final int prolepticYear) {
-        return create(prolepticYear, -1, -1);
-    }
-
-    /**
-     * Factory method, accepts any year, will be validated further down.
-     * Year Day is a month-less day following the last day of December.
-     *
-     * @param prolepticYear the International fixed proleptic-year
-     * @return the International fixed date
-     * @throws DateTimeException if the date is invalid
-     */
-    static InternationalFixedDate createYearDay(final int prolepticYear) {
-        return create(prolepticYear, 0, 0);
     }
 
     /**
@@ -588,11 +564,11 @@ public final class InternationalFixedDate
 
             if (f == ChronoField.DAY_OF_MONTH || f == ChronoField.MONTH_OF_YEAR) {
                 if (newValue == 0) {
-                    return createYearDay(getProlepticYear());
+                    return create(getProlepticYear(), 0, 0);
                 }
 
                 if (newValue == -1) {
-                    return createLeapDay(getProlepticYear());
+                    return create(getProlepticYear(), -1, -1);
                 }
             }
 
