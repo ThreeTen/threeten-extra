@@ -880,12 +880,12 @@ public final class InternationalFixedDate
         return getChronology().period(years, months, days);
     }
 
-    private long weeksUntil(final InternationalFixedDate fixed) {
-        int offset = (day < 1 || fixed.day < 1) && isLeapYear() && fixed.isLeapYear() ? (this.isBefore(fixed) ? 1 : -1) : 0;
-        long start = this.getProlepticWeek() * 8L + this.getDayOfWeek();
-        long end = fixed.getProlepticWeek() * 8L + fixed.getDayOfWeek();
+    private long weeksUntil(final InternationalFixedDate end) {
+        int offset = (day < 1 || end.day < 1) && (day != end.day) && isLeapYear() && end.isLeapYear() ? (this.isBefore(end) ? 1 : -1) : 0;
+        long startWeek = this.getProlepticWeek() * 8L + this.getDayOfWeek();
+        long endWeek = end.getProlepticWeek() * 8L + end.getDayOfWeek();
 
-        return (end - start - offset) / 8L;
+        return (endWeek - startWeek - offset) / 8L;
     }
 
     /**
