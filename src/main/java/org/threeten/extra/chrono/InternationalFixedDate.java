@@ -33,7 +33,6 @@ package org.threeten.extra.chrono;
 
 import java.io.Serializable;
 
-import static org.threeten.extra.chrono.InternationalFixedChronology.ALIGNED_DAY_OF_WEEK_IN_YEAR_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAYS_0000_TO_1970;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAYS_IN_WEEK;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAYS_IN_MONTH;
@@ -41,7 +40,6 @@ import static org.threeten.extra.chrono.InternationalFixedChronology.DAYS_IN_YEA
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAY_OF_MONTH_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAY_OF_YEAR_LEAP_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAY_OF_YEAR_NORMAL_RANGE;
-import static org.threeten.extra.chrono.InternationalFixedChronology.DAY_OF_WEEK_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.DAYS_PER_CYCLE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.EMPTY_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.EPOCH_DAY_RANGE;
@@ -789,9 +787,7 @@ public final class InternationalFixedDate
     }
 
     long getProlepticWeek() {
-        return ((long) prolepticYear) * WEEKS_IN_YEAR +
-                (getInternalMonth() - 1) * WEEKS_IN_MONTH +
-                ((getInternalDayOfMonth() - 1) / DAYS_IN_WEEK) - 1;
+        return getProlepticMonth() * WEEKS_IN_MONTH + ((getInternalDayOfMonth() - 1) / DAYS_IN_WEEK) - 1;
     }
 
     /**
