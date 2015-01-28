@@ -64,7 +64,7 @@ public enum InternationalFixedEra implements Era {
      * {@code InternationalFixedEra} is an enum representing the International Fixed era of CE.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param era the CE value to represent, only 0 (CE)
+     * @param era the CE value to represent, only 1 (CE)
      * @throws DateTimeException if the value is invalid
      * @return the era singleton, not null
      */
