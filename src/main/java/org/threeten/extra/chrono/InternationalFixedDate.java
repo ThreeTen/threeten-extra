@@ -317,10 +317,6 @@ public final class InternationalFixedDate
         EPOCH_DAY_RANGE.checkValidValue(epochDay, ChronoField.EPOCH_DAY);
         long zeroDay = epochDay + DAYS_0000_TO_1970;
 
-        if (zeroDay < 0) {
-            throw new DateTimeException("Invalid epoch: " + epochDay);
-        }
-
         // The two values work great for any dates, just not the first (N/01/01) or the last of the year (N/0/0).
         long year = (400 * zeroDay) / DAYS_PER_CYCLE;
         long doy = zeroDay - (DAYS_IN_YEAR * year + INSTANCE.getLeapYearsBefore(year));

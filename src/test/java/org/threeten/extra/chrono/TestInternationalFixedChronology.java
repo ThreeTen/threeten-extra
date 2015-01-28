@@ -755,6 +755,9 @@ public class TestInternationalFixedChronology {
             {2013, 1, 1, DAY_OF_YEAR, 366},
             {2012, 1, 1, DAY_OF_YEAR, 367},
 
+            {2013, 1, 1, EPOCH_DAY, -719_529},
+            {2013, 1, 1, EPOCH_DAY, 1_000_000 * 365L + 242_499 - 719_528 + 1},
+
             {2013, 1, 1, MONTH_OF_YEAR, -1},
             {2013, 1, 1, MONTH_OF_YEAR, 14},
             {2012, 1, 1, MONTH_OF_YEAR, -2},
