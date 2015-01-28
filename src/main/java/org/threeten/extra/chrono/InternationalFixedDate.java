@@ -378,9 +378,12 @@ public final class InternationalFixedDate
         MONTH_OF_YEAR_RANGE.checkValidValue(month, ChronoField.MONTH_OF_YEAR);
         DAY_OF_MONTH_RANGE.checkValidValue(dayOfMonth, ChronoField.DAY_OF_MONTH);
 
-        if (((month < 1 || dayOfMonth < 1) && (dayOfMonth != month)) ||
-            ((month == -1) && (dayOfMonth == -1) && !INSTANCE.isLeapYear(prolepticYear))) {
-            throw new DateTimeException("Invalid date: " + prolepticYear + '/' + month + '/' + dayOfMonth);
+        if ((month < 1 || dayOfMonth < 1) && (dayOfMonth != month)) {
+            throw new DateTimeException("Ambiguous Year or Leap Day: " + prolepticYear + '/' + month + '/' + dayOfMonth);
+        }
+
+        if ((month == -1) && (dayOfMonth == -1) && !INSTANCE.isLeapYear(prolepticYear)) {
+            throw new DateTimeException("Invalid Leap Day as '" + prolepticYear + "' is not a leap year");
         }
 
         return new InternationalFixedDate(prolepticYear, month, dayOfMonth);
