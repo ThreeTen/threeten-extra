@@ -676,6 +676,8 @@ public class TestInternationalFixedChronology {
 
             {2012, -1, -1, ALIGNED_WEEK_OF_YEAR, 0, 2012, -1, -1},
             {2012, -1, -1, ALIGNED_WEEK_OF_YEAR, 3, 2012, 1, 15},
+            {2012, 1, 1, ALIGNED_WEEK_OF_YEAR, 52, 2012, 13, 22},
+            {2012, 13, 28, ALIGNED_WEEK_OF_YEAR, 1, 2012, 1, 7},
 
             {2012, -1, -1, DAY_OF_WEEK, 0, 2012, -1, -1},
             {2012, -1, -1, DAY_OF_WEEK, 1, 2012, 7, 1},

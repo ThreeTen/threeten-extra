@@ -593,7 +593,6 @@ public final class InternationalFixedDate
                 }
             }
 
-            int d = day < 1 ? 1 : day % 7;
             int nval = (int) newValue;
 
             switch (f) {
@@ -603,18 +602,22 @@ public final class InternationalFixedDate
                     if (newValue == 0) {
                         return this;
                     }
-                    int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / 7) * 7;
+                    int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / DAYS_IN_WEEK) * DAYS_IN_WEEK;
                     return resolvePreviousValid(getProlepticYear(), getMonth(), dom + nval);
                 case ALIGNED_WEEK_OF_MONTH:
                     if (newValue == 0) {
                         return this;
                     }
-                    return resolvePreviousValid(getProlepticYear(), getMonth(), (nval - 1) * 7 + d);
+                    int d = day < 1 ? 1 : day % DAYS_IN_WEEK;
+                    return resolvePreviousValid(getProlepticYear(), getMonth(), (nval - 1) * DAYS_IN_WEEK + d);
                 case ALIGNED_WEEK_OF_YEAR:
                     if (newValue == 0) {
                         return this;
                     }
-                    return ofYearDay(getProlepticYear(), (nval - 1) * 7 + d);
+
+                    int newMonth = 1 + ((nval - 1) / WEEKS_IN_MONTH);
+                    int newDay = ((nval - 1 ) % WEEKS_IN_MONTH) * DAYS_IN_WEEK + 1 + ((day < 1) ? 0 : (day - 1) % DAYS_IN_WEEK);
+                    return resolvePreviousValid(getProlepticYear(), newMonth, newDay);
                 default:
                     break;
             }
@@ -800,7 +803,7 @@ public final class InternationalFixedDate
     }
 
     private int getCalculatedDayOfWeek() {
-        return (day == 0) ? 7 : day == -1 ? 1 : 1 + (day - 1) % DAYS_IN_WEEK;
+        return (day == 0) ? DAYS_IN_WEEK : day == -1 ? 1 : 1 + (day - 1) % DAYS_IN_WEEK;
     }
 
     /**
