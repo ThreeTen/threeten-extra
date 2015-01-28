@@ -52,7 +52,6 @@ import static org.threeten.extra.chrono.InternationalFixedChronology.MONTHS_IN_Y
 import static org.threeten.extra.chrono.InternationalFixedChronology.WEEK_OF_MONTH_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.WEEKS_IN_MONTH;
 import static org.threeten.extra.chrono.InternationalFixedChronology.WEEKS_IN_YEAR;
-import static org.threeten.extra.chrono.InternationalFixedChronology.WEEK_OF_YEAR_RANGE;
 import static org.threeten.extra.chrono.InternationalFixedChronology.YEAR_RANGE;
 
 import java.time.Clock;
@@ -439,7 +438,7 @@ public final class InternationalFixedDate
      * In the same spirit, associate Year Day with the last month of the year.
      * @return
      */
-    private int getCalculatedMonth() {
+    private int getInternalMonth() {
         return isYearDay() ?
             MONTHS_IN_YEAR : isLeapDay() ? 7 : getMonth();
     }
@@ -452,7 +451,7 @@ public final class InternationalFixedDate
         return day;
     }
 
-    private int getCalculatedDayOfMonth() {
+    private int getInternalDayOfMonth() {
         return isYearDay() ? DAYS_IN_MONTH + 1 : isLeapDay() ? 0 : getDayOfMonth();
     }
 
@@ -589,7 +588,7 @@ public final class InternationalFixedDate
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                 case DAY_OF_WEEK:
-                    int dom = isYearDay() ? 21 : (getCalculatedDayOfMonth() / DAYS_IN_WEEK) * DAYS_IN_WEEK;
+                    int dom = isYearDay() ? 21 : (getInternalDayOfMonth() / DAYS_IN_WEEK) * DAYS_IN_WEEK;
                     return resolvePreviousValid(getProlepticYear(), getMonth(), dom + nval);
                 case ALIGNED_WEEK_OF_MONTH:
                     int d = day < 1 ? 1 : day % DAYS_IN_WEEK;
@@ -599,7 +598,7 @@ public final class InternationalFixedDate
                     int newDay = ((nval - 1) % WEEKS_IN_MONTH) * DAYS_IN_WEEK + 1 + ((day < 1) ? 0 : (day - 1) % DAYS_IN_WEEK);
                     return resolvePreviousValid(getProlepticYear(), newMonth, newDay);
                 default:
-                    break;
+                break;
             }
         }
 
@@ -781,22 +780,18 @@ public final class InternationalFixedDate
         return 1 + ((day - 1) % DAYS_IN_WEEK);
     }
 
-    private int getCalculatedDayOfWeek() {
-        return (day == 0) ? DAYS_IN_WEEK : day == -1 ? 1 : 1 + (day - 1) % DAYS_IN_WEEK;
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     long getProlepticMonth() {
-        return getProlepticYear() * lengthOfYearInMonths() + getCalculatedMonth() - 1;
+        return getProlepticYear() * lengthOfYearInMonths() + getInternalMonth() - 1;
     }
 
     long getProlepticWeek() {
         return ((long) prolepticYear) * WEEKS_IN_YEAR +
-                (getCalculatedMonth() - 1) * WEEKS_IN_MONTH +
-                ((getCalculatedDayOfMonth() - 1) / DAYS_IN_WEEK) - 1;
+                (getInternalMonth() - 1) * WEEKS_IN_MONTH +
+                ((getInternalDayOfMonth() - 1) / DAYS_IN_WEEK) - 1;
     }
 
     /**
@@ -876,8 +871,8 @@ public final class InternationalFixedDate
     @Override
     long monthsUntil(final AbstractDate end) {
         InternationalFixedDate date = InternationalFixedDate.from(end);
-        long monthStart = this.getProlepticMonth() * 32L + this.getCalculatedDayOfMonth();
-        long monthEnd = date.getProlepticMonth() * 32L + date.getCalculatedDayOfMonth();
+        long monthStart = this.getProlepticMonth() * 32L + this.getInternalDayOfMonth();
+        long monthEnd = date.getProlepticMonth() * 32L + date.getInternalDayOfMonth();
 
         return (monthEnd - monthStart) / 32L;
     }
