@@ -54,6 +54,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -64,14 +65,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Period;
+
 import java.time.chrono.Chronology;
+import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
+
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -1120,6 +1125,41 @@ public class TestInternationalFixedChronology {
         };
     }
 
+    @DataProvider(name = "until_period")
+    Object[][] data_until_period() {
+        return new Object[][] {
+            { 2014, 5, 26, 2014, 5, 26, 0, 0, 0 },
+            { 2014, 5, 26, 2014, 6, 4, 0, 0, 6 },
+            { 2014, 5, 26, 2014, 5, 20, 0, 0, -6 },
+            { 2014, 5, 26, 2014, 6, 5, 0, 0, 7 },
+            { 2014, 5, 26, 2014, 6, 25, 0, 0, 27 },
+            { 2014, 5, 26, 2014, 6, 26, 0, 1, 0 },
+            { 2014, 5, 26, 2015, 5, 25, 0, 12, 27 },
+            { 2014, 5, 26, 2015, 5, 26, 1, 0, 0 },
+            { 2014, 5, 26, 2024, 5, 25, 9, 12, 27 },
+            { 2011, 13, 26, 2013, 13, 26, 2, 0, 0 },
+            { 2011, 13, 26, 2012, 13, 26, 1, 0, 0 },
+            { 2012, 13, 26, 2011, 13, 26, -1, 0, 0 },
+            { 2012, 13, 26, 2013, 13, 26, 1, 0, 0 },
+            { 2011, 13, 6, 2012, 13, 6, 1, 0, 0 },
+            { 2012, 13, 6, 2011, 13, 6, -1, 0, 0 },
+            { 2011, 13, 1, 2012, 13, 7, 1, 0, 6 },
+            { 2012, 13, 7, 2011, 13, 1, -1, 0, -6 },
+            { 2011, 12, 28, 2012, 13, 1, 1, 0, 1 },
+            { 2012, 13, 1, 2011, 12, 28, -1, 0, -1 },
+            { 2013, 13, 6, 2012, 13, 6, -1, 0, 0 },
+            { 2012, 13, 6, 2013, 13, 6, 1, 0, 0 },
+
+            { 2012, 0, 0, 2012, 0, 0, 0, 0, 0 },
+            { 2012, 0, 0, 2013, 0, 0, 1, 0, 0 },
+            { 2011, 0, 0, 2010, 0, 0, -1, 0, 0 },
+
+            { 2008, -1, -1, 2008, -1, -1, 0, 0, 0 },
+            { 2012, -1, -1, 2016, -1, -1, 4, 0, 0 },
+            { 2024, -1, -1, 2020, -1, -1, -4, 0, 0 },
+        };
+    }
+
     @Test(dataProvider = "until")
     public void test_until_TemporalUnit(
             int year1, int month1, int dom1,
@@ -1128,6 +1168,17 @@ public class TestInternationalFixedChronology {
         InternationalFixedDate start = InternationalFixedDate.of(year1, month1, dom1);
         InternationalFixedDate end = InternationalFixedDate.of(year2, month2, dom2);
         assertEquals(start.until(end, unit), expected);
+    }
+
+    @Test(dataProvider = "until_period")
+    public void test_until_end(
+            int year1, int month1, int dom1,
+            int year2, int month2, int dom2,
+            int yearPeriod, int monthPeriod, int dayPeriod) {
+        InternationalFixedDate start = InternationalFixedDate.of(year1, month1, dom1);
+        InternationalFixedDate end = InternationalFixedDate.of(year2, month2, dom2);
+        ChronoPeriod period = InternationalFixedChronology.INSTANCE.period(yearPeriod, monthPeriod, dayPeriod);
+        assertEquals(start.until(end), period);
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)

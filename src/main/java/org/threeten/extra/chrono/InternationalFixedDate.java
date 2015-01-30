@@ -461,6 +461,10 @@ public final class InternationalFixedDate
         return dayOfYear;
     }
 
+    private int getInternalDayOfYear() {
+        return isLeapYear() && (month == 0 || month > 6) ? dayOfYear - 1 : dayOfYear;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -675,6 +679,20 @@ public final class InternationalFixedDate
      * {@inheritDoc}
      */
     @Override
+    InternationalFixedDate plusYears(final long yearsToAdd) {
+        if (yearsToAdd == 0) {
+            return this;
+        }
+
+        int newYear = YEAR_RANGE.checkValidIntValue(Math.addExact(getProlepticYear(), yearsToAdd), ChronoField.YEAR);
+
+        return resolvePreviousValid(newYear, getMonth(), getDayOfMonth());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ValueRange range(final TemporalField field) {
         boolean special = day < 1;
 
@@ -839,16 +857,32 @@ public final class InternationalFixedDate
         return super.until(end, unit);
     }
 
+
+    /**
+     * Get the number of years from this date to the given day.
+     *
+     * @param end The end date.
+     * @return The number of years from this date to the given day.
+     */
+    long yearsUntil(final InternationalFixedDate end) {
+        long startYear = getProlepticYear() * 512L + getInternalDayOfYear();
+        long endYear = end.getProlepticYear() * 512L + end.getInternalDayOfYear();
+        return (endYear - startYear) / 512L;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public ChronoPeriod until(final ChronoLocalDate endDateExclusive) {
-        long monthsUntil = monthsUntil(DiscordianDate.from(endDateExclusive));
+        InternationalFixedDate end = InternationalFixedDate.from(endDateExclusive);
+        long monthsUntil = monthsUntil(end);
 
-        int years = Math.toIntExact(monthsUntil / MONTHS_IN_YEAR);
-        int months = (int) (monthsUntil % MONTHS_IN_YEAR);
-        int days = (int) this.plusMonths(monthsUntil).daysUntil(endDateExclusive);
+        int years = Math.toIntExact(yearsUntil(end));
+        // Get to the same "whole" year.
+        InternationalFixedDate sameYearEnd = this.plusYears(years);
+        int months = (int) sameYearEnd.monthsUntil(end);
+        int days = (int) sameYearEnd.plusMonths(months).daysUntil(end);
 
         return getChronology().period(years, months, days);
     }
