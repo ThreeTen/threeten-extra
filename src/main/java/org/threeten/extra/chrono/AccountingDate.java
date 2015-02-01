@@ -295,7 +295,6 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      *
      * @param chronology  the Accounting chronology to base the date on, not null
      * @param prolepticYear  the Accounting proleptic-year
-     * @param dayOfYear  the Accounting day-of-year, from 1 to 371
      * @return the date in Accounting calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
      *  or if the day-of-year is invalid for the month-year,

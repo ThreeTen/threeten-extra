@@ -70,12 +70,10 @@ import java.util.Objects;
 public final class BritishCutoverDate
         extends AbstractDate
         implements ChronoLocalDate, Serializable {
-
     /**
      * Serialization version.
      */
     private static final long serialVersionUID = -9626278512674L;
-
     /**
      * The underlying date.
      */
@@ -83,7 +81,7 @@ public final class BritishCutoverDate
     /**
      * The underlying Julian date if before the cutover.
      */
-    private transient final JulianDate julianDate;
+    private final transient JulianDate julianDate;
 
     //-----------------------------------------------------------------------
     /**
