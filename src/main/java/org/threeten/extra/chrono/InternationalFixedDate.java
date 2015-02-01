@@ -600,7 +600,7 @@ public final class InternationalFixedDate
                     int newDay = ((nval - 1) % WEEKS_IN_MONTH) * DAYS_IN_WEEK + 1 + ((day < 1) ? 0 : (day - 1) % DAYS_IN_WEEK);
                     return resolvePreviousValid(getProlepticYear(), newMonth, newDay);
                 default:
-                break;
+                    break;
             }
         }
 
