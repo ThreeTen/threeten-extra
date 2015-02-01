@@ -87,8 +87,8 @@ abstract class AbstractDate
 
     abstract AbstractDate resolvePrevious(int newYear, int newMonth, int dayOfMonth);
 
-    AbstractDate resolveEpochDay(long epcohDay) {
-        return (AbstractDate) getChronology().dateEpochDay(epcohDay);
+    AbstractDate resolveEpochDay(long epochDay) {
+        return (AbstractDate) getChronology().dateEpochDay(epochDay);
     }
 
     //-----------------------------------------------------------------------
