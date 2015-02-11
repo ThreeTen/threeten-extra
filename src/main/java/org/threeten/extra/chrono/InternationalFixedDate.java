@@ -907,6 +907,19 @@ public final class InternationalFixedDate
         int months = (int) sameYearEnd.monthsUntil(end);
         int days = (int) sameYearEnd.plusMonths(months).daysUntil(end);
 
+        // When both Leap Day and Year Day start / end the period, the intra-month difference can be +- 28 days,
+        // because internally day-of-month as 1 (Leap Day) or 29 (Year Day) for calculations.
+        // Thus we have to compensate the difference accordingly.
+        if (days == DAYS_IN_MONTH) {
+            days = 0;
+            months += 1;
+        }
+
+        if (days == -DAYS_IN_MONTH) {
+            days = 0;
+            months -= 1;
+        }
+
         return getChronology().period(years, months, days);
     }
 
