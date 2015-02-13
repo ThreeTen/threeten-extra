@@ -40,7 +40,6 @@ import static java.time.DayOfWeek.FRIDAY;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.chrono.Chronology;
@@ -88,11 +87,6 @@ public final class YearWeek
                 .appendLiteral("-W")
                 .appendValue(IsoFields.WEEK_OF_WEEK_BASED_YEAR, 2)
                 .parseDefaulting(DAY_OF_WEEK, 1)
-                .optionalStart()
-                .appendLiteral('-')
-                .appendValue(DAY_OF_WEEK, 1)
-                .optionalStart()
-                .appendOffsetId()
                 .toFormatter();
     
     /**
