@@ -249,6 +249,10 @@ public class TestYearQuarter {
         assertEquals(YearQuarter.parse("2012-Q3"), YearQuarter.of(2012, Q3));
     }
 
+    public void test_parse_CharSequence_caseInsensitive() {
+        assertEquals(YearQuarter.parse("2012-q3"), YearQuarter.of(2012, Q3));
+    }
+
     @Test(expectedExceptions = DateTimeParseException.class)
     public void test_parse_CharSequenceDate_invalidYear() {
         YearQuarter.parse("12345-Q3");
@@ -879,6 +883,18 @@ public class TestYearQuarter {
     //-----------------------------------------------------------------------
     public void test_toString() {
         assertEquals(YearQuarter.of(2012, Q2).toString(), "2012-Q2");
+    }
+
+    public void test_toString_bigYear() {
+        assertEquals(YearQuarter.of(10000, Q2).toString(), "+10000-Q2");
+    }
+
+    public void test_toString_negativeYear() {
+        assertEquals(YearQuarter.of(-1, Q2).toString(), "-0001-Q2");
+    }
+
+    public void test_toString_negativeBigYear() {
+        assertEquals(YearQuarter.of(-10000, Q2).toString(), "-10000-Q2");
     }
 
 }

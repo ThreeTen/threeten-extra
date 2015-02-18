@@ -106,6 +106,7 @@ public final class YearQuarter
      * Parser.
      */
     private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
             .appendLiteral('Q')
@@ -238,7 +239,7 @@ public final class YearQuarter
      * Obtains an instance of {@code YearQuarter} from a text string such as {@code 2007-Q2}.
      * <p>
      * The string must represent a valid year-quarter.
-     * The format must be {@code uuuu-'Q'Q}.
+     * The format must be {@code uuuu-'Q'Q} where the 'Q' is case insensitive.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-Q2", not null
@@ -1201,7 +1202,7 @@ public final class YearQuarter
     @Override
     public String toString() {
         int absYear = Math.abs(year);
-        StringBuilder buf = new StringBuilder(9);
+        StringBuilder buf = new StringBuilder(10);
         if (absYear < 1000) {
             if (year < 0) {
                 buf.append(year - 10000).deleteCharAt(1);
@@ -1209,6 +1210,9 @@ public final class YearQuarter
                 buf.append(year + 10000).deleteCharAt(0);
             }
         } else {
+            if (year > 9999) {
+                buf.append('+');
+            }
             buf.append(year);
         }
         return buf.append('-').append(quarter).toString();

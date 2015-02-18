@@ -8,6 +8,12 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
+      <action dev="jodastephen" type="fix" >
+        Make YearQuarter.parse case insensitive.
+      </action>
+      <action dev="jodastephen" type="fix" >
+        Make YearQuarter.toString output '+' for large years.
+      </action>
       <action dev="jodastephen" type="add" >
         Add British Cutover calendar system.
         Models British Julian-Gregorian cutover on 1752-09-14 (ISO).
