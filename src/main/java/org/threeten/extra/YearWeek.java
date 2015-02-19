@@ -33,7 +33,6 @@ package org.threeten.extra;
 
 import static java.time.DayOfWeek.THURSDAY;
 import static java.time.DayOfWeek.WEDNESDAY;
-import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 
@@ -42,7 +41,6 @@ import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.chrono.Chronology;
@@ -103,9 +101,9 @@ public final class YearWeek
      */
     private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendValue(IsoFields.WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral("-W")
-            .appendValue(IsoFields.WEEK_OF_WEEK_BASED_YEAR, 2)
+            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
             .toFormatter();
 
     /**
@@ -189,8 +187,8 @@ public final class YearWeek
     }
 
     // from IsoFields in ThreeTen-Backport
-    private static int weekRange(int wby) {
-        LocalDate date = LocalDate.of(wby, 1, 1);
+    private static int weekRange(int weekBasedYear) {
+        LocalDate date = LocalDate.of(weekBasedYear, 1, 1);
         // 53 weeks if standard year starts on Thursday, or Wed in a leap year
         if (date.getDayOfWeek() == THURSDAY || (date.getDayOfWeek() == WEDNESDAY && date.isLeapYear())) {
             return 53;
@@ -227,7 +225,7 @@ public final class YearWeek
             if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
-            return of(temporal.get(WEEK_BASED_YEAR), temporal.get(WEEK_OF_WEEK_BASED_YEAR));
+            return of(temporal.get(WEEK_BASED_YEAR), (int) temporal.getLong(WEEK_OF_WEEK_BASED_YEAR));
         } catch (DateTimeException ex) {
             throw new DateTimeException("Unable to obtain YearWeek from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
@@ -299,7 +297,7 @@ public final class YearWeek
         if (year == newYear && week == newWeek) {
             return this;
         }
-        return of(newWeek, newWeek);
+        return of(newYear, newWeek);
     }
 
     //-----------------------------------------------------------------------
@@ -605,8 +603,15 @@ public final class YearWeek
      * @return the date formed from this year-week and the specified day, not null
      */
     public LocalDate atDay(DayOfWeek dayOfWeek) {
-        // TODO
-        return null;
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
+        int correction = LocalDate.of(year, 1, 4).getDayOfWeek().getValue() + 3;
+        int dayOfYear = week * 7 + dayOfWeek.getValue() - correction;
+        if (dayOfYear > 0) {
+            return LocalDate.ofYearDay(year, dayOfYear);
+        } else {
+            int daysOfPreviousYear = Year.isLeap(year - 1) ? 366 : 365;
+            return LocalDate.ofYearDay(year - 1, daysOfPreviousYear + dayOfYear);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -701,7 +706,7 @@ public final class YearWeek
             }
             buf.append(year);
         }
-        return buf.append(week < 10 ? "-W0" : "-W").toString();
+        return buf.append(week < 10 ? "-W0" : "-W").append(week).toString();
     }
 
 }
