@@ -340,7 +340,7 @@ public final class YearWeek
     }
 
     /**
-     * Formats this year-quarter using the specified formatter.
+     * Formats this year-week using the specified formatter.
      * <p>
      * This year-week will be passed to the formatter to produce a string.
      *
