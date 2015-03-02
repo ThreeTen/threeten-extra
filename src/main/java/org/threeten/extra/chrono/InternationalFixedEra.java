@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.threeten.extra.chrono;
 
 import java.time.DateTimeException;
@@ -46,11 +45,12 @@ import java.time.chrono.Era;
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code InternationalFixedEra}.
  * Use {@code getValue()} instead.</b>
- * <p>
+ *
  * <h3>Implementation Requirements:</h3>
  * This is an immutable and thread-safe enum.
  */
 public enum InternationalFixedEra implements Era {
+
     /**
      * The singleton instance for the current era, 'Current Era',
      * which has the numeric value 1.
@@ -64,15 +64,14 @@ public enum InternationalFixedEra implements Era {
      * {@code InternationalFixedEra} is an enum representing the International Fixed era of CE.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param era the CE value to represent, only 1 (CE)
-     * @throws DateTimeException if the value is invalid
+     * @param era  the CE value to represent, only 1 (CE)
      * @return the era singleton, not null
+     * @throws DateTimeException if the value is invalid
      */
     public static InternationalFixedEra of(final int era) {
-        if (1 == era) {
+        if (era == 1) {
             return CE;
         }
-
         throw new DateTimeException("Invalid era: " + era);
     }
 
@@ -88,4 +87,5 @@ public enum InternationalFixedEra implements Era {
     public int getValue() {
         return ordinal();
     }
+
 }

@@ -29,22 +29,20 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.threeten.extra.chrono;
 
 import java.io.Serializable;
-
 import java.time.Clock;
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.ZoneId;
-
 import java.time.chrono.AbstractChronology;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Era;
-
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.ValueRange;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,7 +53,7 @@ import java.util.List;
  * It shares the leap year rule with the Gregorian calendar.
  * Dates are aligned such that {@code 0001-01-01 (International Fixed)} is {@code 0001-01-01 (ISO)}.
  * <p>
- * This class is proleptic.  It implements only years greater or equal to 1.
+ * This class is proleptic. It implements only years greater or equal to 1.
  * <p>
  * This class implements a calendar where January 1st is the start of the year.
  * <p>
@@ -77,6 +75,7 @@ import java.util.List;
  * This class is immutable and thread-safe.
  */
 public final class InternationalFixedChronology extends AbstractChronology implements Serializable {
+
     /**
      * Singleton instance for the International fixed chronology.
      */
@@ -173,8 +172,8 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     static final ValueRange EMPTY_RANGE = ValueRange.of(0, 0);
 
     /**
-     * Public constructor, in order to satisfy the {@code ServiceLoader}.
-     * @deprecated  Use the singleton {@link #INSTANCE} instead.
+     * Private constructor, that is public to satisfy the {@code ServiceLoader}.
+     * @deprecated Use the singleton {@link #INSTANCE} instead.
      */
     @Deprecated
     public InternationalFixedChronology() {
@@ -225,16 +224,16 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Obtains a local date in International Fixed calendar system from the
      * era, year-of-era, month-of-year and day-of-month fields.
      *
-     * @param era        the International Fixed era, not null
+     * @param era  the International Fixed era, not null
      * @param yearOfEra  the year-of-era
-     * @param month      the month-of-year
-     * @param dayOfMonth the day-of-month
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
      * @return the International Fixed local date, not null
      * @throws DateTimeException if unable to create the date
      * @throws ClassCastException if the {@code era} is not a {@code InternationalFixedEra}
      */
     @Override
-    public InternationalFixedDate date(final Era era, final int yearOfEra, final int month, final int dayOfMonth) {
+    public InternationalFixedDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -242,14 +241,14 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Obtains a local date in International Fixed calendar system from the
      * proleptic-year, month-of-year and day-of-month fields.
      *
-     * @param prolepticYear the proleptic-year
-     * @param month         the month-of-year
-     * @param dayOfMonth    the day-of-month
+     * @param prolepticYear  the proleptic-year
+     * @param month  the month-of-year
+     * @param dayOfMonth  the day-of-month
      * @return the International Fixed local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public InternationalFixedDate date(final int prolepticYear, final int month, final int dayOfMonth) {
+    public InternationalFixedDate date(int prolepticYear, int month, int dayOfMonth) {
         return InternationalFixedDate.of(prolepticYear, month, dayOfMonth);
     }
 
@@ -257,15 +256,15 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Obtains a local date in International Fixed calendar system from the
      * era, year-of-era and day-of-year fields.
      *
-     * @param era       the International Fixed era, not null
-     * @param yearOfEra the year-of-era
-     * @param dayOfYear the day-of-year
+     * @param era  the International Fixed era, not null
+     * @param yearOfEra  the year-of-era
+     * @param dayOfYear  the day-of-year
      * @return the International Fixed local date, not null
      * @throws DateTimeException if unable to create the date
      * @throws ClassCastException if the {@code era} is not a {@code InternationalFixedEra}
      */
     @Override
-    public InternationalFixedDate dateYearDay(final Era era, final int yearOfEra, final int dayOfYear) {
+    public InternationalFixedDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -273,30 +272,29 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Obtains a local date in International Fixed calendar system from the
      * proleptic-year and day-of-year fields.
      *
-     * @param prolepticYear the proleptic-year
-     * @param dayOfYear     the day-of-year
+     * @param prolepticYear  the proleptic-year
+     * @param dayOfYear  the day-of-year
      * @return the International Fixed local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public InternationalFixedDate dateYearDay(final int prolepticYear, final int dayOfYear) {
+    public InternationalFixedDate dateYearDay(int prolepticYear, int dayOfYear) {
         return InternationalFixedDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
     /**
      * Obtains a local date in the International Fixed calendar system from the epoch-day.
      *
-     * @param epochDay the epoch day
+     * @param epochDay  the epoch day
      * @return the International Fixed local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public InternationalFixedDate dateEpochDay(final long epochDay) {
+    public InternationalFixedDate dateEpochDay(long epochDay) {
         return InternationalFixedDate.ofEpochDay(epochDay);
     }
 
     //-------------------------------------------------------------------------
-
     /**
      * Obtains the current International Fixed local date from the system clock in the default time-zone.
      * <p>
@@ -323,12 +321,12 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @param zone the zone ID to use, not null
+     * @param zone  the zone ID to use, not null
      * @return the current International Fixed local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public InternationalFixedDate dateNow(final ZoneId zone) {
+    public InternationalFixedDate dateNow(ZoneId zone) {
         return InternationalFixedDate.now(zone);
     }
 
@@ -339,12 +337,12 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
-     * @param clock the clock to use, not null
+     * @param clock  the clock to use, not null
      * @return the current International Fixed local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public InternationalFixedDate dateNow(final Clock clock) {
+    public InternationalFixedDate dateNow(Clock clock) {
         return InternationalFixedDate.now(clock);
     }
 
@@ -352,13 +350,53 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Obtains a International Fixed local date from another date-time object.
      *
-     * @param temporal the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the International Fixed local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override
-    public InternationalFixedDate date(final TemporalAccessor temporal) {
+    public InternationalFixedDate date(TemporalAccessor temporal) {
         return InternationalFixedDate.from(temporal);
+    }
+
+    /**
+     * Obtains a International Fixed local date-time from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the International Fixed local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoLocalDateTime<InternationalFixedDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<InternationalFixedDate>) super.localDateTime(temporal);
+    }
+
+    /**
+     * Obtains a International Fixed zoned date-time from another date-time object.
+     *
+     * @param temporal  the date-time object to convert, not null
+     * @return the International Fixed zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<InternationalFixedDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<InternationalFixedDate>) super.zonedDateTime(temporal);
+    }
+
+    /**
+     * Obtains a International Fixed zoned date-time in this chronology from an {@code Instant}.
+     *
+     * @param instant  the instant to create the date-time from, not null
+     * @param zone  the time-zone, not null
+     * @return the International Fixed zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ChronoZonedDateTime<InternationalFixedDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<InternationalFixedDate>) super.zonedDateTime(instant, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -366,17 +404,13 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Checks if the specified year is a leap year.
      * <p>
      * A leap-year is a year of a longer length than normal.
-     * The exact meaning is determined by the chronology according to the following constraints.
-     * <ul>
-     * <li>a leap-year must imply a year-length longer than a non leap-year.
-     * <li>a chronology that does not support the concept of a year must return false.
-     * </ul>
+     * Leap years in the calendar system match those of the ISO calendar system.
      *
-     * @param year the proleptic-year to check, not validated for range
+     * @param year  the proleptic-year to check, not validated for range
      * @return true if the year is a leap year
      */
     @Override
-    public boolean isLeapYear(final long year) {
+    public boolean isLeapYear(long year) {
         return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
     }
 
@@ -384,33 +418,21 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Creates the chronology era object from the numeric value.
      * <p>
-     * The era is, conceptually, the largest division of the time-line.
-     * Most calendar systems have a single epoch dividing the time-line into two eras.
-     * However, some have multiple eras, such as one for the reign of each leader.
-     * The exact meaning is determined by the chronology according to the following constraints.
-     * <p>
-     * The era in use at 1970-01-01 must have the value 1.
-     * Later eras must have sequentially higher values.
-     * Earlier eras must have sequentially lower values.
-     * Each chronology must refer to an enum or similar singleton to provide the era values.
-     * <p>
-     * This method returns the singleton era of the correct type for the specified era value.
+     * Only one era is supported, CE, with the value 1.
      *
-     * @param eraValue the era value
+     * @param eraValue  the era value
      * @return the calendar system era, not null
      * @throws DateTimeException if unable to create the era
      */
     @Override
-    public InternationalFixedEra eraOf(final int eraValue) {
+    public InternationalFixedEra eraOf(int eraValue) {
         return InternationalFixedEra.of(eraValue);
     }
 
     /**
      * Gets the list of eras for the chronology.
      * <p>
-     * Most calendar systems have an era, within which the year has meaning.
-     * If the calendar system does not support the concept of eras, an empty
-     * list must be returned.
+     * Only one era is supported, CE, with the value 1.
      *
      * @return the list of eras for the chronology, may be immutable, not null
      */
@@ -420,11 +442,8 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public ValueRange range(final ChronoField field) {
+    public ValueRange range(ChronoField field) {
         switch (field) {
             case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                 return ALIGNED_DAY_OF_WEEK_IN_YEAR_RANGE;
@@ -456,30 +475,24 @@ public final class InternationalFixedChronology extends AbstractChronology imple
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public int prolepticYear(final Era era, final int yearOfEra) {
+    public int prolepticYear(Era era, int yearOfEra) {
         if (!(era instanceof InternationalFixedEra)) {
             throw new ClassCastException("Invalid era: " + era);
         }
-
         YEAR_RANGE.checkValidIntValue(yearOfEra, ChronoField.YEAR_OF_ERA);
-
         return yearOfEra;
     }
 
     /**
      * Get the count of leap years since International fixed year 1.
-     * <p/>
      *
      * @param prolepticYear The year.
      * @return The number of leap years since International fixed year 1.
      */
-    static long getLeapYearsBefore(final long prolepticYear) {
+    static long getLeapYearsBefore(long prolepticYear) {
         long yearBefore = prolepticYear - 1;
-
         return (yearBefore / 4) - (yearBefore / 100) + (yearBefore / 400);
     }
+
 }
