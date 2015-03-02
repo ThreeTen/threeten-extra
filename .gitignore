@@ -15,3 +15,8 @@
 *.war
 *.ear
 **TempTest.java
+# IDEA meta files
+/.idea/
+/*.iml
+/*.ipr
+/*.iws
