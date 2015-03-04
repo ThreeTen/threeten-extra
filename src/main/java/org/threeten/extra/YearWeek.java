@@ -33,7 +33,6 @@ package org.threeten.extra;
 
 import static java.time.DayOfWeek.THURSDAY;
 import static java.time.DayOfWeek.WEDNESDAY;
-import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 
@@ -42,7 +41,6 @@ import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.chrono.Chronology;
@@ -66,23 +64,23 @@ import java.util.Objects;
 /**
  * A year-week in the ISO week date system such as {@code 2015-W13}
  * <p>
- * {@code YearWeek} is an immutable date-time object that represents the combination
- * of a week-based-year and week-of-week-based-year.
- * Any field that can be derived from those two fields can be obtained.
+ * {@code YearWeek} is an immutable date-time object that represents the
+ * combination of a week-based-year and week-of-week-based-year. Any field that
+ * can be derived from those two fields can be obtained.
  * <p>
- * This class does not store or represent a day, time or time-zone.
- * For example, the value "13th week of 2007" can be stored in a {@code YearWeek}.
+ * This class does not store or represent a day, time or time-zone. For example,
+ * the value "13th week of 2007" can be stored in a {@code YearWeek}.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
- * system, in which today's rules for leap years are applied for all time.
- * For most applications written today, the ISO-8601 rules are entirely suitable.
- * However, any application that makes use of historical dates, and requires them
- * to be accurate will find the ISO-8601 approach unsuitable.
+ * system, in which today's rules for leap years are applied for all time. For
+ * most applications written today, the ISO-8601 rules are entirely suitable.
+ * However, any application that makes use of historical dates, and requires
+ * them to be accurate will find the ISO-8601 approach unsuitable.
  * <p>
- * ISO-8601 defines the week as always starting with Monday.
- * The first week is the week which contains the first Thursday of the calendar year.
- * As such, the week-based-year used in this class does not align with the calendar year.
+ * ISO-8601 defines the week as always starting with Monday. The first week is
+ * the week which contains the first Thursday of the calendar year. As such, the
+ * week-based-year used in this class does not align with the calendar year.
  *
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
@@ -103,9 +101,9 @@ public final class YearWeek
      */
     private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendValue(IsoFields.WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral("-W")
-            .appendValue(IsoFields.WEEK_OF_WEEK_BASED_YEAR, 2)
+            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
             .toFormatter();
 
     /**
@@ -119,31 +117,36 @@ public final class YearWeek
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains the current year-week from the system clock in the default time-zone.
+     * Obtains the current year-week from the system clock in the default
+     * time-zone.
      * <p>
-     * This will query the {@link java.time.Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current year-week.
-     * The zone and offset will be set based on the time-zone in the clock.
+     * This will query the
+     * {@link java.time.Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current year-week. The zone and offset will be
+     * set based on the time-zone in the clock.
      * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
+     * Using this method will prevent the ability to use an alternate clock for
+     * testing because the clock is hard-coded.
      *
-     * @return the current year-week using the system clock and default time-zone, not null
+     * @return the current year-week using the system clock and default
+     * time-zone, not null
      */
     public static YearWeek now() {
         return now(Clock.systemDefaultZone());
     }
 
     /**
-     * Obtains the current year-week from the system clock in the specified time-zone.
+     * Obtains the current year-week from the system clock in the specified
+     * time-zone.
      * <p>
-     * This will query the {@link Clock#system(java.time.ZoneId) system clock} to obtain the current year-week.
-     * Specifying the time-zone avoids dependence on the default time-zone.
+     * This will query the {@link Clock#system(java.time.ZoneId) system clock}
+     * to obtain the current year-week. Specifying the time-zone avoids
+     * dependence on the default time-zone.
      * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
+     * Using this method will prevent the ability to use an alternate clock for
+     * testing because the clock is hard-coded.
      *
-     * @param zone  the zone ID to use, not null
+     * @param zone the zone ID to use, not null
      * @return the current year-week using the system clock, not null
      */
     public static YearWeek now(ZoneId zone) {
@@ -154,10 +157,11 @@ public final class YearWeek
      * Obtains the current year-week from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current year-week.
-     * Using this method allows the use of an alternate clock for testing.
-     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     * Using this method allows the use of an alternate clock for testing. The
+     * alternate clock may be introduced using
+     * {@link Clock dependency injection}.
      *
-     * @param clock  the clock to use, not null
+     * @param clock the clock to use, not null
      * @return the current year-week, not null
      */
     public static YearWeek now(Clock clock) {
@@ -169,11 +173,12 @@ public final class YearWeek
     /**
      * Obtains an instance of {@code YearWeek} from a week-based-year and week.
      * <p>
-     * If the week is 53 and the year does not have 53 weeks, week one of the following
-     * year is selected.
+     * If the week is 53 and the year does not have 53 weeks, week one of the
+     * following year is selected.
      *
-     * @param weekBasedYear  the week-based-year to represent, from MIN_YEAR to MAX_YEAR
-     * @param week  the week-of-week-based-year to represent, from 1 to 53
+     * @param weekBasedYear the week-based-year to represent, from MIN_YEAR to
+     * MAX_YEAR
+     * @param week the week-of-week-based-year to represent, from 1 to 53
      * @return the year-week, not null
      * @throws DateTimeException if either field is invalid
      */
@@ -189,8 +194,8 @@ public final class YearWeek
     }
 
     // from IsoFields in ThreeTen-Backport
-    private static int weekRange(int wby) {
-        LocalDate date = LocalDate.of(wby, 1, 1);
+    private static int weekRange(int weekBasedYear) {
+        LocalDate date = LocalDate.of(weekBasedYear, 1, 1);
         // 53 weeks if standard year starts on Thursday, or Wed in a leap year
         if (date.getDayOfWeek() == THURSDAY || (date.getDayOfWeek() == WEDNESDAY && date.isLeapYear())) {
             return 53;
@@ -202,19 +207,22 @@ public final class YearWeek
     /**
      * Obtains an instance of {@code YearWeek} from a temporal object.
      * <p>
-     * This obtains a year-week based on the specified temporal.
-     * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
-     * which this factory converts to an instance of {@code YearWeek}.
+     * This obtains a year-week based on the specified temporal. A
+     * {@code TemporalAccessor} represents an arbitrary set of date and time
+     * information, which this factory converts to an instance of
+     * {@code YearWeek}.
      * <p>
-     * The conversion extracts the {@link IsoFields#WEEK_BASED_YEAR WEEK_BASED_YEAR} and
+     * The conversion extracts the
+     * {@link IsoFields#WEEK_BASED_YEAR WEEK_BASED_YEAR} and
      * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR WEEK_OF_WEEK_BASED_YEAR} fields.
      * The extraction is only permitted if the temporal object has an ISO
      * chronology, or can be converted to a {@code LocalDate}.
      * <p>
-     * This method matches the signature of the functional interface {@link TemporalQuery}
-     * allowing it to be used in queries via method reference, {@code YearWeek::from}.
+     * This method matches the signature of the functional interface
+     * {@link TemporalQuery} allowing it to be used in queries via method
+     * reference, {@code YearWeek::from}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal the temporal object to convert, not null
      * @return the year-week, not null
      * @throws DateTimeException if unable to convert to a {@code YearWeek}
      */
@@ -227,23 +235,25 @@ public final class YearWeek
             if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
-            return of(temporal.get(WEEK_BASED_YEAR), temporal.get(WEEK_OF_WEEK_BASED_YEAR));
+            return of(temporal.get(WEEK_BASED_YEAR), (int) temporal.getLong(WEEK_OF_WEEK_BASED_YEAR));
+            // return of(temporal.get(WEEK_BASED_YEAR), (int) temporal.getLong(WEEK_OF_WEEK_BASED_YEAR));
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain YearWeek from TemporalAccessor: " +
-                    temporal + " of type " + temporal.getClass().getName(), ex);
+            throw new DateTimeException("Unable to obtain YearWeek from TemporalAccessor: "
+                    + temporal + " of type " + temporal.getClass().getName(), ex);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearWeek} from a text string such as {@code 2007-W13}.
+     * Obtains an instance of {@code YearWeek} from a text string such as
+     * {@code 2007-W13}.
      * <p>
-     * The string must represent a valid year-week.
-     * Week 53 will be adjusted to week 1 of the following year if necessary.
-     * The format must be {@code YYYY-'W'ww}.
-     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
+     * The string must represent a valid year-week. Week 53 will be adjusted to
+     * week 1 of the following year if necessary. The format must be
+     * {@code YYYY-'W'ww}. Years outside the range 0000 to 9999 must be prefixed
+     * by the plus or minus symbol.
      *
-     * @param text  the text to parse such as "2007-W13", not null
+     * @param text the text to parse such as "2007-W13", not null
      * @return the parsed year-week, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
@@ -252,12 +262,13 @@ public final class YearWeek
     }
 
     /**
-     * Obtains an instance of {@code YearWeek} from a text string using a specific formatter.
+     * Obtains an instance of {@code YearWeek} from a text string using a
+     * specific formatter.
      * <p>
      * The text is parsed using the formatter, returning a year-week.
      *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
+     * @param text the text to parse, not null
+     * @param formatter the formatter to use, not null
      * @return the parsed year-week, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
@@ -270,8 +281,9 @@ public final class YearWeek
     /**
      * Constructor.
      *
-     * @param weekBasedYear  the week-based-year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param week  the week to represent, validated
+     * @param weekBasedYear the week-based-year to represent, validated from
+     * MIN_YEAR to MAX_YEAR
+     * @param week the week to represent, validated
      */
     private YearWeek(int weekBasedYear, int week) {
         this.year = weekBasedYear;
@@ -288,26 +300,26 @@ public final class YearWeek
     }
 
     /**
-     * Returns a copy of this year-week with the new year and week, checking
-     * to see if a new object is in fact required.
+     * Returns a copy of this year-week with the new year and week, checking to
+     * see if a new object is in fact required.
      *
-     * @param newYear  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param newWeek  the week to represent, validated from 1 to 53
+     * @param newYear the year to represent, validated from MIN_YEAR to MAX_YEAR
+     * @param newWeek the week to represent, validated from 1 to 53
      * @return the year-week, not null
      */
     private YearWeek with(int newYear, int newWeek) {
         if (year == newYear && week == newWeek) {
             return this;
         }
-        return of(newWeek, newWeek);
+        return of(newYear, newWeek);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified field is supported.
      * <p>
-     * This checks if this year-week can be queried for the specified field.
-     * If false, then calling the {@link #range(TemporalField) range},
+     * This checks if this year-week can be queried for the specified field. If
+     * false, then calling the {@link #range(TemporalField) range},
      * {@link #get(TemporalField) get} and {@link #with(TemporalField, long)}
      * methods will throw an exception.
      * <p>
@@ -320,11 +332,12 @@ public final class YearWeek
      * All {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
-     * passing {@code this} as the argument.
-     * Whether the field is supported is determined by the field.
+     * is obtained by invoking
+     * {@code TemporalField.isSupportedBy(TemporalAccessor)} passing
+     * {@code this} as the argument. Whether the field is supported is
+     * determined by the field.
      *
-     * @param field  the field to check, null returns false
+     * @param field the field to check, null returns false
      * @return true if the field is supported on this year-week, false if not
      */
     @Override
@@ -341,16 +354,17 @@ public final class YearWeek
     /**
      * Gets the range of valid values for the specified field.
      * <p>
-     * The range object expresses the minimum and maximum valid values for a field.
-     * This year-week is used to enhance the accuracy of the returned range.
-     * If it is not possible to return the range, because the field is not supported
-     * or for some other reason, an exception is thrown.
+     * The range object expresses the minimum and maximum valid values for a
+     * field. This year-week is used to enhance the accuracy of the returned
+     * range. If it is not possible to return the range, because the field is
+     * not supported or for some other reason, an exception is thrown.
      * <p>
      * The range for the {@link IsoFields#WEEK_BASED_YEAR WEEK_BASED_YEAR} and
-     * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR WEEK_OF_WEEK_BASED_YEAR} fields is returned.
-     * All {@link ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR WEEK_OF_WEEK_BASED_YEAR} fields
+     * is returned. All {@link ChronoField} instances will throw an
+     * {@code UnsupportedTemporalTypeException}.
      *
-     * @param field  the field to query the range for, not null
+     * @param field the field to query the range for, not null
      * @return the range of valid values for the field, not null
      * @throws DateTimeException if the range for the field cannot be obtained
      * @throws UnsupportedTemporalTypeException if the field is not supported
@@ -361,29 +375,31 @@ public final class YearWeek
             return WEEK_BASED_YEAR.range();
         }
         if (field == WEEK_OF_WEEK_BASED_YEAR) {
-            return ValueRange.of(1, weekRange(year));
+            return ValueRange.of(1, 52, weekRange(year));
         }
         return TemporalAccessor.super.range(field);
     }
 
     /**
-     * Gets the value of the specified field from this year-week as an {@code int}.
+     * Gets the value of the specified field from this year-week as an
+     * {@code int}.
      * <p>
-     * This queries this year-week for the value for the specified field.
-     * The returned value will always be within the valid range of values for the field.
-     * If it is not possible to return the value, because the field is not supported
-     * or for some other reason, an exception is thrown.
+     * This queries this year-week for the value for the specified field. The
+     * returned value will always be within the valid range of values for the
+     * field. If it is not possible to return the value, because the field is
+     * not supported or for some other reason, an exception is thrown.
      * <p>
      * The value for the {@link IsoFields#WEEK_BASED_YEAR WEEK_BASED_YEAR} and
-     * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR WEEK_OF_WEEK_BASED_YEAR} fields is returned.
-     * All {@link ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR WEEK_OF_WEEK_BASED_YEAR} fields
+     * is returned. All {@link ChronoField} instances will throw an
+     * {@code UnsupportedTemporalTypeException}.
      *
-     * @param field  the field to get, not null
+     * @param field the field to get, not null
      * @return the value for the field
      * @throws DateTimeException if a value for the field cannot be obtained or
-     *  the value is outside the range of valid values for the field
+     * the value is outside the range of valid values for the field
      * @throws UnsupportedTemporalTypeException if the field is not supported or
-     *  the range of values exceeds an {@code int}
+     * the range of values exceeds an {@code int}
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
@@ -398,17 +414,19 @@ public final class YearWeek
     }
 
     /**
-     * Gets the value of the specified field from this year-week as a {@code long}.
+     * Gets the value of the specified field from this year-week as a
+     * {@code long}.
      * <p>
-     * This queries this year-week for the value for the specified field.
-     * If it is not possible to return the value, because the field is not supported
+     * This queries this year-week for the value for the specified field. If it
+     * is not possible to return the value, because the field is not supported
      * or for some other reason, an exception is thrown.
      * <p>
      * The value for the {@link IsoFields#WEEK_BASED_YEAR WEEK_BASED_YEAR} and
-     * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR WEEK_OF_WEEK_BASED_YEAR} fields is returned.
-     * All {@link ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR WEEK_OF_WEEK_BASED_YEAR} fields
+     * is returned. All {@link ChronoField} instances will throw an
+     * {@code UnsupportedTemporalTypeException}.
      *
-     * @param field  the field to get, not null
+     * @param field the field to get, not null
      * @return the value for the field
      * @throws DateTimeException if a value for the field cannot be obtained
      * @throws UnsupportedTemporalTypeException if the field is not supported
@@ -432,7 +450,8 @@ public final class YearWeek
     /**
      * Gets the week-based-year field.
      * <p>
-     * This method returns the primitive {@code int} value for the week-based-year.
+     * This method returns the primitive {@code int} value for the
+     * week-based-year.
      *
      * @return the week-based-year
      */
@@ -443,7 +462,8 @@ public final class YearWeek
     /**
      * Gets the week-of-week-based-year field.
      * <p>
-     * This method returns the primitive {@code int} value for the week of the week-based-year.
+     * This method returns the primitive {@code int} value for the week of the
+     * week-based-year.
      *
      * @return the week-of-week-based-year
      */
@@ -455,8 +475,8 @@ public final class YearWeek
     /**
      * Checks if the week-based-year has 53 weeks.
      * <p>
-     * This determines if the year has 53 weeks, returning true.
-     * If false, the year has 52 weeks.
+     * This determines if the year has 53 weeks, returning true. If false, the
+     * year has 52 weeks.
      *
      * @return true if the year has 53 weeks, false otherwise
      */
@@ -479,14 +499,15 @@ public final class YearWeek
     /**
      * Returns a copy of this {@code YearWeek} with the week-based-year altered.
      * <p>
-     * This returns a year-week with the specified week-based-year.
-     * If the week of this instance is 53 and the new year does not have 53 weeks,
-     * the week will be adjusted to be 52.
+     * This returns a year-week with the specified week-based-year. If the week
+     * of this instance is 53 and the new year does not have 53 weeks, the week
+     * will be adjusted to be 52.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weekBasedYear  the week-based-year to set in the returned year-week
-     * @return a {@code YearWeek} based on this year-week with the requested year, not null
+     * @param weekBasedYear the week-based-year to set in the returned year-week
+     * @return a {@code YearWeek} based on this year-week with the requested
+     * year, not null
      * @throws DateTimeException if the week-based-year value is invalid
      */
     public YearWeek withYear(int weekBasedYear) {
@@ -499,14 +520,15 @@ public final class YearWeek
     /**
      * Returns a copy of this {@code YearWeek} with the week altered.
      * <p>
-     * This returns a year-week with the specified week-of-week-based-year.
-     * If the new week is 53 and the year does not have 53 weeks, week one of the
+     * This returns a year-week with the specified week-of-week-based-year. If
+     * the new week is 53 and the year does not have 53 weeks, week one of the
      * following year is selected.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param week  the week-of-week-based-year to set in the returned year-week
-     * @return a {@code YearWeek} based on this year-week with the requested week, not null
+     * @param week the week-of-week-based-year to set in the returned year-week
+     * @return a {@code YearWeek} based on this year-week with the requested
+     * week, not null
      * @throws DateTimeException if the week-of-week-based-year value is invalid
      */
     public YearWeek withWeek(int week) {
@@ -518,19 +540,20 @@ public final class YearWeek
      * Queries this year-week using the specified query.
      * <p>
      * This queries this year-week using the specified query strategy object.
-     * The {@code TemporalQuery} object defines the logic to be used to
-     * obtain the result. Read the documentation of the query to understand
-     * what the result of this method will be.
+     * The {@code TemporalQuery} object defines the logic to be used to obtain
+     * the result. Read the documentation of the query to understand what the
+     * result of this method will be.
      * <p>
      * The result of this method is obtained by invoking the
-     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
-     * specified query passing {@code this} as the argument.
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the specified
+     * query passing {@code this} as the argument.
      *
      * @param <R> the type of the result
-     * @param query  the query to invoke, not null
+     * @param query the query to invoke, not null
      * @return the query result, null may be returned (defined by the query)
      * @throws DateTimeException if unable to query (defined by the query)
-     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     * @throws ArithmeticException if numeric overflow occurs (defined by the
+     * query)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -547,11 +570,12 @@ public final class YearWeek
      * This returns a temporal object of the same observable type as the input
      * with the week-based-year and week changed to be the same as this.
      * <p>
-     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
-     * twice, passing {@link IsoFields#WEEK_BASED_YEAR} and
-     * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR} as the fields.
-     * If the specified temporal object does not use the ISO calendar system then
-     * a {@code DateTimeException} is thrown.
+     * The adjustment is equivalent to using
+     * {@link Temporal#with(TemporalField, long)} twice, passing
+     * {@link IsoFields#WEEK_BASED_YEAR} and
+     * {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR} as the fields. If the specified
+     * temporal object does not use the ISO calendar system then a
+     * {@code DateTimeException} is thrown.
      * <p>
      * In most cases, it is clearer to reverse the calling pattern by using
      * {@link Temporal#with(TemporalAdjuster)}:
@@ -563,7 +587,7 @@ public final class YearWeek
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param temporal  the target object to be adjusted, not null
+     * @param temporal the target object to be adjusted, not null
      * @return the adjusted object, not null
      * @throws DateTimeException if unable to make the adjustment
      * @throws ArithmeticException if numeric overflow occurs
@@ -581,7 +605,7 @@ public final class YearWeek
      * <p>
      * This year-week will be passed to the formatter to produce a string.
      *
-     * @param formatter  the formatter to use, not null
+     * @param formatter the formatter to use, not null
      * @return the formatted year-week string, not null
      * @throws DateTimeException if an error occurs during printing
      */
@@ -594,29 +618,39 @@ public final class YearWeek
     /**
      * Combines this year-week with a day-of-week to create a {@code LocalDate}.
      * <p>
-     * This returns a {@code LocalDate} formed from this year-week and the specified day-of-Week.
+     * This returns a {@code LocalDate} formed from this year-week and the
+     * specified day-of-Week.
      * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
      *  LocalDate date = yearWeek.atDay(MONDAY);
      * </pre>
      *
-     * @param dayOfWeek  the day-of-week to use, not null
-     * @return the date formed from this year-week and the specified day, not null
+     * @param dayOfWeek the day-of-week to use, not null
+     * @return the date formed from this year-week and the specified day, not
+     * null
      */
     public LocalDate atDay(DayOfWeek dayOfWeek) {
-        // TODO
-        return null;
+        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
+        int correction = LocalDate.of(year, 1, 4).getDayOfWeek().getValue() + 3;
+        int dayOfYear = week * 7 + dayOfWeek.getValue() - correction;
+        if (dayOfYear > 0) {
+            return LocalDate.ofYearDay(year, dayOfYear);
+        } else {
+            int daysOfPreviousYear = Year.isLeap(year - 1) ? 366 : 365;
+            return LocalDate.ofYearDay(year - 1, daysOfPreviousYear + dayOfYear);
+        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Compares this year-week to another
      * <p>
-     * The comparison is based first on the value of the year, then on the value of the week.
-     * It is "consistent with equals", as defined by {@link Comparable}.
+     * The comparison is based first on the value of the year, then on the value
+     * of the week. It is "consistent with equals", as defined by
+     * {@link Comparable}.
      *
-     * @param other  the other year-week to compare to, not null
+     * @param other the other year-week to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
@@ -631,7 +665,7 @@ public final class YearWeek
     /**
      * Is this year-week after the specified year-week.
      *
-     * @param other  the other year-week to compare to, not null
+     * @param other the other year-week to compare to, not null
      * @return true if this is after the specified year-week
      */
     public boolean isAfter(YearWeek other) {
@@ -641,7 +675,7 @@ public final class YearWeek
     /**
      * Is this year-week before the specified year-week.
      *
-     * @param other  the other year-week to compare to, not null
+     * @param other the other year-week to compare to, not null
      * @return true if this point is before the specified year-week
      */
     public boolean isBefore(YearWeek other) {
@@ -652,7 +686,7 @@ public final class YearWeek
     /**
      * Checks if this year-week is equal to another year-week.
      *
-     * @param obj  the object to check, null returns false
+     * @param obj the object to check, null returns false
      * @return true if this is equal to the other year-week
      */
     @Override
@@ -701,7 +735,9 @@ public final class YearWeek
             }
             buf.append(year);
         }
-        return buf.append(week < 10 ? "-W0" : "-W").toString();
+        buf.append(week < 10 ? "-W0" : "-W");
+        buf.append(week);
+        return buf.toString();
     }
-
+    
 }
