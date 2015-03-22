@@ -128,20 +128,17 @@ public class TestInternationalFixedChronology {
             {InternationalFixedDate.of(1, 13, 28), LocalDate.of(1, 12, 30)},
             {InternationalFixedDate.of(1, 13, 27), LocalDate.of(1, 12, 29)},
             {InternationalFixedDate.of(1, 13, 29), LocalDate.of(1, 12, 31)},
-            {InternationalFixedDate.yearDay(1), LocalDate.of(1, 12, 31)},
             {InternationalFixedDate.of(2, 1, 1), LocalDate.of(2, 1, 1)},
 
             {InternationalFixedDate.of(4, 6, 27), LocalDate.of(4, 6, 15)},
             {InternationalFixedDate.of(4, 6, 28), LocalDate.of(4, 6, 16)},
             {InternationalFixedDate.of(4, 6, 29), LocalDate.of(4, 6, 17)},
-            {InternationalFixedDate.leapDay(4), LocalDate.of(4, 6, 17)},
             {InternationalFixedDate.of(4, 7, 1), LocalDate.of(4, 6, 18)},
             {InternationalFixedDate.of(4, 7, 2), LocalDate.of(4, 6, 19)},
 
             {InternationalFixedDate.of(4, 13, 28), LocalDate.of(4, 12, 30)},
             {InternationalFixedDate.of(4, 13, 27), LocalDate.of(4, 12, 29)},
             {InternationalFixedDate.of(4, 13, 29), LocalDate.of(4, 12, 31)},
-            {InternationalFixedDate.yearDay(4), LocalDate.of(4, 12, 31)},
             {InternationalFixedDate.of(5, 1, 1), LocalDate.of(5, 1, 1)},
 
             {InternationalFixedDate.of(100, 6, 27), LocalDate.of(100, 6, 16)},
@@ -152,7 +149,6 @@ public class TestInternationalFixedChronology {
             {InternationalFixedDate.of(400, 6, 27), LocalDate.of(400, 6, 15)},
             {InternationalFixedDate.of(400, 6, 28), LocalDate.of(400, 6, 16)},
             {InternationalFixedDate.of(400, 6, 29), LocalDate.of(400, 6, 17)},
-            {InternationalFixedDate.leapDay(400), LocalDate.of(400, 6, 17)},
             {InternationalFixedDate.of(400, 7, 1), LocalDate.of(400, 6, 18)},
             {InternationalFixedDate.of(400, 7, 2), LocalDate.of(400, 6, 19)},
 
@@ -296,8 +292,8 @@ public class TestInternationalFixedChronology {
     }
 
     @Test(dataProvider = "badLeapDates", expectedExceptions = DateTimeException.class)
-    public void badLeapDayAndYearDayDates(int year) {
-        InternationalFixedDate.leapDay(year);
+    public void badLeapDayDates(int year) {
+        InternationalFixedDate.of(year, 6, 29);
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -361,11 +357,8 @@ public class TestInternationalFixedChronology {
 
     @Test
     public void test_lengthOfMonth_specific() {
-        assertEquals(InternationalFixedDate.yearDay(1900).lengthOfMonth(), 29);
         assertEquals(InternationalFixedDate.of(1900, 13, 29).lengthOfMonth(), 29);
-        assertEquals(InternationalFixedDate.yearDay(2000).lengthOfMonth(), 29);
         assertEquals(InternationalFixedDate.of(2000, 13, 29).lengthOfMonth(), 29);
-        assertEquals(InternationalFixedDate.leapDay(2000).lengthOfMonth(), 29);
         assertEquals(InternationalFixedDate.of(2000, 6, 29).lengthOfMonth(), 29);
     }
 
@@ -1265,28 +1258,24 @@ public class TestInternationalFixedChronology {
     @DataProvider(name = "equals")
     Object[][] data_equals() {
         return new Object[][] {
-            {InternationalFixedDate.of(2000, 1, 3), InternationalFixedDate.of(2000, 1, 3),
+            {InternationalFixedDate.of(2000, 1, 3),
                 InternationalFixedDate.of(2000, 1, 4), InternationalFixedDate.of(2000, 2, 3), InternationalFixedDate.of(2001, 1, 3)},
-            {InternationalFixedDate.of(2000, 13, 29), InternationalFixedDate.yearDay(2000),
+            {InternationalFixedDate.of(2000, 13, 29),
                 InternationalFixedDate.of(2000, 13, 28), InternationalFixedDate.of(2001, 1, 1), InternationalFixedDate.of(2001, 13, 29)},
-            {InternationalFixedDate.of(2000, 6, 29), InternationalFixedDate.leapDay(2000),
+            {InternationalFixedDate.of(2000, 6, 29),
                 InternationalFixedDate.of(2000, 6, 28), InternationalFixedDate.of(2000, 7, 1), InternationalFixedDate.of(2004, 6, 29)},
         };
     }
 
     @Test(dataProvider = "equals")
-    void test_equals(InternationalFixedDate a1, InternationalFixedDate a2,
-            InternationalFixedDate b, InternationalFixedDate c, InternationalFixedDate d) {
+    void test_equals(InternationalFixedDate a1, InternationalFixedDate b, InternationalFixedDate c, InternationalFixedDate d) {
         assertTrue(a1.equals(a1));
-        assertTrue(a1.equals(a2));
         assertFalse(a1.equals(b));
         assertFalse(a1.equals(c));
         assertFalse(a1.equals(d));
 
         assertFalse(a1.equals(null));
         assertFalse("".equals(a1));
-
-        assertEquals(a1.hashCode(), a2.hashCode());
     }
 
     //-----------------------------------------------------------------------
@@ -1298,11 +1287,8 @@ public class TestInternationalFixedChronology {
             {InternationalFixedDate.of(1, 1, 1), "Ifc CE 1/01/01"},
             {InternationalFixedDate.of(2012, 6, 23), "Ifc CE 2012/06/23"},
 
-            {InternationalFixedDate.yearDay(1), "Ifc CE 1/13/29"},
             {InternationalFixedDate.of(1, 13, 29), "Ifc CE 1/13/29"},
-            {InternationalFixedDate.leapDay(2012), "Ifc CE 2012/06/29"},
             {InternationalFixedDate.of(2012, 6, 29), "Ifc CE 2012/06/29"},
-            {InternationalFixedDate.yearDay(2012), "Ifc CE 2012/13/29"},
             {InternationalFixedDate.of(2012, 13, 29), "Ifc CE 2012/13/29"},
         };
     }

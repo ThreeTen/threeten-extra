@@ -212,36 +212,6 @@ public final class InternationalFixedDate
         return create(prolepticYear, month, dayOfMonth);
     }
 
-    /**
-     * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the out-of-month day of Leap Day, which follows the last day in June and precedes Sol 1.
-     * <p>
-     * This returns a {@code InternationalFixedDate} with the specified fields.
-     *
-     * @param prolepticYear  the International fixed proleptic-year
-     * @return the date in International fixed calendar system, not null
-     * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-month is invalid for the month-year
-     */
-    public static InternationalFixedDate leapDay(int prolepticYear) {
-        return create(prolepticYear, 6, 29);
-    }
-
-    /**
-     * Obtains a {@code InternationalFixedDate} representing a date in the International fixed calendar
-     * system from the proleptic-year, for the out-of-month day of Year Day, which follows the last day in December.
-     * <p>
-     * This returns a {@code InternationalFixedDate} with the specified fields.
-     *
-     * @param prolepticYear  the International fixed proleptic-year
-     * @return the date in International fixed calendar system, not null
-     * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-month is invalid for the month-year
-     */
-    public static InternationalFixedDate yearDay(int prolepticYear) {
-        return create(prolepticYear, 13, 29);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code InternationalFixedDate} from a temporal object.
