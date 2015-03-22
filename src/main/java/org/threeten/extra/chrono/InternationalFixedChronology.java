@@ -63,11 +63,12 @@ import java.util.List;
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year 1.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the current era.
  * <li>month-of-year - There are 13 months in an International Fixed year, numbered from 1 to 13.
- * <li>day-of-month - There are 28 days in an International Fixed month, numbered from 1 to 28.
+ * <li>day-of-month - There are 28 days in a standard International Fixed month, numbered from 1 to 28,
+ *  with day 29 used in months 6 and 12 (month 6 only has 29 days in a leap year).
  * <li>day-of-year - There are 365 days in a standard International Fixed year and 366 days in a leap year.
  *  The days are numbered accordingly.
- * <li>leap-year - Leap years occur every 4 years, but skips 3 out of four centuries, i.e. when the century is not divisible by 400.
- *  This is the same rule in use for the Gregorian calendar.
+ * <li>leap-year - Leap years occur every 4 years, but skips 3 out of four centuries, i.e. when the century
+ *  is not divisible by 400. This is the same rule in use for the Gregorian calendar.
  * <li>Week day - every month starts on a Sunday.  Leap-day and year-day are neither part of a week, nor of any month.
  * </ul>
  *
@@ -101,13 +102,9 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      */
     static final int DAYS_IN_MONTH = WEEKS_IN_MONTH * DAYS_IN_WEEK;
     /**
-     * Range of aligned day-of-week.
+     * There are 29 days in a long month.
      */
-    static final ValueRange ALIGNED_DAY_OF_WEEK_IN_YEAR_RANGE = ValueRange.of(1, DAYS_IN_WEEK);
-    /**
-     * Range of day-of-week.
-     */
-    static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(1, DAYS_IN_WEEK);
+    static final int DAYS_IN_LONG_MONTH = DAYS_IN_MONTH + 1;
     /**
      * There are 13 months of 28 days, or 365 days in a (non-leap) year.
      */
@@ -142,14 +139,6 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      * Range of day of month.
      */
     static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(1, DAYS_IN_MONTH + 1);
-    /**
-     * Range of week of year.
-     */
-    static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, WEEKS_IN_YEAR);
-    /**
-     * Range of aligned week of month, the weeks are always perfectly aligned.
-     */
-    static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(0, 1, 0, WEEKS_IN_MONTH);
     /**
      * Range of day of year.
      */
@@ -205,18 +194,17 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     }
 
     /**
-     * Gets the calendar type of the underlying calendar system - 'ifc'.
+     * Gets the calendar type of the underlying calendar system, which returns null.
      * <p>
      * The <em>Unicode Locale Data Markup Language (LDML)</em> specification
-     * does not define an identifier for the International Fixed calendar, but were it to
-     * do so, 'ifc' is highly likely to be chosen.
+     * does not define an identifier for this calendar system, thus null is returned.
      *
-     * @return the calendar system type - 'ifc'
+     * @return the calendar system type, null
      * @see #getId()
      */
     @Override
     public String getCalendarType() {
-        return "ifc";
+        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -446,15 +434,13 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     public ValueRange range(ChronoField field) {
         switch (field) {
             case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                return ALIGNED_DAY_OF_WEEK_IN_YEAR_RANGE;
             case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                return ValueRange.of(1, DAYS_IN_WEEK);
             case DAY_OF_WEEK:
-                return DAY_OF_WEEK_RANGE;
+                return ValueRange.of(0, 1, 0, DAYS_IN_WEEK);
             case ALIGNED_WEEK_OF_MONTH:
-                return ValueRange.of(1, WEEKS_IN_MONTH);
+                return ValueRange.of(0, 1, 0, WEEKS_IN_MONTH);
             case ALIGNED_WEEK_OF_YEAR:
-                return WEEK_OF_YEAR_RANGE;
+                return ValueRange.of(0, 1, 0, WEEKS_IN_YEAR);
             case DAY_OF_MONTH:
                 return DAY_OF_MONTH_RANGE;
             case DAY_OF_YEAR:

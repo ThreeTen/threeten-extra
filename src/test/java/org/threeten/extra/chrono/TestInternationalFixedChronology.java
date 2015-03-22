@@ -99,16 +99,7 @@ public class TestInternationalFixedChronology {
         assertNotNull(chrono);
         assertEquals(chrono, InternationalFixedChronology.INSTANCE);
         assertEquals(chrono.getId(), "Ifc");
-        assertEquals(chrono.getCalendarType(), "ifc");
-    }
-
-    @Test
-    public void test_chronology_of_name_id() {
-        Chronology chrono = Chronology.of("ifc");
-        assertNotNull(chrono);
-        assertEquals(chrono, InternationalFixedChronology.INSTANCE);
-        assertEquals(chrono.getId(), "Ifc");
-        assertEquals(chrono.getCalendarType(), "ifc");
+        assertEquals(chrono.getCalendarType(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -313,6 +304,7 @@ public class TestInternationalFixedChronology {
         for (int year = 1; year < 500; year++) {
             InternationalFixedDate base = InternationalFixedDate.of(year, 1, 1);
             assertEquals(base.isLeapYear(), isLeapYear.test(year), "Year " + year + " is failing");
+            assertEquals(base.lengthOfYear(), isLeapYear.test(year) ? 366 : 365);
             assertEquals(InternationalFixedChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year), "Year " + year + " is failing leap-year test");
         }
     }
@@ -353,6 +345,11 @@ public class TestInternationalFixedChronology {
     @Test(dataProvider = "lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int day, int length) {
         assertEquals(InternationalFixedDate.of(year, month, day).lengthOfMonth(), length);
+    }
+
+    @Test(dataProvider = "lengthOfMonth")
+    public void test_lengthOfMonthFirst(int year, int month, int day, int length) {
+        assertEquals(InternationalFixedDate.of(year, month, 1).lengthOfMonth(), length);
     }
 
     @Test
@@ -442,11 +439,11 @@ public class TestInternationalFixedChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(1, 7));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(1, 7));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(1, 4));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(0, 52));
-        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(1, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(0, 1, 0, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(0, 1, 0, 7));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(0, 1, 0, 4));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(0, 1, 0, 52));
+        assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(0, 1, 0, 7));
         assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(1, 29));
         assertEquals(InternationalFixedChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
         assertEquals(InternationalFixedChronology.INSTANCE.range(ERA), ValueRange.of(1, 1));
@@ -487,15 +484,34 @@ public class TestInternationalFixedChronology {
             {2012, 6, 29, ALIGNED_DAY_OF_WEEK_IN_MONTH, ValueRange.of(0, 0)},
             {2012, 13, 29, ALIGNED_DAY_OF_WEEK_IN_MONTH, ValueRange.of(0, 0)},
             {2012, 1, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, ValueRange.of(1, 7)},
+            {2012, 6, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, ValueRange.of(1, 7)},
+            {2012, 12, 23, ALIGNED_DAY_OF_WEEK_IN_MONTH, ValueRange.of(1, 7)},
             // Leap Day/Year Day in own months, so (0 to 0) or (1 to 4)
             {2012, 6, 29, ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 0)},
             {2012, 13, 29, ALIGNED_WEEK_OF_MONTH, ValueRange.of(0, 0)},
             {2012, 1, 23, ALIGNED_WEEK_OF_MONTH, ValueRange.of(1, 4)},
+            {2012, 6, 23, ALIGNED_WEEK_OF_MONTH, ValueRange.of(1, 4)},
+            {2012, 12, 23, ALIGNED_WEEK_OF_MONTH, ValueRange.of(1, 4)},
+            // Leap Day/Year Day in own months, so (0 to 0) or (1 to 7)
+            {2012, 6, 29, ALIGNED_DAY_OF_WEEK_IN_YEAR, ValueRange.of(0, 0)},
+            {2012, 13, 29, ALIGNED_DAY_OF_WEEK_IN_YEAR, ValueRange.of(0, 0)},
+            {2012, 1, 23, ALIGNED_DAY_OF_WEEK_IN_YEAR, ValueRange.of(1, 7)},
+            {2012, 6, 23, ALIGNED_DAY_OF_WEEK_IN_YEAR, ValueRange.of(1, 7)},
+            {2012, 12, 23, ALIGNED_DAY_OF_WEEK_IN_YEAR, ValueRange.of(1, 7)},
+            // Leap Day/Year Day in own months, so (0 to 0) or (1 to 4)
+            {2012, 6, 29, ALIGNED_WEEK_OF_YEAR, ValueRange.of(0, 0)},
+            {2012, 13, 29, ALIGNED_WEEK_OF_YEAR, ValueRange.of(0, 0)},
+            {2012, 1, 23, ALIGNED_WEEK_OF_YEAR, ValueRange.of(1, 52)},
+            {2012, 6, 23, ALIGNED_WEEK_OF_YEAR, ValueRange.of(1, 52)},
+            {2012, 12, 23, ALIGNED_WEEK_OF_YEAR, ValueRange.of(1, 52)},
             // Leap Day and Year Day in own 'week's, so (0 to 0) or (1 to 7)
             {2012, 6, 29, DAY_OF_WEEK, ValueRange.of(0, 0)},
             {2012, 13, 29, DAY_OF_WEEK, ValueRange.of(0, 0)},
             {2012, 1, 23, DAY_OF_WEEK, ValueRange.of(1, 7)},
+            {2012, 6, 23, DAY_OF_WEEK, ValueRange.of(1, 7)},
+            {2012, 12, 23, DAY_OF_WEEK, ValueRange.of(1, 7)},
 
+            {2011, 6, 23, DAY_OF_MONTH, ValueRange.of(1, 28)},
             {2011, 13, 23, DAY_OF_YEAR, ValueRange.of(1, 365)},
             {2011, 13, 23, MONTH_OF_YEAR, ValueRange.of(1, 13)},
         };
@@ -550,6 +566,16 @@ public class TestInternationalFixedChronology {
             {2014, 13, 29, MONTH_OF_YEAR, 13},
             {2014, 13, 29, PROLEPTIC_MONTH, 2014 * 13 + 13 - 1},
 
+            {2012, 6, 28, DAY_OF_WEEK, 7},
+            {2012, 6, 28, DAY_OF_MONTH, 28},
+            {2012, 6, 28, DAY_OF_YEAR, 6 * 28},
+            {2012, 6, 28, ALIGNED_DAY_OF_WEEK_IN_MONTH, 7},
+            {2012, 6, 28, ALIGNED_WEEK_OF_MONTH, 4},
+            {2012, 6, 28, ALIGNED_DAY_OF_WEEK_IN_YEAR, 7},
+            {2012, 6, 28, ALIGNED_WEEK_OF_YEAR, 24},
+            {2012, 6, 28, MONTH_OF_YEAR, 6},
+            {2012, 6, 28, PROLEPTIC_MONTH, 2012 * 13 + 6 - 1},
+
             {2012, 6, 29, DAY_OF_WEEK, 0},
             {2012, 6, 29, DAY_OF_MONTH, 29},
             {2012, 6, 29, DAY_OF_YEAR, 6 * 28 + 1},
@@ -559,6 +585,16 @@ public class TestInternationalFixedChronology {
             {2012, 6, 29, ALIGNED_WEEK_OF_YEAR, 0},
             {2012, 6, 29, MONTH_OF_YEAR, 6},
             {2012, 6, 29, PROLEPTIC_MONTH, 2012 * 13 + 6 - 1},
+
+            {2012, 7, 1, DAY_OF_WEEK, 1},
+            {2012, 7, 1, DAY_OF_MONTH, 1},
+            {2012, 7, 1, DAY_OF_YEAR, 6 * 28 + 2},
+            {2012, 7, 1, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1},
+            {2012, 7, 1, ALIGNED_WEEK_OF_MONTH, 1},
+            {2012, 7, 1, ALIGNED_DAY_OF_WEEK_IN_YEAR, 1},
+            {2012, 7, 1, ALIGNED_WEEK_OF_YEAR, 25},
+            {2012, 7, 1, MONTH_OF_YEAR, 7},
+            {2012, 7, 1, PROLEPTIC_MONTH, 2012 * 13 + 7 - 1},
         };
     }
 
@@ -698,6 +734,8 @@ public class TestInternationalFixedChronology {
             {2012, 6, 29, YEAR, 2011, 2011, 6, 28},
             {2012, 6, 29, YEAR, 2016, 2016, 6, 29},
 
+            {2012, 6, 22, DAY_OF_MONTH, 29, 2012, 6, 29},
+
             {2012, 3, 28, DAY_OF_MONTH, 1, 2012, 3, 1},
             {2012, 1, 28, DAY_OF_MONTH, 1, 2012, 1, 1},
             {2012, 3, 28, MONTH_OF_YEAR, 1, 2012, 1, 28},
@@ -763,7 +801,13 @@ public class TestInternationalFixedChronology {
             {2012, 1, 1, MONTH_OF_YEAR, -2},
             {2012, 1, 1, MONTH_OF_YEAR, 14},
 
-            {2013, 1, 1, YEAR, 0}
+            {2013, 1, 1, YEAR, 0},
+
+            {2012, 6, 21, DAY_OF_WEEK, 0},
+            {2012, 6, 21, ALIGNED_DAY_OF_WEEK_IN_MONTH, 0},
+            {2012, 6, 21, ALIGNED_WEEK_OF_MONTH, 0},
+            {2012, 6, 21, ALIGNED_DAY_OF_WEEK_IN_YEAR, 0},
+            {2012, 6, 21, ALIGNED_WEEK_OF_YEAR, 0},
         };
     }
 
@@ -941,6 +985,7 @@ public class TestInternationalFixedChronology {
             {2012, 6, 29, 0, WEEKS, 2012, 6, 29},
             {2012, 6, 8, 3, WEEKS, 2012, 6, 29},
             {2012, 8, 8, -5, WEEKS, 2012, 6, 29},
+            {2012, 6, 29, 28, WEEKS, 2012, 13, 29},
             {2008, 6, 29, 52 * 4, WEEKS, 2012, 6, 29},
             {2012, 6, 29, 0, MONTHS, 2012, 6, 29},
             {2012, 3, 28, 3, MONTHS, 2012, 6, 29},
@@ -1037,6 +1082,7 @@ public class TestInternationalFixedChronology {
             {2014, 13, 22, 2014, 13, 29, WEEKS, 0},
             {2015, 1, 7, 2014, 13, 29, WEEKS, 0},
             {2015, 1, 8, 2014, 13, 29, WEEKS, -1},
+            {2014, 13, 1, 2015, 1, 1, WEEKS, 4},
             {2014, 13, 29, 2014, 13, 29, MONTHS, 0},
             {2014, 13, 29, 2015, 1, 28, MONTHS, 0},
             {2014, 13, 29, 2015, 2, 1, MONTHS, 1},

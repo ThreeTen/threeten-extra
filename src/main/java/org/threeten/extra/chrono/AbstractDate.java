@@ -234,7 +234,7 @@ abstract class AbstractDate
                 case DAYS:
                     return plusDays(amountToAdd);
                 case WEEKS:
-                    return plusDays(Math.multiplyExact(amountToAdd, lengthOfWeek()));
+                    return plusWeeks(amountToAdd);
                 case MONTHS:
                     return plusMonths(amountToAdd);
                 case YEARS:
@@ -274,6 +274,10 @@ abstract class AbstractDate
         return resolvePrevious(newYear, newMonth, getDayOfMonth());
     }
 
+    AbstractDate plusWeeks(long amountToAdd) {
+        return plusDays(Math.multiplyExact(amountToAdd, lengthOfWeek()));
+    }
+
     AbstractDate plusDays(long days) {
         if (days == 0) {
             return this;
@@ -288,7 +292,7 @@ abstract class AbstractDate
                 case DAYS:
                     return daysUntil(end);
                 case WEEKS:
-                    return daysUntil(end) / lengthOfWeek();
+                    return weeksUntil(end);
                 case MONTHS:
                     return monthsUntil(end);
                 case YEARS:
@@ -311,6 +315,10 @@ abstract class AbstractDate
 
     long daysUntil(ChronoLocalDate end) {
         return end.toEpochDay() - toEpochDay();  // no overflow
+    }
+
+    long weeksUntil(AbstractDate end) {
+        return daysUntil(end) / lengthOfWeek();
     }
 
     long monthsUntil(AbstractDate end) {
