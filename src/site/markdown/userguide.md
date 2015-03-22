@@ -30,6 +30,7 @@ These include:
 * [Coptic](apidocs/org/threeten/extra/chrono/CopticChronology.html) calendar system
 * [Discordian](apidocs/org/threeten/extra/chrono/DiscordianChronology.html) calendar system
 * [Ethiopic](apidocs/org/threeten/extra/chrono/EthiopicChronology.html) calendar system
+* [International Fixed](apidocs/org/threeten/extra/chrono/InternationalFixedChronology.html) calendar system
 * [Julian](apidocs/org/threeten/extra/chrono/JulianChronology.html) calendar system
 * [Pax](apidocs/org/threeten/extra/chrono/PaxChronology.html) calendar system
 
