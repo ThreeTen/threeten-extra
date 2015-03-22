@@ -564,7 +564,7 @@ public final class InternationalFixedDate
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                 case DAY_OF_WEEK:
-                    int dom = (isYearDay || isLeapDay) ? 21 : ((getDayOfMonth() - 1 ) / DAYS_IN_WEEK) * DAYS_IN_WEEK;
+                    int dom = (isYearDay || isLeapDay) ? 21 : ((getDayOfMonth() - 1) / DAYS_IN_WEEK) * DAYS_IN_WEEK;
                     return resolvePreviousValid(prolepticYear, month, dom + nval);
                 case ALIGNED_WEEK_OF_MONTH:
                     int d = day == DAYS_IN_MONTH + 1 ? 1 : day % DAYS_IN_WEEK;
