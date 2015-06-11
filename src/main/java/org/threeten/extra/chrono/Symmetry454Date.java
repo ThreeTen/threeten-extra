@@ -31,13 +31,31 @@
  */
 package org.threeten.extra.chrono;
 
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_0001_TO_1970;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_MONTH;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_MONTH_LONG;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_QUARTER;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_WEEK;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_YEAR;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_YEAR_LONG;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_PER_CYCLE;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAY_OF_MONTH_RANGE;
+import static org.threeten.extra.chrono.Symmetry454Chronology.DAY_OF_YEAR_RANGE;
+import static org.threeten.extra.chrono.Symmetry454Chronology.EPOCH_DAY_RANGE;
+import static org.threeten.extra.chrono.Symmetry454Chronology.ERA_RANGE;
+import static org.threeten.extra.chrono.Symmetry454Chronology.INSTANCE;
+import static org.threeten.extra.chrono.Symmetry454Chronology.MONTHS_IN_YEAR;
+import static org.threeten.extra.chrono.Symmetry454Chronology.MONTH_OF_YEAR_RANGE;
+import static org.threeten.extra.chrono.Symmetry454Chronology.WEEKS_IN_MONTH;
+import static org.threeten.extra.chrono.Symmetry454Chronology.WEEKS_IN_YEAR;
+import static org.threeten.extra.chrono.Symmetry454Chronology.YEAR_RANGE;
+
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
@@ -50,53 +68,28 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
-import java.time.temporal.ValueRange;
 import java.time.temporal.UnsupportedTemporalTypeException;
-
-import static org.threeten.extra.chrono.Symmetry454Chronology.INSTANCE;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAY_OF_MONTH_RANGE;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAY_OF_YEAR_RANGE;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_0001_TO_1970;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_MONTH_LONG;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_MONTH;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_QUARTER;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_WEEK;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_YEAR;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_IN_YEAR_LONG;
-import static org.threeten.extra.chrono.Symmetry454Chronology.DAYS_PER_CYCLE;
-import static org.threeten.extra.chrono.Symmetry454Chronology.EPOCH_DAY_RANGE;
-import static org.threeten.extra.chrono.Symmetry454Chronology.ERA_RANGE;
-import static org.threeten.extra.chrono.Symmetry454Chronology.MONTH_OF_YEAR_RANGE;
-import static org.threeten.extra.chrono.Symmetry454Chronology.MONTHS_IN_YEAR;
-import static org.threeten.extra.chrono.Symmetry454Chronology.WEEKS_IN_MONTH;
-import static org.threeten.extra.chrono.Symmetry454Chronology.WEEKS_IN_YEAR;
-import static org.threeten.extra.chrono.Symmetry454Chronology.YEAR_RANGE;
-
+import java.time.temporal.ValueRange;
 
 /**
  * A date in the Symmetry454 calendar system.
  * <p>
-
- * Implements a pure Symmetry454 calendar, as proposed by Dr. Irv Bromberg.
+ * This date operates using the {@linkplain Symmetry454Chronology Symmetry454 calendar}.
+ * This calendar system is a proposed reform calendar system, and is not in common use.
+ * The Symmetry454 calendar differs from the Gregorian in terms of month length, and the leap year rule.
+ * Dates are aligned such that {@code 0001/01/01 (Sym454)} is {@code 0001-01-01 (ISO)}.
+ * The alignment of January 1st happens 40 times within a 293 years cycle, skipping 5, 6, 11 or 12 years in between:
+ *   1,   7,  18,  24,  29,  35,  46,  52,  57,  63,  74,  80,  85,  91, 103, 114, 120, 125, 131, 142,
+ * 148, 153, 159, 170, 176, 181, 187, 198, 210, 216, 221, 227, 238, 244, 249, 255, 266, 272, 277, 283.
  * <p>
-
- * The Symmetry454 year shares the 12 months with the Gregorian calendar.
+ * The implementation is a pure Symmetry454 calendar, as proposed by Dr. Irv Bromberg.
+ * The year shares the 12 months with the Gregorian calendar.
  * The months February, May, August, November span 35 days, all other months consist of 28 days.
  * In leap years, December is extended with a full week, the so-called "leap week".
  * Since each month is made of full weeks, the calendar is perennial, with every date fixed always on the same weekday.
  * Each month starts on a Monday and ends on a Sunday; so does each year.
  * The 13th day of a month is always a Saturday.
  * <p>
- *
- * This date operates using the {@linkplain Symmetry454Chronology Symmetry454 calendar}.
- * This calendar system is a proposed reform calendar system, and is not in common use.
- * The Symmetry454 differs from the Gregorian in terms of month length, and the leap year rule.
- * Dates are aligned such that {@code 0001/01/01 (Sym454)} is {@code 0001-01-01 (ISO)}.
- * The alignment of January 1st happens 40 times within a 293 years cycle, skipping 5, 6, 11 or 12 years in between:
- *   1,   7,  18,  24,  29,  35,  46,  52,  57,  63,  74,  80,  85,  91, 103, 114, 120, 125, 131, 142,
- * 148, 153, 159, 170, 176, 181, 187, 198, 210, 216, 221, 227, 238, 244, 249, 255, 266, 272, 277, 283.
- * <p>
- *
  * More information is available on Wikipedia at
  * <a href='https://http://en.wikipedia.org/wiki/Symmetry454'>Symmetry454</a> or on the calendar's
  * <a href='http://individual.utoronto.ca/kalendis/symmetry.htm'>home page</a>.
@@ -105,7 +98,6 @@ import static org.threeten.extra.chrono.Symmetry454Chronology.YEAR_RANGE;
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  * <p>
- *
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
@@ -114,7 +106,7 @@ public final class Symmetry454Date
         implements ChronoLocalDate, Serializable {
 
     /**
-     * Serialization version UID.
+     * Serialization version.
      */
     private static final long serialVersionUID = -3540913335234762448L;
     /**
@@ -190,8 +182,8 @@ public final class Symmetry454Date
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param prolepticYear  the Symmetry454 proleptic-year
-     * @param month  the Symmetry454 month-of-year, from 1 to 13
-     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28 (29 for Leap Day or Year Day)
+     * @param month  the Symmetry454 month-of-year, from 1 to 12
+     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28 (35 for February, May, August, November; December in a Leap Year)
      * @return the date in Symmetry454 calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
      *  or if the day-of-month is invalid for the month-year
@@ -242,10 +234,9 @@ public final class Symmetry454Date
     static Symmetry454Date ofYearDay(int prolepticYear, int dayOfYear) {
         YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
         DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, ChronoField.DAY_OF_YEAR);
-        boolean isLeapYear = INSTANCE.isLeapYear(prolepticYear);
-
-        if (!isLeapYear && dayOfYear > DAYS_IN_YEAR) {
-            throw new DateTimeException("Invalid day of year: " + prolepticYear + '/' + dayOfYear);
+        boolean leap = INSTANCE.isLeapYear(prolepticYear);
+        if (dayOfYear > DAYS_IN_YEAR && !leap) {
+            throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
         }
 
         int offset = Math.min(dayOfYear, DAYS_IN_YEAR) - 1;
@@ -260,7 +251,6 @@ public final class Symmetry454Date
             month += 1;
             day -= DAYS_IN_MONTH;
         }
-
         return new Symmetry454Date(prolepticYear, month, day);
     }
 
@@ -288,7 +278,6 @@ public final class Symmetry454Date
             doy -= diy;
             year++;
         }
-
         return ofYearDay((int) year, (int) doy);
     }
 
@@ -336,7 +325,6 @@ public final class Symmetry454Date
                 throw new DateTimeException("Invalid date: " + prolepticYear + '/' + month + '/' + dayOfMonth);
             }
         }
-
         return new Symmetry454Date(prolepticYear, month, dayOfMonth);
     }
 
@@ -356,7 +344,6 @@ public final class Symmetry454Date
     }
 
     /**
-     *
      * Validates the object.
      *
      * @return Symmetry454Date the resolved date, not null
@@ -411,12 +398,6 @@ public final class Symmetry454Date
         return ((dayOfYear - 1) / DAYS_IN_WEEK) + 1;
     }
 
-    /**
-     * Returns the day of the week represented by this date.
-     * <p>
-     *
-     * @return the day of the week: between 1 and 7
-     */
     @Override
     int getDayOfWeek() {
         return ((day - 1) % DAYS_IN_WEEK) + 1;
@@ -426,6 +407,11 @@ public final class Symmetry454Date
         return getProlepticMonth() * WEEKS_IN_MONTH + ((getDayOfMonth() - 1) / DAYS_IN_WEEK) - 1;
     }
 
+    /**
+     * Checks if the date is within the leap week.
+     * 
+     * @return true if this date is in the leap week
+     */
     public boolean isLeapWeek() {
         return isLeapYear() && this.dayOfYear > DAYS_IN_YEAR;
     }
@@ -436,7 +422,6 @@ public final class Symmetry454Date
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 ChronoField f = (ChronoField) field;
-
                 switch (f) {
                     case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                     case ALIGNED_DAY_OF_WEEK_IN_YEAR:
@@ -463,7 +448,6 @@ public final class Symmetry454Date
                 throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
             }
         }
-
         return super.range(field);
     }
 
@@ -495,8 +479,7 @@ public final class Symmetry454Date
     /**
      * Gets the era applicable at this date.
      * <p>
-     * The Symmetry454 calendar system only has one era, 'CE',
-     * defined by {@link IsoEra}.
+     * The Symmetry454 calendar system uses {@link IsoEra}.
      *
      * @return the era applicable at this date, not null
      */
@@ -550,11 +533,9 @@ public final class Symmetry454Date
             if (newValue == 0) {
                 return this;
             }
-
             ChronoField f = (ChronoField) field;
             getChronology().range(f).checkValidValue(newValue, f);
             int nval = (int) newValue;
-
             switch (f) {
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
@@ -639,7 +620,6 @@ public final class Symmetry454Date
         Symmetry454Date sameYearEnd = (Symmetry454Date) plusYears(years);
         int months = (int) sameYearEnd.monthsUntil(end);
         int days = (int) sameYearEnd.plusMonths(months).daysUntil(end);
-
         return getChronology().period(years, months, days);
     }
 
@@ -648,7 +628,6 @@ public final class Symmetry454Date
         Symmetry454Date endDate = Symmetry454Date.from(end);
         long startWeek = this.getProlepticWeek() * 8L + this.getDayOfWeek();
         long endWeek = endDate.getProlepticWeek() * 8L + end.getDayOfWeek();
-
         return (endWeek - startWeek) / 8L;
     }
 
@@ -657,7 +636,6 @@ public final class Symmetry454Date
         Symmetry454Date date = Symmetry454Date.from(end);
         long monthStart = this.getProlepticMonth() * 64L + this.getDayOfMonth();
         long monthEnd = date.getProlepticMonth() * 64L + date.getDayOfMonth();
-
         return (monthEnd - monthStart) / 64L;
     }
 
@@ -692,4 +670,5 @@ public final class Symmetry454Date
                 .append(this.day)
                 .toString();
     }
+
 }
