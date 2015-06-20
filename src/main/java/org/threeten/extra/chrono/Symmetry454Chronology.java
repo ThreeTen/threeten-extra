@@ -55,7 +55,7 @@ import java.util.List;
  * <p>
  * The calendar implemented by this class is proleptic, with January 1st as the start of the year.
  * Each month either has 28 days or 35 days, in an alternating pattern; January has 28 days,
- * February 35 days and March again 28 days. Due to this, each quarter has 4-5-4 weeks in the months.
+ * February has 35 days and March again has 28 days. Due to this, each quarter consists of 13 weeks.
  * <p>
  * Normal years thus have 364 days, whereas leap years have an extra week, aptly called leap week,
  * added to the end, extending the year to 371 days.
@@ -139,7 +139,7 @@ public final class Symmetry454Chronology
      * Number of days in a cycle.
      */
     static final int DAYS_PER_CYCLE = YEARS_IN_CYCLE * DAYS_IN_YEAR + WEEKS_IN_YEAR * DAYS_IN_WEEK; // == 294 full years!
-    /** 
+    /**
      * The number of days from year zero to CE 1970, still the era only allows CE 1 and higher.
      * There are 6 full 293-year cycles from CE 1 to 1758, with 6 * 52 leap years, i.e. 312.
      * There are 37 leap years from CE 1758 to 1970.
@@ -148,7 +148,7 @@ public final class Symmetry454Chronology
     //public static final long DAYS_0001_TO_1970_ISO = IsoChronology.INSTANCE.date(1,1,1).toEpochDay() * -1;
     public static final long DAYS_0001_TO_1970 = (146097 * 5L) - (31L * 365L + 7L) - 1;
     /**
-     * Highest year in the range
+     * Highest year in the range.
      */
     private static final long MAX_YEAR = 1_000_000L;
     /**

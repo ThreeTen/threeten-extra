@@ -31,13 +31,31 @@
  */
 package org.threeten.extra.chrono;
 
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_0001_TO_1970;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_MONTH;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_MONTH_LONG;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_QUARTER;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_WEEK;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_YEAR;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_YEAR_LONG;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_PER_CYCLE;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAY_OF_MONTH_RANGE;
+import static org.threeten.extra.chrono.Symmetry010Chronology.DAY_OF_YEAR_RANGE;
+import static org.threeten.extra.chrono.Symmetry010Chronology.EPOCH_DAY_RANGE;
+import static org.threeten.extra.chrono.Symmetry010Chronology.ERA_RANGE;
+import static org.threeten.extra.chrono.Symmetry010Chronology.INSTANCE;
+import static org.threeten.extra.chrono.Symmetry010Chronology.MONTHS_IN_YEAR;
+import static org.threeten.extra.chrono.Symmetry010Chronology.MONTH_OF_YEAR_RANGE;
+import static org.threeten.extra.chrono.Symmetry010Chronology.WEEKS_IN_MONTH;
+import static org.threeten.extra.chrono.Symmetry010Chronology.WEEKS_IN_YEAR;
+import static org.threeten.extra.chrono.Symmetry010Chronology.YEAR_RANGE;
+
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
@@ -50,44 +68,12 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
-import java.time.temporal.ValueRange;
 import java.time.temporal.UnsupportedTemporalTypeException;
-
-import static org.threeten.extra.chrono.Symmetry010Chronology.INSTANCE;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAY_OF_MONTH_RANGE;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAY_OF_YEAR_RANGE;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_0001_TO_1970;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_MONTH_LONG;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_MONTH;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_QUARTER;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_WEEK;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_YEAR;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_IN_YEAR_LONG;
-import static org.threeten.extra.chrono.Symmetry010Chronology.DAYS_PER_CYCLE;
-import static org.threeten.extra.chrono.Symmetry010Chronology.EPOCH_DAY_RANGE;
-import static org.threeten.extra.chrono.Symmetry010Chronology.ERA_RANGE;
-import static org.threeten.extra.chrono.Symmetry010Chronology.MONTH_OF_YEAR_RANGE;
-import static org.threeten.extra.chrono.Symmetry010Chronology.MONTHS_IN_YEAR;
-import static org.threeten.extra.chrono.Symmetry010Chronology.WEEKS_IN_MONTH;
-import static org.threeten.extra.chrono.Symmetry010Chronology.WEEKS_IN_YEAR;
-import static org.threeten.extra.chrono.Symmetry010Chronology.YEAR_RANGE;
-
+import java.time.temporal.ValueRange;
 
 /**
  * A date in the Symmetry010 calendar system.
  * <p>
-
- * Implements a pure Symmetry010 calendar, as proposed by Dr. Irv Bromberg.
- * <p>
-
- * The Symmetry010 year shares the 12 months with the Gregorian calendar.
- * The months February, May, August, November span 31 days, all other months consist of 30 days.
- * In leap years, December is extended with a full week, the so-called "leap week", holding 37 days!
- * Since each month is made of full weeks, the calendar is perennial, with every date fixed always on the same weekday.
- * Each month starts on a Monday and ends on a Sunday; so does each year.
- * The 13th day of a month is always a Saturday.
- * <p>
- *
  * This date operates using the {@linkplain Symmetry010Chronology Symmetry010 calendar}.
  * This calendar system is a proposed reform calendar system, and is not in common use.
  * The Symmetry010 differs from the Gregorian in terms of month length, and the leap year rule.
@@ -96,7 +82,15 @@ import static org.threeten.extra.chrono.Symmetry010Chronology.YEAR_RANGE;
  *   1,   7,  18,  24,  29,  35,  46,  52,  57,  63,  74,  80,  85,  91, 103, 114, 120, 125, 131, 142,
  * 148, 153, 159, 170, 176, 181, 187, 198, 210, 216, 221, 227, 238, 244, 249, 255, 266, 272, 277, 283.
  * <p>
- *
+ * The implementation is a pure Symmetry010 calendar, as proposed by Dr. Irv Bromberg.
+ * The year shares the 12 months with the Gregorian calendar.
+ * The months February, May, August, November span 31 days, all other months consist of 30 days.
+ * In leap years, December is extended with a full week, the so-called "leap week".
+ * Thus December in a leap year has 37.
+ * Since each month is made of full weeks, the calendar is perennial, with every date fixed always on the same weekday.
+ * Each month starts on a Monday and ends on a Sunday; so does each year.
+ * The 13th day of a month is always a Saturday.
+ * <p>
  * More information is available on Wikipedia at
  * <a href='https://http://en.wikipedia.org/wiki/Symmetry010'>Symmetry010</a> or on the calendar's
  * <a href='http://individual.utoronto.ca/kalendis/classic.htm'>home page</a>.
@@ -105,7 +99,6 @@ import static org.threeten.extra.chrono.Symmetry010Chronology.YEAR_RANGE;
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  * <p>
- *
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
@@ -114,9 +107,9 @@ public final class Symmetry010Date
         implements ChronoLocalDate, Serializable {
 
     /**
-     * Serialization version UID.
+     * Serialization version.
      */
-    private static final long serialVersionUID = -3540913335234762448L;
+    private static final long serialVersionUID = -8275627894629629L;
     /**
      * The proleptic year.
      */
@@ -190,8 +183,9 @@ public final class Symmetry010Date
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param prolepticYear  the Symmetry010 proleptic-year
-     * @param month  the Symmetry010 month-of-year, from 1 to 13
-     * @param dayOfMonth  the Symmetry010 day-of-month, from 1 to 28 (29 for Leap Day or Year Day)
+     * @param month  the Symmetry010 month-of-year, from 1 to 12
+     * @param dayOfMonth  the Symmetry010 day-of-month, from 1 to 30, or 1 to 31 in February, May, August, November,
+     *  or 1 to 37 in December in a Leap Year
      * @return the date in Symmetry010 calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
      *  or if the day-of-month is invalid for the month-year
@@ -242,13 +236,12 @@ public final class Symmetry010Date
     static Symmetry010Date ofYearDay(int prolepticYear, int dayOfYear) {
         YEAR_RANGE.checkValidValue(prolepticYear, ChronoField.YEAR_OF_ERA);
         DAY_OF_YEAR_RANGE.checkValidValue(dayOfYear, ChronoField.DAY_OF_YEAR);
-        boolean isLeapYear = INSTANCE.isLeapYear(prolepticYear);
-
-        if (!isLeapYear && dayOfYear > DAYS_IN_YEAR) {
-            throw new DateTimeException("Invalid day of year: " + prolepticYear + '/' + dayOfYear);
+        boolean leap = INSTANCE.isLeapYear(prolepticYear);
+        if (dayOfYear > DAYS_IN_YEAR && !leap) {
+            throw new DateTimeException("Invalid date 'DayOfYear " + dayOfYear + "' as '" + prolepticYear + "' is not a leap year");
         }
 
-        int offset = Math.min(dayOfYear, DAYS_IN_YEAR) - 1; // dayOfYear - (isLeapYear ? DAYS_IN_WEEK : 0) - 1;
+        int offset = Math.min(dayOfYear, DAYS_IN_YEAR) - 1;
         int quarter = offset / DAYS_IN_QUARTER;
         int day = ((dayOfYear - 1) - quarter * DAYS_IN_QUARTER) + 1;
         int month = 1 + quarter * 3;
@@ -260,7 +253,6 @@ public final class Symmetry010Date
             month += 1;
             day -= DAYS_IN_MONTH;
         }
-
         return new Symmetry010Date(prolepticYear, month, day);
     }
 
@@ -288,7 +280,6 @@ public final class Symmetry010Date
             doy -= diy;
             year++;
         }
-
         return ofYearDay((int) year, (int) doy);
     }
 
@@ -301,14 +292,12 @@ public final class Symmetry010Date
      *
      * @param prolepticYear  the Symmetry010 proleptic-year
      * @param month  the Symmetry010 month, from 1 to 12
-     * @param dayOfMonth  the Symmetry010 day-of-month, from 1 to 30 (31 for February, May, August, November; December in a Leap Year has 37 days)
+     * @param dayOfMonth  the Symmetry010 day-of-month, from 1 to 30, or 1 to 31 in February, May, August, November,
+     *  or 1 to 37 in December in a Leap Year
      * @return the resolved date
      */
     private static Symmetry010Date resolvePreviousValid(int prolepticYear, int month, int dayOfMonth) {
         int monthR = Math.min(month, MONTHS_IN_YEAR);
-        //int dayR = Math.min(dayOfMonth,
-        //    (monthR % 3 == 2) || (monthR == 12 && INSTANCE.isLeapYear(prolepticYear)) ? DAYS_IN_MONTH_LONG : DAYS_IN_MONTH);
-
         int dayR = Math.min(dayOfMonth,
                 monthR == 12 && INSTANCE.isLeapYear(prolepticYear) ? DAYS_IN_MONTH + 7 :
                 monthR % 3 == 2 ? DAYS_IN_MONTH_LONG : DAYS_IN_MONTH);
@@ -321,7 +310,8 @@ public final class Symmetry010Date
      *
      * @param prolepticYear  the Symmetry010 proleptic-year
      * @param month  the Symmetry010 month, from 1 to 12
-     * @param dayOfMonth  the Symmetry010 day-of-month, from 1 to 30 (31 for February, May, August, November; December in a Leap Year has 37 days)
+     * @param dayOfMonth  the Symmetry010 day-of-month, from 1 to 30, or 1 to 31 in February, May, August, November,
+     *  or 1 to 37 in December in a Leap Year
      * @return the Symmetry010 date
      * @throws DateTimeException if the date is invalid
      */
@@ -339,7 +329,6 @@ public final class Symmetry010Date
                 throw new DateTimeException("Invalid date: " + prolepticYear + '/' + month + '/' + dayOfMonth);
             }
         }
-
         return new Symmetry010Date(prolepticYear, month, dayOfMonth);
     }
 
@@ -349,7 +338,8 @@ public final class Symmetry010Date
      *
      * @param prolepticYear  the Symmetry010 proleptic-year
      * @param month  the Symmetry010 month, from 1 to 12
-     * @param dayOfMonth  the Symmetry010 day-of-month, from 1 to 30 (31 for February, May, August, November; December in a Leap Year has 37 days)
+     * @param dayOfMonth  the Symmetry010 day-of-month, from 1 to 30, or 1 to 31 in February, May, August, November,
+     *  or 1 to 37 in December in a Leap Year
      */
     private Symmetry010Date(int prolepticYear, int month, int dayOfMonth) {
         this.prolepticYear = prolepticYear;
@@ -359,7 +349,6 @@ public final class Symmetry010Date
     }
 
     /**
-     *
      * Validates the object.
      *
      * @return Symmetry010Date the resolved date, not null
@@ -414,24 +403,22 @@ public final class Symmetry010Date
         return ((dayOfYear - 1) / DAYS_IN_WEEK) + 1;
     }
 
-    /**
-     * Returns the day of the week represented by this date.
-     * <p>
-     *
-     * @return the day of the week: between 1 and 7
-     */
     @Override
     int getDayOfWeek() {
         return ((dayOfYear - 1) % DAYS_IN_WEEK) + 1;
     }
 
     long getProlepticWeek() {
-        //return getProlepticMonth() * WEEKS_IN_MONTH + ((getDayOfMonth() - 1) / DAYS_IN_WEEK) - 1;
-        return this.prolepticYear * WEEKS_IN_YEAR +
-               INSTANCE.getLeapYearsBefore(this.prolepticYear) +
-               ((this.dayOfYear - 1) / DAYS_IN_WEEK) - 1;
+        return prolepticYear * WEEKS_IN_YEAR +
+               Symmetry010Chronology.getLeapYearsBefore(prolepticYear) +
+               ((dayOfYear - 1) / DAYS_IN_WEEK) - 1;
     }
 
+    /**
+     * Checks if the date is within the leap week.
+     * 
+     * @return true if this date is in the leap week
+     */
     public boolean isLeapWeek() {
         return isLeapYear() && this.dayOfYear > DAYS_IN_YEAR;
     }
@@ -442,7 +429,6 @@ public final class Symmetry010Date
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 ChronoField f = (ChronoField) field;
-
                 switch (f) {
                     case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                     case ALIGNED_DAY_OF_WEEK_IN_YEAR:
@@ -469,7 +455,6 @@ public final class Symmetry010Date
                 throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
             }
         }
-
         return super.range(field);
     }
 
@@ -501,8 +486,7 @@ public final class Symmetry010Date
     /**
      * Gets the era applicable at this date.
      * <p>
-     * The Symmetry010 calendar system only has one era, 'CE',
-     * defined by {@link IsoEra}.
+     * The Symmetry454 calendar system uses {@link IsoEra}.
      *
      * @return the era applicable at this date, not null
      */
@@ -518,7 +502,7 @@ public final class Symmetry010Date
      * Month lengths do not match those of the ISO calendar system.
      * <p>
      * Most months have 30 days, except for February, May, August, November each have 31 days.
-     * December in a leap year holds 37.
+     * December in a leap year has 37 days.
      *
      * @return the length of the month in days
      */
@@ -553,11 +537,9 @@ public final class Symmetry010Date
             if (newValue == 0) {
                 return this;
             }
-
             ChronoField f = (ChronoField) field;
             getChronology().range(f).checkValidValue(newValue, f);
             int nval = (int) newValue;
-
             switch (f) {
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH:
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
@@ -580,7 +562,6 @@ public final class Symmetry010Date
                     break;
             }
         }
-
         return (Symmetry010Date) super.with(field, newValue);
     }
 
@@ -642,7 +623,6 @@ public final class Symmetry010Date
         Symmetry010Date sameYearEnd = (Symmetry010Date) plusYears(years);
         int months = (int) sameYearEnd.monthsUntil(end);
         int days = (int) sameYearEnd.plusMonths(months).daysUntil(end);
-
         return getChronology().period(years, months, days);
     }
 
@@ -651,7 +631,6 @@ public final class Symmetry010Date
         Symmetry010Date endDate = Symmetry010Date.from(end);
         long startWeek = this.getProlepticWeek() * 8L + this.getDayOfWeek();
         long endWeek = endDate.getProlepticWeek() * 8L + endDate.getDayOfWeek();
-
         return (endWeek - startWeek) / 8L;
     }
 
@@ -660,7 +639,6 @@ public final class Symmetry010Date
         Symmetry010Date date = Symmetry010Date.from(end);
         long monthStart = this.getProlepticMonth() * 64L + this.getDayOfMonth();
         long monthEnd = date.getProlepticMonth() * 64L + date.getDayOfMonth();
-
         return (monthEnd - monthStart) / 64L;
     }
 
@@ -695,4 +673,5 @@ public final class Symmetry010Date
                 .append(this.day)
                 .toString();
     }
+
 }

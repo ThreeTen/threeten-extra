@@ -183,7 +183,8 @@ public final class Symmetry454Date
      *
      * @param prolepticYear  the Symmetry454 proleptic-year
      * @param month  the Symmetry454 month-of-year, from 1 to 12
-     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28 (35 for February, May, August, November; December in a Leap Year)
+     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28, or 1 to 35 in February, May, August, November
+     *   and December in a Leap Year
      * @return the date in Symmetry454 calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
      *  or if the day-of-month is invalid for the month-year
@@ -290,7 +291,8 @@ public final class Symmetry454Date
      *
      * @param prolepticYear  the Symmetry454 proleptic-year
      * @param month  the Symmetry454 month, from 1 to 12
-     * @param day  the Symmetry454 day-of-month, from 1 to 28 (35 for February, May, August, November; December in a Leap Year)
+     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28, or 1 to 35 in February, May, August, November
+     *   and December in a Leap Year
      * @return the resolved date
      */
     private static Symmetry454Date resolvePreviousValid(int prolepticYear, int month, int day) {
@@ -307,7 +309,8 @@ public final class Symmetry454Date
      *
      * @param prolepticYear  the Symmetry454 proleptic-year
      * @param month  the Symmetry454 month, from 1 to 12
-     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28 (35 for February, May, August, November; December in a Leap Year)
+     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28, or 1 to 35 in February, May, August, November
+     *   and December in a Leap Year
      * @return the Symmetry454 date
      * @throws DateTimeException if the date is invalid
      */
@@ -334,7 +337,8 @@ public final class Symmetry454Date
      *
      * @param prolepticYear  the Symmetry454 proleptic-year
      * @param month  the Symmetry454 month, from 1 to 12
-     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28 (35 for February, May, August, November; December in a Leap Year)
+     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28, or 1 to 35 in February, May, August, November
+     *   and December in a Leap Year
      */
     private Symmetry454Date(int prolepticYear, int month, int dayOfMonth) {
         this.prolepticYear = prolepticYear;
@@ -558,7 +562,6 @@ public final class Symmetry454Date
                     break;
             }
         }
-
         return (Symmetry454Date) super.with(field, newValue);
     }
 
@@ -627,7 +630,7 @@ public final class Symmetry454Date
     long weeksUntil(AbstractDate end) {
         Symmetry454Date endDate = Symmetry454Date.from(end);
         long startWeek = this.getProlepticWeek() * 8L + this.getDayOfWeek();
-        long endWeek = endDate.getProlepticWeek() * 8L + end.getDayOfWeek();
+        long endWeek = endDate.getProlepticWeek() * 8L + endDate.getDayOfWeek();
         return (endWeek - startWeek) / 8L;
     }
 

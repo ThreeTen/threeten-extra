@@ -33,6 +33,7 @@ These include:
 * [International Fixed](apidocs/org/threeten/extra/chrono/InternationalFixedChronology.html) calendar system
 * [Julian](apidocs/org/threeten/extra/chrono/JulianChronology.html) calendar system
 * [Pax](apidocs/org/threeten/extra/chrono/PaxChronology.html) calendar system
+* [Symmetry010](apidocs/org/threeten/extra/chrono/Symmetry010Chronology.html) calendar system
 * [Symmetry454](apidocs/org/threeten/extra/chrono/Symmetry454Chronology.html) calendar system
 
 

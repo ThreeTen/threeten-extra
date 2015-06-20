@@ -51,16 +51,14 @@ import java.util.List;
  * The Symmetry010 calendar system.
  * <p>
  * This chronology defines the rules of the Symmetry010 calendar system.
- * Dates are aligned such that {@code 0001/01/01 (Sym010)} is {@code 0001-01-01 (ISO)}.</p>
+ * Dates are aligned such that {@code 0001/01/01 (Sym010)} is {@code 0001-01-01 (ISO)}.
  * <p>
- * This class is proleptic.</p>
+ * The calendar implemented by this class is proleptic, with January 1st as the start of the year.
+ * Each month either has 30 days or 31 days, in an alternating pattern; January has 30 days,
+ * February has 31 days and March again has 30 days. Due to this, each quarter consists of 13 weeks.
  * <p>
- * This class implements a calendar where January 1st is the start of the year.  Each month
- * either has 30 days or 31 days, alternating; January has 30 days, February 31 days and March again 30 days.
- * Due to this, each quarter has 13 weeks in the months.</p>
- * <p>
- * Normal years thus have 364 days, whereas leap years have an extra week - aptly called leap week, added to the end,
- * extending the year to 371 days.</p>
+ * Normal years thus have 364 days, whereas leap years have an extra week, aptly called leap week,
+ * added to the end, extending the year to 371 days. Thus, December in a leap year has 37 days.
  * <p>
  * The fields are defined as follows:
  * <ul>
@@ -68,8 +66,9 @@ import java.util.List;
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year 1.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the current era.
  * <li>month-of-year - There are 12 months in an Symmetry010 year, numbered from 1 to 12.
- * <li>day-of-month - There are 30 days in a standard Symmetry010 month, numbered from 1 to 28, except for the middle-month
- * in each quarter, which spans 31 days: February, May, August, November; and December in leap years.
+ * <li>day-of-month - There are 30 days in a standard Symmetry010 month, numbered from 1 to 30, except for the middle-month
+ * in each quarter, which spans 31 days: February, May, August, November.
+ * In leap years, December has 37 days.
  * <li>day-of-year - There are 364 days in a standard Symmetry010 year and 371 days in a leap year.
  *  The days are numbered accordingly.
  * <li>leap-year - Leap years occur every 5 or 6 years, evenly spread over 293 years according the formula:
@@ -80,7 +79,9 @@ import java.util.List;
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
-public final class Symmetry010Chronology extends AbstractChronology implements Serializable {
+public final class Symmetry010Chronology
+        extends AbstractChronology
+        implements Serializable {
 
     /**
      * Singleton instance for the Symmetry010 chronology.
@@ -90,45 +91,57 @@ public final class Symmetry010Chronology extends AbstractChronology implements S
      * Serialization version UID.
      */
     private static final long serialVersionUID = -1287766365831162587L;
+
     /**
-     * Standard 7-day week.
+     * Standard 7 day weeks.
      */
     static final int DAYS_IN_WEEK = 7;
     /**
-     * There are 12 months in a year.
+     * Standard 12 month years.
      */
     static final int MONTHS_IN_YEAR = 12;
-
+    /**
+     * Normal month is 4 weeks.
+     */
     static final int WEEKS_IN_MONTH = 4;
+    /**
+     * Long month is 5 weeks.
+     */
     static final int WEEKS_IN_MONTH_LONG = 5;
-    static final int DAYS_IN_MONTH_LONG = 31;
+    /**
+     * Normal month is 30 days.
+     */
     static final int DAYS_IN_MONTH = 30;
+    /**
+     * Long month is 31 days.
+     */
+    static final int DAYS_IN_MONTH_LONG = 31;
+    /**
+     * Days in quarter, (30 + 31 + 30) = 91
+     */
     static final int DAYS_IN_QUARTER = DAYS_IN_MONTH + DAYS_IN_MONTH_LONG + DAYS_IN_MONTH;
-
     /**
      * There are 4 quarters of 91 (30 + 31 + 30) days each, or 364 days in a (non-leap) year.
      */
     static final int DAYS_IN_YEAR = 4 * DAYS_IN_QUARTER;
-
     /**
      * Leap years are 364 + 7 days.
      */
     static final int DAYS_IN_YEAR_LONG = DAYS_IN_YEAR + DAYS_IN_WEEK;
     /**
-     * There are 52 weeks in a (non-leap) year.
+     * 52 weeks in a normal year.
      */
     static final int WEEKS_IN_YEAR = DAYS_IN_YEAR / DAYS_IN_WEEK;
     /**
-     * There are 53 weeks in a leap year.
+     * 53 weeks in a leap year.
      */
     static final int WEEKS_IN_YEAR_LONG = DAYS_IN_YEAR_LONG / DAYS_IN_WEEK;
-
     /**
-     * Years in a cycle.
+     * Number of years in a cycle.
      */
     private static final int YEARS_IN_CYCLE = 293;
     /**
-     * The number of days in a 293 year cycle.
+     * Number of days in a cycle.
      */
     static final int DAYS_PER_CYCLE = YEARS_IN_CYCLE * DAYS_IN_YEAR + WEEKS_IN_YEAR * DAYS_IN_WEEK; // == 294 full years!
     /**
@@ -139,7 +152,7 @@ public final class Symmetry010Chronology extends AbstractChronology implements S
     //public static final long DAYS_0001_TO_1970 = (DAYS_PER_CYCLE * 6L) + 211L * DAYS_IN_YEAR + 37 * DAYS_IN_WEEK;
     //public static final long DAYS_0001_TO_1970_ISO = IsoChronology.INSTANCE.date(1,1,1).toEpochDay() * -1;
     public static final long DAYS_0001_TO_1970 = (146097 * 5L) - (31L * 365L + 7L) - 1;
-    /*
+    /**
      * Highest year in the range.
      */
     private static final long MAX_YEAR = 1_000_000L;
@@ -191,7 +204,6 @@ public final class Symmetry010Chronology extends AbstractChronology implements S
      *
      * @return the singleton instance, not null
      */
-    @SuppressWarnings("static-method")
     private Object readResolve() {
         return INSTANCE;
     }
@@ -236,7 +248,7 @@ public final class Symmetry010Chronology extends AbstractChronology implements S
      * @param dayOfMonth  the day-of-month
      * @return the Symmetry010 local date, not null
      * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not a {@code Symmetry010Era}
+     * @throws ClassCastException if the {@code era} is not a {@code IsoEra}
      */
     @Override
     public Symmetry010Date date(Era era, int yearOfEra, int month, int dayOfMonth) {
@@ -267,7 +279,7 @@ public final class Symmetry010Chronology extends AbstractChronology implements S
      * @param dayOfYear  the day-of-year
      * @return the Symmetry010 local date, not null
      * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not a {@code Symmetry010Era}
+     * @throws ClassCastException if the {@code era} is not a {@code IsoEra}
      */
     @Override
     public Symmetry010Date dateYearDay(Era era, int yearOfEra, int dayOfYear) {
@@ -424,7 +436,7 @@ public final class Symmetry010Chronology extends AbstractChronology implements S
     /**
      * Creates the chronology era object from the numeric value.
      * <p>
-     * Only one era is supported, CE, with the value 1.
+     * The list of eras is shared with {@link IsoEra}.
      *
      * @param eraValue  the era value
      * @return the calendar system era, not null
@@ -438,7 +450,7 @@ public final class Symmetry010Chronology extends AbstractChronology implements S
     /**
      * Gets the list of eras for the chronology.
      * <p>
-     * Only one era is supported, CE, with the value 1.
+     * The list of eras is shared with {@link IsoEra}.
      *
      * @return the list of eras for the chronology, may be immutable, not null
      */
@@ -493,10 +505,10 @@ public final class Symmetry010Chronology extends AbstractChronology implements S
     /**
      * Get the count of leap years since CE 1.
      *
-     * @param prolepticYear The year.
-     * @return The number of leap years since CE 1.
+     * @param prolepticYear  the year
+     * @return the number of leap years since CE 1
      */
-    public static long getLeapYearsBefore(final long prolepticYear) {
+    public static long getLeapYearsBefore(long prolepticYear) {
         return Math.floorDiv(WEEKS_IN_YEAR * (prolepticYear - 1) + 146, YEARS_IN_CYCLE);
     }
 }

@@ -5,5 +5,5 @@ org.threeten.extra.chrono.EthiopicChronology
 org.threeten.extra.chrono.InternationalFixedChronology
 org.threeten.extra.chrono.JulianChronology
 org.threeten.extra.chrono.PaxChronology
-org.threeten.extra.chrono.Symmetry454Chronology
 org.threeten.extra.chrono.Symmetry010Chronology
+org.threeten.extra.chrono.Symmetry454Chronology
