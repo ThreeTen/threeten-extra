@@ -431,6 +431,8 @@ public final class YearWeek
      * Gets the week-based-year field.
      * <p>
      * This method returns the primitive {@code int} value for the week-based-year.
+     * <p>
+     * Note that the ISO week-based-year does not align with the standard Gregorian/ISO calendar year.
      *
      * @return the week-based-year
      */

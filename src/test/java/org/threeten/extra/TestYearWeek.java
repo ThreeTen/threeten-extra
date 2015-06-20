@@ -73,6 +73,7 @@ import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -91,13 +92,16 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
+import java.time.chrono.ThaiBuddhistDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -105,6 +109,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestYearWeek {
 
+    private static final YearWeek TEST_NON_LEAP = YearWeek.of(2014, 1);
     private static final YearWeek TEST = YearWeek.of(2015, 1);
 
     @DataProvider(name = "sampleYearWeeks")
@@ -269,7 +274,8 @@ public class TestYearWeek {
             {2017,  1, THURSDAY, 2017, 1, 5}, 
             {2017,  1, FRIDAY, 2017, 1, 6},
             {2017,  1, SATURDAY, 2017, 1, 7}, 
-            {2017,  1, SUNDAY, 2017, 1, 8}
+            {2017,  1, SUNDAY, 2017, 1, 8},
+            {2025,  1, MONDAY, 2024, 12, 30}
         };
     }
 
@@ -364,12 +370,12 @@ public class TestYearWeek {
     }
 
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_of_year_toLow() {
+    public void test_of_year_tooLow() {
         YearWeek.of(Integer.MIN_VALUE, 1);
     }
 
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_of_year_toHigh() {
+    public void test_of_year_tooHigh() {
         YearWeek.of(Integer.MAX_VALUE, 1);
     }
 
@@ -379,7 +385,7 @@ public class TestYearWeek {
     }
 
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_of_invalidWeekValue0() {
+    public void test_of_invalidWeekValueZero() {
         YearWeek.of(2015, 0);
     }
 
@@ -436,7 +442,7 @@ public class TestYearWeek {
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_AtDay_null() {
+    public void test_atDay_null() {
         TEST.atDay(null);
     }
 
@@ -513,9 +519,11 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test(dataProvider = "sampleAtDay")
     public void test_from(int weekBasedYear, int weekOfWeekBasedYear, DayOfWeek dayOfWeek, int year, int month, int dayOfMonth) {
-        YearWeek actual = YearWeek.of(weekBasedYear, weekOfWeekBasedYear);
+        YearWeek expected = YearWeek.of(weekBasedYear, weekOfWeekBasedYear);
         LocalDate ld = LocalDate.of(year, month, dayOfMonth);
-        assertEquals(actual, YearWeek.from(ld));
+        assertEquals(YearWeek.from(ld), expected);
+        assertEquals(YearWeek.from(ThaiBuddhistDate.from(ld)), expected);
+        assertEquals(YearWeek.from(expected), expected);
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -627,10 +635,42 @@ public class TestYearWeek {
     }
 
     //-----------------------------------------------------------------------
+    // format()
+    //-----------------------------------------------------------------------
+    public void test_format() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder()
+            .appendValue(WEEK_BASED_YEAR, 4)
+            .appendLiteral('-')
+            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
+            .toFormatter();
+        assertEquals(TEST.format(f), "2015-01");
+    }
+
+    //-----------------------------------------------------------------------
+    // adjustInto()
+    //-----------------------------------------------------------------------
+    public void test_adjustInto() {
+        YearWeek yw = YearWeek.of(2016, 1);
+        LocalDate date = LocalDate.of(2015, 6, 20);
+        assertEquals(yw.adjustInto(date), LocalDate.of(2016, 1, 9));
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_adjustInto_badChronology() {
+        YearWeek yw = YearWeek.of(2016, 1);
+        ThaiBuddhistDate date = ThaiBuddhistDate.from(LocalDate.of(2015, 6, 20));
+        yw.adjustInto(date);
+    }
+
+    //-----------------------------------------------------------------------
     // range(TemporalField)
     //-----------------------------------------------------------------------
     public void test_range() {
-        assertEquals(TEST.range(WEEK_OF_WEEK_BASED_YEAR), WEEK_OF_WEEK_BASED_YEAR.range());
+        assertEquals(TEST_NON_LEAP.range(WEEK_BASED_YEAR), WEEK_BASED_YEAR.range());
+        assertEquals(TEST.range(WEEK_BASED_YEAR), WEEK_BASED_YEAR.range());
+
+        assertEquals(TEST_NON_LEAP.range(WEEK_OF_WEEK_BASED_YEAR), ValueRange.of(1, 52));
+        assertEquals(TEST.range(WEEK_OF_WEEK_BASED_YEAR), ValueRange.of(1, 53));
     }
 
     @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
@@ -648,6 +688,15 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     public void test_withYear() {
         assertEquals(YearWeek.of(2015, 1).withYear(2014), YearWeek.of(2014, 1));
+        assertEquals(YearWeek.of(2015, 53).withYear(2009), YearWeek.of(2009, 53));
+    }
+
+    public void test_withYear_sameYear() {
+        assertEquals(YearWeek.of(2015, 1).withYear(2015), YearWeek.of(2015, 1));
+    }
+
+    public void test_withYear_resolve() {
+        assertEquals(YearWeek.of(2015, 53).withYear(2014), YearWeek.of(2014, 52));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -663,9 +712,13 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     // withWeek(int)
     //-----------------------------------------------------------------------
-    public void test_WithWeek() {
+    public void test_withWeek() {
         assertEquals(TEST.withWeek(52), YearWeek.of(2015, 52));
         assertEquals(YearWeek.of(2014, 1).withWeek(53), TEST);
+    }
+
+    public void test_withWeek_sameWeek() {
+        assertEquals(YearWeek.of(2014, 2).withWeek(2), YearWeek.of(2014, 2));
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -699,13 +752,25 @@ public class TestYearWeek {
     public void test_equalsAndHashCodeContract(int year, int week) {
         YearWeek a = YearWeek.of(year, week);
         YearWeek b = YearWeek.of(year, week);
-        assertTrue(a.equals(null) == false);
         assertTrue(a.equals(b));
         assertTrue(b.equals(a));
         assertTrue(a.hashCode() == b.hashCode());
     }
 
+    public void test_equals() {
+        YearWeek a = YearWeek.of(2015, 4);
+        YearWeek b = YearWeek.of(2015, 6);
+        YearWeek c = YearWeek.of(2016, 6);
+        assertFalse(a.equals(b));
+        assertFalse(a.equals(c));
+        assertFalse(b.equals(a));
+        assertFalse(b.equals(c));
+        assertFalse(c.equals(a));
+        assertFalse(c.equals(b));
+    }
+
     public void test_equals_incorrectType() {
+        assertTrue(TEST.equals(null) == false);
         assertEquals(TEST.equals("Incorrect type"), false);
     }
 
