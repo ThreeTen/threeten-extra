@@ -9,6 +9,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
       <action dev="catull" type="add">
+        Add Symmetry calendar systems.
+        Fixes #42, #43.
+      </action>
+      <action dev="catull" type="add">
         Add International Fixed calendar system.
         Fixes #31.
       </action>
