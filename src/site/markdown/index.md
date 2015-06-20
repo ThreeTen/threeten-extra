@@ -19,7 +19,8 @@ The following features are included:
 * [`DayOfYear`](apidocs/org/threeten/extra/DayOfYear.html) - a day-of-year without year
 * [`AmPm`](apidocs/org/threeten/extra/AmPm.html) - before or after midday
 * [`Quarter`](apidocs/org/threeten/extra/Quarter.html) - the four quarters, Q1, Q2, Q3 and Q4
-* [`YearQuarter`](apidocs/org/threeten/extra/YearQuarter.html) - combines a year and quarter, 2014Q4
+* [`YearQuarter`](apidocs/org/threeten/extra/YearQuarter.html) - combines a year and quarter, 2014-Q4
+* [`YearWeek`](apidocs/org/threeten/extra/YearWeek.html) - combines a week-based-year and a week, 2014-W06
 * [`Days`](apidocs/org/threeten/extra/Days.html),
 [`Weeks`](apidocs/org/threeten/extra/Weeks.html),
 [`Months`](apidocs/org/threeten/extra/Months.html) and
