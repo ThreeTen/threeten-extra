@@ -305,9 +305,8 @@ public final class YearWeek
      * Checks if the specified field is supported.
      * <p>
      * This checks if this year-week can be queried for the specified field.
-     * If false, then calling the {@link #range(TemporalField) range},
-     * {@link #get(TemporalField) get} and {@link #with(TemporalField, long)}
-     * methods will throw an exception.
+     * If false, then calling the {@link #range(TemporalField) range} and
+     * {@link #get(TemporalField) get} methods will throw an exception.
      * <p>
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The supported fields are:
