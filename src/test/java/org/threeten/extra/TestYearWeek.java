@@ -102,6 +102,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+import java.util.Locale;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -613,19 +614,19 @@ public class TestYearWeek {
     // parse(CharSequence,DateTimeFormatter)
     //-----------------------------------------------------------------------
     public void test_parse_CharSequenceDateTimeFormatter() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY").withLocale(Locale.ENGLISH);
         assertEquals(YearWeek.parse("Mon W1 2015", f), TEST);
     }
 
     @Test(expectedExceptions = DateTimeParseException.class)
     public void test_parse_CharSequenceDateDateTimeFormatter_invalidWeek() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY").withLocale(Locale.ENGLISH);
         YearWeek.parse("Mon W99 2015", f);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_parse_CharSequenceDateTimeFormatter_nullCharSequence() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY").withLocale(Locale.ENGLISH);
         YearWeek.parse((CharSequence) null, f);
     }
 
