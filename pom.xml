@@ -98,19 +98,28 @@
     </resources>
     <!-- define build -->
     <plugins>
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>run-checkstyle</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>checkstyle</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin-->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+      <executions>
+        <execution>
+          <id>run-checkstyle</id>
+          <phase>process-sources</phase>
+          <goals>
+            <goal>checkstyle</goal>
+          </goals>
+        </execution>
+      </executions>
+      <!-- maven-checkstyle uses checkstyle 5.7 internally, which does not support Java 8 syntax yet -->
+      <!-- checkstyle 5.9 and later support Java 8 syntax, though -->
+      <dependencies>
+        <dependency>
+          <groupId>com.puppycrawl.tools</groupId>
+          <artifactId>checkstyle</artifactId>
+          <version>5.9</version>
+        </dependency>
+      </dependencies>
+    </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
