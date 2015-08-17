@@ -31,8 +31,6 @@
  */
 package org.threeten.extra;
 
-import static java.time.temporal.ChronoUnit.MONTHS;
-
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Period;
@@ -47,6 +45,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.time.temporal.ChronoUnit.MONTHS;
 
 /**
  * A month-based amount of time, such as '12 months'.
@@ -533,6 +533,58 @@ public final class Months
         int thisValue = this.months;
         int otherValue = otherAmount.months;
         return Integer.compare(thisValue, otherValue);
+    }
+
+    /**
+     * Is this months instance greater than the specified number of months.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this months instance is greater than the specified one
+     */
+    public boolean isGreaterThan(Months otherAmount) {
+        if (otherAmount == null) {
+            return months > 0;
+        }
+        return months > otherAmount.months;
+    }
+
+    /**
+     * Is this months instance greater than or equals to the specified number of months.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this months instance is greater than or equals to the specified one
+     */
+    public boolean isGreaterThanOrEqualsTo(Months otherAmount) {
+        if (otherAmount == null) {
+            return months >= 0;
+        }
+        return months >= otherAmount.months;
+    }
+    
+    /**
+     * Is this months instance less than the specified number of months.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this months instance is less than the specified one
+     */
+    public boolean isLessThan(Months otherAmount) {
+        if (otherAmount == null) {
+            return months < 0;
+        }
+        return months < otherAmount.months;
+    }
+
+    /**
+     * Is this months instance less than or equals to the specified number of months.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this months instance is less than or equals to the specified one
+     */
+    public boolean isLessThanOrEqualsTo(Months otherAmount) {
+        if (otherAmount == null) {
+            return months <= 0;
+        }
+        return months <= otherAmount.months;
     }
 
     //-----------------------------------------------------------------------

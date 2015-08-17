@@ -463,6 +463,71 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
+    @DataProvider(name = "isLessThan")
+    Object[][] isLessThan() {
+        return new Object[][] {
+                {Months.of(0), Months.of(1), true},
+                {Months.of(1), Months.of(1), false},
+                {Months.of(0), null, false},
+                {Months.of(-1), null, true},
+                {Months.of(3), Months.of(1), false},
+        };
+    }
+
+    @Test(dataProvider = "isLessThan")
+    public void test_isLessThan(Months m1,Months m2,boolean expectedResult) {
+        assertEquals(expectedResult, m1.isLessThan(m2));
+    }
+
+    @DataProvider(name = "isLessThanOrEqualsTo")
+    Object[][] isLessThanOrEqualsTo() {
+        return new Object[][] {
+                {Months.of(0), Months.of(1), true},
+                {Months.of(1), Months.of(1), true},
+                {Months.of(0), null, true},
+                {Months.of(-1), null, true},
+                {Months.of(3), Months.of(1), false},
+        };
+    }
+
+    @Test(dataProvider = "isLessThanOrEqualsTo")
+    public void test_isLessThanOrEqualsTo(Months m1,Months m2,boolean expectedResult) {
+        assertEquals(expectedResult, m1.isLessThanOrEqualsTo(m2));
+    }
+
+    @DataProvider(name = "isGreaterThan")
+    Object[][] isGreaterThan() {
+        return new Object[][] {
+                {Months.of(1), Months.of(0), true},
+                {Months.of(1), Months.of(1), false},
+                {Months.of(0), null, false},
+                {Months.of(1), null, true},
+                {Months.of(1), Months.of(3), false},
+        };
+    }
+
+    @Test(dataProvider = "isGreaterThan")
+    public void test_isGreaterThan(Months m1,Months m2,boolean expectedResult) {
+        assertEquals(expectedResult, m1.isGreaterThan(m2));
+    }
+
+    @DataProvider(name = "isGreaterThanOrEqualsTo")
+    Object[][] isGreaterThanOrEqualsTo() {
+        return new Object[][] {
+                {Months.of(1), Months.of(0), true},
+                {Months.of(1), Months.of(1), true},
+                {Months.of(0), null, true},
+                {Months.of(1), null, true},
+                {Months.of(1), Months.of(3), false},
+        };
+    }
+
+    @Test(dataProvider = "isGreaterThanOrEqualsTo")
+    public void test_isGreaterThanOrEqualsTo(Months m1,Months m2,boolean expectedResult) {
+        assertEquals(expectedResult, m1.isGreaterThanOrEqualsTo(m2));
+    }
+    
+    //-----------------------------------------------------------------------
     public void test_hashCode() {
         Months test5 = Months.of(5);
         Months test6 = Months.of(6);
