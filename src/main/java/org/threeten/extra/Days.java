@@ -535,6 +535,58 @@ public final class Days
         return Integer.compare(thisValue, otherValue);
     }
 
+    /**
+     * Is this days instance greater than the specified number of days.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this days instance is greater than the specified one
+     */
+    public boolean isGreaterThan(Days otherAmount) {
+        if (otherAmount == null) {
+            return days > 0;
+        }
+        return days > otherAmount.days;
+    }
+
+    /**
+     * Is this days instance greater than or equals to the specified number of days.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this days instance is greater than or equals to the specified one
+     */
+    public boolean isGreaterThanOrEqualsTo(Days otherAmount) {
+        if (otherAmount == null) {
+            return days >= 0;
+        }
+        return days >= otherAmount.days;
+    }
+
+    /**
+     * Is this days instance less than the specified number of days.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this days instance is less than the specified one
+     */
+    public boolean isLessThan(Days otherAmount) {
+        if (otherAmount == null) {
+            return days < 0;
+        }
+        return days < otherAmount.days;
+    }
+
+    /**
+     * Is this days instance less than or equals to the specified number of days.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this days instance is less than or equals to the specified one
+     */
+    public boolean isLessThanOrEqualsTo(Days otherAmount) {
+        if (otherAmount == null) {
+            return days <= 0;
+        }
+        return days <= otherAmount.days;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this amount is equal to the specified {@code Days}.
