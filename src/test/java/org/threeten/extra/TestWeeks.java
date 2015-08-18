@@ -410,6 +410,71 @@ public class TestWeeks {
     }
 
     //-----------------------------------------------------------------------
+    @DataProvider(name = "isLessThan")
+    Object[][] isLessThan() {
+        return new Object[][] {
+                {Weeks.of(0), Weeks.of(1), true},
+                {Weeks.of(1), Weeks.of(1), false},
+                {Weeks.of(0), null, false},
+                {Weeks.of(-1), null, true},
+                {Weeks.of(3), Weeks.of(1), false},
+        };
+    }
+
+    @Test(dataProvider = "isLessThan")
+    public void test_isLessThan(Weeks w1,Weeks w2,boolean expectedResult) {
+        assertEquals(expectedResult, w1.isLessThan(w2));
+    }
+
+    @DataProvider(name = "isLessThanOrEqualsTo")
+    Object[][] isLessThanOrEqualsTo() {
+        return new Object[][] {
+                {Weeks.of(0), Weeks.of(1), true},
+                {Weeks.of(1), Weeks.of(1), true},
+                {Weeks.of(0), null, true},
+                {Weeks.of(-1), null, true},
+                {Weeks.of(3), Weeks.of(1), false},
+        };
+    }
+
+    @Test(dataProvider = "isLessThanOrEqualsTo")
+    public void test_isLessThanOrEqualsTo(Weeks w1,Weeks w2,boolean expectedResult) {
+        assertEquals(expectedResult, w1.isLessThanOrEqualsTo(w2));
+    }
+
+    @DataProvider(name = "isGreaterThan")
+    Object[][] isGreaterThan() {
+        return new Object[][] {
+                {Weeks.of(1), Weeks.of(0), true},
+                {Weeks.of(1), Weeks.of(1), false},
+                {Weeks.of(0), null, false},
+                {Weeks.of(1), null, true},
+                {Weeks.of(1), Weeks.of(3), false},
+        };
+    }
+
+    @Test(dataProvider = "isGreaterThan")
+    public void test_isGreaterThan(Weeks w1,Weeks w2,boolean expectedResult) {
+        assertEquals(expectedResult, w1.isGreaterThan(w2));
+    }
+
+    @DataProvider(name = "isGreaterThanOrEqualsTo")
+    Object[][] isGreaterThanOrEqualsTo() {
+        return new Object[][] {
+                {Weeks.of(1), Weeks.of(0), true},
+                {Weeks.of(1), Weeks.of(1), true},
+                {Weeks.of(0), null, true},
+                {Weeks.of(1), null, true},
+                {Weeks.of(1), Weeks.of(3), false},
+        };
+    }
+
+    @Test(dataProvider = "isGreaterThanOrEqualsTo")
+    public void test_isGreaterThanOrEqualsTo(Weeks w1,Weeks w2,boolean expectedResult) {
+        assertEquals(expectedResult, w1.isGreaterThanOrEqualsTo(w2));
+    }
+
+    //-----------------------------------------------------------------------
     public void test_hashCode() {
         Weeks test5 = Weeks.of(5);
         Weeks test6 = Weeks.of(6);

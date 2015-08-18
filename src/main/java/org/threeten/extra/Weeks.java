@@ -491,6 +491,58 @@ public final class Weeks
         return Integer.compare(thisValue, otherValue);
     }
 
+    /**
+     * Is this weeks instance greater than the specified number of weeks.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this weeks instance is greater than the specified one
+     */
+    public boolean isGreaterThan(Weeks otherAmount) {
+        if (otherAmount == null) {
+            return weeks > 0;
+        }
+        return weeks > otherAmount.weeks;
+    }
+
+    /**
+     * Is this weeks instance greater than or equals to the specified number of weeks.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this weeks instance is greater than or equals to the specified one
+     */
+    public boolean isGreaterThanOrEqualsTo(Weeks otherAmount) {
+        if (otherAmount == null) {
+            return weeks >= 0;
+        }
+        return weeks >= otherAmount.weeks;
+    }
+
+    /**
+     * Is this weeks instance less than the specified number of weeks.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this weeks instance is less than the specified one
+     */
+    public boolean isLessThan(Weeks otherAmount) {
+        if (otherAmount == null) {
+            return weeks < 0;
+        }
+        return weeks < otherAmount.weeks;
+    }
+
+    /**
+     * Is this weeks instance less than or equals to the specified number of weeks.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this weeks instance is less than or equals to the specified one
+     */
+    public boolean isLessThanOrEqualsTo(Weeks otherAmount) {
+        if (otherAmount == null) {
+            return weeks <= 0;
+        }
+        return weeks <= otherAmount.weeks;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this amount is equal to the specified {@code Weeks}.
