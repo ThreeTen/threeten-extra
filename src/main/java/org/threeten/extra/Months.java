@@ -208,20 +208,20 @@ public final class Months
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String weeksStr = matcher.group(2);
-            String daysStr = matcher.group(3);
-            if (weeksStr != null || daysStr != null) {
+            String yearsStr = matcher.group(2);
+            String monthsStr = matcher.group(3);
+            if (yearsStr != null || monthsStr != null) {
                 int months = 0;
-                if (daysStr != null) {
+                if (monthsStr != null) {
                     try {
-                        months = Integer.parseInt(daysStr);
+                        months = Integer.parseInt(monthsStr);
                     } catch (NumberFormatException ex) {
                         throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric months", text, 0, ex);
                     }
                 }
-                if (weeksStr != null) {
+                if (yearsStr != null) {
                     try {
-                        int years = Math.multiplyExact(Integer.parseInt(weeksStr), MONTHS_PER_YEAR);
+                        int years = Math.multiplyExact(Integer.parseInt(yearsStr), MONTHS_PER_YEAR);
                         months = Math.addExact(months, years);
                     } catch (NumberFormatException ex) {
                         throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric years", text, 0, ex);
