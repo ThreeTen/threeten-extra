@@ -31,11 +31,11 @@
  */
 package org.threeten.extra;
 
-import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.HOURS;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
-import java.time.Period;
+import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -49,10 +49,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A month-based amount of time, such as '12 months'.
+ * A hour-based amount of time, such as '4 hours'.
  * <p>
- * This class models a quantity or amount of time in terms of months.
- * It is a type-safe way of representing a number of months in an application.
+ * This class models a quantity or amount of time in terms of hours. It is a
+ * type-safe way of representing a number of hours in an application.
  * <p>
  * The model is of a directed amount, meaning that the amount may be negative.
  *
@@ -62,201 +62,156 @@ import java.util.regex.Pattern;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class Months
-        implements TemporalAmount, Comparable<Months>, Serializable {
+public final class Hours
+        implements TemporalAmount, Comparable<Hours>, Serializable {
 
     /**
-     * A constant for zero months.
+     * A constant for zero hours.
      */
-    public static final Months ZERO = new Months(0);
-    /**
-     * A constant for one month.
-     */
-    public static final Months ONE = new Months(1);
-
+    public static final Hours ZERO = new Hours(0);
+    
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = -8903767091325669093L;
-    /**
-     * The number of months per year.
-     */
-    private static final int MONTHS_PER_YEAR = 12;
+    private static final long serialVersionUID = -8494096666041369608L;
+
     /**
      * The pattern for parsing.
      */
     private static final Pattern PATTERN =
-            Pattern.compile("([-+]?)P"
-                    + "(?:([-+]?[0-9]+)Y)?"
-                    + "(?:([-+]?[0-9]+)M)?", Pattern.CASE_INSENSITIVE);
-
+            Pattern.compile("([-+]?)PT"
+                    + "(?:([-+]?[0-9]+)H)?", Pattern.CASE_INSENSITIVE);
+    
     /**
-     * The number of months.
+     * The number of hours.
      */
-    private final int months;
-
+    private final int hours;
+    
     /**
-     * Obtains a {@code Months} representing a number of months.
+     * Obtains a {@code Hours} representing a number of hours.
      * <p>
-     * The resulting amount will have the specified months.
+     * The resulting amount will have the specified hours.
      *
-     * @param months  the number of months, positive or negative
-     * @return the number of months, not null
+     * @param hours  the number of hours, positive or negative
+     * @return the number of hours, not null
      */
-    public static Months of(int months) {
-        if (months == 0) {
+    public static Hours of(int hours) {
+        if (hours == 0) {
             return ZERO;
-        } else if (months == 1) {
-            return ONE;
+        } else {
+            return new Hours(hours);
         }
-        return new Months(months);
     }
-
-    /**
-     * Obtains a {@code Months} representing the number of months
-     * equivalent to a number of years.
-     * <p>
-     * The resulting amount will be month-based, with the number of months
-     * equal to the number of years multiplied by 12.
-     *
-     * @param years  the number of years, positive or negative
-     * @return the amount with the input years converted to months, not null
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    public static Months ofYears(int years) {
-        if (years == 0) {
-            return ZERO;
-        }
-        return new Months(Math.multiplyExact(years, MONTHS_PER_YEAR));
-    }
-
+    
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Months} from a temporal amount.
+     * Obtains an instance of {@code Hours} from a temporal amount.
      * <p>
-     * This obtains an instance based on the specified amount.
-     * A {@code TemporalAmount} represents an amount of time, which may be
-     * date-based or time-based, which this factory extracts to a {@code Months}.
+     * This obtains an instance based on the specified amount. A
+     * {@code TemporalAmount} represents an amount of time, which may be
+     * date-based or time-based, which this factory extracts to a {@code Hours}.
      * <p>
-     * The result is calculated by looping around each unit in the specified amount.
-     * Each amount is converted to months using {@link Temporals#convertAmount}.
-     * If the conversion yields a remainder, an exception is thrown.
-     * If the amount is zero, the unit is ignored.
+     * The result is calculated by looping around each unit in the specified
+     * amount. Each amount is converted to hours using
+     * {@link Temporals#convertAmount}. If the conversion yields a remainder, an
+     * exception is thrown. If the amount is zero, the unit is ignored.
      *
      * @param amount  the temporal amount to convert, not null
      * @return the equivalent amount, not null
-     * @throws DateTimeException if unable to convert to a {@code Months}
+     * @throws DateTimeException if unable to convert to a {@code Hours}
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static Months from(TemporalAmount amount) {
-        if (amount instanceof Months) {
-            return (Months) amount;
+    public static Hours from(TemporalAmount amount) {
+        if (amount instanceof Hours) {
+            return (Hours) amount;
         }
         Objects.requireNonNull(amount, "amount");
-        int months = 0;
+        int hours = 0;
         for (TemporalUnit unit : amount.getUnits()) {
             long value = amount.get(unit);
             if (value != 0) {
-                long[] converted = Temporals.convertAmount(value, unit, MONTHS);
+                long[] converted = Temporals.convertAmount(value, unit, HOURS);
                 if (converted[1] != 0) {
                     throw new DateTimeException(
-                            "Amount could not be converted to a whole number of months: " + value + " " + unit);
+                            "Amount could not be converted to a whole number of hours: " + value + " " + unit);
                 }
-                months = Math.addExact(months, Math.toIntExact(converted[0]));
+                hours = Math.addExact(hours, Math.toIntExact(converted[0]));
             }
         }
-        return of(months);
+        return of(hours);
     }
-
+    
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code Months} from a text string such as {@code PnM}.
+     * Obtains a {@code Hours} from a text string such as {@code PTnH}.
      * <p>
-     * This will parse the string produced by {@code toString()} which is
-     * based on the ISO-8601 period format {@code PnYnM}.
+     * This will parse the string produced by {@code toString()} which is based
+     * on the ISO-8601 period format {@code PTnH}.
      * <p>
-     * The string starts with an optional sign, denoted by the ASCII negative
-     * or positive symbol. If negative, the whole amount is negated.
-     * The ASCII letter "P" is next in upper or lower case.
-     * There are then two sections, each consisting of a number and a suffix.
-     * At least one of the two sections must be present.
-     * The sections have suffixes in ASCII of "Y" and "M" for years and months,
-     * accepted in upper or lower case. The suffixes must occur in order.
-     * The number part of each section must consist of ASCII digits.
-     * The number may be prefixed by the ASCII negative or positive symbol.
-     * The number must parse to an {@code int}.
+     * The string starts with an optional sign, denoted by the ASCII negative or
+     * positive symbol. If negative, the whole amount is negated. 
+     * The ASCII letters "P" and "T" are next in upper or lower case. 
+     * The section has the suffix "H" in ASCII in either upper or lower case.
+     * The number part must consist of ASCII digits. The number may be prefixed
+     * by the ASCII negative or positive symbol. The number must parse to an
+     * {@code int}.
      * <p>
-     * The leading plus/minus sign, and negative values for years and months are
-     * not part of the ISO-8601 standard.
+     * The leading plus/minus sign, and negative value for hours is not part of
+     * the ISO-8601 standard.
      * <p>
      * For example, the following are valid inputs:
      * <pre>
-     *   "P2M"             -- Months.of(2)
-     *   "P-2M"            -- Months.of(-2)
-     *   "-P2M"            -- Months.of(-2)
-     *   "-P-2M"           -- Months.of(2)
-     *   "P3Y"             -- Months.of(3 * 12)
-     *   "P3Y-2M"          -- Months.of(3 * 12 - 2)
+     *   "PT2H"            -- Hours.of(2)
+     *   "PT-HM"           -- Hours.of(-2)
+     *   "-PT2H"           -- Hours.of(-2)
+     *   "-PT-2H"          -- Hours.of(2)
      * </pre>
      *
      * @param text  the text to parse, not null
      * @return the parsed period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
-    public static Months parse(CharSequence text) {
+    public static Hours parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String yearsStr = matcher.group(2);
-            String monthsStr = matcher.group(3);
-            if (yearsStr != null || monthsStr != null) {
-                int months = 0;
-                if (monthsStr != null) {
-                    try {
-                        months = Integer.parseInt(monthsStr);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric months", text, 0, ex);
-                    }
+            String hoursStr = matcher.group(2);
+            if (hoursStr != null) {
+                try {
+                    int hours = Integer.parseInt(hoursStr);
+                    return of(negate * hours);
+                } catch (NumberFormatException ex) {
+                    throw new DateTimeParseException("Text cannot be parsed to Hours, non-numeric hours", text, 0, ex);
                 }
-                if (yearsStr != null) {
-                    try {
-                        int years = Math.multiplyExact(Integer.parseInt(yearsStr), MONTHS_PER_YEAR);
-                        months = Math.addExact(months, years);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric years", text, 0, ex);
-                    }
-                }
-                return of(Math.multiplyExact(months, negate));
             }
         }
-        throw new DateTimeParseException("Text cannot be parsed to a Months", text, 0);
+        throw new DateTimeParseException("Text cannot be parsed to a Hours", text, 0);
     }
-
+    
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code Months} consisting of the number of months between two dates.
+     * Obtains a {@code Hours} consisting of the number of hours between two dates.
      * <p>
      * The start date is included, but the end date is not.
      * The result of this method can be negative if the end is before the start.
      *
      * @param startDateInclusive  the start date, inclusive, not null
      * @param endDateExclusive  the end date, exclusive, not null
-     * @return the number of months between this date and the end date, not null
+     * @return the number of hours between this date and the end date, not null
      */
-    public static Months between(Temporal startDateInclusive, Temporal endDateExclusive) {
-        return of(Math.toIntExact(MONTHS.between(startDateInclusive, endDateExclusive)));
+    public static Hours between(Temporal startDateInclusive, Temporal endDateExclusive) {
+        return of(Math.toIntExact(HOURS.between(startDateInclusive, endDateExclusive)));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of months.
+     * Constructs an instance using a specific number of hours.
      *
-     * @param months  the months to use
+     * @param hours  the amount of hours
      */
-    private Months(int months) {
-        super();
-        this.months = months;
+    private Hours(int hours) {
+        this.hours = hours;
     }
 
     /**
@@ -265,15 +220,15 @@ public final class Months
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Months.of(months);
+        return Hours.of(hours);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the requested unit.
      * <p>
-     * This returns a value for the supported unit - {@link ChronoUnit#MONTHS MONTHS}.
-     * All other units throw an exception.
+     * This returns a value for the supported unit -
+     * {@link ChronoUnit#HOURS HOURS}. All other units throw an exception.
      *
      * @param unit  the {@code TemporalUnit} for which to return the value
      * @return the long value of the unit
@@ -281,103 +236,107 @@ public final class Months
      */
     @Override
     public long get(TemporalUnit unit) {
-        if (unit == ChronoUnit.MONTHS) {
-            return months;
+        if (unit == HOURS) {
+            return hours;
         }
         throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the number of hours in this amount.
+     *
+     * @return the number of hours
+     */
+    public int getAmount() {
+        return hours;
     }
 
     /**
      * Gets the set of units supported by this amount.
      * <p>
-     * The single supported unit is {@link ChronoUnit#MONTHS MONTHS}.
+     * The single supported unit is {@link ChronoUnit#HOURS HOURS}.
      * <p>
-     * This set can be used in conjunction with {@link #get(TemporalUnit)}
-     * to access the entire state of the amount.
+     * This set can be used in conjunction with {@link #get(TemporalUnit)} to
+     * access the entire state of the amount.
      *
-     * @return a list containing the months unit, not null
+     * @return a list containing the hours unit, not null
      */
     @Override
     public List<TemporalUnit> getUnits() {
-        return Collections.singletonList(MONTHS);
+        return Collections.singletonList(ChronoUnit.HOURS);
     }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the number of months in this amount.
-     *
-     * @return the number of months
-     */
-    public int getAmount() {
-        return months;
-    }
-
+    
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount added.
      * <p>
-     * The parameter is converted using {@link Months#from(TemporalAmount)}.
+     * The parameter is converted using {@link Hours#from(TemporalAmount)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code Months} based on this instance with the requested amount added, not null
-     * @throws DateTimeException if the specified amount  contains an invalid unit
+     * @return a {@code Hours} based on this instance with the requested amount added, not null
+     * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Months plus(TemporalAmount amountToAdd) {
-        return plus(Months.from(amountToAdd).getAmount());
+    public Hours plus(TemporalAmount amountToAdd) {
+        return plus(Hours.from(amountToAdd).getAmount());
     }
 
     /**
-     * Returns a copy of this amount with the specified number of months added.
+     * Returns a copy of this amount with the specified number of hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to add, may be negative
-     * @return a {@code Months} based on this instance with the requested amount added, not null
+     * @param hours  the amount of hours to add, may be negative
+     * @return a {@code Hours} based on this instance with the requested amount added, not null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Months plus(int months) {
-        if (months == 0) {
+    public Hours plus(int hours) {
+        if (hours == 0) {
             return this;
         }
-        return of(Math.addExact(this.months, months));
+        return of(Math.addExact(this.hours, hours));
     }
-
+    
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount subtracted.
      * <p>
-     * The parameter is converted using {@link Months#from(TemporalAmount)}.
+     * The parameter is converted using {@link Hours#from(TemporalAmount)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code Months} based on this instance with the requested amount subtracted, not null
-     * @throws DateTimeException if the specified amount  contains an invalid unit
+     * @return a {@code Hours} based on this instance with the requested amount
+     * subtracted, not null
+     * @throws DateTimeException if the specified amount contains an invalid
+     * unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Months minus(TemporalAmount amountToAdd) {
-        return minus(Months.from(amountToAdd).getAmount());
+    public Hours minus(TemporalAmount amountToAdd) {
+        return minus(Hours.from(amountToAdd).getAmount());
     }
 
     /**
-     * Returns a copy of this amount with the specified number of months subtracted.
+     * Returns a copy of this amount with the specified number of hours
+     * subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to add, may be negative
-     * @return a {@code Months} based on this instance with the requested amount subtracted, not null
+     * @param hours  the amount of hours to add, may be negative
+     * @return a {@code Hours} based on this instance with the requested amount
+     * subtracted, not null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Months minus(int months) {
-        if (months == 0) {
+    public Hours minus(int hours) {
+        if (hours == 0) {
             return this;
         }
-        return of(Math.subtractExact(this.months, months));
+        return of(Math.subtractExact(this.hours, hours));
     }
-
+    
     //-----------------------------------------------------------------------
     /**
      * Returns an instance with the amount multiplied by the specified scalar.
@@ -388,13 +347,13 @@ public final class Months
      * @return the amount multiplied by the specified scalar, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Months multipliedBy(int scalar) {
+    public Hours multipliedBy(int scalar) {
         if (scalar == 1) {
             return this;
         }
-        return of(Math.multiplyExact(months, scalar));
+        return of(Math.multiplyExact(hours, scalar));
     }
-
+    
     /**
      * Returns an instance with the amount divided by the specified divisor.
      * <p>
@@ -406,53 +365,54 @@ public final class Months
      * @return the amount divided by the specified divisor, not null
      * @throws ArithmeticException if the divisor is zero
      */
-    public Months dividedBy(int divisor) {
+    public Hours dividedBy(int divisor) {
         if (divisor == 1) {
             return this;
         }
-        return of(months / divisor);
+        return of(hours / divisor);
     }
-
+    
     /**
      * Returns an instance with the amount negated.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @return the negated amount, not null
-     * @throws ArithmeticException if numeric overflow occurs, which only happens if
-     *  the amount is {@code Long.MIN_VALUE}
+     * @throws ArithmeticException if numeric overflow occurs, which only
+     * happens if the amount is {@code Long.MIN_VALUE}
      */
-    public Months negated() {
+    public Hours negated() {
         return multipliedBy(-1);
     }
-
+    
     /**
      * Returns a copy of this duration with a positive length.
      * <p>
-     * This method returns a positive duration by effectively removing the sign from any negative total length.
+     * This method returns a positive duration by effectively removing the sign
+     * from any negative total length.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @return the absolute amount, not null
-     * @throws ArithmeticException if numeric overflow occurs, which only happens if
-     *  the amount is {@code Long.MIN_VALUE}
+     * @throws ArithmeticException if numeric overflow occurs, which only
+     * happens if the amount is {@code Long.MIN_VALUE}
      */
-    public Months abs() {
-        return months < 0 ? negated() : this;
+    public Hours abs() {
+        return hours < 0 ? negated() : this;
     }
-
+    
     //-------------------------------------------------------------------------
     /**
-     * Gets the number of months as a {@code Period}.
+     * Gets the number of hours as a {@code Duration}.
      * <p>
-     * This returns a period with the same number of months.
+     * This returns a duration with the same number of months.
      *
-     * @return the equivalent period, not null
+     * @return the equivalent duration, not null
      */
-    public Period toPeriod() {
-        return Period.ofMonths(months);
+    public Duration toPeriod() {
+        return Duration.ofHours(hours);
     }
-
+    
     //-----------------------------------------------------------------------
     /**
      * Adds this amount to the specified temporal object.
@@ -475,13 +435,14 @@ public final class Months
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
-     * @throws UnsupportedTemporalTypeException if the MONTHS unit is not supported
+     * @throws UnsupportedTemporalTypeException if the HOURS unit is not
+     * supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal addTo(Temporal temporal) {
-        if (months != 0) {
-            temporal = temporal.plus(months, MONTHS);
+        if (hours != 0) {
+            temporal = temporal.plus(hours, HOURS);
         }
         return temporal;
     }
@@ -507,37 +468,38 @@ public final class Months
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
-     * @throws UnsupportedTemporalTypeException if the MONTHS unit is not supported
+     * @throws UnsupportedTemporalTypeException if the HOURS unit is not
+     * supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal subtractFrom(Temporal temporal) {
-        if (months != 0) {
-            temporal = temporal.minus(months, MONTHS);
+        if (hours != 0) {
+            temporal = temporal.minus(hours, HOURS);
         }
         return temporal;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this amount to the specified {@code Months}.
+     * Compares this amount to the specified {@code Hours}.
      * <p>
-     * The comparison is based on the total length of the amounts.
-     * It is "consistent with equals", as defined by {@link Comparable}.
+     * The comparison is based on the total length of the amounts. It is
+     * "consistent with equals", as defined by {@link Comparable}.
      *
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(Months otherAmount) {
-        int thisValue = this.months;
-        int otherValue = otherAmount.months;
+    public int compareTo(Hours otherAmount) {
+        int thisValue = this.hours;
+        int otherValue = otherAmount.hours;
         return Integer.compare(thisValue, otherValue);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this amount is equal to the specified {@code Months}.
+     * Checks if this amount is equal to the specified {@code Hours}.
      * <p>
      * The comparison is based on the total length of the durations.
      *
@@ -549,9 +511,9 @@ public final class Months
         if (this == otherAmount) {
             return true;
         }
-        if (otherAmount instanceof Months) {
-            Months other = (Months) otherAmount;
-            return this.months == other.months;
+        if (otherAmount instanceof Hours) {
+            Hours other = (Hours) otherAmount;
+            return this.hours == other.hours;
         }
         return false;
     }
@@ -563,19 +525,19 @@ public final class Months
      */
     @Override
     public int hashCode() {
-        return months;
+        return hours;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of months.
-     * This will be in the format 'PnM' where n is the number of months.
+     * Returns a string representation of the number of hours. This will be in
+     * the format 'PTnH' where n is the number of hours.
      *
-     * @return the number of months in ISO-8601 string format
+     * @return the number of hours in ISO-8601 string format
      */
     @Override
     public String toString() {
-        return "P" + months + "M";
+        return "PT" + hours + "H";
     }
 
 }
