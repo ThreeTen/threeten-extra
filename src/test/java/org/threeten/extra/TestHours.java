@@ -41,6 +41,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
@@ -328,6 +329,20 @@ public class TestHours {
     @Test(expectedExceptions = ArithmeticException.class)
     public void test_abs_overflow() {
         Hours.of(Integer.MIN_VALUE).abs();
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_addTo() {
+        LocalTime base = LocalTime.of(11, 30);
+        assertEquals(Hours.of(0).addTo(base), LocalTime.of(11, 30));
+        assertEquals(Hours.of(6).addTo(base), LocalTime.of(17, 30));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_subtractFrom() {
+        LocalTime base = LocalTime.of(11, 30);
+        assertEquals(Hours.of(0).subtractFrom(base), LocalTime.of(11, 30));
+        assertEquals(Hours.of(6).subtractFrom(base), LocalTime.of(5, 30));
     }
 
     //-----------------------------------------------------------------------

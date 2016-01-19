@@ -322,7 +322,7 @@ public final class Months
      *
      * @param amountToAdd  the amount to add, not null
      * @return a {@code Months} based on this instance with the requested amount added, not null
-     * @throws DateTimeException if the specified amount  contains an invalid unit
+     * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Months plus(TemporalAmount amountToAdd) {
@@ -355,7 +355,7 @@ public final class Months
      *
      * @param amountToAdd  the amount to add, not null
      * @return a {@code Months} based on this instance with the requested amount subtracted, not null
-     * @throws DateTimeException if the specified amount  contains an invalid unit
+     * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Months minus(TemporalAmount amountToAdd) {

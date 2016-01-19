@@ -41,9 +41,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.Duration;
-import java.time.Period;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -349,6 +348,20 @@ public class TestMinutes {
         Minutes.of(Integer.MIN_VALUE).abs();
     }
     
+    //-----------------------------------------------------------------------
+    public void test_addTo() {
+        LocalTime base = LocalTime.of(11, 30);
+        assertEquals(Minutes.of(0).addTo(base), LocalTime.of(11, 30));
+        assertEquals(Minutes.of(6).addTo(base), LocalTime.of(11, 36));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_subtractFrom() {
+        LocalTime base = LocalTime.of(11, 30);
+        assertEquals(Minutes.of(0).subtractFrom(base), LocalTime.of(11, 30));
+        assertEquals(Minutes.of(6).subtractFrom(base), LocalTime.of(11, 24));
+    }
+
     //-----------------------------------------------------------------------
     public void test_toDuration() {
         for (int i = -20; i < 20; i++) {

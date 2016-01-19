@@ -51,8 +51,8 @@ import java.util.regex.Pattern;
 /**
  * A hour-based amount of time, such as '4 hours'.
  * <p>
- * This class models a quantity or amount of time in terms of hours. It is a
- * type-safe way of representing a number of hours in an application.
+ * This class models a quantity or amount of time in terms of hours.
+ * It is a type-safe way of representing a number of hours in an application.
  * <p>
  * The model is of a directed amount, meaning that the amount may be negative.
  *
@@ -69,7 +69,7 @@ public final class Hours
      * A constant for zero hours.
      */
     public static final Hours ZERO = new Hours(0);
-    
+
     /**
      * A serialization identifier for this class.
      */
@@ -81,14 +81,14 @@ public final class Hours
     private static final Pattern PATTERN =
             Pattern.compile("([-+]?)PT"
                     + "(?:([-+]?[0-9]+)H)?", Pattern.CASE_INSENSITIVE);
-    
+
     /**
      * The number of hours.
      */
     private final int hours;
-    
+
     /**
-     * Obtains a {@code Hours} representing a number of hours.
+     * Obtains an {@code Hours} representing a number of hours.
      * <p>
      * The resulting amount will have the specified hours.
      *
@@ -107,14 +107,14 @@ public final class Hours
     /**
      * Obtains an instance of {@code Hours} from a temporal amount.
      * <p>
-     * This obtains an instance based on the specified amount. A
-     * {@code TemporalAmount} represents an amount of time, which may be
+     * This obtains an instance based on the specified amount.
+     * A {@code TemporalAmount} represents an amount of time, which may be
      * date-based or time-based, which this factory extracts to a {@code Hours}.
      * <p>
-     * The result is calculated by looping around each unit in the specified
-     * amount. Each amount is converted to hours using
-     * {@link Temporals#convertAmount}. If the conversion yields a remainder, an
-     * exception is thrown. If the amount is zero, the unit is ignored.
+     * The result is calculated by looping around each unit in the specified amount.
+     * Each amount is converted to hours using {@link Temporals#convertAmount}.
+     * If the conversion yields a remainder, an exception is thrown.
+     * If the amount is zero, the unit is ignored.
      *
      * @param amount  the temporal amount to convert, not null
      * @return the equivalent amount, not null
@@ -145,12 +145,12 @@ public final class Hours
     /**
      * Obtains a {@code Hours} from a text string such as {@code PTnH}.
      * <p>
-     * This will parse the string produced by {@code toString()} which is based
-     * on the ISO-8601 period format {@code PTnH}.
+     * This will parse the string produced by {@code toString()} which is
+     * based on the ISO-8601 period format {@code PTnH}.
      * <p>
-     * The string starts with an optional sign, denoted by the ASCII negative or
-     * positive symbol. If negative, the whole amount is negated. 
-     * The ASCII letters "P" and "T" are next in upper or lower case. 
+     * The string starts with an optional sign, denoted by the ASCII negative
+     * or positive symbol. If negative, the whole amount is negated.
+     * The ASCII letters "P" and "T" are next in upper or lower case.
      * The section has the suffix "H" in ASCII in either upper or lower case.
      * The number part must consist of ASCII digits. The number may be prefixed
      * by the ASCII negative or positive symbol. The number must parse to an
@@ -188,7 +188,7 @@ public final class Hours
         }
         throw new DateTimeParseException("Text cannot be parsed to a Hours", text, 0);
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code Hours} consisting of the number of hours between two dates.
@@ -227,8 +227,8 @@ public final class Hours
     /**
      * Gets the value of the requested unit.
      * <p>
-     * This returns a value for the supported unit -
-     * {@link ChronoUnit#HOURS HOURS}. All other units throw an exception.
+     * This returns a value for the supported unit - {@link ChronoUnit#HOURS HOURS}.
+     * All other units throw an exception.
      *
      * @param unit  the {@code TemporalUnit} for which to return the value
      * @return the long value of the unit
@@ -240,16 +240,6 @@ public final class Hours
             return hours;
         }
         throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the number of hours in this amount.
-     *
-     * @return the number of hours
-     */
-    public int getAmount() {
-        return hours;
     }
 
     /**
@@ -266,7 +256,17 @@ public final class Hours
     public List<TemporalUnit> getUnits() {
         return Collections.singletonList(ChronoUnit.HOURS);
     }
-    
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the number of hours in this amount.
+     *
+     * @return the number of hours
+     */
+    public int getAmount() {
+        return hours;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount added.
@@ -299,7 +299,7 @@ public final class Hours
         }
         return of(Math.addExact(this.hours, hours));
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount subtracted.
@@ -309,10 +309,8 @@ public final class Hours
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code Hours} based on this instance with the requested amount
-     * subtracted, not null
-     * @throws DateTimeException if the specified amount contains an invalid
-     * unit
+     * @return a {@code Hours} based on this instance with the requested amount subtracted, not null
+     * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Hours minus(TemporalAmount amountToAdd) {
@@ -320,14 +318,12 @@ public final class Hours
     }
 
     /**
-     * Returns a copy of this amount with the specified number of hours
-     * subtracted.
+     * Returns a copy of this amount with the specified number of hours subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the amount of hours to add, may be negative
-     * @return a {@code Hours} based on this instance with the requested amount
-     * subtracted, not null
+     * @return a {@code Hours} based on this instance with the requested amount subtracted, not null
      * @throws ArithmeticException if the result overflows an int
      */
     public Hours minus(int hours) {
@@ -336,7 +332,7 @@ public final class Hours
         }
         return of(Math.subtractExact(this.hours, hours));
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Returns an instance with the amount multiplied by the specified scalar.
@@ -353,7 +349,7 @@ public final class Hours
         }
         return of(Math.multiplyExact(hours, scalar));
     }
-    
+
     /**
      * Returns an instance with the amount divided by the specified divisor.
      * <p>
@@ -371,36 +367,35 @@ public final class Hours
         }
         return of(hours / divisor);
     }
-    
+
     /**
      * Returns an instance with the amount negated.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @return the negated amount, not null
-     * @throws ArithmeticException if numeric overflow occurs, which only
-     * happens if the amount is {@code Long.MIN_VALUE}
+     * @throws ArithmeticException if numeric overflow occurs, which only happens if
+     *  the amount is {@code Long.MIN_VALUE}
      */
     public Hours negated() {
         return multipliedBy(-1);
     }
-    
+
     /**
      * Returns a copy of this duration with a positive length.
      * <p>
-     * This method returns a positive duration by effectively removing the sign
-     * from any negative total length.
+     * This method returns a positive duration by effectively removing the sign from any negative total length.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @return the absolute amount, not null
-     * @throws ArithmeticException if numeric overflow occurs, which only
-     * happens if the amount is {@code Long.MIN_VALUE}
+     * @throws ArithmeticException if numeric overflow occurs, which only happens if
+     *  the amount is {@code Long.MIN_VALUE}
      */
     public Hours abs() {
         return hours < 0 ? negated() : this;
     }
-    
+
     //-------------------------------------------------------------------------
     /**
      * Gets the number of hours as a {@code Duration}.
@@ -412,7 +407,7 @@ public final class Hours
     public Duration toPeriod() {
         return Duration.ofHours(hours);
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Adds this amount to the specified temporal object.
@@ -435,8 +430,7 @@ public final class Hours
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
-     * @throws UnsupportedTemporalTypeException if the HOURS unit is not
-     * supported
+     * @throws UnsupportedTemporalTypeException if the HOURS unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
@@ -468,8 +462,7 @@ public final class Hours
      * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
-     * @throws UnsupportedTemporalTypeException if the HOURS unit is not
-     * supported
+     * @throws UnsupportedTemporalTypeException if the HOURS unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
@@ -484,8 +477,8 @@ public final class Hours
     /**
      * Compares this amount to the specified {@code Hours}.
      * <p>
-     * The comparison is based on the total length of the amounts. It is
-     * "consistent with equals", as defined by {@link Comparable}.
+     * The comparison is based on the total length of the amounts.
+     * It is "consistent with equals", as defined by {@link Comparable}.
      *
      * @param otherAmount  the other amount, not null
      * @return the comparator value, negative if less, positive if greater
@@ -530,8 +523,8 @@ public final class Hours
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of hours. This will be in
-     * the format 'PTnH' where n is the number of hours.
+     * Returns a string representation of the number of hours.
+     * This will be in the format 'PTnH' where n is the number of hours.
      *
      * @return the number of hours in ISO-8601 string format
      */

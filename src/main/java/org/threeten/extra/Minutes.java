@@ -36,7 +36,6 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
-import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -65,22 +64,22 @@ import java.util.regex.Pattern;
  */
 public class Minutes
         implements TemporalAmount, Comparable<Minutes>, Serializable {
-    
+
     /**
      * A constant for zero minutes.
      */
     public static final Minutes ZERO = new Minutes(0);
-    
+
     /**
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 2602801843170589407L;
-    
+
     /**
      * The number of minutes per hour.
      */
     private static final int MINUTES_PER_HOUR = 60;
-    
+
     /**
      * The pattern for parsing.
      */
@@ -88,12 +87,12 @@ public class Minutes
             Pattern.compile("([-+]?)PT"
                     + "(?:([-+]?[0-9]+)H)?"
                     + "(?:([-+]?[0-9]+)M)?", Pattern.CASE_INSENSITIVE);
-    
+
     /**
      * The number of minutes.
      */
     private final int minutes;
-    
+
     /**
      * Obtains a {@code Minutes} representing a number of minutes.
      * <p>
@@ -108,7 +107,7 @@ public class Minutes
         }
         return new Minutes(minutes);
     }
-    
+
     /**
      * Obtains a {@code Minutes} representing the number of minutes
      * equivalent to a number of hours.
@@ -126,7 +125,7 @@ public class Minutes
         }
         return new Minutes(Math.multiplyExact(hours, MINUTES_PER_HOUR));
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code Minutes} from a temporal amount.
@@ -164,7 +163,7 @@ public class Minutes
         }
         return of(minutes);
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code Minutes} from a text string such as {@code PTnM}.
@@ -229,7 +228,7 @@ public class Minutes
         }
         throw new DateTimeParseException("Text cannot be parsed to a Minutes", text, 0);
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code Minutes} consisting of the number of minutes between two dates.
@@ -244,17 +243,17 @@ public class Minutes
     public static Minutes between(Temporal startDateInclusive, Temporal endDateExclusive) {
         return of(Math.toIntExact(MINUTES.between(startDateInclusive, endDateExclusive)));
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance using a specific number of minutes.
      *
-     * @param minutes  the minutes to use
+     * @param minutes  the amount of minutes
      */
     private Minutes(int minutes) {
         this.minutes = minutes;
     }
-    
+
     /**
      * Resolves singletons.
      *
@@ -288,8 +287,8 @@ public class Minutes
      * <p>
      * The single supported unit is {@link ChronoUnit#MINUTES MINUTES}.
      * <p>
-     * This set can be used in conjunction with {@link #get(TemporalUnit)}
-     * to access the entire state of the amount.
+     * This set can be used in conjunction with {@link #get(TemporalUnit)} to
+     * access the entire state of the amount.
      *
      * @return a list containing the minutes unit, not null
      */
@@ -307,7 +306,7 @@ public class Minutes
     public int getAmount() {
         return minutes;
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount added.
@@ -318,7 +317,7 @@ public class Minutes
      *
      * @param amountToAdd  the amount to add, not null
      * @return a {@code Minutes} based on this instance with the requested amount added, not null
-     * @throws DateTimeException if the specified amount  contains an invalid unit
+     * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Minutes plus(TemporalAmount amountToAdd) {
@@ -340,7 +339,7 @@ public class Minutes
         }
         return of(Math.addExact(this.minutes, minutes));
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount subtracted.
@@ -351,13 +350,13 @@ public class Minutes
      *
      * @param amountToAdd  the amount to add, not null
      * @return a {@code Minutes} based on this instance with the requested amount subtracted, not null
-     * @throws DateTimeException if the specified amount  contains an invalid unit
+     * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Minutes minus(TemporalAmount amountToAdd) {
         return minus(Minutes.from(amountToAdd).getAmount());
     }
-    
+
     /**
      * Returns a copy of this amount with the specified number of minutes subtracted.
      * <p>
@@ -373,7 +372,7 @@ public class Minutes
         }
         return of(Math.subtractExact(this.minutes, minutes));
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Returns an instance with the amount multiplied by the specified scalar.
@@ -390,7 +389,7 @@ public class Minutes
         }
         return of(Math.multiplyExact(minutes, scalar));
     }
-    
+
     /**
      * Returns an instance with the amount divided by the specified divisor.
      * <p>
@@ -408,7 +407,7 @@ public class Minutes
         }
         return of(minutes / divisor);
     }
-    
+
     /**
      * Returns an instance with the amount negated.
      * <p>
@@ -421,7 +420,7 @@ public class Minutes
     public Minutes negated() {
         return multipliedBy(-1);
     }
-    
+
     /**
      * Returns a copy of this duration with a positive length.
      * <p>
@@ -436,7 +435,7 @@ public class Minutes
     public Minutes abs() {
         return minutes < 0 ? negated() : this;
     }
-    
+
     //-------------------------------------------------------------------------
     /**
      * Gets the number of minutes as a {@code Duration}.
@@ -448,7 +447,7 @@ public class Minutes
     public Duration toDuration() {
         return Duration.ofMinutes(minutes);
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Adds this amount to the specified temporal object.
@@ -530,7 +529,7 @@ public class Minutes
         int otherValue = otherAmount.minutes;
         return Integer.compare(thisValue, otherValue);
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this amount is equal to the specified {@code Minutes}.
@@ -573,5 +572,5 @@ public class Minutes
     public String toString() {
         return "PT" + minutes + "M";
     }
-    
+
 }

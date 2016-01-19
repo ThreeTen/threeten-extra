@@ -278,7 +278,7 @@ public final class Years
      *
      * @param amountToAdd  the amount to add, not null
      * @return a {@code Years} based on this instance with the requested amount added, not null
-     * @throws DateTimeException if the specified amount  contains an invalid unit
+     * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Years plus(TemporalAmount amountToAdd) {
@@ -311,7 +311,7 @@ public final class Years
      *
      * @param amountToAdd  the amount to add, not null
      * @return a {@code Years} based on this instance with the requested amount subtracted, not null
-     * @throws DateTimeException if the specified amount  contains an invalid unit
+     * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Years minus(TemporalAmount amountToAdd) {
