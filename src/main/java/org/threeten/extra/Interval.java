@@ -133,7 +133,17 @@ public final class Interval
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '/') {
                 Instant start = Instant.parse(text.subSequence(0, i));
-                Instant end = Instant.parse(text.subSequence(i + 1, text.length()));
+                Instant end = null;
+                if (i + 1 < text.length()) {
+                    char c = text.charAt(i + 1);
+                    if (c == 'P' || c == 'p') {
+                        Duration duration = Duration.parse(text.subSequence(i + 1, text.length()));
+                        end = start.plus(duration);
+                    }
+                }
+                if (end == null) {
+                    end = Instant.parse(text.subSequence(i + 1, text.length()));
+                }
                 return Interval.of(start, end);
             }
         }
