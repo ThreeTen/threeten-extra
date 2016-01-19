@@ -121,8 +121,13 @@ public final class Interval
      * Obtains an instance of {@code Interval} from a text string such as
      * {@code 2007-12-03T10:15:30Z/2007-12-04T10:15:30Z}.
      * <p>
-     * The string must consist of two valid string representations of an {@link Instant}
-     * separated by a forward slash.
+     * The string must consist of one of the following three formats:
+     * <ul>
+     * <li>a representations of an {@link Instant}, followed by a forward slash, followed by a representation of a {@link Instant}
+     * <li>a representation of an {@link Instant}, followed by a forward slash, followed by a representation of a {@link Duration}
+     * <li>a representation of a {@link Duration}, followed by a forward slash, followed by a representation of an {@link Instant}
+     * </ul>
+     * 
      *
      * @param text  the text to parse, not null
      * @return the parsed interval, not null
@@ -132,19 +137,25 @@ public final class Interval
         Objects.requireNonNull(text, "text");
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '/') {
-                Instant start = Instant.parse(text.subSequence(0, i));
-                Instant end = null;
-                if (i + 1 < text.length()) {
-                    char c = text.charAt(i + 1);
-                    if (c == 'P' || c == 'p') {
-                        Duration duration = Duration.parse(text.subSequence(i + 1, text.length()));
-                        end = start.plus(duration);
+                char firstChar = text.charAt(0);
+                if (firstChar == 'P' || firstChar == 'p') {
+                    // duration followed by instant
+                    Duration duration = Duration.parse(text.subSequence(0, i));
+                    Instant end = Instant.parse(text.subSequence(i + 1, text.length()));
+                    return Interval.of(end.minus(duration), end);
+                } else {
+                    // instant followed by instant or duration
+                    Instant start = Instant.parse(text.subSequence(0, i));
+                    if (i + 1 < text.length()) {
+                        char c = text.charAt(i + 1);
+                        if (c == 'P' || c == 'p') {
+                            Duration duration = Duration.parse(text.subSequence(i + 1, text.length()));
+                            return Interval.of(start, start.plus(duration));
+                        }
                     }
+                    Instant end = Instant.parse(text.subSequence(i + 1, text.length()));
+                    return Interval.of(start, end);
                 }
-                if (end == null) {
-                    end = Instant.parse(text.subSequence(i + 1, text.length()));
-                }
-                return Interval.of(start, end);
             }
         }
         throw new DateTimeParseException("Interval cannot be parsed, no forward slash found", text, 0);

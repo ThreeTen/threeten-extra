@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
+      <action dev="steve-o" type="add">
+        Extend Interval to parse more formats.
+        Fixes #50.
+      </action>
       <action dev="raupachz" type="add">
         Add Hours and Minutes classes.
         Fixes #52, #14.
