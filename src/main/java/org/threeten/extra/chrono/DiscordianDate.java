@@ -632,6 +632,7 @@ public final class DiscordianDate
         return resolvePrevious(newYear, newMonth, day);
     }
 
+    @Override
     DiscordianDate plusWeeks(long weeks) {
         if (weeks == 0) {
             return this;
