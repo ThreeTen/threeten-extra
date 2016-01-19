@@ -355,6 +355,106 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
+    public void test_isAfter_Instant() {
+        Interval test = Interval.of(NOW1, NOW2);
+        assertEquals(test.isAfter(NOW1.minusSeconds(2)), true);
+        assertEquals(test.isAfter(NOW1.minusSeconds(1)), true);
+        assertEquals(test.isAfter(NOW1), false);
+        assertEquals(test.isAfter(NOW2), false);
+        assertEquals(test.isAfter(NOW2.plusSeconds(1)), false);
+    }
+
+    public void test_isAfter_Instant_empty() {
+        Interval test = Interval.of(NOW1, NOW1);
+        assertEquals(test.isAfter(NOW1.minusSeconds(2)), true);
+        assertEquals(test.isAfter(NOW1.minusSeconds(1)), true);
+        assertEquals(test.isAfter(NOW1), false);
+        assertEquals(test.isAfter(NOW1.plusSeconds(1)), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isBefore_Instant() {
+        Interval test = Interval.of(NOW1, NOW2);
+        assertEquals(test.isBefore(NOW1.minusSeconds(1)), false);
+        assertEquals(test.isBefore(NOW1), false);
+        assertEquals(test.isBefore(NOW2), true);
+        assertEquals(test.isBefore(NOW2.plusSeconds(1)), true);
+    }
+
+    public void test_isBefore_Instant_empty() {
+        Interval test = Interval.of(NOW1, NOW1);
+        assertEquals(test.isBefore(NOW1.minusSeconds(1)), false);
+        assertEquals(test.isBefore(NOW1), false);
+        assertEquals(test.isBefore(NOW1.plusSeconds(1)), true);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isAfter_Interval() {
+        Interval test = Interval.of(NOW1, NOW2);
+        // completely before
+        assertEquals(test.isAfter(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), true);
+        assertEquals(test.isAfter(Interval.of(NOW1.minusSeconds(1), NOW1)), true);
+        // partly before
+        assertEquals(test.isAfter(Interval.of(NOW1.minusSeconds(1), NOW2)), false);
+        assertEquals(test.isAfter(Interval.of(NOW1.minusSeconds(1), NOW2.minusSeconds(1))), false);
+        // contained
+        assertEquals(test.isAfter(Interval.of(NOW1, NOW2.minusSeconds(1))), false);
+        assertEquals(test.isAfter(Interval.of(NOW1, NOW2)), false);
+        assertEquals(test.isAfter(Interval.of(NOW1.plusSeconds(1), NOW2)), false);
+        // partly after
+        assertEquals(test.isAfter(Interval.of(NOW1, NOW2.plusSeconds(1))), false);
+        assertEquals(test.isAfter(Interval.of(NOW1.plusSeconds(1), NOW2.plusSeconds(1))), false);
+        // completely after
+        assertEquals(test.isAfter(Interval.of(NOW2, NOW2.plusSeconds(1))), false);
+        assertEquals(test.isAfter(Interval.of(NOW2.plusSeconds(1), NOW2.plusSeconds(2))), false);
+    }
+
+    public void test_isAfter_Interval_empty() {
+        Interval test = Interval.of(NOW1, NOW1);
+        // completely before
+        assertEquals(test.isAfter(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), true);
+        assertEquals(test.isAfter(Interval.of(NOW1.minusSeconds(1), NOW1)), true);
+        // equal
+        assertEquals(test.isAfter(Interval.of(NOW1, NOW1)), false);
+        // completely after
+        assertEquals(test.isAfter(Interval.of(NOW1, NOW1.plusSeconds(1))), false);
+        assertEquals(test.isAfter(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isBefore_Interval() {
+        Interval test = Interval.of(NOW1, NOW2);
+        // completely before
+        assertEquals(test.isBefore(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), false);
+        assertEquals(test.isBefore(Interval.of(NOW1.minusSeconds(1), NOW1)), false);
+        // partly before
+        assertEquals(test.isBefore(Interval.of(NOW1.minusSeconds(1), NOW2)), false);
+        assertEquals(test.isBefore(Interval.of(NOW1.minusSeconds(1), NOW2.minusSeconds(1))), false);
+        // contained
+        assertEquals(test.isBefore(Interval.of(NOW1, NOW2.minusSeconds(1))), false);
+        assertEquals(test.isBefore(Interval.of(NOW1, NOW2)), false);
+        assertEquals(test.isBefore(Interval.of(NOW1.plusSeconds(1), NOW2)), false);
+        // partly after
+        assertEquals(test.isBefore(Interval.of(NOW1, NOW2.plusSeconds(1))), false);
+        assertEquals(test.isBefore(Interval.of(NOW1.plusSeconds(1), NOW2.plusSeconds(1))), false);
+        // completely after
+        assertEquals(test.isBefore(Interval.of(NOW2, NOW2.plusSeconds(1))), true);
+        assertEquals(test.isBefore(Interval.of(NOW2.plusSeconds(1), NOW2.plusSeconds(2))), true);
+    }
+
+    public void test_isBefore_Interval_empty() {
+        Interval test = Interval.of(NOW1, NOW1);
+        // completely before
+        assertEquals(test.isBefore(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), false);
+        assertEquals(test.isBefore(Interval.of(NOW1.minusSeconds(1), NOW1)), false);
+        // equal
+        assertEquals(test.isBefore(Interval.of(NOW1, NOW1)), false);
+        // completely after
+        assertEquals(test.isBefore(Interval.of(NOW1, NOW1.plusSeconds(1))), true);
+        assertEquals(test.isBefore(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))), true);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_toDuration() {
         Interval test = Interval.of(NOW1, NOW2);
         assertEquals(test.toDuration(), Duration.between(NOW1, NOW2));

@@ -217,7 +217,7 @@ public final class Interval
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this interval contain the specified instant.
+     * Checks if this interval contains the specified instant.
      * <p>
      * The result is true if the instant is equal or after the start and before the end.
      * An empty interval does not contain anything.
@@ -274,6 +274,66 @@ public final class Interval
     public boolean abuts(Interval interval) {
         Objects.requireNonNull(interval, "interval");
         return end.equals(interval.start) ^ start.equals(interval.end);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Checks if this interval is after the specified instant.
+     * <p>
+     * The result is true if the this instant starts after the specified instant.
+     * An empty interval behaves as though it is an instant for comparison purposes.
+     *
+     * @param instant  the other instant to compare to, not null
+     * @return true if the start of this interval is after the specified instant
+     */
+    public boolean isAfter(Instant instant) {
+        return start.compareTo(instant) > 0;
+    }
+
+    /**
+     * Checks if this interval is before the specified instant.
+     * <p>
+     * The result is true if the this instant ends before the specified instant.
+     * Since intervals do not include their end points, this will return true if the
+     * instant equals the end of the interval.
+     * An empty interval behaves as though it is an instant for comparison purposes.
+     *
+     * @param instant  the other instant to compare to, not null
+     * @return true if the start of this interval is before the specified instant
+     */
+    public boolean isBefore(Instant instant) {
+        return end.compareTo(instant) <= 0 && start.compareTo(instant) < 0;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Checks if this interval is after the specified interval.
+     * <p>
+     * The result is true if the this instant starts after the end of the specified interval.
+     * Since intervals do not include their end points, this will return true if the
+     * instant equals the end of the interval.
+     * An empty interval behaves as though it is an instant for comparison purposes.
+     *
+     * @param interval  the other interval to compare to, not null
+     * @return true if this instant is after the specified instant
+     */
+    public boolean isAfter(Interval interval) {
+        return start.compareTo(interval.end) >= 0 && !interval.equals(this);
+    }
+
+    /**
+     * Checks if this interval is before the specified interval.
+     * <p>
+     * The result is true if the this instant ends before the start of the specified interval.
+     * Since intervals do not include their end points, this will return true if the
+     * two intervals abut.
+     * An empty interval behaves as though it is an instant for comparison purposes.
+     *
+     * @param interval  the other interval to compare to, not null
+     * @return true if this instant is before the specified instant
+     */
+    public boolean isBefore(Interval interval) {
+        return end.compareTo(interval.start) <= 0 && !interval.equals(this);
     }
 
     //-----------------------------------------------------------------------
