@@ -8,6 +8,11 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
+      <action dev="jodastephen" type="add" >
+        Add PackedFields.
+        Provide packed integer representations of dates and times
+        Fixes #57.
+      </action>
       <action dev="jodastephen" type="fix" >
         Clarify YearQuarter docs.
         Fixes #58.

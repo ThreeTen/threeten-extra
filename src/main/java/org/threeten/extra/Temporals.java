@@ -50,7 +50,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Additional utilities for working with temporal classes.
  * <p>
- * This currently contains adjusters that ignore Saturday/Sunday weekends.
+ * This includes:
+ * <ul>
+ * <li>adjusters that ignore Saturday/Sunday weekends
+ * <li>conversion between {@code TimeUnit} and {@code ChronoUnit}
+ * <li>converting an amount to another unit
+ * </ul>
  *
  * <h3>Implementation Requirements:</h3>
  * This is a thread-safe utility class.
