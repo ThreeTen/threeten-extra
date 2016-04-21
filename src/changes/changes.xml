@@ -9,6 +9,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
       <action dev="jodastephen" type="fix" >
+        Clarify YearQuarter docs.
+        Fixes #58.
+      </action>
+      <action dev="jodastephen" type="fix" >
         Add isBefore/isAfter to Interval.
         Fixes #48.
       </action>

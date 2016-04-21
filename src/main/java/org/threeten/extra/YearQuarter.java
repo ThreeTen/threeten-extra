@@ -76,8 +76,9 @@ import java.util.Objects;
  * A year-quarter in the ISO-8601 calendar system, such as {@code 2007-Q2}.
  * <p>
  * {@code YearQuarter} is an immutable date-time object that represents the combination
- * of a year and quarter.
- * Any field that can be derived from a year and quarter can be obtained.
+ * of a year and quarter. Any field that can be derived from a year and quarter can be obtained.
+ * A quarter is defined by {@link Quarter} and {@link Month#firstMonthOfQuarter()} - Q1, Q2, Q3 and Q4.
+ * Q1 is January to March, Q2 is April to June, Q3 is July to September and Q4 is October to December.
  * <p>
  * This class does not store or represent a day, time or time-zone.
  * For example, the value "2nd quarter 2007" can be stored in a {@code YearQuarter}.
@@ -88,6 +89,7 @@ import java.util.Objects;
  * For most applications written today, the ISO-8601 rules are entirely suitable.
  * However, any application that makes use of historical dates, and requires them
  * to be accurate will find the ISO-8601 approach unsuitable.
+ * Note that the ISO-8601 standard does not define or refer to quarters.
  *
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
