@@ -42,6 +42,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
 import org.testng.annotations.Test;
 
@@ -101,6 +103,17 @@ public class TestPackedFields {
         assertEquals(LocalDate.of(2015, 12, 3), LocalDate.parse("20151203", f));
     }
 
+    @Test(expectedExceptions = DateTimeParseException.class)
+    public void test_date_resolve_invalid_smart() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_DATE).toFormatter();
+        LocalDate.parse("20151403", f.withResolverStyle(ResolverStyle.SMART));
+    }
+
+    public void test_date_resolve_invalid_lenient() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_DATE).toFormatter();
+        assertEquals(LocalDate.of(2016, 2, 3), LocalDate.parse("20151403", f.withResolverStyle(ResolverStyle.LENIENT)));
+    }
+
     //-----------------------------------------------------------------------
     // packedHourMin()
     //-----------------------------------------------------------------------
@@ -138,6 +151,17 @@ public class TestPackedFields {
     public void test_hourMin_resolve() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_HOUR_MIN).toFormatter();
         assertEquals(LocalTime.of(11, 30), LocalTime.parse("1130", f));
+    }
+
+    @Test(expectedExceptions = DateTimeParseException.class)
+    public void test_hourMin_resolve_invalid_smart() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_HOUR_MIN).toFormatter();
+        LocalTime.parse("1173", f.withResolverStyle(ResolverStyle.SMART));
+    }
+
+    public void test_hourMin_resolve_invalid_lenient() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_HOUR_MIN).toFormatter();
+        assertEquals(LocalTime.of(12, 13), LocalTime.parse("1173", f.withResolverStyle(ResolverStyle.LENIENT)));
     }
 
     //-----------------------------------------------------------------------
@@ -178,6 +202,17 @@ public class TestPackedFields {
     public void test_time_resolve() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_TIME).toFormatter();
         assertEquals(LocalTime.of(11, 30, 52), LocalTime.parse("113052", f));
+    }
+
+    @Test(expectedExceptions = DateTimeParseException.class)
+    public void test_time_resolve_invalid_smart() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_TIME).toFormatter();
+        LocalTime.parse("117361", f.withResolverStyle(ResolverStyle.SMART));
+    }
+
+    public void test_time_resolve_invalid_lenient() {
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_TIME).toFormatter();
+        assertEquals(LocalTime.of(12, 14, 1), LocalTime.parse("117361", f.withResolverStyle(ResolverStyle.LENIENT)));
     }
 
 }

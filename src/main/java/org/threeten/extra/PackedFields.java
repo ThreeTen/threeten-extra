@@ -71,6 +71,9 @@ public final class PackedFields {
      * <p>
      * This field has invalid values within the range of value values.
      * For example, 20121301 is invalid as it implies month 13.
+     * <p>
+     * When parsing in {@linkplain ResolverStyle#LENIENT lenient mode}, invalid
+     * dates will be accepted. For example, 20121301 will result in 2013-01-01.
      */
     public static final TemporalField PACKED_DATE = PackedDate.INSTANCE;
     /**
@@ -82,6 +85,9 @@ public final class PackedFields {
      * <p>
      * This field has invalid values within the range of value values.
      * For example, 1073 is invalid as it implies the minute is 73.
+     * <p>
+     * When parsing in {@linkplain ResolverStyle#LENIENT lenient mode}, invalid
+     * times will be accepted. For example, 1073 will result in 11:13.
      */
     public static final TemporalField PACKED_HOUR_MIN = PackedHourMin.INSTANCE;
     /**
@@ -93,6 +99,9 @@ public final class PackedFields {
      * <p>
      * This field has invalid values within the range of value values.
      * For example, 107310 is invalid as it implies the minute is 73.
+     * <p>
+     * When parsing in {@linkplain ResolverStyle#LENIENT lenient mode}, invalid
+     * times will be accepted. For example, 107310 will result in 11:13:10.
      */
     public static final TemporalField PACKED_TIME = PackedTime.INSTANCE;
 
@@ -179,8 +188,7 @@ public final class PackedFields {
             int year = val / 10000;
             int moy = (val % 10000) / 100;
             int dom = val % 100;
-            LocalDate date = LocalDate.of(year, moy, dom);
-            return date;
+            return LocalDate.of(year, moy, dom);
         }
 
         //-----------------------------------------------------------------------
@@ -188,7 +196,15 @@ public final class PackedFields {
         public ChronoLocalDate resolve(
                 Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
             long value = fieldValues.remove(this);
-            LocalDate date = toDate(value);
+            LocalDate date;
+            if (resolverStyle == ResolverStyle.LENIENT) {
+                int year = Math.toIntExact(value / 10000);
+                int moy = (int) ((value % 10000) / 100);
+                long dom = value % 100;
+                date = LocalDate.of(year, 1, 1).plusMonths(moy - 1).plusDays(dom - 1);
+            } else {
+                date = toDate(value);
+            }
             Chronology chrono = Chronology.from(partialTemporal);
             return chrono.date(date);
         }
@@ -275,10 +291,12 @@ public final class PackedFields {
             long value = fieldValues.remove(this);
             long hour = value / 100;
             long min = value % 100;
-            HOUR_OF_DAY.checkValidValue(hour);
-            MINUTE_OF_HOUR.checkValidValue(min);
-            updateCheckConflict(fieldValues, this, HOUR_OF_DAY, hour);
-            updateCheckConflict(fieldValues, this, MINUTE_OF_HOUR, min);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                HOUR_OF_DAY.checkValidValue(hour);
+                MINUTE_OF_HOUR.checkValidValue(min);
+            }
+            long mod = hour * 60 + min;
+            updateCheckConflict(fieldValues, this, MINUTE_OF_DAY, mod);
             return null;
         }
 
@@ -358,7 +376,8 @@ public final class PackedFields {
             HOUR_OF_DAY.checkValidValue(hour);
             MINUTE_OF_HOUR.checkValidValue(min);
             SECOND_OF_MINUTE.checkValidValue(sec);
-            return (R) temporal.with(HOUR_OF_DAY, hour).with(MINUTE_OF_HOUR, min).with(SECOND_OF_MINUTE, sec);
+            long sod = 3600 * hour + 60 * min + sec;
+            return (R) temporal.with(SECOND_OF_DAY, sod);
         }
 
         //-----------------------------------------------------------------------
@@ -369,12 +388,13 @@ public final class PackedFields {
             long hour = value / 10000;
             long min = (value % 10000) / 100;
             long sec = value % 100;
-            HOUR_OF_DAY.checkValidValue(hour);
-            MINUTE_OF_HOUR.checkValidValue(min);
-            SECOND_OF_MINUTE.checkValidValue(sec);
-            updateCheckConflict(fieldValues, this, HOUR_OF_DAY, hour);
-            updateCheckConflict(fieldValues, this, MINUTE_OF_HOUR, min);
-            updateCheckConflict(fieldValues, this, SECOND_OF_MINUTE, sec);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                HOUR_OF_DAY.checkValidValue(hour);
+                MINUTE_OF_HOUR.checkValidValue(min);
+                SECOND_OF_MINUTE.checkValidValue(sec);
+            }
+            long sod = 3600 * hour + 60 * min + sec;
+            updateCheckConflict(fieldValues, this, SECOND_OF_DAY, sod);
             return null;
         }
 
