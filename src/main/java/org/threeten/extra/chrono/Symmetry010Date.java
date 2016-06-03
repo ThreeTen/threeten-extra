@@ -492,7 +492,7 @@ public final class Symmetry010Date
      */
     @Override
     public IsoEra getEra() {
-        return IsoEra.CE;
+        return (prolepticYear >= 1 ? IsoEra.CE : IsoEra.BCE);
     }
 
     /**
