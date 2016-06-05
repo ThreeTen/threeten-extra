@@ -541,21 +541,6 @@ public final class Symmetry010Date
             getChronology().range(f).checkValidValue(newValue, f);
             int nval = (int) newValue;
             switch (f) {
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH:
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR:
-                case DAY_OF_WEEK:
-                    range(f).checkValidValue(newValue, field);
-                    int dom = ((getDayOfMonth() - 1) / DAYS_IN_WEEK) * DAYS_IN_WEEK;
-                    return resolvePreviousValid(prolepticYear, month, dom + nval);
-                case ALIGNED_WEEK_OF_MONTH:
-                    range(f).checkValidValue(newValue, field);
-                    int d = day % DAYS_IN_WEEK;
-                    return resolvePreviousValid(prolepticYear, month, (nval - 1) * DAYS_IN_WEEK + d);
-                case ALIGNED_WEEK_OF_YEAR:
-                    range(f).checkValidValue(newValue, field);
-                    int newMonth = 1 + ((nval - 1) / WEEKS_IN_MONTH);
-                    int newDay = ((nval - 1) % WEEKS_IN_MONTH) * DAYS_IN_WEEK + 1 + ((day - 1) % DAYS_IN_WEEK);
-                    return resolvePreviousValid(prolepticYear, newMonth, newDay);
                 case DAY_OF_MONTH:
                     return create(prolepticYear, month, nval);
                 default:
