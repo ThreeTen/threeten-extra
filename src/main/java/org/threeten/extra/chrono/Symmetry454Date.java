@@ -291,8 +291,6 @@ public final class Symmetry454Date
      *
      * @param prolepticYear  the Symmetry454 proleptic-year
      * @param month  the Symmetry454 month, from 1 to 12
-     * @param dayOfMonth  the Symmetry454 day-of-month, from 1 to 28, or 1 to 35 in February, May, August, November
-     *   and December in a Leap Year
      * @return the resolved date
      */
     private static Symmetry454Date resolvePreviousValid(int prolepticYear, int month, int day) {
@@ -489,7 +487,7 @@ public final class Symmetry454Date
      */
     @Override
     public IsoEra getEra() {
-        return IsoEra.CE;
+        return (prolepticYear >= 1 ? IsoEra.CE : IsoEra.BCE);
     }
 
     /**

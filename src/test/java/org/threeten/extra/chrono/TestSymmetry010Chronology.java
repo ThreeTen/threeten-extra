@@ -345,6 +345,16 @@ public class TestSymmetry010Chronology {
             Symmetry010Date eraBased = Symmetry010Chronology.INSTANCE.date(era, year, 1, 1);
             assertEquals(eraBased, base);
         }
+
+        for (int year = -200; year < 0; year++) {
+            Symmetry010Date base = Symmetry010Chronology.INSTANCE.date(year, 1, 1);
+            assertEquals(year, base.get(YEAR));
+            IsoEra era = IsoEra.BCE;
+            assertEquals(era, base.getEra());
+            assertEquals(1 - year, base.get(YEAR_OF_ERA));
+            Symmetry010Date eraBased = Symmetry010Chronology.INSTANCE.date(era, year, 1, 1);
+            assertEquals(eraBased, base);
+        }
     }
 
     @Test
