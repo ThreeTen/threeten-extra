@@ -62,7 +62,7 @@ import java.util.regex.Pattern;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public class Minutes
+public final class Minutes
         implements TemporalAmount, Comparable<Minutes>, Serializable {
 
     /**
