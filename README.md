@@ -1,4 +1,4 @@
-threeten-extra
+ThreeTen-Extra
 ==============
 
 ThreeTen-Extra provides additional date-time classes that complement those in JDK 8.
@@ -17,13 +17,12 @@ Various documentation is available:
 
 
 ### Releases
-Release 0.9 is the current development release intended for feedback.
-The code is fully tested, but there may yet be bugs and the API may yet change.
-There should be no great reason why it cannot be used in production if you can cope with future API change.
+Release 1.0 is the current release.
+This release is considered stable and worthy of the 1.x tag.
 
-The project runs on JDK 8 and has no dependencies.
+ThreeTen-Extra requires Java SE 8 or later and has no dependencies.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|0.9|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|1.0|jar)
 
 
 ### Support

@@ -46,20 +46,18 @@ Various documentation is available:
 
 ## <i></i> Releases
 
-There are no full releases yet!
-Release 0.9 is the current development release intended for feedback.
-The code is fully tested, but there may yet be bugs and the API may yet change.
-There should be no great reason why it cannot be used in production if you can cope with future API change.
+Release 1.0 is the current release.
+This release is considered stable and worthy of the 1.x tag.
 
-The project runs on Java SE 8 and has no [dependencies](dependencies.html).
+ThreeTen-Extra requires Java SE 8 or later and has no [dependencies](dependencies.html).
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.threeten%7Cthreeten-extra%7C0.9%7Cjar).
+Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.threeten%7Cthreeten-extra%7C1.0%7Cjar).
 
 ```xml
 <dependency>
   <groupId>org.threeten</groupId>
   <artifactId>threeten-extra</artifactId>
-  <version>0.9</version>
+  <version>1.0</version>
 </dependency>
 ```
 

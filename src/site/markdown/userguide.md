@@ -28,6 +28,7 @@ The additional calendar systems operate exactly as per similar classes in Java S
 These include:
 
 * [Accounting](apidocs/org/threeten/extra/chrono/AccountingChronology.html) calendar system
+* [British Cutover](apidocs/org/threeten/extra/chrono/BritishCutoverChronology.html) calendar system
 * [Coptic](apidocs/org/threeten/extra/chrono/CopticChronology.html) calendar system
 * [Discordian](apidocs/org/threeten/extra/chrono/DiscordianChronology.html) calendar system
 * [Ethiopic](apidocs/org/threeten/extra/chrono/EthiopicChronology.html) calendar system
