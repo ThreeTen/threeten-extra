@@ -384,34 +384,25 @@ public final class Symmetry010Date
     }
 
     @Override
-    int getAlignedDayOfWeekInMonth() {
-        return getDayOfWeek();
-    }
-
-    @Override
-    int getAlignedDayOfWeekInYear() {
-        return getDayOfWeek();
-    }
-
-    @Override
-    int getAlignedWeekOfMonth() {
-        return ((day - 1) / DAYS_IN_WEEK) + 1;
-    }
-
-    @Override
-    int getAlignedWeekOfYear() {
-        return ((dayOfYear - 1) / DAYS_IN_WEEK) + 1;
-    }
-
-    @Override
     int getDayOfWeek() {
-        return ((dayOfYear - 1) % DAYS_IN_WEEK) + 1;
+        return ((dayOfYear - 1 + getDayOfMonthOffset()) % DAYS_IN_WEEK) + 1;
     }
 
     long getProlepticWeek() {
         return prolepticYear * WEEKS_IN_YEAR +
                Symmetry010Chronology.getLeapYearsBefore(prolepticYear) +
                ((dayOfYear - 1) / DAYS_IN_WEEK) - 1;
+    }
+
+    /**
+     * Each 1st month of a quarter (month % 3 == 1) starts on a Monday,    offset is 0.
+     * Each 2nd month of a quarter (month % 3 == 2) starts on a Wednesday, offset is 2.
+     * Each 3rd month of a quarter (month % 3 == 0) starts on a Saturday,  offset is 5.
+     */
+    private static final int[] dayOfMonthOffset = {5, 0, 2};
+
+    private int getDayOfMonthOffset() {
+        return dayOfMonthOffset[month % 3];
     }
 
     /**
@@ -543,6 +534,10 @@ public final class Symmetry010Date
             switch (f) {
                 case DAY_OF_MONTH:
                     return create(prolepticYear, month, nval);
+                case DAY_OF_WEEK:
+                    int week = (this.dayOfYear - 1) / 7;
+                    int yd = 7 * week + nval;
+                    return ofYearDay(prolepticYear, yd);
                 default:
                     break;
             }
