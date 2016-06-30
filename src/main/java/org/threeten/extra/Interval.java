@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
@@ -123,9 +124,9 @@ public final class Interval
      * <p>
      * The string must consist of one of the following three formats:
      * <ul>
-     * <li>a representations of an {@link Instant}, followed by a forward slash, followed by a representation of a {@link Instant}
-     * <li>a representation of an {@link Instant}, followed by a forward slash, followed by a representation of a {@link Duration}
-     * <li>a representation of a {@link Duration}, followed by a forward slash, followed by a representation of an {@link Instant}
+     * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash, followed by a representation of a {@link OffsetDateTime}
+     * <li>a representation of an {@link OffsetDateTime}, followed by a forward slash, followed by a representation of a {@link Duration}
+     * <li>a representation of a {@link Duration}, followed by a forward slash, followed by a representation of an {@link OffsetDateTime}
      * </ul>
      * 
      *
@@ -141,11 +142,11 @@ public final class Interval
                 if (firstChar == 'P' || firstChar == 'p') {
                     // duration followed by instant
                     Duration duration = Duration.parse(text.subSequence(0, i));
-                    Instant end = Instant.parse(text.subSequence(i + 1, text.length()));
+                    Instant end = OffsetDateTime.parse(text.subSequence(i + 1, text.length())).toInstant();
                     return Interval.of(end.minus(duration), end);
                 } else {
                     // instant followed by instant or duration
-                    Instant start = Instant.parse(text.subSequence(0, i));
+                    Instant start = OffsetDateTime.parse(text.subSequence(0, i)).toInstant();
                     if (i + 1 < text.length()) {
                         char c = text.charAt(i + 1);
                         if (c == 'P' || c == 'p') {
@@ -153,7 +154,7 @@ public final class Interval
                             return Interval.of(start, start.plus(duration));
                         }
                     }
-                    Instant end = Instant.parse(text.subSequence(i + 1, text.length()));
+                    Instant end = OffsetDateTime.parse(text.subSequence(i + 1, text.length())).toInstant();
                     return Interval.of(start, end);
                 }
             }

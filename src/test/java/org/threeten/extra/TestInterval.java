@@ -157,6 +157,12 @@ public class TestInterval {
         assertEquals(test.getStart(), NOW1);
         assertEquals(test.getEnd(), NOW1);
     }
+    
+    public void test_parseCharSequence_InstantInstant_with_timezones() {
+    	Interval test = Interval.parse(NOW1.atOffset(ZoneOffset.ofHours(2)).toString() + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)).toString());
+    	assertEquals(test.getStart(), NOW1);
+    	assertEquals(test.getEnd(), NOW2);
+    }
 
     @Test(expectedExceptions = DateTimeException.class)
     public void test_parse_CharSequence_badOrder() {
