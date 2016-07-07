@@ -8,6 +8,9 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.1" date="SNAPSHOT" description="v1.1">
+      <action dev="jodastephen" type="update" >
+        Add leap second at end of 2016.
+      </action>
       <action dev="jodastephen" type="add" >
         Allow Interval to parse offset date-time.
         Fixes #66, #67.

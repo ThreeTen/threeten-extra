@@ -245,7 +245,7 @@ public class TestUtcRules {
     //-----------------------------------------------------------------------
     // convertToUtc(TaiInstant)/convertToTai(UtcInstant)
     //-----------------------------------------------------------------------
-    private static final int CURRENT_TAI_OFFSET = 36;  // change this as leap secs added
+    private static final int CURRENT_TAI_OFFSET = 37;  // change this as leap secs added
     private static final long SECS_PER_DAY = 24 * 60 * 60L;
     private static final long NANOS_PER_SEC = 1000000000L;
     private static final long MJD_1800 = -21504L;
