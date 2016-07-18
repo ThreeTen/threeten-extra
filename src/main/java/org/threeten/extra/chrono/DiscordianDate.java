@@ -540,6 +540,8 @@ public final class DiscordianDate
                             return this;
                         }
                         return DiscordianDate.create(prolepticYear, 0, 0);
+                    default:
+                        break;
                 }
             }
             // currently on St Tibs
