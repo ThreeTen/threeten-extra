@@ -62,6 +62,11 @@ public final class Interval
         implements Serializable {
 
     /**
+     * An interval over the whole time-line.
+     */
+    public static final Interval ALL = new Interval(Instant.MIN, Instant.MAX);
+
+    /**
      * Serialization version.
      */
     private static final long serialVersionUID = 8375285238652L;
@@ -81,16 +86,16 @@ public final class Interval
      * <p>
      * The end instant must not be before the start instant.
      *
-     * @param startInclusive  the start instant, inclusive, not null
-     * @param endExclusive  the end instant, exclusive, not null
-     * @return the interval, not null
+     * @param startInclusive  the start instant, inclusive, MIN_DATE treated as unbounded, not null
+     * @param endExclusive  the end instant, exclusive, MAX_DATE treated as unbounded, not null
+     * @return the half-open interval, not null
      * @throws DateTimeException if the end is before the start
      */
     public static Interval of(Instant startInclusive, Instant endExclusive) {
         Objects.requireNonNull(startInclusive, "startInclusive");
         Objects.requireNonNull(endExclusive, "endExclusive");
         if (endExclusive.isBefore(startInclusive)) {
-            throw new DateTimeException("Start instant must be before end instant");
+            throw new DateTimeException("End instant must on or after start instant");
         }
         return new Interval(startInclusive, endExclusive);
     }
@@ -120,15 +125,18 @@ public final class Interval
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code Interval} from a text string such as
-     * {@code 2007-12-03T10:15:30Z/2007-12-04T10:15:30Z}.
+     * {@code 2007-12-03T10:15:30Z/2007-12-04T10:15:30Z}, where the end instant is exclusive.
      * <p>
      * The string must consist of one of the following three formats:
      * <ul>
-     * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash, followed by a representation of a {@link OffsetDateTime}
-     * <li>a representation of an {@link OffsetDateTime}, followed by a forward slash, followed by a representation of a {@link Duration}
-     * <li>a representation of a {@link Duration}, followed by a forward slash, followed by a representation of an {@link OffsetDateTime}
+     * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash,
+     *  followed by a representation of a {@link OffsetDateTime}
+     * <li>a representation of an {@link OffsetDateTime}, followed by a forward slash,
+     *  followed by a representation of a {@link Duration}
+     * <li>a representation of a {@link Duration}, followed by a forward slash,
+     *  followed by a representation of an {@link OffsetDateTime}
      * </ul>
-     * 
+     *
      *
      * @param text  the text to parse, not null
      * @return the parsed interval, not null
@@ -177,6 +185,9 @@ public final class Interval
     //-----------------------------------------------------------------------
     /**
      * Gets the start of this time interval, inclusive.
+     * <p>
+     * This will return {@link Instant#MIN} if the range is unbounded at the start.
+     * In this case, the range includes all dates into the far-past.
      *
      * @return the start of the time interval
      */
@@ -186,8 +197,11 @@ public final class Interval
 
     /** 
      * Gets the end of this time interval, exclusive.
+     * <p>
+     * This will return {@link Instant#MAX} if the range is unbounded at the end.
+     * In this case, the range includes all dates into the far-future.
      *
-     * @return the end of the time interval
+     * @return the end of the time interval, exclusive
      */
     public Instant getEnd() {
         return end;
@@ -195,22 +209,52 @@ public final class Interval
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a new interval with the specified start instant.
+     * Checks if the range is empty.
+     * <p>
+     * An empty range occurs when the start date equals the inclusive end date.
+     * 
+     * @return true if the range is empty
+     */
+    public boolean isEmpty() {
+        return start.equals(end);
+    }
+
+    /**
+     * Checks if the start of the interval is unbounded.
+     * 
+     * @return true if start is unbounded
+     */
+    public boolean isUnboundedStart() {
+        return start.equals(Instant.MIN);
+    }
+
+    /**
+     * Checks if the end of the interval is unbounded.
+     * 
+     * @return true if end is unbounded
+     */
+    public boolean isUnboundedEnd() {
+        return end.equals(Instant.MAX);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this range with the specified start instant.
      *
      * @param start  the start instant for the new interval, not null
      * @return an interval with the end from this interval and the specified start
-     * @throws IllegalArgumentException if the resulting interval has end before start
+     * @throws DateTimeException if the resulting interval has end before start
      */
     public Interval withStart(Instant start) {
         return Interval.of(start, end);
     }
 
     /**
-     * Creates a new interval with the specified end instant.
+     * Returns a copy of this range with the specified end instant.
      *
      * @param end  the end instant for the new interval, not null
      * @return an interval with the start from this interval and the specified end
-     * @throws IllegalArgumentException if the resulting interval has end before start
+     * @throws DateTimeException if the resulting interval has end before start
      */
     public Interval withEnd(Instant end) {
         return Interval.of(start, end);
@@ -220,61 +264,152 @@ public final class Interval
     /**
      * Checks if this interval contains the specified instant.
      * <p>
-     * The result is true if the instant is equal or after the start and before the end.
-     * An empty interval does not contain anything.
+     * This checks if the specified instant is within the bounds of this interval.
+     * If this range has an unbounded start then {@code contains(Instant#MIN)} returns true.
+     * If this range has an unbounded end then {@code contains(Instant#MAX)} returns true.
+     * If this range is empty then this method always returns false.
      *
      * @param instant  the instant, not null
      * @return true if this interval contains the instant
      */
     public boolean contains(Instant instant) {
         Objects.requireNonNull(instant, "instant");
-        return (instant.compareTo(start) >= 0 && instant.compareTo(end) < 0);
+        return start.compareTo(instant) <= 0 && (instant.compareTo(end) < 0 || isUnboundedEnd());
     }
 
     /**
      * Checks if this interval encloses the specified interval.
      * <p>
-     * This checks if the specified interval is fully enclosed by this interval.
-     * The result is true if the start of the specified interval is contained in this interval,
-     * and the end is contained or equal to the end of this interval.
-     * An empty interval contains an equal empty interval, but no other intervals.
+     * This checks if the bounds of the specified interval are within the bounds of this interval.
+     * An empty interval encloses itself.
      *
-     * @param interval  the interval, not null
+     * @param other  the other interval, not null
      * @return true if this interval contains the other interval
      */
-    public boolean encloses(Interval interval) {
-        Objects.requireNonNull(interval, "interval");
-        return start.compareTo(interval.start) <= 0 &&
-                interval.end.compareTo(end) <= 0;
+    public boolean encloses(Interval other) {
+        Objects.requireNonNull(other, "other");
+        return start.compareTo(other.start) <= 0 && other.end.compareTo(end) <= 0;
+    }
+
+    /**
+     * Checks if this interval abuts the specified interval.
+     * <p>
+     * The result is true if the end of this interval is the start of the other, or vice versa.
+     * An empty interval does not abut itself.
+     *
+     * @param other  the other interval, not null
+     * @return true if this interval abuts the other interval
+     */
+    public boolean abuts(Interval other) {
+        Objects.requireNonNull(other, "other");
+        return end.equals(other.start) ^ start.equals(other.end);
+    }
+
+    /**
+     * Checks if this interval is connected to the specified interval.
+     * <p>
+     * The result is true if the two intervals have an enclosed interval in common, even if that interval is empty.
+     * An empty interval is connected to itself.
+     * <p>
+     * This is equivalent to {@code (overlaps(other) || abuts(other))}.
+     *
+     * @param other  the other interval, not null
+     * @return true if this interval is connected to the other interval
+     */
+    public boolean isConnected(Interval other) {
+        Objects.requireNonNull(other, "other");
+        return this.equals(other) || (start.compareTo(other.end) <= 0 && other.start.compareTo(end) <= 0);
     }
 
     /**
      * Checks if this interval overlaps the specified interval.
      * <p>
      * The result is true if the the two intervals share some part of the time-line.
-     * An empty interval overlaps an equal empty interval.
+     * An empty interval overlaps itself.
+     * <p>
+     * This is equivalent to {@code (isConnected(other) && !abuts(other))}.
      *
-     * @param interval  the time interval to compare to, null means a zero length interval now
+     * @param other  the time interval to compare to, null means a zero length interval now
      * @return true if the time intervals overlap
      */
-    public boolean overlaps(Interval interval) {
-        Objects.requireNonNull(interval, "interval");
-        return interval.equals(this) ||
-                (start.compareTo(interval.end) < 0 && interval.start.compareTo(end) < 0);
+    public boolean overlaps(Interval other) {
+        Objects.requireNonNull(other, "other");
+        return other.equals(this) || (start.compareTo(other.end) < 0 && other.start.compareTo(end) < 0);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the interval that is the intersection of this interval and the specified interval.
+     * <p>
+     * This finds the intersection of two intervals.
+     * This throws an exception if the two intervals are not {@linkplain #isConnected(Interval) connected}.
+     * 
+     * @param other  the other interval to check for, not null
+     * @return the interval that is the intersection of the two intervals
+     * @throws DateTimeException if the intervals do not connect
+     */
+    public Interval intersection(Interval other) {
+        Objects.requireNonNull(other, "other");
+        if (isConnected(other) == false) {
+            throw new DateTimeException("Intervals do not connect: " + this + " and " + other);
+        }
+        int cmpStart = start.compareTo(other.start);
+        int cmpEnd = end.compareTo(other.end);
+        if (cmpStart >= 0 && cmpEnd <= 0) {
+            return this;
+        } else if (cmpStart <= 0 && cmpEnd >= 0) {
+            return other;
+        } else {
+            Instant newStart = (cmpStart >= 0 ? start : other.start);
+            Instant newEnd = (cmpEnd <= 0 ? end : other.end);
+            return Interval.of(newStart, newEnd);
+        }
     }
 
     /**
-     * Checks if this interval abuts the specified interval.
+     * Calculates the interval that is the union of this interval and the specified interval.
      * <p>
-     * The result is true if the the two intervals have one instant in common.
-     * An empty interval does not abut an equal empty interval.
-     *
-     * @param interval  the interval, not null
-     * @return true if this interval abuts the other interval
+     * This finds the union of two intervals.
+     * This throws an exception if the two intervals are not {@linkplain #isConnected(Interval) connected}.
+     * 
+     * @param other  the other interval to check for, not null
+     * @return the interval that is the union of the two intervals
+     * @throws DateTimeException if the intervals do not connect
      */
-    public boolean abuts(Interval interval) {
-        Objects.requireNonNull(interval, "interval");
-        return end.equals(interval.start) ^ start.equals(interval.end);
+    public Interval union(Interval other) {
+        Objects.requireNonNull(other, "other");
+        if (isConnected(other) == false) {
+            throw new DateTimeException("Intervals do not connect: " + this + " and " + other);
+        }
+        int cmpStart = start.compareTo(other.start);
+        int cmpEnd = end.compareTo(other.end);
+        if (cmpStart >= 0 && cmpEnd <= 0) {
+            return other;
+        } else if (cmpStart <= 0 && cmpEnd >= 0) {
+            return this;
+        } else {
+            Instant newStart = (cmpStart >= 0 ? other.start : start);
+            Instant newEnd = (cmpEnd <= 0 ? other.end : end);
+            return Interval.of(newStart, newEnd);
+        }
+    }
+
+    /**
+     * Calculates the smallest interval that encloses this interval and the specified interval.
+     * <p>
+     * The result of this method will {@linkplain #encloses(Interval) enclose}
+     * this interval and the specified interval.
+     * 
+     * @param other  the other interval to check for, not null
+     * @return the interval that spans the two intervals
+     */
+    public Interval span(Interval other) {
+        Objects.requireNonNull(other, "other");
+        int cmpStart = start.compareTo(other.start);
+        int cmpEnd = end.compareTo(other.end);
+        Instant newStart = (cmpStart >= 0 ? other.start : start);
+        Instant newEnd = (cmpEnd <= 0 ? other.end : end);
+        return Interval.of(newStart, newEnd);
     }
 
     //-------------------------------------------------------------------------

@@ -33,6 +33,7 @@ package org.threeten.extra;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -47,6 +48,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -58,6 +60,7 @@ public class TestInterval {
     Instant NOW1 = ZonedDateTime.of(2014, 12, 1, 1, 0, 0, 0, ZoneOffset.UTC).toInstant();
     Instant NOW2 = NOW1.plusSeconds(60);
     Instant NOW3 = NOW2.plusSeconds(60);
+    Instant NOW4 = NOW3.plusSeconds(60);
 
     //-----------------------------------------------------------------------
     public void test_isSerializable() {
@@ -78,16 +81,32 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
+    public void test_ALL() {
+        Interval test = Interval.ALL;
+        assertEquals(test.getStart(), Instant.MIN);
+        assertEquals(test.getEnd(), Instant.MAX);
+        assertEquals(test.isEmpty(), false);
+        assertEquals(test.isUnboundedStart(), true);
+        assertEquals(test.isUnboundedEnd(), true);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_of_Instant_Instant() {
         Interval test = Interval.of(NOW1, NOW2);
         assertEquals(test.getStart(), NOW1);
         assertEquals(test.getEnd(), NOW2);
+        assertEquals(test.isEmpty(), false);
+        assertEquals(test.isUnboundedStart(), false);
+        assertEquals(test.isUnboundedEnd(), false);
     }
 
     public void test_of_Instant_Instant_empty() {
         Interval test = Interval.of(NOW1, NOW1);
         assertEquals(test.getStart(), NOW1);
         assertEquals(test.getEnd(), NOW1);
+        assertEquals(test.isEmpty(), true);
+        assertEquals(test.isUnboundedStart(), false);
+        assertEquals(test.isUnboundedEnd(), false);
     }
 
     @Test(expectedExceptions = DateTimeException.class)
@@ -146,8 +165,20 @@ public class TestInterval {
         assertEquals(test.getEnd(), NOW2);
     }
 
+    public void test_parse_CharSequence_DurationInstant_caseInsensitive() {
+        Interval test = Interval.parse("pt6h/" + NOW2);
+        assertEquals(test.getStart(), NOW2.minus(6, HOURS));
+        assertEquals(test.getEnd(), NOW2);
+    }
+
     public void test_parse_CharSequence_InstantDuration() {
         Interval test = Interval.parse(NOW1 + "/" + Duration.ofHours(6));
+        assertEquals(test.getStart(), NOW1);
+        assertEquals(test.getEnd(), NOW1.plus(6, HOURS));
+    }
+
+    public void test_parse_CharSequence_InstantDuration_caseInsensitive() {
+        Interval test = Interval.parse(NOW1 + "/pt6h");
         assertEquals(test.getStart(), NOW1);
         assertEquals(test.getEnd(), NOW1.plus(6, HOURS));
     }
@@ -229,11 +260,20 @@ public class TestInterval {
         assertEquals(test.contains(NOW2), false);
     }
 
-    public void test_contains_Instant_empty() {
+    public void test_contains_Instant_baseEmpty() {
         Interval test = Interval.of(NOW1, NOW1);
         assertEquals(test.contains(NOW1.minusSeconds(1)), false);
         assertEquals(test.contains(NOW1), false);
         assertEquals(test.contains(NOW1.plusSeconds(1)), false);
+    }
+
+    public void test_contains_max() {
+        Interval test = Interval.of(NOW2, Instant.MAX);
+        assertEquals(test.contains(Instant.MIN), false);
+        assertEquals(test.contains(NOW1), false);
+        assertEquals(test.contains(NOW2), true);
+        assertEquals(test.contains(NOW3), true);
+        assertEquals(test.contains(Instant.MAX), true);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -283,6 +323,84 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
+    public void test_abuts_Interval() {
+        Interval test = Interval.of(NOW1, NOW2);
+        // completely before
+        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), false);
+        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(1), NOW1)), true);
+        // partly before
+        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(1), NOW2)), false);
+        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(1), NOW2.minusSeconds(1))), false);
+        // contained
+        assertEquals(test.abuts(Interval.of(NOW1, NOW2.minusSeconds(1))), false);
+        assertEquals(test.abuts(Interval.of(NOW1, NOW2)), false);
+        assertEquals(test.abuts(Interval.of(NOW1.plusSeconds(1), NOW2)), false);
+        // partly after
+        assertEquals(test.abuts(Interval.of(NOW1, NOW2.plusSeconds(1))), false);
+        assertEquals(test.abuts(Interval.of(NOW1.plusSeconds(1), NOW2.plusSeconds(1))), false);
+        // completely after
+        assertEquals(test.abuts(Interval.of(NOW2, NOW2.plusSeconds(1))), true);
+        assertEquals(test.abuts(Interval.of(NOW2.plusSeconds(1), NOW2.plusSeconds(2))), false);
+    }
+
+    public void test_abuts_Interval_empty() {
+        Interval test = Interval.of(NOW1, NOW1);
+        // completely before
+        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), false);
+        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(1), NOW1)), true);
+        // equal
+        assertEquals(test.abuts(Interval.of(NOW1, NOW1)), false);
+        // completely after
+        assertEquals(test.abuts(Interval.of(NOW1, NOW1.plusSeconds(1))), true);
+        assertEquals(test.abuts(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))), false);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_abuts_Interval_null() {
+        Interval base = Interval.of(NOW1, NOW2);
+        base.abuts((Interval) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isConnected_Interval() {
+        Interval test = Interval.of(NOW1, NOW2);
+        // completely before
+        assertEquals(test.isConnected(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), false);
+        assertEquals(test.isConnected(Interval.of(NOW1.minusSeconds(1), NOW1)), true);
+        // partly before
+        assertEquals(test.isConnected(Interval.of(NOW1.minusSeconds(1), NOW2)), true);
+        assertEquals(test.isConnected(Interval.of(NOW1.minusSeconds(1), NOW2.minusSeconds(1))), true);
+        // contained
+        assertEquals(test.isConnected(Interval.of(NOW1, NOW2.minusSeconds(1))), true);
+        assertEquals(test.isConnected(Interval.of(NOW1, NOW2)), true);
+        assertEquals(test.isConnected(Interval.of(NOW1.plusSeconds(1), NOW2)), true);
+        // partly after
+        assertEquals(test.isConnected(Interval.of(NOW1, NOW2.plusSeconds(1))), true);
+        assertEquals(test.isConnected(Interval.of(NOW1.plusSeconds(1), NOW2.plusSeconds(1))), true);
+        // completely after
+        assertEquals(test.isConnected(Interval.of(NOW2, NOW2.plusSeconds(1))), true);
+        assertEquals(test.isConnected(Interval.of(NOW2.plusSeconds(1), NOW2.plusSeconds(2))), false);
+    }
+
+    public void test_isConnected_Interval_empty() {
+        Interval test = Interval.of(NOW1, NOW1);
+        // completely before
+        assertEquals(test.isConnected(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), false);
+        assertEquals(test.isConnected(Interval.of(NOW1.minusSeconds(1), NOW1)), true);
+        // equal
+        assertEquals(test.isConnected(Interval.of(NOW1, NOW1)), true);
+        // completely after
+        assertEquals(test.isConnected(Interval.of(NOW1, NOW1.plusSeconds(1))), true);
+        assertEquals(test.isConnected(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))), false);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_isConnected_Interval_null() {
+        Interval base = Interval.of(NOW1, NOW2);
+        base.isConnected((Interval) null);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_overlaps_Interval() {
         Interval test = Interval.of(NOW1, NOW2);
         // completely before
@@ -322,42 +440,128 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
-    public void test_abuts_Interval() {
-        Interval test = Interval.of(NOW1, NOW2);
-        // completely before
-        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), false);
-        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(1), NOW1)), true);
-        // partly before
-        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(1), NOW2)), false);
-        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(1), NOW2.minusSeconds(1))), false);
-        // contained
-        assertEquals(test.abuts(Interval.of(NOW1, NOW2.minusSeconds(1))), false);
-        assertEquals(test.abuts(Interval.of(NOW1, NOW2)), false);
-        assertEquals(test.abuts(Interval.of(NOW1.plusSeconds(1), NOW2)), false);
-        // partly after
-        assertEquals(test.abuts(Interval.of(NOW1, NOW2.plusSeconds(1))), false);
-        assertEquals(test.abuts(Interval.of(NOW1.plusSeconds(1), NOW2.plusSeconds(1))), false);
-        // completely after
-        assertEquals(test.abuts(Interval.of(NOW2, NOW2.plusSeconds(1))), true);
-        assertEquals(test.abuts(Interval.of(NOW2.plusSeconds(1), NOW2.plusSeconds(2))), false);
+    @DataProvider(name = "intersection")
+    Object[][] data_intersection() {
+        return new Object[][] {
+            // adjacent
+            { NOW1, NOW2, NOW2, NOW4, NOW2, NOW2 },
+            // adjacent empty
+            { NOW1, NOW4, NOW4, NOW4, NOW4, NOW4 },
+            // overlap
+            { NOW1, NOW3, NOW2, NOW4, NOW2, NOW3 },
+            // encloses
+            { NOW1, NOW4, NOW2, NOW3, NOW2, NOW3 },
+            // encloses empty
+            { NOW1, NOW4, NOW2, NOW2, NOW2, NOW2 },
+        };
     }
 
-    public void test_abuts_Interval_empty() {
-        Interval test = Interval.of(NOW1, NOW1);
-        // completely before
-        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))), false);
-        assertEquals(test.abuts(Interval.of(NOW1.minusSeconds(1), NOW1)), true);
-        // equal
-        assertEquals(test.abuts(Interval.of(NOW1, NOW1)), false);
-        // completely after
-        assertEquals(test.abuts(Interval.of(NOW1, NOW1.plusSeconds(1))), true);
-        assertEquals(test.abuts(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))), false);
+    @Test(dataProvider = "intersection")
+    public void test_intersection(
+            Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
+
+        Interval test1 = Interval.of(start1, end1);
+        Interval test2 = Interval.of(start2, end2);
+        Interval expected = Interval.of(expStart, expEnd);
+        assertTrue(test1.isConnected(test2));
+        assertEquals(test1.intersection(test2), expected);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_abuts_Interval_null() {
-        Interval base = Interval.of(NOW1, NOW2);
-        base.abuts((Interval) null);
+    @Test(dataProvider = "intersection")
+    public void test_intersection_reverse(
+            Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
+
+        Interval test1 = Interval.of(start1, end1);
+        Interval test2 = Interval.of(start2, end2);
+        Interval expected = Interval.of(expStart, expEnd);
+        assertTrue(test2.isConnected(test1));
+        assertEquals(test2.intersection(test1), expected);
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_intersectionBad() {
+        Interval test1 = Interval.of(NOW1, NOW2);
+        Interval test2 = Interval.of(NOW3, NOW4);
+        assertEquals(test1.isConnected(test2), false);
+        test1.intersection(test2);
+    }
+
+    public void test_intersection_same() {
+        Interval test = Interval.of(NOW2, NOW4);
+        assertEquals(test.intersection(test), test);
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "union")
+    Object[][] data_union() {
+        return new Object[][] {
+            // adjacent
+            { NOW1, NOW2, NOW2, NOW4, NOW1, NOW4 },
+            // adjacent empty
+            { NOW1, NOW4, NOW4, NOW4, NOW1, NOW4 },
+            // overlap
+            { NOW1, NOW3, NOW2, NOW4, NOW1, NOW4 },
+            // encloses
+            { NOW1, NOW4, NOW2, NOW3, NOW1, NOW4 },
+            // encloses empty
+            { NOW1, NOW4, NOW2, NOW2, NOW1, NOW4 },
+        };
+    }
+
+    @Test(dataProvider = "union")
+    public void test_unionAndSpan(
+            Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
+
+        Interval test1 = Interval.of(start1, end1);
+        Interval test2 = Interval.of(start2, end2);
+        Interval expected = Interval.of(expStart, expEnd);
+        assertTrue(test1.isConnected(test2));
+        assertEquals(test1.union(test2), expected);
+        assertEquals(test1.span(test2), expected);
+    }
+
+    @Test(dataProvider = "union")
+    public void test_unionAndSpan_reverse(
+            Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
+
+        Interval test1 = Interval.of(start1, end1);
+        Interval test2 = Interval.of(start2, end2);
+        Interval expected = Interval.of(expStart, expEnd);
+        assertTrue(test2.isConnected(test1));
+        assertEquals(test2.union(test1), expected);
+        assertEquals(test2.span(test1), expected);
+    }
+
+    @Test(dataProvider = "union")
+    public void test_span_enclosesInputs(
+            Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
+
+        Interval test1 = Interval.of(start1, end1);
+        Interval test2 = Interval.of(start2, end2);
+        Interval expected = Interval.of(expStart, expEnd);
+        assertEquals(expected.encloses(test1), true);
+        assertEquals(expected.encloses(test2), true);
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_union_disconnected() {
+        Interval test1 = Interval.of(NOW1, NOW2);
+        Interval test2 = Interval.of(NOW3, NOW4);
+        assertFalse(test1.isConnected(test2));
+        test1.union(test2);
+    }
+
+    public void test_span_disconnected() {
+        Interval test1 = Interval.of(NOW1, NOW2);
+        Interval test2 = Interval.of(NOW3, NOW4);
+        assertFalse(test1.isConnected(test2));
+        assertEquals(test1.span(test2), Interval.of(NOW1, NOW4));
+    }
+
+    public void test_unionAndSpan_same() {
+        Interval test = Interval.of(NOW2, NOW4);
+        assertEquals(test.union(test), test);
+        assertEquals(test.span(test), test);
     }
 
     //-----------------------------------------------------------------------
