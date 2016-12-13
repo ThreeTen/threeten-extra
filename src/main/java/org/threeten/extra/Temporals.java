@@ -37,11 +37,15 @@ import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.FOREVER;
 import static java.time.temporal.ChronoUnit.WEEKS;
 
+import java.text.ParsePosition;
 import java.time.DateTimeException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Objects;
@@ -131,6 +135,51 @@ public final class Temporals {
                 }
             }
         },
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Parses the text using one of the formatters.
+     * <p>
+     * This will try each formatter in turn, attempting to fully parse the specified text.
+     * The temporal query is typically a method reference to a {@code from(TemporalAccessor)} method.
+     * For example:
+     * <pre>
+     *  LocalDateTime dt = Temporals.parseFirstMatching(str, LocalDateTime::from, fmt1, fm2, fm3);
+     * </pre>
+     * If the parse completes without reading the entire length of the text,
+     * or a problem occurs during parsing or merging, then an exception is thrown.
+     *
+     * @param <T> the type of the parsed date-time
+     * @param text  the text to parse, not null
+     * @param query  the query defining the type to parse to, not null
+     * @param formatters  the formatters to try, not null
+     * @return the parsed date-time, not null
+     * @throws DateTimeParseException if unable to parse the requested result
+     */
+    public static <T> T parseFirstMatching(CharSequence text, TemporalQuery<T> query, DateTimeFormatter... formatters) {
+        Objects.requireNonNull(text, "text");
+        Objects.requireNonNull(query, "query");
+        Objects.requireNonNull(formatters, "formatters");
+        if (formatters.length == 0) {
+            throw new DateTimeParseException("No formatters specified", text, 0);
+        }
+        if (formatters.length == 1) {
+            return formatters[0].parse(text, query);
+        }
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                ParsePosition pp = new ParsePosition(0);
+                formatter.parseUnresolved(text, pp);
+                int len = text.length();
+                if (pp.getErrorIndex() == -1 && pp.getIndex() == len) {
+                    return formatter.parse(text, query);
+                }
+            } catch (RuntimeException ex) {
+                // should not happen, but ignore if it does
+            }
+        }
+        throw new DateTimeParseException("Text '" + text + "' could not be parsed", text, 0);
     }
 
     //-------------------------------------------------------------------------

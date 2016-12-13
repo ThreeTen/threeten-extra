@@ -52,6 +52,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
+import static org.testng.Assert.assertThrows;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertSame;
@@ -66,6 +67,8 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
@@ -216,6 +219,36 @@ public class TestTemporals {
         LocalDate sunday = LocalDate.of(2011, JANUARY, 2);
         test = Temporals.previousWorkingDay().adjustInto(sunday);
         assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
+    }
+
+    //-----------------------------------------------------------------------
+    // parseFirstMatching()
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "parseFirstMatching")
+    Object[][] data_parseFirstMatching() {
+        return new Object[][] {
+            {"2016-09-06", DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE},
+            {"20160906", DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE},
+        };
+    }
+
+    @Test(dataProvider = "parseFirstMatching")
+    public void test_parseFirstMatching(String text, DateTimeFormatter fmt1, DateTimeFormatter fmt2) {
+        assertEquals(Temporals.parseFirstMatching(text, LocalDate::from, fmt1, fmt2), LocalDate.of(2016, 9, 6));
+    }
+
+    public void test_parseFirstMatching_zero() {
+        assertThrows(DateTimeParseException.class, () -> Temporals.parseFirstMatching("2016-09-06", LocalDate::from));
+    }
+
+    public void test_parseFirstMatching_one() {
+        assertEquals(Temporals.parseFirstMatching("2016-09-06", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE), LocalDate.of(2016, 9, 6));
+    }
+
+    public void test_parseFirstMatching_twoNoMatch() {
+        assertThrows(
+            DateTimeParseException.class,
+            () -> Temporals.parseFirstMatching("2016", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE));
     }
 
     //-----------------------------------------------------------------------
