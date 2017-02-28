@@ -63,8 +63,9 @@ import static org.threeten.extra.chrono.FrenchRepublicChronology.DOW_RANGE;
  * A date in the FrenchRepublic calendar system.
  * <p>
  * This date operates using the {@linkplain FrenchRepublicChronology FrenchRepublic calendar}.
- * This calendar system is primarily used in Christian Egypt.
- * Dates are aligned such that {@code 0001-01-01 (FrenchRepublic)} is {@code 0284-08-29 (ISO)}.
+ * This calendar was used in France after the revolution, in the years 1793-1805 and shortly
+ * for 18 days in 1871 (see https://en.wikipedia.org/wiki/French_Republican_Calendar)
+ * Dates are aligned such that {@code 0001-01-01 (FrenchRepublic)} is {@code 1972-09-22 (ISO)}.
  *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
