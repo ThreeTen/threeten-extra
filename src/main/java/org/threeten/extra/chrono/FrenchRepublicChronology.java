@@ -306,19 +306,20 @@ public final class FrenchRepublicChronology
 
     @Override
     public ValueRange range(ChronoField field) {
-        if (field == DAY_OF_WEEK)
+        if (field == DAY_OF_WEEK) {
             return DOW_RANGE;
-        else if (WeekFields.ISO.dayOfWeek().equals(field))
+        } else if (WeekFields.ISO.dayOfWeek().equals(field)) {
             return DOW_RANGE;
-        else if (field == ALIGNED_WEEK_OF_MONTH)
+        } else if (field == ALIGNED_WEEK_OF_MONTH) {
             return ALIGNED_WOM_RANGE;
+        }
         return super.range(field);
     }
     
     //-----------------------------------------------------------------------
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
-        if (! (era instanceof FrenchRepublicEra)) {
+        if (!(era instanceof FrenchRepublicEra)) {
             throw new ClassCastException("Era must be FrenchRepublicEra");
         }
         return (era == FrenchRepublicEra.REPUBLICAN ? yearOfEra : 1 - yearOfEra);
