@@ -32,6 +32,7 @@
 package org.threeten.extra.chrono;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
@@ -87,8 +88,8 @@ public final class FrenchRepublicDate
      * The days per 4 year cycle.
      */
     private static final int DAYS_PER_CYCLE = (365 * 4) + 1;
-    
-    
+
+
     /**
      * The proleptic year.
      */
@@ -199,19 +200,21 @@ public final class FrenchRepublicDate
 
     @Override
     public ValueRange range(TemporalField field) {
-        if (field.equals(WeekFields.ISO.dayOfWeek()))
+        if (DAY_OF_WEEK.equals(field)) {
             return DOW_RANGE;
+        }
 
         return super.range(field);
-    }    
+    }
 
     @Override
     public long getLong(TemporalField field) {
-        if (field.equals(WeekFields.ISO.dayOfWeek()))
+        if (DAY_OF_WEEK.equals(field)) {
             return day;
+        }
         return super.getLong(field);
     }
-    
+
     @Override
     int getDayOfWeek() {
         return (int) Math.floorMod(day, 10);
@@ -222,8 +225,8 @@ public final class FrenchRepublicDate
         return 10;
     }
 
-    
-    
+
+
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code FrenchRepublicDate} representing a date in the FrenchRepublic calendar
@@ -291,17 +294,13 @@ public final class FrenchRepublicDate
         FrenchRepublicChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         FrenchRepublicChronology.MOY_RANGE.checkValidValue(month, MONTH_OF_YEAR);
         FrenchRepublicChronology.DOM_RANGE.checkValidValue(dayOfMonth, DAY_OF_MONTH);
-        if (month == 13 && dayOfMonth > 5) {
-            if (FrenchRepublicChronology.INSTANCE.isLeapYear(prolepticYear)) {
-                if (dayOfMonth > 6) {
-                    throw new DateTimeException("Invalid date 'Complementary day " + dayOfMonth + "', valid range from 1 to 5, or 1 to 6 in a leap year");
-                }
-            } else {
-                if (dayOfMonth == 6) {
-                    throw new DateTimeException("Invalid date 'Complementary day 6' as '" + prolepticYear + "' is not a leap year");
-                } else {
-                    throw new DateTimeException("Invalid date 'Complementary day " + dayOfMonth + "', valid range from 1 to 5, or 1 to 6 in a leap year");
-                }
+        if (month == 13) {
+            int maxDays = FrenchRepublicChronology.INSTANCE.isLeapYear(prolepticYear) ? 6 : 5;
+            if (dayOfMonth == 6 && maxDays == 5) {
+                throw new DateTimeException("Invalid date 'Complementary day 6' of non-leap year '" + prolepticYear + "'");
+            }
+            if (dayOfMonth > maxDays) {
+                throw new DateTimeException("Invalid date 'Complementary day " + dayOfMonth + " of year '" + prolepticYear + "'");
             }
         }
         return new FrenchRepublicDate(prolepticYear, month, dayOfMonth);
@@ -437,5 +436,5 @@ public final class FrenchRepublicDate
         long year = (long) getProlepticYear();
         long calendarEpochDay = (year * 365) + Math.floorDiv(year, 4) + (getDayOfYear() - 1);
         return calendarEpochDay - 365 - getEpochDayDifference();
-    }    
+    }
 }

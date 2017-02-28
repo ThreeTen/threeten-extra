@@ -113,7 +113,7 @@ public class TestFrenchRepublicChronology {
             {FrenchRepublicDate.of(1, 1, 2), LocalDate.of(1792, 9, 23)},
             {FrenchRepublicDate.of(1, 1, 3), LocalDate.of(1792, 9, 24)},
             {FrenchRepublicDate.of(1, 1, 30), LocalDate.of(1792, 10, 21)},
-          
+
             {FrenchRepublicDate.of(1, 4, 11), LocalDate.of(1792, 12, 31)},
             {FrenchRepublicDate.of(1, 4, 12), LocalDate.of(1793, 1, 1)},
             {FrenchRepublicDate.of(1, 6, 10), LocalDate.of(1793, 2, 28)},
@@ -125,7 +125,7 @@ public class TestFrenchRepublicChronology {
             {FrenchRepublicDate.of(1, 13, 3), LocalDate.of(1793, 9, 19)},
             {FrenchRepublicDate.of(1, 13, 4), LocalDate.of(1793, 9, 20)},
             {FrenchRepublicDate.of(1, 13, 5), LocalDate.of(1793, 9, 21)},
-            
+
             {FrenchRepublicDate.of(2, 1, 1), LocalDate.of(1793, 9, 22)},
             {FrenchRepublicDate.of(2, 1, 2), LocalDate.of(1793, 9, 23)},
             {FrenchRepublicDate.of(2, 1, 3), LocalDate.of(1793, 9, 24)},
@@ -140,7 +140,7 @@ public class TestFrenchRepublicChronology {
             {FrenchRepublicDate.of(2, 13, 3), LocalDate.of(1794, 9, 19)},
             {FrenchRepublicDate.of(2, 13, 4), LocalDate.of(1794, 9, 20)},
             {FrenchRepublicDate.of(2, 13, 5), LocalDate.of(1794, 9, 21)},
-            
+
             {FrenchRepublicDate.of(3, 1, 1), LocalDate.of(1794, 9, 22)},
             {FrenchRepublicDate.of(3, 1, 2), LocalDate.of(1794, 9, 23)},
             {FrenchRepublicDate.of(3, 1, 3), LocalDate.of(1794, 9, 24)},
@@ -154,7 +154,7 @@ public class TestFrenchRepublicChronology {
             {FrenchRepublicDate.of(3, 13, 2), LocalDate.of(1795, 9, 18)},
             {FrenchRepublicDate.of(3, 13, 3), LocalDate.of(1795, 9, 19)},
             {FrenchRepublicDate.of(3, 13, 4), LocalDate.of(1795, 9, 20)},
-            {FrenchRepublicDate.of(3, 13, 5), LocalDate.of(1795, 9, 21)},            
+            {FrenchRepublicDate.of(3, 13, 5), LocalDate.of(1795, 9, 21)},
             {FrenchRepublicDate.of(3, 13, 6), LocalDate.of(1795, 9, 22)},
 
             {FrenchRepublicDate.of(4, 1, 1), LocalDate.of(1795, 9, 23)},
@@ -173,23 +173,23 @@ public class TestFrenchRepublicChronology {
             {FrenchRepublicDate.of(4, 13, 4), LocalDate.of(1796, 9, 20)},
             {FrenchRepublicDate.of(4, 13, 5), LocalDate.of(1796, 9, 21)},
 
-            {FrenchRepublicDate.of(14, 4, 10), LocalDate.of(1805, 12, 31)},       
+            {FrenchRepublicDate.of(14, 4, 10), LocalDate.of(1805, 12, 31)},
             {FrenchRepublicDate.of(14, 4, 11), LocalDate.of(1806, 1, 1)},
-            
+
             {FrenchRepublicDate.of(15, 1, 1), LocalDate.of(1806, 9, 23)},
             {FrenchRepublicDate.of(16, 1, 1), LocalDate.of(1807, 9, 24)},
             {FrenchRepublicDate.of(17, 1, 1), LocalDate.of(1808, 9, 23)},
             {FrenchRepublicDate.of(18, 1, 1), LocalDate.of(1809, 9, 23)},
             {FrenchRepublicDate.of(19, 1, 1), LocalDate.of(1810, 9, 23)},
-            {FrenchRepublicDate.of(20, 1, 1), LocalDate.of(1811, 9, 24)},            
-            
+            {FrenchRepublicDate.of(20, 1, 1), LocalDate.of(1811, 9, 24)},
+
             {FrenchRepublicDate.of(79, 8, 16), LocalDate.of(1871, 5, 6)},
             {FrenchRepublicDate.of(79, 9, 3), LocalDate.of(1871, 5, 23)},
 
-            /*{FrenchRepublicDate.of(224, 1, 1), LocalDate.of(2015, 9, 23)},
-            {FrenchRepublicDate.of(225, 1, 1), LocalDate.of(2016, 9, 22)},
-            {FrenchRepublicDate.of(226, 1, 1), LocalDate.of(2017, 9, 22)},
-            {FrenchRepublicDate.of(227, 1, 1), LocalDate.of(2018, 9, 22)},*/
+            {FrenchRepublicDate.of(224, 1, 1), LocalDate.of(2015, 9, 25)},
+            {FrenchRepublicDate.of(225, 1, 1), LocalDate.of(2016, 9, 24)},
+            {FrenchRepublicDate.of(226, 1, 1), LocalDate.of(2017, 9, 24)},
+            {FrenchRepublicDate.of(227, 1, 1), LocalDate.of(2018, 9, 24)},
         };
     }
 
@@ -203,8 +203,8 @@ public class TestFrenchRepublicChronology {
         assertEquals(FrenchRepublicDate.from(iso), french);
     }
 
-    
-    
+
+
     @Test(dataProvider = "samples")
     public void test_FrenchRepublicDate_chronology_dateEpochDay(FrenchRepublicDate frenchRepublic, LocalDate iso) {
         assertEquals(FrenchRepublicChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), frenchRepublic);
@@ -287,7 +287,7 @@ public class TestFrenchRepublicChronology {
             {1, 13, 8},
             {1, 13, 9},
             {1, 13, 10},
-          
+
             {3, 13, -1},
             {3, 13, 0},
             {3, 13, 7},
@@ -299,7 +299,7 @@ public class TestFrenchRepublicChronology {
             {1, 12, 0},
             {1, 12, 31},
             {1, 12, 32},
-          
+
             {1, 3, 31},
             {1, 4, 31},
             {1, 5, 31},
@@ -368,9 +368,9 @@ public class TestFrenchRepublicChronology {
             {1, 9, 30},
             {1, 10, 30},
             {1, 11, 30},
-            {1, 12, 30},            
+            {1, 12, 30},
             {1, 13, 5},
-          
+
             {1, 13, 5},
             {2, 13, 5},
             {3, 13, 6},
@@ -494,13 +494,10 @@ public class TestFrenchRepublicChronology {
             {1, 1, 23, ALIGNED_WEEK_OF_MONTH, 1, 3},
             {1, 12, 23, ALIGNED_WEEK_OF_MONTH, 1, 3},
             {1, 13, 2, ALIGNED_WEEK_OF_MONTH, 1, 1},
-            
+
             {3, 13, 2, DAY_OF_MONTH, 1, 6},
             {3, 13, 2, DAY_OF_YEAR, 1, 366},
             {3, 13, 2, ALIGNED_WEEK_OF_MONTH, 1, 1},
-            
-            {3, 2, 23, WeekFields.ISO.dayOfWeek(), 1, 10},
-
         };
     }
 
@@ -531,11 +528,9 @@ public class TestFrenchRepublicChronology {
             {1, 6, 8, PROLEPTIC_MONTH, 13 + 6 - 1},
             {1, 6, 8, YEAR, 1},
             {1, 6, 8, ERA, 1},
-            
+
             {1, 6, 8, ERA, 1},
             {0, 6, 8, ERA, 0},
-            
-            {1, 6, 8, WeekFields.ISO.dayOfWeek(), 8},
         };
     }
 
@@ -571,7 +566,7 @@ public class TestFrenchRepublicChronology {
             {1, 5, 26, ALIGNED_WEEK_OF_YEAR, 21, 1, 7, 26},
             {1, 5, 26, MONTH_OF_YEAR, 7, 1, 7, 26},
             {1, 5, 26, MONTH_OF_YEAR, 5, 1, 5, 26},
-            
+
             {1, 5, 26, PROLEPTIC_MONTH, 3 * 13 + 3 - 1, 3, 3, 26},
             {1, 5, 26, PROLEPTIC_MONTH, 4 * 13 + 5 - 1, 4, 5, 26},
             {1, 5, 26, YEAR, 2, 2, 5, 26},
@@ -586,7 +581,6 @@ public class TestFrenchRepublicChronology {
             {1, 3, 30, MONTH_OF_YEAR, 6, 1, 6, 30},
             {3, 13, 6, YEAR, 4, 4, 13, 5},
             {-3, 6, 8, YEAR_OF_ERA, 2, -1, 6, 8},
-            //{1, 5, 26, WeekFields.ISO.dayOfWeek(), 3, 1, 5, 23},
         };
     }
 
