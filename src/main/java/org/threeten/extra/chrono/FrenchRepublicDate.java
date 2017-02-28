@@ -209,6 +209,7 @@ public final class FrenchRepublicDate
 
     @Override
     public long getLong(TemporalField field) {
+        if (WeekFields.ISO.dayOfWeek().equals(field)) {
             return day;
         }
         return super.getLong(field);
