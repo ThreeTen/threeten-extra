@@ -52,11 +52,11 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertThrows;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertSame;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -146,11 +146,11 @@ public class TestTemporals {
     public void test_nextWorkingDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, DECEMBER, 31);
         Temporal test = Temporals.nextWorkingDay().adjustInto(friday);
-        assertEquals(LocalDate.of(2011, JANUARY, 3), test);
+        assertEquals(test, LocalDate.of(2011, JANUARY, 3));
 
         LocalDate saturday = LocalDate.of(2011, DECEMBER, 31);
         test = Temporals.nextWorkingDay().adjustInto(saturday);
-        assertEquals(LocalDate.of(2012, JANUARY, 2), test);
+        assertEquals(test, LocalDate.of(2012, JANUARY, 2));
     }
 
     //-----------------------------------------------------------------------
@@ -214,11 +214,11 @@ public class TestTemporals {
     public void test_previousWorkingDay_yearChange() {
         LocalDate monday = LocalDate.of(2011, JANUARY, 3);
         Temporal test = Temporals.previousWorkingDay().adjustInto(monday);
-        assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
+        assertEquals(test, LocalDate.of(2010, DECEMBER, 31));
 
         LocalDate sunday = LocalDate.of(2011, JANUARY, 2);
         test = Temporals.previousWorkingDay().adjustInto(sunday);
-        assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
+        assertEquals(test, LocalDate.of(2010, DECEMBER, 31));
     }
 
     //-----------------------------------------------------------------------
