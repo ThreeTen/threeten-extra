@@ -67,6 +67,7 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -249,6 +250,38 @@ public class TestTemporals {
         assertThrows(
             DateTimeParseException.class,
             () -> Temporals.parseFirstMatching("2016", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE));
+    }
+
+    //-----------------------------------------------------------------------
+    // normalizeStandardYears()
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "normalizeStandardYears")
+    Object[][] data_normalizeStandardYears() {
+        return new Object[][] {
+//            {Period.of(0, 0, 0), Period.of(0, 0, 0)},
+//            {Period.of(1, 1, 1), Period.of(1, 1, 1)},
+//            {Period.of(2, 0, 2), Period.of(2, 0, 2)},
+//            {Period.of(2, 0, -2), Period.of(1, 0, 363)},
+//            {Period.of(2, 0, -1), Period.of(1, 0, 364)},
+//            {Period.of(2, 0, 0), Period.of(2, 0, 0)},
+//            {Period.of(2, 0, 1), Period.of(2, 0, 1)},
+//
+//            {Period.of(3, 0, 364), Period.of(3, 0, 364)},
+//            {Period.of(3, 0, 365), Period.of(3, 0, 365)},
+//            {Period.of(3, 0, 366), Period.of(4, 0, 0)},
+//            {Period.of(3, 0, 367), Period.of(4, 0, 1)},
+//
+//            {Period.of(3, 0, 146_095), Period.of(402, 0, 364)},
+            {Period.of(3, 0, 146_096), Period.of(402, 0, 365)},
+            {Period.of(3, 0, 146_097), Period.of(403, 0, 0)},
+            {Period.of(3, 0, 146_098), Period.of(403, 0, 1)},
+            {Period.of(3, 0, 146_099), Period.of(403, 0, 2)},
+        };
+    }
+
+    @Test(dataProvider = "normalizeStandardYears")
+    public void test_normalizeStandardYears(Period input, Period output) {
+        assertEquals(Temporals.normalizeStandardYears(input), output);
     }
 
     //-----------------------------------------------------------------------

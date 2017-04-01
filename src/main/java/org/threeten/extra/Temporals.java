@@ -39,6 +39,7 @@ import static java.time.temporal.ChronoUnit.WEEKS;
 
 import java.text.ParsePosition;
 import java.time.DateTimeException;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -66,6 +67,23 @@ import java.util.concurrent.TimeUnit;
  * All returned classes are immutable and thread-safe.
  */
 public final class Temporals {
+
+    /**
+     * The number of days per year.
+     */
+    private static final int DAYS_PER_YEAR = 365;
+    /**
+     * The number of days per 4 year cycle.
+     */
+    private static final int DAYS_PER_4YEARS = 365 * 4 + 1;
+    /**
+     * The number of days per 100 year cycle.
+     */
+    private static final int DAYS_PER_100YEARS = 365 * 100 + 24;
+    /**
+     * The number of days per 4 year cycle.
+     */
+    private static final int DAYS_PER_400YEARS = 365 * 400 + 97;
 
     /**
      * Restricted constructor.
@@ -181,6 +199,237 @@ public final class Temporals {
         }
         throw new DateTimeParseException("Text '" + text + "' could not be parsed", text, 0);
     }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Normalizes the years and days in a period.
+     * <p>
+     * This normalizes the years and days, leaving the months unchanged.
+     * The result is typically inexact as it makes assumptions around the length of a year.
+     * It is often desirable to normalize the years and months first using {@link Period#normalized()}.
+     * <p>
+     * If the number of days exceeds 146,097, 400 years will be added.
+     * This is an exact transformation, as 400 years always contains 146,097 days in the ISO calendar.
+     * <p>
+     * If the number of days exceeds 36,524, 100 years will be added.
+     * This is an inexact transformation, as not all 100 year periods have 36,524 days.
+     * <p>
+     * If the number of days exceeds 1461, 4 years will be added.
+     * This is an inexact transformation, as not all 4 year periods have 1461 days.
+     * <p>
+     * If the number of days exceeds 365, 1 year will be added.
+     * This is an inexact transformation, as while a year normally contains 365 days,
+     * it will contain 366 in a leap year.
+     * <p>
+     * The sign of the years and days will be the same after normalization.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param input  the period to normalize, not null
+     * @return a {@code Period} based on this period with excess duration normalized to days, not null
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public static Period normalizeStandardYears(Period input) {
+        int yearsInput = input.getYears();
+        long daysInput = input.getDays();
+        daysInput += (yearsInput / 400) * DAYS_PER_400YEARS;
+        yearsInput = (yearsInput % 400);
+        daysInput += (yearsInput / 100) * DAYS_PER_100YEARS;
+        yearsInput = (yearsInput % 100);
+        daysInput += (yearsInput / 4) * DAYS_PER_4YEARS;
+        yearsInput = (yearsInput % 4);
+        daysInput += yearsInput * DAYS_PER_YEAR;
+        
+//        if ((daysInput > 0 && yearsInput < 0) || (daysInput < 0 && yearsInput > 0)) {
+//            daysInput += (yearsInput / 400) * DAYS_PER_400YEARS;
+//            yearsInput = (yearsInput % 400);
+//            daysInput += (yearsInput / 100) * DAYS_PER_100YEARS;
+//            yearsInput = (yearsInput % 100);
+//            daysInput += (yearsInput / 4) * DAYS_PER_4YEARS;
+//            yearsInput = (yearsInput % 4);
+//            daysInput += yearsInput * DAYS_PER_YEAR;
+//        }
+        long extra400 = daysInput / DAYS_PER_400YEARS;
+        int days400 = (int) (daysInput % DAYS_PER_400YEARS);
+        
+        int extra100 = days400 / DAYS_PER_100YEARS;
+        int days100 = days400 % DAYS_PER_100YEARS;
+        if (extra100 == 4 && days100 == 0) {
+            extra100--;
+            days100 = DAYS_PER_100YEARS;
+        }
+        
+        int extra4 = days100 / DAYS_PER_4YEARS;
+        int days4 = days100 % DAYS_PER_4YEARS;
+        
+        int extra1 = days4 / DAYS_PER_YEAR;
+        int days1 = days4 % DAYS_PER_YEAR;
+        if (extra1 == 4) {
+            extra1--;
+            days1 += DAYS_PER_YEAR;
+        }
+        
+        long combinedYears = ((long) extra400) * 400 + extra100 * 100 + extra4 * 4 + extra1;
+        int splitYears = Math.toIntExact(combinedYears);
+        if (splitYears == input.getYears() && days1 == input.getDays()) {
+            return input;
+        }
+        return Period.of(splitYears, input.getMonths(), days1);
+        
+//        // always 146,007 days per 400 years
+//        int cycles400 = input.getYears() / 400;
+//        int yearsInCycle400 = input.getYears() % 400;
+//        long totalDaysBasedOnCycle400 = ((long) cycles400) * DAYS_PER_400YEARS + input.getDays();
+//        int splitCycles400 = (int) (totalDaysBasedOnCycle400 / DAYS_PER_400YEARS);
+//        int splitDays400 = (int) (totalDaysBasedOnCycle400 % DAYS_PER_400YEARS);
+//        
+//        // usually 36,524 days per 4 years
+//        int cycles100 = yearsInCycle400 / 100;
+//        int yearsInCycle100 = yearsInCycle400 % 100;
+//        long totalDaysBasedOnCycle100 = cycles100 * DAYS_PER_100YEARS + splitDays400;
+//        long splitCycles100 = totalDaysBasedOnCycle100 / DAYS_PER_100YEARS;
+//        int splitDays100 = (int) (totalDaysBasedOnCycle100 % DAYS_PER_100YEARS);
+//        if (splitCycles100 == 4) {
+//            splitCycles100--;
+//            splitDays100 += DAYS_PER_100YEARS;
+//        }
+//        
+//        // usually 1461 days per 4 years
+//        int cycles4 = yearsInCycle100 / 4;
+//        int yearsInCycle4 = yearsInCycle100 % 4;
+//        long totalDaysBasedOnCycle4 = cycles4 * DAYS_PER_4YEARS + splitDays100;
+//        long splitCycles4 = totalDaysBasedOnCycle4 / DAYS_PER_4YEARS;
+//        int splitDays4 = (int) (totalDaysBasedOnCycle4 % DAYS_PER_4YEARS);
+//        if (splitCycles4 == 100) {
+//            splitCycles4--;
+//            splitDays4 += DAYS_PER_4YEARS;
+//        }
+//
+//        long totalDaysBasedOnCycle1 = yearsInCycle4 * DAYS_PER_YEAR + splitDays4;
+//        long splitCycles1 = totalDaysBasedOnCycle1 / DAYS_PER_YEAR;
+//        int splitDays1 = (int) (totalDaysBasedOnCycle1 % DAYS_PER_YEAR);
+//        if (splitCycles1 == 4) {
+//            splitCycles1--;
+//            splitDays1 += DAYS_PER_YEAR;
+//        }
+//
+//        int splitYears = Math.toIntExact(
+//                splitCycles400 * 400 + splitCycles100 * 100 + splitCycles4 * 4 + splitCycles1);
+//        if (splitYears == input.getYears() && splitDays1 == input.getDays()) {
+//            return input;
+//        }
+//        return Period.of(splitYears, input.getMonths(), splitDays1);
+        
+        
+//        int cycles100 = yearsInCycle400 / 100;
+//        int yearsInCycle100 = yearsInCycle400 % 100;
+//        int cycles4 = yearsInCycle100 / 4;
+//        int yearsInCycle4 = yearsInCycle100 % 4;
+//        long days = ((long) cycles100) * DAYS_PER_100YEARS +
+//                    ((long) cycles4) * DAYS_PER_4YEARS +
+//                    yearsInCycle4 * 366 + 
+//                    splitDays400;
+//        int splitYears = (int) (days / 366);
+//        int splitDays = (int) (days % 366);
+//        return Period.of((int) splitYears + splitCycles400 * 400, input.getMonths(), splitDays);
+        
+//        int years = yearsInCycle400;
+//        int days = splitDays400;
+//        while (days >= DAYS_PER_100YEARS) {
+//            years = Math.addExact(years, 100);
+//            days = days - DAYS_PER_100YEARS;
+//        }
+//        while (days >= DAYS_PER_4YEARS) {
+//            years = Math.addExact(years, 4);
+//            days = days - DAYS_PER_4YEARS;
+//        }
+//        if (days == DAYS_PER_4YEARS - 1) {
+//            years = Math.addExact(years, 3);
+//            days = 366;
+//        } else {
+//            while (days >= DAYS_PER_YEAR) {
+//                years = Math.incrementExact(years);
+//                days = days - DAYS_PER_YEAR;
+//            }
+//        }
+//        return Period.of((int) years + splitCycles400 * 400, input.getMonths(), (int) days);
+    }
+     
+//    private Object foo() {
+//        
+//        // usually 36,524 days per 4 years
+//        int cycles100 = yearsInCycle400 / 100;
+//        int yearsInCycle100 = yearsInCycle400 % 100;
+//        long totalDaysBasedOnCycle100 = cycles100 * DAYS_PER_100YEARS + splitDays400;
+//        long splitCycles100 = totalDaysBasedOnCycle100 / DAYS_PER_100YEARS;
+//        int splitDays100 = (int) (totalDaysBasedOnCycle100 % DAYS_PER_100YEARS);
+//        
+//        // usually 1461 days per 4 years
+//        int cycles4 = yearsInCycle100 / 4;
+//        int yearsInCycle4 = yearsInCycle100 % 4;
+//        long totalDaysBasedOnCycle4 = cycles4 * DAYS_PER_4YEARS + splitDays100;
+//        long splitCycles4 = totalDaysBasedOnCycle4 / DAYS_PER_4YEARS;
+//        int splitDays4 = (int) (totalDaysBasedOnCycle4 % DAYS_PER_4YEARS);
+//
+//        // typically 365 days per year
+//        long splitCycles1;
+//        int splitDays1;
+//        if (yearsInCycle4 == 3 && splitDays4 == 365) {
+//            splitCycles1 = 3;
+//            splitDays1 = 365;
+//        } else if (yearsInCycle4 == 3 && splitDays4 == 366) {
+//            splitCycles1 = 4;
+//            splitDays1 = 0;
+//        } else {
+//            long totalDaysBasedOnCycle1 = yearsInCycle4 * DAYS_PER_YEAR + splitDays4;
+//            splitCycles1 = totalDaysBasedOnCycle1 / DAYS_PER_YEAR;
+//            splitDays1 = (int) (totalDaysBasedOnCycle1 % DAYS_PER_YEAR);
+//        }
+////        long splitCycles1 = 0;
+////        int splitDays1 = (int) totalDaysBasedOnCycle1;
+////        if (totalDaysBasedOnCycle1 > (365 * 3)) {
+////            splitCycles1 = 3;
+////            splitDays1 = (int) (totalDaysBasedOnCycle1 % 365);
+////        } else if (totalDaysBasedOnCycle1 > (365 * 2)) {
+////            splitCycles1 = 2;
+////            splitDays1 = (int) (totalDaysBasedOnCycle1 % 365);
+////        } else if (totalDaysBasedOnCycle1 > (365)) {
+////            splitCycles1 = 1;
+////            splitDays1 = (int) (totalDaysBasedOnCycle1 % 365);
+////        }
+//        
+////        long splitCycles1 = Math.max(totalDaysBasedOnCycle1 / DAYS_PER_YEAR, 3);
+////        int splitDays1 = (int) (totalDaysBasedOnCycle1 % DAYS_PER_YEAR);
+//
+////        long splitCycles1 = totalDaysBasedOnCycle1 / DAYS_PER_YEAR;
+////        int splitDays1 = (int) (totalDaysBasedOnCycle1 % DAYS_PER_YEAR);
+////        if (totalDaysBasedOnCycle1 == DAYS_PER_4YEARS - 1) {
+////            splitCycles1--;
+////            splitDays1 += DAYS_PER_YEAR;
+////        }
+//        
+////        
+////        
+////        int years4 = (years400 % 400) / 4;
+////        int years1 = (years4 % 4);
+//        
+////        long totalDays = (input.getYears() / 400) * DAYS_PER_400YEARS + input.getDays();
+////        long split400Years = totalDays / DAYS_PER_400YEARS;
+////        int splitDays = (int) (totalDays % DAYS_PER_400YEARS);
+////        // usually 1463 days per 4 years
+////        long split4Years = splitDays / DAYS_PER_4YEARS;
+////        splitDays = (int) (splitDays % DAYS_PER_4YEARS);
+////        // typically 365 days per year
+////        long split1Years = splitDays / DAYS_PER_YEAR;
+////        splitDays = (int) (splitDays % DAYS_PER_YEAR);
+//        // avoid object creation if no change
+//        int splitYears = Math.toIntExact(
+//                splitCycles400 * 400 + splitCycles100 * 100 + splitCycles4 * 4 + splitCycles1);
+//        if (splitYears == input.getYears() && splitDays1 == input.getDays()) {
+//            return input;
+//        }
+//        return Period.of(splitYears, input.getMonths(), splitDays1);
+//    }
 
     //-------------------------------------------------------------------------
     /**

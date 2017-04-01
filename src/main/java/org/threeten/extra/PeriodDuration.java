@@ -547,9 +547,28 @@ public final class PeriodDuration
     }
 
     /**
-     * Returns a copy of this instance with the days and duration normalized using the standard day of 24 hours.
+     * Returns a copy of this instance with the days and years normalized using standard years of 365 and 366 days.
      * <p>
-     * This normalizes the days and duration, leaving the years and months unchanged.
+     * This normalizes the days into years, leaving the months and duration unchanged.
+     * The result uses a standard year length of 365 or 366 days.
+     * <p>
+     * This normalizes based on the number of days in 400 years, 100 years, 4 years and 1 year.
+     * There are 146,097 days in 400 years, 36,524 days in 100 years, 1461 days in 4 years and 365 days in 1 year.
+     * For example, a period of "2 years and 367 days" will be normalized to "3 years and 2 days".
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a {@code PeriodDuration} based on this one with excess days normalized to years, not null
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public PeriodDuration normalizedStandardYears() {
+        return withPeriod(Temporals.normalizeStandardYears(period));
+    }
+
+    /**
+     * Returns a copy of this instance with the days and duration normalized using standard days of 24 hours.
+     * <p>
+     * This normalizes the duration into days, leaving the years and months unchanged.
      * The result uses a standard day length of 24 hours.
      * <p>
      * This combines the duration seconds with the number of days and shares the total
