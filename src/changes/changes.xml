@@ -13,6 +13,10 @@
         See #74.
       </action>
       <action dev="jodastephen" type="add" >
+        Extend formats Parsed by Interval, allowing years, months, weeks and days.
+        See #70.
+      </action>
+      <action dev="jodastephen" type="add" >
         Add Seconds temporal amount class.
         See #73.
       </action>

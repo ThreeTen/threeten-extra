@@ -132,11 +132,10 @@ public final class Interval
      * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash,
      *  followed by a representation of a {@link OffsetDateTime}
      * <li>a representation of an {@link OffsetDateTime}, followed by a forward slash,
-     *  followed by a representation of a {@link Duration}
-     * <li>a representation of a {@link Duration}, followed by a forward slash,
+     *  followed by a representation of a {@link PeriodDuration}
+     * <li>a representation of a {@link PeriodDuration}, followed by a forward slash,
      *  followed by a representation of an {@link OffsetDateTime}
      * </ul>
-     *
      *
      * @param text  the text to parse, not null
      * @return the parsed interval, not null
@@ -149,21 +148,21 @@ public final class Interval
                 char firstChar = text.charAt(0);
                 if (firstChar == 'P' || firstChar == 'p') {
                     // duration followed by instant
-                    Duration duration = Duration.parse(text.subSequence(0, i));
-                    Instant end = OffsetDateTime.parse(text.subSequence(i + 1, text.length())).toInstant();
-                    return Interval.of(end.minus(duration), end);
+                    PeriodDuration amount = PeriodDuration.parse(text.subSequence(0, i));
+                    OffsetDateTime end = OffsetDateTime.parse(text.subSequence(i + 1, text.length()));
+                    return Interval.of(end.minus(amount).toInstant(), end.toInstant());
                 } else {
                     // instant followed by instant or duration
-                    Instant start = OffsetDateTime.parse(text.subSequence(0, i)).toInstant();
+                    OffsetDateTime start = OffsetDateTime.parse(text.subSequence(0, i));
                     if (i + 1 < text.length()) {
                         char c = text.charAt(i + 1);
                         if (c == 'P' || c == 'p') {
-                            Duration duration = Duration.parse(text.subSequence(i + 1, text.length()));
-                            return Interval.of(start, start.plus(duration));
+                            PeriodDuration amount = PeriodDuration.parse(text.subSequence(i + 1, text.length()));
+                            return Interval.of(start.toInstant(), start.plus(amount).toInstant());
                         }
                     }
-                    Instant end = OffsetDateTime.parse(text.subSequence(i + 1, text.length())).toInstant();
-                    return Interval.of(start, end);
+                    OffsetDateTime end = OffsetDateTime.parse(text.subSequence(i + 1, text.length()));
+                    return Interval.of(start.toInstant(), end.toInstant());
                 }
             }
         }
