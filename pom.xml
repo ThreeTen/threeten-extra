@@ -11,7 +11,7 @@
   <name>ThreeTen-Extra</name>
   <version>1.1-SNAPSHOT</version>
   <description>Additional functionality that enhances JSR-310 dates and times in JDK 8</description>
-  <url>https://www.threeten.org/threeten-extra</url>
+  <url>http://www.threeten.org/threeten-extra</url>
 
   <!-- ==================================================================== -->
   <issueManagement>
@@ -25,7 +25,6 @@
     <developer>
       <id>jodastephen</id>
       <name>Stephen Colebourne</name>
-      <email></email>
       <roles>
         <role>Project Lead</role>
       </roles>
@@ -73,9 +72,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:git@github.com:ThreeTen/threeten-extra.git</connection>
-    <developerConnection>scm:git:git@github.com:ThreeTen/threeten-extra.git</developerConnection>
-    <url>https://github.com/ThreeTen/threeten-extra</url>
+    <connection>scm:git:https://github.com/ThreeTen/threeten-extra.git</connection>
+    <developerConnection>scm:git:https://github.com/ThreeTen/threeten-extra.git</developerConnection>
+    <url>http://github.com/ThreeTen/threeten-extra</url>
   </scm>
   <organization>
     <name>ThreeTen.org</name>
@@ -90,10 +89,11 @@
         <directory>${project.basedir}</directory>
         <includes>
           <include>LICENSE.txt</include>
+          <include>NOTICE.txt</include>
         </includes>
       </resource>
       <resource>
-        <directory>${basedir}/src/main/resources</directory>
+        <directory>${project.basedir}/src/main/resources</directory>
       </resource>
     </resources>
     <!-- define build -->
@@ -133,7 +133,7 @@
             </property>
             <property>
               <name>reporter</name>
-              <value>org.testng.reporters.FailedReporter,org.testng.reporters.XMLReporter,org.testng.reporters.JUnitReportReporter</value>
+              <value>org.testng.reporters.JUnitReportReporter</value>
             </property>
           </properties>
         </configuration>
@@ -154,7 +154,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.4.0</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -242,6 +242,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>${maven-assembly-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${maven-checkstyle-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -380,11 +385,6 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${maven-checkstyle-plugin.version}</version>
-        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -397,7 +397,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>19.0</version>
+      <version>20.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -446,7 +446,7 @@
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>${maven-surefire-report-plugin.version}</version>
         <configuration>
-           <showSuccess>true</showSuccess>
+          <showSuccess>true</showSuccess>
         </configuration>
       </plugin>
       <plugin>
@@ -509,47 +509,15 @@
   <!-- ==================================================================== -->
   <profiles>
     <profile>
-      <id>activate-jdk8</id>
-      <activation>
-        <property>
-          <name>jdk8</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>validate</phase>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>1.8</version>
-                  <vendor>oracle</vendor>
-                </jdk>
-              </toolchains>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>repo-sign-artifacts</id>
       <activation>
         <property>
           <name>oss.repo</name>
-          <value>true</value>
         </property>
       </activation>
       <build>
         <plugins>
+          <!-- Use Java 8 -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-toolchains-plugin</artifactId>
@@ -570,6 +538,7 @@
               </toolchains>
             </configuration>
           </plugin>
+          <!-- Sign artifacts -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
@@ -579,6 +548,27 @@
                 <phase>verify</phase>
                 <goals>
                   <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Release dist files to GitHub -->
+          <plugin>
+            <groupId>de.jutzig</groupId>
+            <artifactId>github-release-plugin</artifactId>
+            <version>1.1.1</version>
+            <configuration>
+              <releaseName>Release v${project.version}</releaseName>
+              <description>See the [release notes](http://www.threeten.org/threeten-extra/changes-report.html) for more information.</description>
+              <tag>v${project.version}</tag>
+              <overwriteArtifact>true</overwriteArtifact>
+            </configuration>
+            <executions>
+              <execution>
+                <id>github-releases</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>release</goal>
                 </goals>
               </execution>
             </executions>

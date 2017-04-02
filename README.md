@@ -27,3 +27,12 @@ Available in the [Maven Central repository](http://search.maven.org/#artifactdet
 
 ### Support
 Please use GitHub [issues](https://github.com/ThreeTen/threeten-extra/issues) and Pull Requests for support.
+
+
+### Release process
+
+* Update version (pom.xml, README.md, index.md, changes.xml)
+* Commit and push
+* `mvn clean deploy -Doss.repo -Dgpg.passphrase=""`
+* Release project in [Nexus](https://oss.sonatype.org)
+* Website will be built and released by Travis

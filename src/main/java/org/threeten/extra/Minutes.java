@@ -231,17 +231,17 @@ public final class Minutes
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code Minutes} consisting of the number of minutes between two dates.
+     * Obtains a {@code Minutes} consisting of the number of minutes between two temporals.
      * <p>
-     * The start date is included, but the end date is not.
+     * The start temporal is included, but the end temporal is not.
      * The result of this method can be negative if the end is before the start.
      *
-     * @param startDateInclusive  the start date, inclusive, not null
-     * @param endDateExclusive  the end date, exclusive, not null
-     * @return the number of minutes between this date and the end date, not null
+     * @param startInclusive  the start temporal, inclusive, not null
+     * @param endExclusive  the end temporal, exclusive, not null
+     * @return the number of minutes between the start and end temporals, not null
      */
-    public static Minutes between(Temporal startDateInclusive, Temporal endDateExclusive) {
-        return of(Math.toIntExact(MINUTES.between(startDateInclusive, endDateExclusive)));
+    public static Minutes between(Temporal startInclusive, Temporal endExclusive) {
+        return of(Math.toIntExact(MINUTES.between(startInclusive, endExclusive)));
     }
 
     //-----------------------------------------------------------------------

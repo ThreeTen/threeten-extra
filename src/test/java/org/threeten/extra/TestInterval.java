@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MONTHS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -162,6 +163,12 @@ public class TestInterval {
     public void test_parse_CharSequence_DurationInstant() {
         Interval test = Interval.parse(Duration.ofHours(6) + "/" + NOW2);
         assertEquals(test.getStart(), NOW2.minus(6, HOURS));
+        assertEquals(test.getEnd(), NOW2);
+    }
+
+    public void test_parse_CharSequence_PeriodDurationInstant() {
+        Interval test = Interval.parse("P6MT5H/" + NOW2);
+        assertEquals(test.getStart(), NOW2.atZone(ZoneOffset.UTC).minus(6, MONTHS).minus(5, HOURS).toInstant());
         assertEquals(test.getEnd(), NOW2);
     }
 
