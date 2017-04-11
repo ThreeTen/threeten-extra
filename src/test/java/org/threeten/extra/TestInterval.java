@@ -154,52 +154,27 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_CharSequence() {
-        Interval test = Interval.parse(NOW1 + "/" + NOW2);
-        assertEquals(test.getStart(), NOW1);
-        assertEquals(test.getEnd(), NOW2);
-    }
-
-    public void test_parse_CharSequence_DurationInstant() {
-        Interval test = Interval.parse(Duration.ofHours(6) + "/" + NOW2);
-        assertEquals(test.getStart(), NOW2.minus(6, HOURS));
-        assertEquals(test.getEnd(), NOW2);
-    }
-
-    public void test_parse_CharSequence_PeriodDurationInstant() {
-        Interval test = Interval.parse("P6MT5H/" + NOW2);
-        assertEquals(test.getStart(), NOW2.atZone(ZoneOffset.UTC).minus(6, MONTHS).minus(5, HOURS).toInstant());
-        assertEquals(test.getEnd(), NOW2);
-    }
-
-    public void test_parse_CharSequence_DurationInstant_caseInsensitive() {
-        Interval test = Interval.parse("pt6h/" + NOW2);
-        assertEquals(test.getStart(), NOW2.minus(6, HOURS));
-        assertEquals(test.getEnd(), NOW2);
-    }
-
-    public void test_parse_CharSequence_InstantDuration() {
-        Interval test = Interval.parse(NOW1 + "/" + Duration.ofHours(6));
-        assertEquals(test.getStart(), NOW1);
-        assertEquals(test.getEnd(), NOW1.plus(6, HOURS));
-    }
-
-    public void test_parse_CharSequence_InstantDuration_caseInsensitive() {
-        Interval test = Interval.parse(NOW1 + "/pt6h");
-        assertEquals(test.getStart(), NOW1);
-        assertEquals(test.getEnd(), NOW1.plus(6, HOURS));
-    }
-
-    public void test_parse_CharSequence_empty() {
-        Interval test = Interval.parse(NOW1 + "/" + NOW1);
-        assertEquals(test.getStart(), NOW1);
-        assertEquals(test.getEnd(), NOW1);
+    @DataProvider(name = "parseValid")
+    Object[][] data_parseValid() {
+        return new Object[][] {
+            {NOW1 + "/" + NOW2, NOW1, NOW2},
+            {Duration.ofHours(6) + "/" + NOW2, NOW2.minus(6, HOURS), NOW2},
+            {"P6MT5H/" + NOW2, NOW2.atZone(ZoneOffset.UTC).minus(6, MONTHS).minus(5, HOURS).toInstant(), NOW2},
+            {"pt6h/" + NOW2, NOW2.minus(6, HOURS), NOW2},
+            {NOW1 + "/" + Duration.ofHours(6), NOW1, NOW1.plus(6, HOURS)},
+            {NOW1 + "/pt6h", NOW1, NOW1.plus(6, HOURS)},
+            {NOW1 + "/" + NOW1, NOW1, NOW1},
+            {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)), NOW1, NOW2},
+            {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(3)), NOW1, NOW2},
+            {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)).toLocalDateTime(), NOW1, NOW2},
+        };
     }
     
-    public void test_parseCharSequence_InstantInstant_with_timezones() {
-    	Interval test = Interval.parse(NOW1.atOffset(ZoneOffset.ofHours(2)).toString() + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)).toString());
-    	assertEquals(test.getStart(), NOW1);
-    	assertEquals(test.getEnd(), NOW2);
+    @Test(dataProvider = "parseValid")
+    public void test_parse_CharSequence(String input, Instant start, Instant end) {
+        Interval test = Interval.parse(input);
+        assertEquals(test.getStart(), start);
+        assertEquals(test.getEnd(), end);
     }
 
     @Test(expectedExceptions = DateTimeException.class)

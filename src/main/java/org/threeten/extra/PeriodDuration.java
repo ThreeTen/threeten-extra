@@ -249,6 +249,8 @@ public final class PeriodDuration
      * The leading plus/minus sign, and negative values for weeks and days are
      * not part of the ISO-8601 standard.
      * <p>
+     * Note that the date style format {@code PYYYY-MM-DDTHH:MM:SS} is not supported.
+     * <p>
      * For example, the following are valid inputs:
      * <pre>
      *   "P2Y"             -- PeriodDuration.of(Period.ofYears(2))
