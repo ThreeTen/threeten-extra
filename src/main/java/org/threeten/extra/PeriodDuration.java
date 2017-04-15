@@ -249,6 +249,8 @@ public final class PeriodDuration
      * The leading plus/minus sign, and negative values for weeks and days are
      * not part of the ISO-8601 standard.
      * <p>
+     * Note that the date style format {@code PYYYY-MM-DDTHH:MM:SS} is not supported.
+     * <p>
      * For example, the following are valid inputs:
      * <pre>
      *   "P2Y"             -- PeriodDuration.of(Period.ofYears(2))
@@ -540,15 +542,15 @@ public final class PeriodDuration
      * @return a {@code PeriodDuration} based on this one with excess months normalized to years, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public PeriodDuration normalized() {
+    public PeriodDuration normalizedYears() {
         return withPeriod(period.normalized());
     }
 
     /**
-     * Returns a copy of this instance with the days and duration inexactly normalized.
+     * Returns a copy of this instance with the days and duration normalized using the standard day of 24 hours.
      * <p>
      * This normalizes the days and duration, leaving the years and months unchanged.
-     * The result is inexact, as it assumes a 24 hour day.
+     * The result uses a standard day length of 24 hours.
      * <p>
      * This combines the duration seconds with the number of days and shares the total
      * seconds between the two fields. For example, a period of
@@ -565,7 +567,7 @@ public final class PeriodDuration
      * @return a {@code PeriodDuration} based on this one with excess duration normalized to days, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public PeriodDuration normalizedInexactDuration() {
+    public PeriodDuration normalizedStandardDays() {
         long totalSecs = period.getDays() * SECONDS_PER_DAY + duration.getSeconds();
         int splitDays = Math.toIntExact(totalSecs / SECONDS_PER_DAY);
         long splitSecs = totalSecs % SECONDS_PER_DAY;

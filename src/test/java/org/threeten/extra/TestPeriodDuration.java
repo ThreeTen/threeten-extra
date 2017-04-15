@@ -319,26 +319,26 @@ public class TestPeriodDuration {
     }
 
     //-----------------------------------------------------------------------
-    public void test_normalized() {
-        assertEquals(PeriodDuration.of(P1Y2M3D, DUR_5).normalized(), PeriodDuration.of(P1Y2M3D.normalized(), DUR_5));
+    public void test_normalizedYears() {
+        assertEquals(PeriodDuration.of(P1Y2M3D, DUR_5).normalizedYears(), PeriodDuration.of(P1Y2M3D.normalized(), DUR_5));
     }
 
     //-----------------------------------------------------------------------
-    public void test_normalizedInexactDuration() {
+    public void test_normalizedStandardDays() {
         assertEquals(
-                PeriodDuration.of(P1Y2M3D, Duration.ofHours(5)).normalizedInexactDuration(),
+                PeriodDuration.of(P1Y2M3D, Duration.ofHours(5)).normalizedStandardDays(),
                 PeriodDuration.of(P1Y2M3D, Duration.ofHours(5)));
         assertEquals(
-                PeriodDuration.of(P1Y2M3D, Duration.ofHours(25)).normalizedInexactDuration(),
+                PeriodDuration.of(P1Y2M3D, Duration.ofHours(25)).normalizedStandardDays(),
                 PeriodDuration.of(P1Y2M3D.plusDays(1), Duration.ofHours(1)));
         assertEquals(
-                PeriodDuration.of(P1Y2M3D, Duration.ofHours(-73)).normalizedInexactDuration(),
+                PeriodDuration.of(P1Y2M3D, Duration.ofHours(-73)).normalizedStandardDays(),
                 PeriodDuration.of(P1Y2M3D.plusDays(-3), Duration.ofHours(-1)));
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
-    public void test_normalizedInexactDuration_overflow() {
-        PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).normalizedInexactDuration();
+    public void test_normalizedStandardDaysn_overflow() {
+        PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).normalizedStandardDays();
     }
 
     //-----------------------------------------------------------------------

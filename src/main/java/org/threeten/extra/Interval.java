@@ -35,8 +35,11 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 
 /**
@@ -131,11 +134,16 @@ public final class Interval
      * <ul>
      * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash,
      *  followed by a representation of a {@link OffsetDateTime}
+     * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash,
+     *  followed by a representation of a {@link LocalDateTime}, where the end offset is implied.
      * <li>a representation of an {@link OffsetDateTime}, followed by a forward slash,
      *  followed by a representation of a {@link PeriodDuration}
      * <li>a representation of a {@link PeriodDuration}, followed by a forward slash,
      *  followed by a representation of an {@link OffsetDateTime}
      * </ul>
+     * <p>
+     * ISO-8601 supports a very wide range of possible inputs, many of which are not supported here.
+     * For example, basic format, week-based dates, ordinal dates and date-style period formats are not supported.
      *
      * @param text  the text to parse, not null
      * @return the parsed interval, not null
@@ -161,8 +169,16 @@ public final class Interval
                             return Interval.of(start.toInstant(), start.plus(amount).toInstant());
                         }
                     }
-                    OffsetDateTime end = OffsetDateTime.parse(text.subSequence(i + 1, text.length()));
-                    return Interval.of(start.toInstant(), end.toInstant());
+                    // infer offset from start if not specified by end
+                    String remStr = text.subSequence(i + 1, text.length()).toString();
+                    TemporalAccessor temporal = DateTimeFormatter.ISO_DATE_TIME.parseBest(remStr, OffsetDateTime::from, LocalDateTime::from);
+                    if (temporal instanceof OffsetDateTime) {
+                        OffsetDateTime odt = (OffsetDateTime) temporal;
+                        return Interval.of(start.toInstant(), odt.toInstant());
+                    } else {
+                        LocalDateTime ldt = (LocalDateTime) temporal;
+                        return Interval.of(start.toInstant(), ldt.toInstant(start.getOffset()));
+                    }
                 }
             }
         }
