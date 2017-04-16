@@ -78,6 +78,10 @@ public final class Seconds
     private static final long serialVersionUID = 2602801843170589407L;
 
     /**
+     * The number of seconds per day.
+     */
+    private static final int SECONDS_PER_DAY = 86400;
+    /**
      * The number of seconds per hour.
      */
     private static final int SECONDS_PER_HOUR = 3600;
@@ -90,10 +94,12 @@ public final class Seconds
      * The pattern for parsing.
      */
     private static final Pattern PATTERN =
-            Pattern.compile("([-+]?)PT"
+            Pattern.compile("([-+]?)P"
+                    + "(?:([-+]?[0-9]+)D)?"
+                    + "(?:T"
                     + "(?:([-+]?[0-9]+)H)?"
                     + "(?:([-+]?[0-9]+)M)?"
-                    + "(?:([-+]?[0-9]+)S)?", Pattern.CASE_INSENSITIVE);
+                    + "(?:([-+]?[0-9]+)S)?)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of seconds.
@@ -193,22 +199,27 @@ public final class Seconds
     /**
      * Obtains a {@code Seconds} from a text string such as {@code PTnS}.
      * <p>
-     * This will parse the string produced by {@code toString()} which is
-     * based on the ISO-8601 period format {@code PTnHnMnS}.
+     * This will parse the string produced by {@code toString()} and other
+     * related formats based on ISO-8601 {@code PnDTnHnMnS}.
      * <p>
      * The string starts with an optional sign, denoted by the ASCII negative
      * or positive symbol. If negative, the whole amount is negated.
-     * The ASCII letters "P" and "T" are next in upper or lower case.
-     * There are then three sections, each consisting of a number and a suffix.
-     * At least one of the three sections must be present.
-     * The sections have suffixes in ASCII of "H", "M" and "S" for hours, minutes and seconds,
-     * accepted in upper or lower case. The suffixes must occur in order.
+     * The ASCII letter "P" is next in upper or lower case.
+     * There are four sections consisting of a number and a suffix.
+     * There is one section for days suffixed by "D",
+     * followed by one section for hours suffixed by "H",
+     * followed by one section for minutes suffixed by "M",
+     * followed by one section for seconds suffixed by "S".
+     * At least one section must be present.
+     * If the hours, minutes or seconds section is present it must be prefixed by "T".
+     * If the hours, minutes or seconds section is omitted the "T" must be omitted.
+     * Letters must be in ASCII upper or lower case.
      * The number part of each section must consist of ASCII digits.
      * The number may be prefixed by the ASCII negative or positive symbol.
      * The number must parse to an {@code int}.
      * <p>
-     * The leading plus/minus sign, and negative values for hours, minutes and
-     * seconds are not part of the ISO-8601 standard.
+     * The leading plus/minus sign, and negative values for days, hours, minutes
+     * and seconds are not part of the ISO-8601 standard.
      * <p>
      * For example, the following are valid inputs:
      * <pre>
@@ -217,7 +228,9 @@ public final class Seconds
      *   "-PT2S"           -- Seconds.of(-2)
      *   "-PT-2S"          -- Seconds.of(2)
      *   "PT3S"            -- Seconds.of(3 * 60)
-     *   "PT3H-2M7S"         -- Seconds.of(3 * 3600 - 2 * 60 + 7)
+     *   "PT3H-2M7S"       -- Seconds.of(3 * 3600 - 2 * 60 + 7)
+     *   "P2D"             -- Seconds.of(2 * 86400)
+     *   "P2DT3H"          -- Seconds.of(2 * 86400 + 3 * 3600)
      * </pre>
      *
      * @param text  the text to parse, not null
@@ -229,38 +242,47 @@ public final class Seconds
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String hoursStr = matcher.group(2);
-            String minutesStr = matcher.group(3);
-            String secondsStr = matcher.group(4);
-            if (hoursStr != null || minutesStr != null || secondsStr != null) {
+            String daysStr = matcher.group(2);
+            String hoursStr = matcher.group(3);
+            String minutesStr = matcher.group(4);
+            String secondsStr = matcher.group(5);
+            if (daysStr != null || hoursStr != null || minutesStr != null || secondsStr != null) {
                 int seconds = 0;
                 if (secondsStr != null) {
                     try {
                         seconds = Integer.parseInt(secondsStr);
                     } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Seconds, non-numeric seconds", text, 0, ex);
+                        throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric seconds", text, 0, ex);
                     }
                 }
                 if (minutesStr != null) {
                     try {
-                        int minutes = Math.multiplyExact(Integer.parseInt(minutesStr), SECONDS_PER_MINUTE);
-                        seconds = Math.addExact(seconds, minutes);
+                        int minutesAsSecs = Math.multiplyExact(Integer.parseInt(minutesStr), SECONDS_PER_MINUTE);
+                        seconds = Math.addExact(seconds, minutesAsSecs);
                     } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Seconds, non-numeric minutes", text, 0, ex);
+                        throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric minutes", text, 0, ex);
                     }
                 }
                 if (hoursStr != null) {
                     try {
-                        int hours = Math.multiplyExact(Integer.parseInt(hoursStr), SECONDS_PER_HOUR);
-                        seconds = Math.addExact(seconds, hours);
+                        int hoursAsSecs = Math.multiplyExact(Integer.parseInt(hoursStr), SECONDS_PER_HOUR);
+                        seconds = Math.addExact(seconds, hoursAsSecs);
                     } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Seconds, non-numeric seconds", text, 0, ex);
+                        throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric hours", text, 0, ex);
+                    }
+                }
+                if (daysStr != null) {
+                    try {
+                        int daysAsSecs = Math.multiplyExact(Integer.parseInt(daysStr), SECONDS_PER_DAY);
+                        seconds = Math.addExact(seconds, daysAsSecs);
+                    } catch (NumberFormatException ex) {
+                        throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric days", text, 0, ex);
                     }
                 }
                 return of(Math.multiplyExact(seconds, negate));
             }
         }
-        throw new DateTimeParseException("Text cannot be parsed to a Seconds", text, 0);
+        throw new DateTimeParseException("Text cannot be parsed to Seconds", text, 0);
     }
 
     //-----------------------------------------------------------------------

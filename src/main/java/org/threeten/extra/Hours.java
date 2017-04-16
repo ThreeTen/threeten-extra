@@ -76,11 +76,18 @@ public final class Hours
     private static final long serialVersionUID = -8494096666041369608L;
 
     /**
+     * The number of hours per day.
+     */
+    private static final int HOURS_PER_DAY = 24;
+
+    /**
      * The pattern for parsing.
      */
     private static final Pattern PATTERN =
-            Pattern.compile("([-+]?)PT"
-                    + "(?:([-+]?[0-9]+)H)?", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("([-+]?)P"
+                    + "(?:([-+]?[0-9]+)D)?"
+                    + "(?:T"
+                    + "(?:([-+]?[0-9]+)H)?)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of hours.
@@ -145,19 +152,25 @@ public final class Hours
     /**
      * Obtains a {@code Hours} from a text string such as {@code PTnH}.
      * <p>
-     * This will parse the string produced by {@code toString()} which is
-     * based on the ISO-8601 period format {@code PTnH}.
+     * This will parse the string produced by {@code toString()} and other
+     * related formats based on ISO-8601 {@code PnDTnH}.
      * <p>
      * The string starts with an optional sign, denoted by the ASCII negative
      * or positive symbol. If negative, the whole amount is negated.
-     * The ASCII letters "P" and "T" are next in upper or lower case.
-     * The section has the suffix "H" in ASCII in either upper or lower case.
-     * The number part must consist of ASCII digits. The number may be prefixed
-     * by the ASCII negative or positive symbol. The number must parse to an
-     * {@code int}.
+     * The ASCII letter "P" is next in upper or lower case.
+     * There are two sections consisting of a number and a suffix.
+     * There is one section for days suffixed by "D",
+     * followed by one section for hours suffixed by "H".
+     * At least one section must be present.
+     * If the hours section is present it must be prefixed by "T".
+     * If the hours section is omitted the "T" must be omitted.
+     * Letters must be in ASCII upper or lower case.
+     * The number part of each section must consist of ASCII digits.
+     * The number may be prefixed by the ASCII negative or positive symbol.
+     * The number must parse to an {@code int}.
      * <p>
-     * The leading plus/minus sign, and negative value for hours is not part of
-     * the ISO-8601 standard.
+     * The leading plus/minus sign, and negative values for days and hours
+     * are not part of the ISO-8601 standard.
      * <p>
      * For example, the following are valid inputs:
      * <pre>
@@ -165,6 +178,8 @@ public final class Hours
      *   "PT-HM"           -- Hours.of(-2)
      *   "-PT2H"           -- Hours.of(-2)
      *   "-PT-2H"          -- Hours.of(2)
+     *   "P3D"             -- Hours.of(3 * 24)
+     *   "P3DT2H"          -- Hours.of(3 * 24 + 2)
      * </pre>
      *
      * @param text  the text to parse, not null
@@ -176,17 +191,29 @@ public final class Hours
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String hoursStr = matcher.group(2);
-            if (hoursStr != null) {
-                try {
-                    int hours = Integer.parseInt(hoursStr);
-                    return of(negate * hours);
-                } catch (NumberFormatException ex) {
-                    throw new DateTimeParseException("Text cannot be parsed to Hours, non-numeric hours", text, 0, ex);
+            String daysStr = matcher.group(2);
+            String hoursStr = matcher.group(3);
+            if (daysStr != null || hoursStr != null) {
+                int hours = 0;
+                if (hoursStr != null) {
+                    try {
+                        hours = Integer.parseInt(hoursStr);
+                    } catch (NumberFormatException ex) {
+                        throw new DateTimeParseException("Text cannot be parsed to Hours, non-numeric hours", text, 0, ex);
+                    }
                 }
+                if (daysStr != null) {
+                    try {
+                        int daysAsHours = Math.multiplyExact(Integer.parseInt(daysStr), HOURS_PER_DAY);
+                        hours = Math.addExact(hours, daysAsHours);
+                    } catch (NumberFormatException ex) {
+                        throw new DateTimeParseException("Text cannot be parsed to Hours, non-numeric days", text, 0, ex);
+                    }
+                }
+                return of(Math.multiplyExact(hours, negate));
             }
         }
-        throw new DateTimeParseException("Text cannot be parsed to a Hours", text, 0);
+        throw new DateTimeParseException("Text cannot be parsed to Hours", text, 0);
     }
 
     //-----------------------------------------------------------------------

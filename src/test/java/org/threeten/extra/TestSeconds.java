@@ -152,6 +152,15 @@ public class TestSeconds {
             {"PT-0H", 0},
             {"PT-2H", -120 * 60},
 
+            {"P0D", 0},
+            {"P1D", 60 * 60 * 24},
+            {"P2D", 120 * 60 * 24},
+            {"P1234D", 1234 * 60 * 60 * 24},
+            {"P+0D", 0},
+            {"P+2D", 120 * 60 * 24},
+            {"P-0D", 0},
+            {"P-2D", -120 * 60 * 24},
+
             {"PT0M0S", 0},
             {"PT2M3S", 2 * 60 + 3},
             {"PT+2M3S", 2 * 60 + 3},
@@ -168,8 +177,8 @@ public class TestSeconds {
             {"PT2H-3S", 2 * 3600 - 3},
             {"PT-2H-3S", -2 * 3600 - 3},
 
-            {"PT0H0M0S", 0},
-            {"PT2H4M3S", 2 * 3600 + 4 * 60 + 3},
+            {"P0DT0H0M0S", 0},
+            {"P5DT2H4M3S", 5 * 86400 + 2 * 3600 + 4 * 60 + 3},
         };
     }
 
@@ -192,7 +201,6 @@ public class TestSeconds {
     Object[][] data_invalid() {
         return new Object[][] {
             {"P3W"},
-            {"P3D"},
             {"P3Q"},
             {"P1M2Y"},
 
@@ -200,6 +208,7 @@ public class TestSeconds {
             {"-3"},
             {"3S"},
             {"-3S"},
+            {"P3S"},
             {"P3"},
             {"P-3"},
             {"PS"},
