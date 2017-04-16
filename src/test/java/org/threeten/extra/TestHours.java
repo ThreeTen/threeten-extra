@@ -346,9 +346,11 @@ public class TestHours {
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("deprecation")
     public void test_toDuration() {
         for (int i = -20; i < 20; i++) {
             assertEquals(Hours.of(i).toPeriod(), Duration.ofHours(i));
+            assertEquals(Hours.of(i).toDuration(), Duration.ofHours(i));
         }
     }
 
