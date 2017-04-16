@@ -127,6 +127,15 @@ public class TestMinutes {
             {"PT-0H", 0},
             {"PT-2H", -120},
 
+            {"P0D", 0},
+            {"P1D", 1 * 24 * 60},
+            {"P2D", 2 * 24 * 60},
+            {"P1234D", 1234 * 24 * 60},
+            {"P+0D", 0},
+            {"P+2D", 2 * 24 * 60},
+            {"P-0D", 0},
+            {"P-2D", -2 * 24 * 60},
+
             {"PT0H0M", 0},
             {"PT2H3M", 123},
             {"PT+2H3M", 123},
@@ -134,6 +143,9 @@ public class TestMinutes {
             {"PT-2H3M", -117},
             {"PT2H-3M", 117},
             {"PT-2H-3M", -123},
+
+            {"P0DT0H0M", 0},
+            {"P5DT2H4M", 5 * 24 * 60 + 2 * 60 + 4},
         };
     }
 
@@ -156,7 +168,6 @@ public class TestMinutes {
     Object[][] data_invalid() {
         return new Object[][] {
             {"P3W"},
-            {"P3D"},
             {"P3Q"},
             {"P1M2Y"},
 
@@ -164,6 +175,7 @@ public class TestMinutes {
             {"-3"},
             {"3M"},
             {"-3M"},
+            {"P3M"},
             {"P3"},
             {"P-3"},
             {"PM"},

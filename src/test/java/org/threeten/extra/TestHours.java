@@ -101,6 +101,18 @@ public class TestHours {
             {"PT+2H", 2},
             {"PT-0H", 0},
             {"PT-2H", -2},
+
+            {"P0D", 0 * 24},
+            {"P1D", 1 * 24},
+            {"P2D", 2 * 24},
+            {"P1234567D", 1234567 * 24},
+            {"P+0D", 0 * 24},
+            {"P+2D", 2 * 24},
+            {"P-0D", 0 * 24},
+            {"P-2D", -2 * 24},
+
+            {"P0DT0H", 0},
+            {"P1DT2H", 1 * 24+ 2},
         };
     }
 
@@ -123,7 +135,6 @@ public class TestHours {
     Object[][] data_invalid() {
         return new Object[][] {
             {"P3W"},
-            {"P3D"},
             {"P3Q"},
             {"P1M2Y"},
 
@@ -131,6 +142,7 @@ public class TestHours {
             {"-3"},
             {"3H"},
             {"-3H"},
+            {"P3H"},
             {"P3"},
             {"P-3"},
             {"PH"},

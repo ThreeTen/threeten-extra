@@ -76,6 +76,10 @@ public final class Minutes
     private static final long serialVersionUID = 2602801843170589407L;
 
     /**
+     * The number of minutes per day.
+     */
+    private static final int MINUTES_PER_DAY = 24 * 60;
+    /**
      * The number of minutes per hour.
      */
     private static final int MINUTES_PER_HOUR = 60;
@@ -84,9 +88,11 @@ public final class Minutes
      * The pattern for parsing.
      */
     private static final Pattern PATTERN =
-            Pattern.compile("([-+]?)PT"
+            Pattern.compile("([-+]?)P"
+                    + "(?:([-+]?[0-9]+)D)?"
+                    + "(?:T"
                     + "(?:([-+]?[0-9]+)H)?"
-                    + "(?:([-+]?[0-9]+)M)?", Pattern.CASE_INSENSITIVE);
+                    + "(?:([-+]?[0-9]+)M)?)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of minutes.
@@ -168,22 +174,26 @@ public final class Minutes
     /**
      * Obtains a {@code Minutes} from a text string such as {@code PTnM}.
      * <p>
-     * This will parse the string produced by {@code toString()} which is
-     * based on the ISO-8601 period format {@code PTnHnM}.
+     * This will parse the string produced by {@code toString()} and other
+     * related formats based on ISO-8601 {@code PnDTnHnM}.
      * <p>
      * The string starts with an optional sign, denoted by the ASCII negative
      * or positive symbol. If negative, the whole amount is negated.
-     * The ASCII letters "P" and "T" are next in upper or lower case.
-     * There are then two sections, each consisting of a number and a suffix.
-     * At least one of the two sections must be present.
-     * The sections have suffixes in ASCII of "H" and "M" for hours and minutes,
-     * accepted in upper or lower case. The suffixes must occur in order.
+     * The ASCII letter "P" is next in upper or lower case.
+     * There are three sections consisting of a number and a suffix.
+     * There is one section for days suffixed by "D",
+     * followed by one section for hours suffixed by "H",
+     * followed by one section for minutes suffixed by "M".
+     * At least one section must be present.
+     * If the hours or minutes section is present it must be prefixed by "T".
+     * If the hours or minutes section is omitted the "T" must be omitted.
+     * Letters must be in ASCII upper or lower case.
      * The number part of each section must consist of ASCII digits.
      * The number may be prefixed by the ASCII negative or positive symbol.
      * The number must parse to an {@code int}.
      * <p>
-     * The leading plus/minus sign, and negative values for hours and minutes are
-     * not part of the ISO-8601 standard.
+     * The leading plus/minus sign, and negative values for days, hours and
+     * minutes are not part of the ISO-8601 standard.
      * <p>
      * For example, the following are valid inputs:
      * <pre>
@@ -193,6 +203,8 @@ public final class Minutes
      *   "-PT-2M"          -- Minutes.of(2)
      *   "PT3H"            -- Minutes.of(3 * 60)
      *   "PT3H-2M"         -- Minutes.of(3 * 60 - 2)
+     *   "P3D"             -- Minutes.of(3 * 24 * 60)
+     *   "P3DT2M"          -- Minutes.of(3 * 24 * 60 + 2)
      * </pre>
      *
      * @param text  the text to parse, not null
@@ -204,29 +216,38 @@ public final class Minutes
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String hoursStr = matcher.group(2);
-            String minutesStr = matcher.group(3);
-            if (hoursStr != null || minutesStr != null) {
+            String daysStr = matcher.group(2);
+            String hoursStr = matcher.group(3);
+            String minutesStr = matcher.group(4);
+            if (daysStr != null || hoursStr != null || minutesStr != null) {
                 int minutes = 0;
                 if (minutesStr != null) {
                     try {
                         minutes = Integer.parseInt(minutesStr);
                     } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Minutes, non-numeric minutes", text, 0, ex);
+                        throw new DateTimeParseException("Text cannot be parsed to Minutes, non-numeric minutes", text, 0, ex);
                     }
                 }
                 if (hoursStr != null) {
                     try {
-                        int hours = Math.multiplyExact(Integer.parseInt(hoursStr), MINUTES_PER_HOUR);
-                        minutes = Math.addExact(minutes, hours);
+                        int hoursAsMins = Math.multiplyExact(Integer.parseInt(hoursStr), MINUTES_PER_HOUR);
+                        minutes = Math.addExact(minutes, hoursAsMins);
                     } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Minutes, non-numeric minutes", text, 0, ex);
+                        throw new DateTimeParseException("Text cannot be parsed to Minutes, non-numeric hours", text, 0, ex);
+                    }
+                }
+                if (daysStr != null) {
+                    try {
+                        int daysAsMins = Math.multiplyExact(Integer.parseInt(daysStr), MINUTES_PER_DAY);
+                        minutes = Math.addExact(minutes, daysAsMins);
+                    } catch (NumberFormatException ex) {
+                        throw new DateTimeParseException("Text cannot be parsed to Minutes, non-numeric days", text, 0, ex);
                     }
                 }
                 return of(Math.multiplyExact(minutes, negate));
             }
         }
-        throw new DateTimeParseException("Text cannot be parsed to a Minutes", text, 0);
+        throw new DateTimeParseException("Text cannot be parsed to Minutes", text, 0);
     }
 
     //-----------------------------------------------------------------------
