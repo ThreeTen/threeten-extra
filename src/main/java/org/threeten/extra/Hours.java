@@ -400,11 +400,25 @@ public final class Hours
     /**
      * Gets the number of hours as a {@code Duration}.
      * <p>
-     * This returns a duration with the same number of months.
+     * This returns a duration with the same number of hours.
+     *
+     * @return the equivalent duration, not null
+     * @deprecated Use {@link #toDuration()}
+     */
+    @Deprecated
+    public Duration toPeriod() {
+        return Duration.ofHours(hours);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets the number of hours as a {@code Duration}.
+     * <p>
+     * This returns a duration with the same number of hours.
      *
      * @return the equivalent duration, not null
      */
-    public Duration toPeriod() {
+    public Duration toDuration() {
         return Duration.ofHours(hours);
     }
 
