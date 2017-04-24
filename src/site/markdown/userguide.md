@@ -20,6 +20,7 @@ These include:
 * [`Months`](apidocs/org/threeten/extra/Months.html) - an amount of time measured in months
 * [`Years`](apidocs/org/threeten/extra/Years.html) - an amount of time measured in years
 * [`Interval`](apidocs/org/threeten/extra/Interval.html) - an interval between two instants
+* [`PeriodDuration`](apidocs/org/threeten/extra/PeriodDuration.html) - combines a `Period` and a `Duration`
 
 
 ## Calendar systems
