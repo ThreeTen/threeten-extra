@@ -26,6 +26,7 @@ The following features are included:
 [`Months`](apidocs/org/threeten/extra/Months.html) and
 [`Years`](apidocs/org/threeten/extra/Years.html) - amounts of time
 * [`Interval`](apidocs/org/threeten/extra/Interval.html) - an interval between two instants
+* [`PeriodDuration`](apidocs/org/threeten/extra/PeriodDuration.html) - combines `Period` and `Duration`
 * Weekend adjusters
 * [Coptic](apidocs/org/threeten/extra/chrono/CopticChronology.html) calendar system
 * [Ethiopic](apidocs/org/threeten/extra/chrono/EthiopicChronology.html) calendar system
@@ -46,18 +47,18 @@ Various documentation is available:
 
 ## <i></i> Releases
 
-Release 1.0 is the current release.
+Release 1.1 is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
 ThreeTen-Extra requires Java SE 8 or later and has no [dependencies](dependencies.html).
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.threeten%7Cthreeten-extra%7C1.0%7Cjar).
+Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.threeten%7Cthreeten-extra%7C1.1%7Cjar).
 
 ```xml
 <dependency>
   <groupId>org.threeten</groupId>
   <artifactId>threeten-extra</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 </dependency>
 ```
 

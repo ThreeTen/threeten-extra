@@ -7,15 +7,19 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.1" date="SNAPSHOT" description="v1.1">
+    <release version="1.1" date="2017-04-24" description="v1.1">
+      <action dev="jodastephen" type="add" >
+        Add PeriodDuration, combining Period and Duration.
+        See #74.
+      </action>
       <action dev="jodastephen" type="fix" >
         Fix incorrect method name in Hours.
         toPeriod() should have been toDuration().
         Fixes #76.
       </action>
       <action dev="jodastephen" type="add" >
-        Add PeriodDuration, combining Period and Duration.
-        See #74.
+        Extend formats parsed by Hours, Minutes and Seconds.
+        Fixes #77.
       </action>
       <action dev="jodastephen" type="add" >
         Extend formats parsed by Interval, allowing end instant to have offset inferred from start instant.
