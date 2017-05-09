@@ -473,6 +473,60 @@ public final class YearWeek
     public int lengthOfYear() {
         return (is53WeekYear() ? 371 : 364);
     }
+    
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this year-week with the specified number of weeks added.
+     * * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param weeksToAdd  the weeks to add, may be negative
+     * @return the year-week with the weeks added, not null
+     */
+    public YearWeek plusWeeks(long weeksToAdd) {
+        if (weeksToAdd == 0) {
+            return this;
+        }
+        if (weeksToAdd < 0) {
+            return minusWeeks(-weeksToAdd);
+        }
+        YearWeek yearWeek = this;
+        while (weeksToAdd-- > 0) {
+            int weeksInYear = yearWeek.is53WeekYear() ? 53 : 52;
+            if (yearWeek.week < weeksInYear) {
+                yearWeek = YearWeek.of(yearWeek.year, yearWeek.week + 1);
+            } else {
+                yearWeek = YearWeek.of(yearWeek.year + 1, 1);
+            }
+        }
+        return yearWeek;
+    }
+    
+    /**
+     * Returns a copy of this year-week with the specified number of weeks subtracted.
+     * * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param weeksToSubtract  the weeks to subtract, may be negative
+     * @return the year-week with the weeks subtracted, not null
+     */
+    public YearWeek minusWeeks(long weeksToSubtract) {
+        if (weeksToSubtract == 0) {
+            return this;
+        }
+        if (weeksToSubtract < 0) {
+            return plusWeeks(-weeksToSubtract);
+        }
+        YearWeek yearWeek = this;
+        while (weeksToSubtract-- > 0) {
+            if (yearWeek.week > 1) {
+                yearWeek = YearWeek.of(yearWeek.year, yearWeek.week - 1);
+            } else {
+                yearWeek = YearWeek.of(yearWeek.year - 1, weekRange(yearWeek.year - 1));
+            }
+        }
+        return yearWeek;
+    }
 
     //-----------------------------------------------------------------------
     /**
