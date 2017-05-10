@@ -722,6 +722,16 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2014, 2).withWeek(2), YearWeek.of(2014, 2));
     }
 
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_withWeek_int_max() {
+        TEST.withWeek(Integer.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions = DateTimeException.class)
+    public void test_withWeek_int_min() {
+        TEST.withWeek(Integer.MIN_VALUE);
+    }
+
     //-----------------------------------------------------------------------
     // plusWeeks(long)
     //-----------------------------------------------------------------------
@@ -734,7 +744,7 @@ public class TestYearWeek {
         assertEquals(TEST.plusWeeks(53), YearWeek.of(2016, 1));
         assertEquals(TEST.plusWeeks(314), YearWeek.of(2021, 1));
     }
-    
+
     public void test_plusWeeks_negative() {
         assertEquals(TEST.plusWeeks(0), TEST);
         assertEquals(TEST.plusWeeks(-1), YearWeek.of(2014, 52));
@@ -744,17 +754,17 @@ public class TestYearWeek {
         assertEquals(TEST.plusWeeks(-53), YearWeek.of(2013, 52));
         assertEquals(TEST.plusWeeks(-261), YearWeek.of(2009, 53));
     }
-    
+
     @Test(expectedExceptions = ArithmeticException.class)
     public void test_plusWeeks_max_long() {
         TEST.plusWeeks(Long.MAX_VALUE);
     }
-    
+
     @Test(expectedExceptions = DateTimeException.class)
     public void test_plusWeeks_min_long() {
         TEST.plusWeeks(Long.MIN_VALUE);
     }
-    
+
     //-----------------------------------------------------------------------
     // minusWeeks(long)
     //-----------------------------------------------------------------------
@@ -767,7 +777,7 @@ public class TestYearWeek {
         assertEquals(TEST.minusWeeks(53), YearWeek.of(2013, 52));
         assertEquals(TEST.minusWeeks(261), YearWeek.of(2009, 53));
     }
-    
+
     public void test_minusWeeks_negative() {
         assertEquals(TEST.minusWeeks(0), TEST);
         assertEquals(TEST.minusWeeks(-1), YearWeek.of(2015, 2));
@@ -777,12 +787,12 @@ public class TestYearWeek {
         assertEquals(TEST.minusWeeks(-53), YearWeek.of(2016, 1));
         assertEquals(TEST.minusWeeks(-314), YearWeek.of(2021, 1));
     }
-    
+
     @Test(expectedExceptions = ArithmeticException.class)
     public void test_minWeeks_max_long() {
         TEST.plusWeeks(Long.MAX_VALUE);
     }
-    
+
     @Test(expectedExceptions = DateTimeException.class)
     public void test_minWeeks_min_long() {
         TEST.plusWeeks(Long.MIN_VALUE);
