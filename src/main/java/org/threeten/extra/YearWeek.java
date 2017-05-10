@@ -487,19 +487,9 @@ public final class YearWeek
         if (weeksToAdd == 0) {
             return this;
         }
-        if (weeksToAdd < 0) {
-            return minusWeeks(-weeksToAdd);
-        }
-        YearWeek yearWeek = this;
-        while (weeksToAdd-- > 0) {
-            int weeksInYear = yearWeek.is53WeekYear() ? 53 : 52;
-            if (yearWeek.week < weeksInYear) {
-                yearWeek = YearWeek.of(yearWeek.year, yearWeek.week + 1);
-            } else {
-                yearWeek = YearWeek.of(yearWeek.year + 1, 1);
-            }
-        }
-        return yearWeek;
+        long daysToAdd = weeksToAdd * 7;
+        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).plusDays(daysToAdd);
+        return YearWeek.from(mondayOfWeek);
     }
     
     /**
@@ -514,18 +504,12 @@ public final class YearWeek
         if (weeksToSubtract == 0) {
             return this;
         }
-        if (weeksToSubtract < 0) {
-            return plusWeeks(-weeksToSubtract);
+        if (weeksToSubtract == 0) {
+            return this;
         }
-        YearWeek yearWeek = this;
-        while (weeksToSubtract-- > 0) {
-            if (yearWeek.week > 1) {
-                yearWeek = YearWeek.of(yearWeek.year, yearWeek.week - 1);
-            } else {
-                yearWeek = YearWeek.of(yearWeek.year - 1, weekRange(yearWeek.year - 1));
-            }
-        }
-        return yearWeek;
+        long daysToAdd = weeksToSubtract * 7;
+        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).minusDays(daysToAdd);
+        return YearWeek.from(mondayOfWeek);
     }
 
     //-----------------------------------------------------------------------
