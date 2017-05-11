@@ -760,7 +760,7 @@ public class TestYearWeek {
         TEST.plusWeeks(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expectedExceptions = ArithmeticException.class)
     public void test_plusWeeks_min_long() {
         TEST.plusWeeks(Long.MIN_VALUE);
     }
@@ -793,7 +793,7 @@ public class TestYearWeek {
         TEST.plusWeeks(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expectedExceptions = ArithmeticException.class)
     public void test_minWeeks_min_long() {
         TEST.plusWeeks(Long.MIN_VALUE);
     }

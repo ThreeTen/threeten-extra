@@ -487,8 +487,7 @@ public final class YearWeek
         if (weeksToAdd == 0) {
             return this;
         }
-        long daysToAdd = weeksToAdd * 7;
-        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).plusDays(daysToAdd);
+        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).plusWeeks(weeksToAdd);
         return YearWeek.from(mondayOfWeek);
     }
     
@@ -504,11 +503,7 @@ public final class YearWeek
         if (weeksToSubtract == 0) {
             return this;
         }
-        if (weeksToSubtract == 0) {
-            return this;
-        }
-        long daysToAdd = weeksToSubtract * 7;
-        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).minusDays(daysToAdd);
+        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).minusWeeks(weeksToSubtract);
         return YearWeek.from(mondayOfWeek);
     }
 
