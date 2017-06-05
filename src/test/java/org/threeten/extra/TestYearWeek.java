@@ -258,25 +258,25 @@ public class TestYearWeek {
             {2014, 52, MONDAY, 2014, 12, 22},
             {2014, 52, TUESDAY, 2014, 12, 23},
             {2014, 52, WEDNESDAY, 2014, 12, 24},
-            {2014, 52, THURSDAY, 2014, 12, 25}, 
+            {2014, 52, THURSDAY, 2014, 12, 25},
             {2014, 52, FRIDAY, 2014, 12, 26},
-            {2014, 52, SATURDAY, 2014, 12, 27}, 
+            {2014, 52, SATURDAY, 2014, 12, 27},
             {2014, 52, SUNDAY, 2014, 12, 28},
-            {2015,  1, MONDAY, 2014, 12, 29},
-            {2015,  1, TUESDAY, 2014, 12, 30},
-            {2015,  1, WEDNESDAY, 2014, 12, 31},
-            {2015,  1, THURSDAY, 2015, 1, 1}, 
-            {2015,  1, FRIDAY, 2015, 1, 2},
-            {2015,  1, SATURDAY, 2015, 1, 3}, 
-            {2015,  1, SUNDAY, 2015, 1, 4},
-            {2017,  1, MONDAY, 2017, 1, 2},
-            {2017,  1, TUESDAY, 2017, 1, 3},
-            {2017,  1, WEDNESDAY, 2017, 1, 4},
-            {2017,  1, THURSDAY, 2017, 1, 5}, 
-            {2017,  1, FRIDAY, 2017, 1, 6},
-            {2017,  1, SATURDAY, 2017, 1, 7}, 
-            {2017,  1, SUNDAY, 2017, 1, 8},
-            {2025,  1, MONDAY, 2024, 12, 30}
+            {2015, 1, MONDAY, 2014, 12, 29},
+            {2015, 1, TUESDAY, 2014, 12, 30},
+            {2015, 1, WEDNESDAY, 2014, 12, 31},
+            {2015, 1, THURSDAY, 2015, 1, 1},
+            {2015, 1, FRIDAY, 2015, 1, 2},
+            {2015, 1, SATURDAY, 2015, 1, 3},
+            {2015, 1, SUNDAY, 2015, 1, 4},
+            {2017, 1, MONDAY, 2017, 1, 2},
+            {2017, 1, TUESDAY, 2017, 1, 3},
+            {2017, 1, WEDNESDAY, 2017, 1, 4},
+            {2017, 1, THURSDAY, 2017, 1, 5},
+            {2017, 1, FRIDAY, 2017, 1, 6},
+            {2017, 1, SATURDAY, 2017, 1, 7},
+            {2017, 1, SUNDAY, 2017, 1, 8},
+            {2025, 1, MONDAY, 2024, 12, 30}
         };
     }
 
@@ -640,10 +640,10 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     public void test_format() {
         DateTimeFormatter f = new DateTimeFormatterBuilder()
-            .appendValue(WEEK_BASED_YEAR, 4)
-            .appendLiteral('-')
-            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
-            .toFormatter();
+                .appendValue(WEEK_BASED_YEAR, 4)
+                .appendLiteral('-')
+                .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
+                .toFormatter();
         assertEquals(TEST.format(f), "2015-01");
     }
 
@@ -730,6 +730,72 @@ public class TestYearWeek {
     @Test(expectedExceptions = DateTimeException.class)
     public void test_withWeek_int_min() {
         TEST.withWeek(Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // plusWeeks(long)
+    //-----------------------------------------------------------------------
+    public void test_plusWeeks() {
+        assertEquals(TEST.plusWeeks(0), TEST);
+        assertEquals(TEST.plusWeeks(1), YearWeek.of(2015, 2));
+        assertEquals(TEST.plusWeeks(2), YearWeek.of(2015, 3));
+        assertEquals(TEST.plusWeeks(51), YearWeek.of(2015, 52));
+        assertEquals(TEST.plusWeeks(52), YearWeek.of(2015, 53));
+        assertEquals(TEST.plusWeeks(53), YearWeek.of(2016, 1));
+        assertEquals(TEST.plusWeeks(314), YearWeek.of(2021, 1));
+    }
+
+    public void test_plusWeeks_negative() {
+        assertEquals(TEST.plusWeeks(0), TEST);
+        assertEquals(TEST.plusWeeks(-1), YearWeek.of(2014, 52));
+        assertEquals(TEST.plusWeeks(-2), YearWeek.of(2014, 51));
+        assertEquals(TEST.plusWeeks(-51), YearWeek.of(2014, 2));
+        assertEquals(TEST.plusWeeks(-52), YearWeek.of(2014, 1));
+        assertEquals(TEST.plusWeeks(-53), YearWeek.of(2013, 52));
+        assertEquals(TEST.plusWeeks(-261), YearWeek.of(2009, 53));
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_plusWeeks_max_long() {
+        TEST.plusWeeks(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_plusWeeks_min_long() {
+        TEST.plusWeeks(Long.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusWeeks(long)
+    //-----------------------------------------------------------------------
+    public void test_minusWeeks() {
+        assertEquals(TEST.minusWeeks(0), TEST);
+        assertEquals(TEST.minusWeeks(1), YearWeek.of(2014, 52));
+        assertEquals(TEST.minusWeeks(2), YearWeek.of(2014, 51));
+        assertEquals(TEST.minusWeeks(51), YearWeek.of(2014, 2));
+        assertEquals(TEST.minusWeeks(52), YearWeek.of(2014, 1));
+        assertEquals(TEST.minusWeeks(53), YearWeek.of(2013, 52));
+        assertEquals(TEST.minusWeeks(261), YearWeek.of(2009, 53));
+    }
+
+    public void test_minusWeeks_negative() {
+        assertEquals(TEST.minusWeeks(0), TEST);
+        assertEquals(TEST.minusWeeks(-1), YearWeek.of(2015, 2));
+        assertEquals(TEST.minusWeeks(-2), YearWeek.of(2015, 3));
+        assertEquals(TEST.minusWeeks(-51), YearWeek.of(2015, 52));
+        assertEquals(TEST.minusWeeks(-52), YearWeek.of(2015, 53));
+        assertEquals(TEST.minusWeeks(-53), YearWeek.of(2016, 1));
+        assertEquals(TEST.minusWeeks(-314), YearWeek.of(2021, 1));
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_minWeeks_max_long() {
+        TEST.plusWeeks(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_minWeeks_min_long() {
+        TEST.plusWeeks(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------

@@ -473,6 +473,39 @@ public final class YearWeek
     public int lengthOfYear() {
         return (is53WeekYear() ? 371 : 364);
     }
+    
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this year-week with the specified number of weeks added.
+     * * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param weeksToAdd  the weeks to add, may be negative
+     * @return the year-week with the weeks added, not null
+     */
+    public YearWeek plusWeeks(long weeksToAdd) {
+        if (weeksToAdd == 0) {
+            return this;
+        }
+        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).plusWeeks(weeksToAdd);
+        return YearWeek.from(mondayOfWeek);
+    }
+    
+    /**
+     * Returns a copy of this year-week with the specified number of weeks subtracted.
+     * * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param weeksToSubtract  the weeks to subtract, may be negative
+     * @return the year-week with the weeks subtracted, not null
+     */
+    public YearWeek minusWeeks(long weeksToSubtract) {
+        if (weeksToSubtract == 0) {
+            return this;
+        }
+        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).minusWeeks(weeksToSubtract);
+        return YearWeek.from(mondayOfWeek);
+    }
 
     //-----------------------------------------------------------------------
     /**
