@@ -7,10 +7,14 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.2" date="2017-05-10" description="v1.2">
-        <action dev="raupachz" type="add" >
-            Add plusWeeks/minusWeeks to YearWeek
-            See #78
+    <release version="1.2" date="SNAPSHOT" description="v1.2">
+      <action dev="jodastephen" type="add" >
+        Add plusYears/minusYears to YearWeek.
+        See #78.
+      </action>
+      <action dev="raupachz" type="add" >
+        Add plusWeeks/minusWeeks to YearWeek.
+        See #78.
       </action>
     </release>
     <release version="1.1" date="2017-04-24" description="v1.1">

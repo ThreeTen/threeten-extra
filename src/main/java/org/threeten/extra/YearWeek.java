@@ -473,39 +473,6 @@ public final class YearWeek
     public int lengthOfYear() {
         return (is53WeekYear() ? 371 : 364);
     }
-    
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this year-week with the specified number of weeks added.
-     * * <p>
-     * This instance is immutable and unaffected by this method call.
-     * 
-     * @param weeksToAdd  the weeks to add, may be negative
-     * @return the year-week with the weeks added, not null
-     */
-    public YearWeek plusWeeks(long weeksToAdd) {
-        if (weeksToAdd == 0) {
-            return this;
-        }
-        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).plusWeeks(weeksToAdd);
-        return YearWeek.from(mondayOfWeek);
-    }
-    
-    /**
-     * Returns a copy of this year-week with the specified number of weeks subtracted.
-     * * <p>
-     * This instance is immutable and unaffected by this method call.
-     * 
-     * @param weeksToSubtract  the weeks to subtract, may be negative
-     * @return the year-week with the weeks subtracted, not null
-     */
-    public YearWeek minusWeeks(long weeksToSubtract) {
-        if (weeksToSubtract == 0) {
-            return this;
-        }
-        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).minusWeeks(weeksToSubtract);
-        return YearWeek.from(mondayOfWeek);
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -543,6 +510,77 @@ public final class YearWeek
      */
     public YearWeek withWeek(int week) {
         return with(year, week);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this year-week with the specified number of years added.
+     * <p>
+     * If the week of this instance is 53 and the new year does not have 53 weeks,
+     * the week will be adjusted to be 52.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param yearsToAdd  the years to add, may be negative
+     * @return the year-week with the years added, not null
+     */
+    public YearWeek plusYears(long yearsToAdd) {
+        if (yearsToAdd == 0) {
+            return this;
+        }
+        int newYear = Math.toIntExact(Math.addExact(year, yearsToAdd));
+        return withYear(newYear);
+    }
+
+    /**
+     * Returns a copy of this year-week with the specified number of weeks added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param weeksToAdd  the weeks to add, may be negative
+     * @return the year-week with the weeks added, not null
+     */
+    public YearWeek plusWeeks(long weeksToAdd) {
+        if (weeksToAdd == 0) {
+            return this;
+        }
+        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).plusWeeks(weeksToAdd);
+        return YearWeek.from(mondayOfWeek);
+    }
+
+    /**
+     * Returns a copy of this year-week with the specified number of years subtracted.
+     * <p>
+     * If the week of this instance is 53 and the new year does not have 53 weeks,
+     * the week will be adjusted to be 52.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param yearsToSubtract  the years to subtract, may be negative
+     * @return the year-week with the years subtracted, not null
+     */
+    public YearWeek minusYears(long yearsToSubtract) {
+        if (yearsToSubtract == 0) {
+            return this;
+        }
+        int newYear = Math.toIntExact(Math.subtractExact(year, yearsToSubtract));
+        return withYear(newYear);
+    }
+
+    /**
+     * Returns a copy of this year-week with the specified number of weeks subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param weeksToSubtract  the weeks to subtract, may be negative
+     * @return the year-week with the weeks subtracted, not null
+     */
+    public YearWeek minusWeeks(long weeksToSubtract) {
+        if (weeksToSubtract == 0) {
+            return this;
+        }
+        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).minusWeeks(weeksToSubtract);
+        return YearWeek.from(mondayOfWeek);
     }
 
     //-----------------------------------------------------------------------

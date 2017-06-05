@@ -733,6 +733,34 @@ public class TestYearWeek {
     }
 
     //-----------------------------------------------------------------------
+    // plusYears(long)
+    //-----------------------------------------------------------------------
+    public void test_plusYears() {
+        assertEquals(TEST.plusYears(-2), YearWeek.of(2013, 1));
+        assertEquals(TEST.plusYears(-1), YearWeek.of(2014, 1));
+        assertEquals(TEST.plusYears(0), TEST);
+        assertEquals(TEST.plusYears(1), YearWeek.of(2016, 1));
+        assertEquals(TEST.plusYears(2), YearWeek.of(2017, 1));
+    }
+
+    public void test_plusYears_changeWeek() {
+        assertEquals(YearWeek.of(2015, 53).plusYears(-1), YearWeek.of(2014, 52));
+        assertEquals(YearWeek.of(2015, 53).plusYears(0), YearWeek.of(2015, 53));
+        assertEquals(YearWeek.of(2015, 53).plusYears(1), YearWeek.of(2016, 52));
+        assertEquals(YearWeek.of(2015, 53).plusYears(5), YearWeek.of(2020, 53));
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_plusYears_max_long() {
+        TEST.plusYears(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_plusYears_min_long() {
+        TEST.plusYears(Long.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
     // plusWeeks(long)
     //-----------------------------------------------------------------------
     public void test_plusWeeks() {
@@ -763,6 +791,34 @@ public class TestYearWeek {
     @Test(expectedExceptions = ArithmeticException.class)
     public void test_plusWeeks_min_long() {
         TEST.plusWeeks(Long.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusYears(long)
+    //-----------------------------------------------------------------------
+    public void test_minusYears() {
+        assertEquals(TEST.minusYears(-2), YearWeek.of(2017, 1));
+        assertEquals(TEST.minusYears(-1), YearWeek.of(2016, 1));
+        assertEquals(TEST.minusYears(0), TEST);
+        assertEquals(TEST.minusYears(1), YearWeek.of(2014, 1));
+        assertEquals(TEST.minusYears(2), YearWeek.of(2013, 1));
+    }
+
+    public void test_minusYears_changeWeek() {
+        assertEquals(YearWeek.of(2015, 53).minusYears(-5), YearWeek.of(2020, 53));
+        assertEquals(YearWeek.of(2015, 53).minusYears(-1), YearWeek.of(2016, 52));
+        assertEquals(YearWeek.of(2015, 53).minusYears(0), YearWeek.of(2015, 53));
+        assertEquals(YearWeek.of(2015, 53).minusYears(1), YearWeek.of(2014, 52));
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_minusYears_max_long() {
+        TEST.minusYears(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_minusYears_min_long() {
+        TEST.minusYears(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
