@@ -414,6 +414,71 @@ public class TestYears {
     }
 
     //-----------------------------------------------------------------------
+    @DataProvider(name = "isLessThan")
+    Object[][] isLessThan() {
+        return new Object[][] {
+                {Years.of(0), Years.of(1), true},
+                {Years.of(1), Years.of(1), false},
+                {Years.of(0), null, false},
+                {Years.of(-1), null, true},
+                {Years.of(3), Years.of(1), false},
+        };
+    }
+
+    @Test(dataProvider = "isLessThan")
+    public void test_isLessThan(Years y1,Years y2,boolean expectedResult) {
+        assertEquals(expectedResult, y1.isLessThan(y2));
+    }
+
+    @DataProvider(name = "isLessThanOrEqualsTo")
+    Object[][] isLessThanOrEqualsTo() {
+        return new Object[][] {
+                {Years.of(0), Years.of(1), true},
+                {Years.of(1), Years.of(1), true},
+                {Years.of(0), null, true},
+                {Years.of(-1), null, true},
+                {Years.of(3), Years.of(1), false},
+        };
+    }
+
+    @Test(dataProvider = "isLessThanOrEqualsTo")
+    public void test_isLessThanOrEqualsTo(Years y1,Years y2,boolean expectedResult) {
+        assertEquals(expectedResult, y1.isLessThanOrEqualsTo(y2));
+    }
+
+    @DataProvider(name = "isGreaterThan")
+    Object[][] isGreaterThan() {
+        return new Object[][] {
+                {Years.of(1), Years.of(0), true},
+                {Years.of(1), Years.of(1), false},
+                {Years.of(0), null, false},
+                {Years.of(1), null, true},
+                {Years.of(1), Years.of(3), false},
+        };
+    }
+
+    @Test(dataProvider = "isGreaterThan")
+    public void test_isGreaterThan(Years y1,Years y2,boolean expectedResult) {
+        assertEquals(expectedResult, y1.isGreaterThan(y2));
+    }
+
+    @DataProvider(name = "isGreaterThanOrEqualsTo")
+    Object[][] isGreaterThanOrEqualsTo() {
+        return new Object[][] {
+                {Years.of(1), Years.of(0), true},
+                {Years.of(1), Years.of(1), true},
+                {Years.of(0), null, true},
+                {Years.of(1), null, true},
+                {Years.of(1), Years.of(3), false},
+        };
+    }
+
+    @Test(dataProvider = "isGreaterThanOrEqualsTo")
+    public void test_isGreaterThanOrEqualsTo(Years y1,Years y2,boolean expectedResult) {
+        assertEquals(expectedResult, y1.isGreaterThanOrEqualsTo(y2));
+    }
+    
+    //-----------------------------------------------------------------------
     public void test_hashCode() {
         Years test5 = Years.of(5);
         Years test6 = Years.of(6);

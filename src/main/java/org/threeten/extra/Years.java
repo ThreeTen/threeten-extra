@@ -491,6 +491,58 @@ public final class Years
         return Integer.compare(thisValue, otherValue);
     }
 
+    /**
+     * Is this years instance greater than the specified number of years.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this years instance is greater than the specified one
+     */
+    public boolean isGreaterThan(Years otherAmount) {
+        if (otherAmount == null) {
+            return years > 0;
+        }
+        return years > otherAmount.years;
+    }
+
+    /**
+     * Is this years instance greater than or equals to the specified number of years.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this years instance is greater than or equals to the specified one
+     */
+    public boolean isGreaterThanOrEqualsTo(Years otherAmount) {
+        if (otherAmount == null) {
+            return years >= 0;
+        }
+        return years >= otherAmount.years;
+    }
+
+    /**
+     * Is this years instance less than the specified number of years.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this years instance is less than the specified one
+     */
+    public boolean isLessThan(Years otherAmount) {
+        if (otherAmount == null) {
+            return years < 0;
+        }
+        return years < otherAmount.years;
+    }
+
+    /**
+     * Is this years instance less than or equals to the specified number of years.
+     *
+     * @param otherAmount  the other period, null means zero
+     * @return true if this years instance is less than or equals to the specified one
+     */
+    public boolean isLessThanOrEqualsTo(Years otherAmount) {
+        if (otherAmount == null) {
+            return years <= 0;
+        }
+        return years <= otherAmount.years;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this amount is equal to the specified {@code Years}.

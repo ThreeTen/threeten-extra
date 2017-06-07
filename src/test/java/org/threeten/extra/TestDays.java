@@ -470,6 +470,71 @@ public class TestDays {
     }
 
     //-----------------------------------------------------------------------
+    @DataProvider(name = "isLessThan")
+    Object[][] isLessThan() {
+        return new Object[][] {
+                {Days.of(0), Days.of(1), true},
+                {Days.of(1), Days.of(1), false},
+                {Days.of(0), null, false},
+                {Days.of(-1), null, true},
+                {Days.of(3), Days.of(1), false},
+        };
+    }
+
+    @Test(dataProvider = "isLessThan")
+    public void test_isLessThan(Days d1,Days d2,boolean expectedResult) {
+        assertEquals(expectedResult, d1.isLessThan(d2));
+    }
+
+    @DataProvider(name = "isLessThanOrEqualsTo")
+    Object[][] isLessThanOrEqualsTo() {
+        return new Object[][] {
+                {Days.of(0), Days.of(1), true},
+                {Days.of(1), Days.of(1), true},
+                {Days.of(0), null, true},
+                {Days.of(-1), null, true},
+                {Days.of(3), Days.of(1), false},
+        };
+    }
+
+    @Test(dataProvider = "isLessThanOrEqualsTo")
+    public void test_isLessThanOrEqualsTo(Days d1,Days d2,boolean expectedResult) {
+        assertEquals(expectedResult, d1.isLessThanOrEqualsTo(d2));
+    }
+
+    @DataProvider(name = "isGreaterThan")
+    Object[][] isGreaterThan() {
+        return new Object[][] {
+                {Days.of(1), Days.of(0), true},
+                {Days.of(1), Days.of(1), false},
+                {Days.of(0), null, false},
+                {Days.of(1), null, true},
+                {Days.of(1), Days.of(3), false},
+        };
+    }
+
+    @Test(dataProvider = "isGreaterThan")
+    public void test_isGreaterThan(Days d1,Days d2,boolean expectedResult) {
+        assertEquals(expectedResult, d1.isGreaterThan(d2));
+    }
+
+    @DataProvider(name = "isGreaterThanOrEqualsTo")
+    Object[][] isGreaterThanOrEqualsTo() {
+        return new Object[][] {
+                {Days.of(1), Days.of(0), true},
+                {Days.of(1), Days.of(1), true},
+                {Days.of(0), null, true},
+                {Days.of(1), null, true},
+                {Days.of(1), Days.of(3), false},
+        };
+    }
+
+    @Test(dataProvider = "isGreaterThanOrEqualsTo")
+    public void test_isGreaterThanOrEqualsTo(Days d1,Days d2,boolean expectedResult) {
+        assertEquals(expectedResult, d1.isGreaterThanOrEqualsTo(d2));
+    }
+    
+    //-----------------------------------------------------------------------
     public void test_hashCode() {
         Days test5 = Days.of(5);
         Days test6 = Days.of(6);
