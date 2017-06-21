@@ -45,6 +45,7 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
@@ -153,6 +154,10 @@ public class TestInterval {
         Interval.of(NOW1, (Duration) null);
     }
 
+    /* Lower and upper bound for Intervals */
+    private static final Instant MIN_OFFSET_DATE_TIME = OffsetDateTime.MIN.plusDays(1L).toInstant();
+    private static final Instant MAX_OFFSET_DATE_TIME = OffsetDateTime.MAX.minusDays(1L).toInstant();
+
     //-----------------------------------------------------------------------
     @DataProvider(name = "parseValid")
     Object[][] data_parseValid() {
@@ -167,6 +172,7 @@ public class TestInterval {
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)), NOW1, NOW2},
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(3)), NOW1, NOW2},
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)).toLocalDateTime(), NOW1, NOW2},
+            {MIN_OFFSET_DATE_TIME.toString() + '/' + MAX_OFFSET_DATE_TIME, MIN_OFFSET_DATE_TIME, MAX_OFFSET_DATE_TIME}
         };
     }
     
