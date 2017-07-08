@@ -53,8 +53,8 @@ import java.util.Objects;
 /**
  * A clock that does not advance on its own and that must be updated manually.
  * <p>
- * This class is designed for testing clock-sensitive components through
- * controlled simulation of the passage of time. This class differs from {@link
+ * This class is designed for testing clock-sensitive components by simulating
+ * the passage of time. This class differs from {@link
  * Clock#fixed(Instant, ZoneId)} and {@link Clock#offset(Clock, Duration)} in
  * that it permits arbitrary, unrestricted updates to its instant. This allows
  * for testing patterns that are not well-supported by the {@code fixed} and
@@ -92,14 +92,14 @@ import java.util.Objects;
  * refer to the corresponding method of {@code ZonedDateTime}. Links are
  * provided from the documentation of each update operation of this class to the
  * corresponding method of {@code ZonedDateTime}.
+ *
+ * <h3>Implementation Requirements:</h3>
+ * This class is thread-safe. Updates are atomic and synchronized.
  * <p>
  * While update semantics are expressed in terms of {@code ZonedDateTime}, that
  * imposes no requirements on implementation details. The implementation may
  * avoid using {@code ZonedDateTime} completely or only sometimes, for
  * convenience, efficiency, or any other reason.
- *
- * <h3>Implementation Requirements:</h3>
- * This class is thread-safe. Updates are atomic and synchronized.
  *
  * @serial exclude
  */
@@ -128,7 +128,9 @@ public final class MutableClock
      * time-zone.
      * <p>
      * Use this method when a {@code MutableClock} is needed and neither its
-     * initial value nor its time-zone are important.
+     * initial value nor its time-zone are important. This is often true when
+     * testing behavior that depends on elapsed <em>relative</em> time rather
+     * than <em>absolute</em> time.
      *
      * @return a new {@code MutableClock}, not null
      */
@@ -390,7 +392,7 @@ public final class MutableClock
         /**
          * Constructor.
          *
-         * @param clock the {@code MutableClock} to be serialized, validated not null
+         * @param clock the {@code MutableClock} to be serialized, not null
          */
         SerializationProxy(MutableClock clock) {
             instant = clock.instant();
