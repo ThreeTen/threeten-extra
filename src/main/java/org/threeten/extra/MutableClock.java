@@ -205,7 +205,7 @@ public final class MutableClock
      *                .toInstant()
      * </pre>
      *
-     * @param amountToAdd the amount of the specified unit to add, not null
+     * @param amountToAdd the amount of the specified unit to add, may be negative
      * @param unit the unit of the amount to add, not null
      * @throws DateTimeException if the unit cannot be added
      * @throws UnsupportedTemporalTypeException if the unit is not supported
@@ -217,56 +217,6 @@ public final class MutableClock
         synchronized (instantHolder) {
             ZonedDateTime current = ZonedDateTime.ofInstant(instantHolder.get(), zone);
             ZonedDateTime result = current.plus(amountToAdd, unit);
-            instantHolder.set(result.toInstant());
-        }
-    }
-
-    /**
-     * Subtracts the specified amount from this clock.
-     * <p>
-     * Atomically updates this clock to the value of the following expression:
-     * <pre>
-     *   ZonedDateTime.now(thisClock)
-     *                .minus(amountToSubtract)
-     *                .toInstant()
-     * </pre>
-     *
-     * @param amountToSubtract the amount to subtract, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
-     * @see ZonedDateTime#minus(TemporalAmount)
-     */
-    public void subtract(TemporalAmount amountToSubtract) {
-        Objects.requireNonNull(amountToSubtract, "amountToSubtract");
-        synchronized (instantHolder) {
-            ZonedDateTime current = ZonedDateTime.ofInstant(instantHolder.get(), zone);
-            ZonedDateTime result = current.minus(amountToSubtract);
-            instantHolder.set(result.toInstant());
-        }
-    }
-
-    /**
-     * Subtracts the specified amount from this clock.
-     * <p>
-     * Atomically updates this clock to the value of the following expression:
-     * <pre>
-     *   ZonedDateTime.now(thisClock)
-     *                .minus(amountToSubtract, unit)
-     *                .toInstant()
-     * </pre>
-     *
-     * @param amountToSubtract the amount of the specified unit to subtract, not null
-     * @param unit the unit of the amount to subtract, not null
-     * @throws DateTimeException if the unit cannot be subtracted
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
-     * @see ZonedDateTime#minus(long, TemporalUnit)
-     */
-    public void subtract(long amountToSubtract, TemporalUnit unit) {
-        Objects.requireNonNull(unit, "unit");
-        synchronized (instantHolder) {
-            ZonedDateTime current = ZonedDateTime.ofInstant(instantHolder.get(), zone);
-            ZonedDateTime result = current.minus(amountToSubtract, unit);
             instantHolder.set(result.toInstant());
         }
     }

@@ -166,52 +166,6 @@ public class TestMutableClock {
         MutableClock.epochUTC().add(0, null);
     }
 
-    public void test_subtract_amountOnly() {
-        MutableClock clock = MutableClock.epochUTC();
-        clock.subtract(Duration.ofNanos(3));
-        clock.subtract(Period.ofMonths(2));
-        clock.subtract(Duration.ofSeconds(-5));
-        clock.subtract(Period.ofWeeks(-7));
-        clock.subtract(Duration.ZERO);
-        clock.subtract(Period.ZERO);
-        assertEquals(
-                clock.instant(),
-                ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
-                        .minusNanos(3)
-                        .minusMonths(2)
-                        .plusSeconds(5)
-                        .plusWeeks(7)
-                        .toInstant());
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_subtract_amountOnly_null() {
-        MutableClock.epochUTC().subtract(null);
-    }
-
-    public void test_subtract_amountAndUnit() {
-        MutableClock clock = MutableClock.epochUTC();
-        clock.subtract(3, ChronoUnit.NANOS);
-        clock.subtract(2, ChronoUnit.MONTHS);
-        clock.subtract(-5, ChronoUnit.SECONDS);
-        clock.subtract(-7, ChronoUnit.WEEKS);
-        clock.subtract(0, ChronoUnit.MILLIS);
-        clock.subtract(0, ChronoUnit.YEARS);
-        assertEquals(
-                clock.instant(),
-                ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
-                        .minusNanos(3)
-                        .minusMonths(2)
-                        .plusSeconds(5)
-                        .plusWeeks(7)
-                        .toInstant());
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_subtract_amountAndUnit_nullUnit() {
-        MutableClock.epochUTC().subtract(0, null);
-    }
-
     public void test_set_adjuster() {
         MutableClock clock = MutableClock.epochUTC();
         clock.set(LocalDate.of(0, 1, 2));
@@ -311,10 +265,6 @@ public class TestMutableClock {
         clock.add(Period.ofMonths(1));
         assertEquals(clock.hashCode(), hash);
         clock.add(1, ChronoUnit.DAYS);
-        assertEquals(clock.hashCode(), hash);
-        clock.subtract(Duration.ofSeconds(1));
-        assertEquals(clock.hashCode(), hash);
-        clock.subtract(1, ChronoUnit.HOURS);
         assertEquals(clock.hashCode(), hash);
         clock.set(Year.of(2000));
         assertEquals(clock.hashCode(), hash);
