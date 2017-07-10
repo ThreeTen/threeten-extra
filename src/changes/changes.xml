@@ -7,6 +7,12 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.2" date="SNAPSHOT" description="v1.3">
+      <action dev="michaelhixson" type="add" >
+        Add MutableClock.
+        See #83, #84.
+      </action>
+    </release>
     <release version="1.2" date="2017-06-05" description="v1.2">
       <action dev="jodastephen" type="add" >
         Add plusYears/minusYears to YearWeek.
