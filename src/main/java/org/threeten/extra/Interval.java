@@ -130,7 +130,7 @@ public final class Interval
      * Obtains an instance of {@code Interval} from a text string such as
      * {@code 2007-12-03T10:15:30Z/2007-12-04T10:15:30Z}, where the end instant is exclusive.
      * <p>
-     * The string must consist of one of the following three formats:
+     * The string must consist of one of the following four formats:
      * <ul>
      * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash,
      *  followed by a representation of a {@link OffsetDateTime}
