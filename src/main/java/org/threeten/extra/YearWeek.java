@@ -222,7 +222,7 @@ public final class YearWeek
         }
         Objects.requireNonNull(temporal, "temporal");
         try {
-            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
+            if (!IsoChronology.INSTANCE.equals(Chronology.from(temporal))) {
                 temporal = LocalDate.from(temporal);
             }
             return of(temporal.get(WEEK_BASED_YEAR), (int) temporal.getLong(WEEK_OF_WEEK_BASED_YEAR));
@@ -640,7 +640,7 @@ public final class YearWeek
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
+        if (!Chronology.from(temporal).equals(IsoChronology.INSTANCE)) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(WEEK_BASED_YEAR, year).with(WEEK_OF_WEEK_BASED_YEAR, week);
@@ -678,6 +678,10 @@ public final class YearWeek
         Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         int correction = LocalDate.of(year, 1, 4).getDayOfWeek().getValue() + 3;
         int dayOfYear = week * 7 + dayOfWeek.getValue() - correction;
+        int maxDaysOfYear = Year.isLeap(year) ? 366 : 365;
+        if (dayOfYear > maxDaysOfYear) {
+            return LocalDate.ofYearDay(year + 1, dayOfYear - maxDaysOfYear);
+        }
         if (dayOfYear > 0) {
             return LocalDate.ofYearDay(year, dayOfYear);
         } else {
