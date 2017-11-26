@@ -7,7 +7,15 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.2" date="SNAPSHOT" description="v1.3">
+    <release version="1.3" date="SNAPSHOT" description="v1.3">
+      <action dev="jodastephen" type="fix" >
+        Interval.parse now handles Instant.MIN/MAX.
+        See #80.
+      </action>
+      <action dev="catull" type="fix" >
+        YearWeek.atDay now correctly handles the end of the year.
+        See #87.
+      </action>
       <action dev="michaelhixson" type="add" >
         Add MutableClock.
         See #83, #84.
