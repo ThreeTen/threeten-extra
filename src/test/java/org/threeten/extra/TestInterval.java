@@ -161,18 +161,27 @@ public class TestInterval {
     //-----------------------------------------------------------------------
     @DataProvider(name = "parseValid")
     Object[][] data_parseValid() {
+        Instant minPlusOneDay = Instant.MIN.plus(Duration.ofDays(1));
+        Instant maxMinusOneDay = Instant.MAX.minus(Duration.ofDays(1));
         return new Object[][] {
             {NOW1 + "/" + NOW2, NOW1, NOW2},
             {Duration.ofHours(6) + "/" + NOW2, NOW2.minus(6, HOURS), NOW2},
             {"P6MT5H/" + NOW2, NOW2.atZone(ZoneOffset.UTC).minus(6, MONTHS).minus(5, HOURS).toInstant(), NOW2},
             {"pt6h/" + NOW2, NOW2.minus(6, HOURS), NOW2},
+            {"pt6h/" + Instant.MAX, Instant.MAX.minus(6, HOURS), Instant.MAX},
+            {"pt6h/" + minPlusOneDay, minPlusOneDay.minus(6, HOURS), minPlusOneDay},
             {NOW1 + "/" + Duration.ofHours(6), NOW1, NOW1.plus(6, HOURS)},
             {NOW1 + "/pt6h", NOW1, NOW1.plus(6, HOURS)},
+            {Instant.MIN + "/pt6h", Instant.MIN, Instant.MIN.plus(6, HOURS)},
+            {maxMinusOneDay + "/Pt6h", maxMinusOneDay, maxMinusOneDay.plus(6, HOURS)},
             {NOW1 + "/" + NOW1, NOW1, NOW1},
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)), NOW1, NOW2},
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(3)), NOW1, NOW2},
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)).toLocalDateTime(), NOW1, NOW2},
-            {MIN_OFFSET_DATE_TIME.toString() + '/' + MAX_OFFSET_DATE_TIME, MIN_OFFSET_DATE_TIME, MAX_OFFSET_DATE_TIME}
+            {MIN_OFFSET_DATE_TIME.toString() + "/" + MAX_OFFSET_DATE_TIME, MIN_OFFSET_DATE_TIME, MAX_OFFSET_DATE_TIME},
+            {NOW1 + "/" + Instant.MAX, NOW1, Instant.MAX},
+            {Instant.MIN.toString() + "/" + NOW2, Instant.MIN, NOW2},
+            {Instant.MIN.toString() + "/" + Instant.MAX, Instant.MIN, Instant.MAX}
         };
     }
     

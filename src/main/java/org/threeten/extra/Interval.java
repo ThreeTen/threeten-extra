@@ -37,6 +37,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
@@ -153,36 +154,81 @@ public final class Interval
         Objects.requireNonNull(text, "text");
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '/') {
-                char firstChar = text.charAt(0);
-                if (firstChar == 'P' || firstChar == 'p') {
-                    // duration followed by instant
-                    PeriodDuration amount = PeriodDuration.parse(text.subSequence(0, i));
-                    OffsetDateTime end = OffsetDateTime.parse(text.subSequence(i + 1, text.length()));
-                    return Interval.of(end.minus(amount).toInstant(), end.toInstant());
-                } else {
-                    // instant followed by instant or duration
-                    OffsetDateTime start = OffsetDateTime.parse(text.subSequence(0, i));
-                    if (i + 1 < text.length()) {
-                        char c = text.charAt(i + 1);
-                        if (c == 'P' || c == 'p') {
-                            PeriodDuration amount = PeriodDuration.parse(text.subSequence(i + 1, text.length()));
-                            return Interval.of(start.toInstant(), start.plus(amount).toInstant());
-                        }
-                    }
-                    // infer offset from start if not specified by end
-                    String remStr = text.subSequence(i + 1, text.length()).toString();
-                    TemporalAccessor temporal = DateTimeFormatter.ISO_DATE_TIME.parseBest(remStr, OffsetDateTime::from, LocalDateTime::from);
-                    if (temporal instanceof OffsetDateTime) {
-                        OffsetDateTime odt = (OffsetDateTime) temporal;
-                        return Interval.of(start.toInstant(), odt.toInstant());
-                    } else {
-                        LocalDateTime ldt = (LocalDateTime) temporal;
-                        return Interval.of(start.toInstant(), ldt.toInstant(start.getOffset()));
-                    }
-                }
+                return parseSplit(text.subSequence(0, i), text.subSequence(i + 1, text.length()));
             }
         }
         throw new DateTimeParseException("Interval cannot be parsed, no forward slash found", text, 0);
+    }
+
+    private static Interval parseSplit(CharSequence startStr, CharSequence endStr) {
+        char firstChar = startStr.charAt(0);
+        if (firstChar == 'P' || firstChar == 'p') {
+            // duration followed by instant
+            PeriodDuration amount = PeriodDuration.parse(startStr);
+            try {
+                OffsetDateTime end = OffsetDateTime.parse(endStr);
+                return Interval.of(end.minus(amount).toInstant(), end.toInstant());
+            } catch (DateTimeParseException ex) {
+                // handle case where Instant is outside the bounds of OffsetDateTime
+                Instant end = Instant.parse(endStr);
+                // addition of PeriodDuration only supported by OffsetDateTime,
+                // but to make that work need to move point being subtracted from closer to EPOCH
+                long move = end.isBefore(Instant.EPOCH) ? 1000 * 86400 : -1000 * 86400;
+                Instant start = end.plusSeconds(move).atOffset(ZoneOffset.UTC).minus(amount).toInstant().minusSeconds(move);
+                return Interval.of(start, end);
+            }
+        }
+        // instant followed by instant or duration
+        OffsetDateTime start;
+        try {
+            start = OffsetDateTime.parse(startStr);
+        } catch (DateTimeParseException ex) {
+            return parseStartExtended(startStr, endStr);
+        }
+        if (endStr.length() > 0) {
+            char c = endStr.charAt(0);
+            if (c == 'P' || c == 'p') {
+                PeriodDuration amount = PeriodDuration.parse(endStr);
+                return Interval.of(start.toInstant(), start.plus(amount).toInstant());
+            }
+        }
+        return parseEndDateTime(start.toInstant(), start.getOffset(), endStr);
+    }
+
+    // handle case where Instant is outside the bounds of OffsetDateTime
+    private static Interval parseStartExtended(CharSequence startStr, CharSequence endStr) {
+        Instant start = Instant.parse(startStr);
+        if (endStr.length() > 0) {
+            char c = endStr.charAt(0);
+            if (c == 'P' || c == 'p') {
+                PeriodDuration amount = PeriodDuration.parse(endStr);
+                // addition of PeriodDuration only supported by OffsetDateTime,
+                // but to make that work need to move point being added to closer to EPOCH
+                long move = start.isBefore(Instant.EPOCH) ? 1000 * 86400 : -1000 * 86400;
+                Instant end = start.plusSeconds(move).atOffset(ZoneOffset.UTC).plus(amount).toInstant().minusSeconds(move);
+                return Interval.of(start, end);
+            }
+        }
+        // infer offset from start if not specified by end
+        return parseEndDateTime(start, ZoneOffset.UTC, endStr);
+    }
+
+    // parse when there are two date-times
+    private static Interval parseEndDateTime(Instant start, ZoneOffset offset, CharSequence endStr) {
+        try {
+            TemporalAccessor temporal = DateTimeFormatter.ISO_DATE_TIME.parseBest(endStr, OffsetDateTime::from, LocalDateTime::from);
+            if (temporal instanceof OffsetDateTime) {
+                OffsetDateTime odt = (OffsetDateTime) temporal;
+                return Interval.of(start, odt.toInstant());
+            } else {
+                // infer offset from start if not specified by end
+                LocalDateTime ldt = (LocalDateTime) temporal;
+                return Interval.of(start, ldt.toInstant(offset));
+            }
+        } catch (DateTimeParseException ex) {
+            Instant end = Instant.parse(endStr);
+            return Interval.of(start, end);
+        }
     }
 
     //-----------------------------------------------------------------------
