@@ -135,13 +135,12 @@ public class TestYearQuarter {
     public void test_serialization() throws IOException, ClassNotFoundException {
         YearQuarter test = YearQuarter.of(2012, 1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(test);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
-        assertEquals(ois.readObject(), test);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertEquals(ois.readObject(), test);
+        }
     }
 
     //-----------------------------------------------------------------------

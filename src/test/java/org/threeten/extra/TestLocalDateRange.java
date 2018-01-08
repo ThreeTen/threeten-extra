@@ -274,15 +274,14 @@ public class TestLocalDateRange {
     }
 
     public void test_serialization() throws Exception {
-        LocalDateRange original = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
+        LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(original);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
-        LocalDateRange ser = (LocalDateRange) in.readObject();
-        assertEquals(ser, original);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertEquals(ois.readObject(), test);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -964,7 +963,7 @@ public class TestLocalDateRange {
         }
         if (extra == null) {
             assertEquals(extra, guava);
-        } else {
+        } else if (guava != null) {
             assertEquals(extra.getStart(), guava.lowerEndpoint());
             assertEquals(extra.getEnd(), guava.upperEndpoint());
         }

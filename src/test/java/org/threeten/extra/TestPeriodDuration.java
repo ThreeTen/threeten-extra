@@ -73,16 +73,15 @@ public class TestPeriodDuration {
     }
 
     //-----------------------------------------------------------------------
-    public void test_deserializationSingleton() throws Exception {
-        PeriodDuration orginal = PeriodDuration.ZERO;
+    public void test_serialization() throws Exception {
+        PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(orginal);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
-        PeriodDuration ser = (PeriodDuration) in.readObject();
-        assertEquals(PeriodDuration.ZERO, ser);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertEquals(ois.readObject(), test);
+        }
     }
 
     //-----------------------------------------------------------------------

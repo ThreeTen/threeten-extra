@@ -60,15 +60,14 @@ public class TestMinutes {
 
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
-        Minutes orginal = Minutes.ZERO;
+        Minutes test = Minutes.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(orginal);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
-        Minutes ser = (Minutes) in.readObject();
-        assertSame(Minutes.ZERO, ser);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertSame(ois.readObject(), test);
+        }
     }
     
     //-----------------------------------------------------------------------

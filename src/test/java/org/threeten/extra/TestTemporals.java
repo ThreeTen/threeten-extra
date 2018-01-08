@@ -90,16 +90,15 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     @Test
     public void test_nextWorkingDay_serialization() throws IOException, ClassNotFoundException {
-        TemporalAdjuster nextWorkingDay = Temporals.nextWorkingDay();
-        assertTrue(nextWorkingDay instanceof Serializable);
-
+        TemporalAdjuster test = Temporals.nextWorkingDay();
+        assertTrue(test instanceof Serializable);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(nextWorkingDay);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertSame(ois.readObject(), nextWorkingDay);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertSame(ois.readObject(), test);
+        }
     }
 
     @Test
@@ -158,16 +157,15 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     @Test
     public void test_previousWorkingDay_serialization() throws IOException, ClassNotFoundException {
-        TemporalAdjuster previousWorkingDay = Temporals.previousWorkingDay();
-        assertTrue(previousWorkingDay instanceof Serializable);
-
+        TemporalAdjuster test = Temporals.previousWorkingDay();
+        assertTrue(test instanceof Serializable);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(previousWorkingDay);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertSame(ois.readObject(), previousWorkingDay);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertSame(ois.readObject(), test);
+        }
     }
 
     @Test

@@ -64,16 +64,15 @@ public class TestTaiInstant {
     // serialization
     //-----------------------------------------------------------------------
     @Test
-    public void test_deserialization() throws Exception {
-        TaiInstant orginal = TaiInstant.ofTaiSeconds(2, 3);
+    public void test_serialization() throws Exception {
+        TaiInstant test = TaiInstant.ofTaiSeconds(2, 3);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(orginal);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
-        TaiInstant ser = (TaiInstant) in.readObject();
-        assertEquals(TaiInstant.ofTaiSeconds(2, 3), ser);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertEquals(ois.readObject(), test);
+        }
     }
 
     //-----------------------------------------------------------------------

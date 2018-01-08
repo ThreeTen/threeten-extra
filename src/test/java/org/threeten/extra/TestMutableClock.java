@@ -299,20 +299,20 @@ public class TestMutableClock {
     }
 
     public void test_serialization() throws Exception {
-        MutableClock original = MutableClock.epochUTC();
+        MutableClock test = MutableClock.epochUTC();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(original);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
-        MutableClock ser = (MutableClock) in.readObject();
-        assertEquals(ser.instant(), original.instant());
-        assertEquals(ser.getZone(), original.getZone());
-        // no shared updates
-        assertNotEquals(ser, original);
-        original.add(Duration.ofSeconds(1));
-        assertNotEquals(ser.instant(), original.instant());
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            MutableClock ser = (MutableClock) ois.readObject();
+            assertEquals(ser.instant(), test.instant());
+            assertEquals(ser.getZone(), test.getZone());
+            // no shared updates
+            assertNotEquals(ser, test);
+            test.add(Duration.ofSeconds(1));
+            assertNotEquals(ser.instant(), test.instant());
+        }
     }
 
     public void test_updatesAreAtomic() throws Exception {

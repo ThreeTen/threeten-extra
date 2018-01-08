@@ -62,15 +62,14 @@ public class TestYears {
 
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
-        Years orginal = Years.ZERO;
+        Years test = Years.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(orginal);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
-        Years ser = (Years) in.readObject();
-        assertSame(Years.ZERO, ser);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertSame(ois.readObject(), test);
+        }
     }
 
     //-----------------------------------------------------------------------

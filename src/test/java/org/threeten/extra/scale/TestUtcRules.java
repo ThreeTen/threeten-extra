@@ -76,14 +76,15 @@ public class TestUtcRules {
     //-----------------------------------------------------------------------
     // serialize
     //-----------------------------------------------------------------------
-    public void test_serialize() throws Exception {
+    public void test_serialization() throws Exception {
         SystemUtcRules test = SystemUtcRules.INSTANCE;  // use real rules, not our hacked copy
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(test);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertSame(ois.readObject(), test);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertSame(ois.readObject(), test);
+        }
     }
 
     //-----------------------------------------------------------------------

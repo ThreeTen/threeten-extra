@@ -71,15 +71,14 @@ public class TestInterval {
 
     //-----------------------------------------------------------------------
     public void test_serialization() throws Exception {
-        Interval orginal = Interval.of(Instant.EPOCH, NOW1);
+        Interval test = Interval.of(Instant.EPOCH, NOW1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(orginal);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
-        Interval ser = (Interval) in.readObject();
-        assertEquals(ser, orginal);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertEquals(ois.readObject(), test);
+        }
     }
 
     //-----------------------------------------------------------------------
