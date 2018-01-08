@@ -767,28 +767,7 @@
               </execution>
             </executions>
           </plugin>
-          <!-- Create dist files -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <attach>false</attach>
-              <descriptors>
-                <descriptor>src/main/assembly/dist.xml</descriptor>
-              </descriptors>
-              <tarLongFileMode>gnu</tarLongFileMode>
-            </configuration>
-            <executions>
-              <execution>
-                <id>make-assembly</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <!-- Release dist files to GitHub -->
+          <!-- Release to GitHub -->
           <!-- This will create a tag on GitHub on deploy -->
           <!-- The release commit must have been pushed first -->
           <plugin>
