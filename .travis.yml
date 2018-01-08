@@ -1,6 +1,7 @@
 sudo: false
 language: java
 jdk:
+  - oraclejdk9
   - oraclejdk8
 cache:
   directories:
@@ -10,8 +11,8 @@ before_cache:
 install:
   - mvn --version
 script:
-  - mvn install -e -B
-  - if [[ $TRAVIS_TAG =~ ^v.*$ ]] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then travis_wait 40 mvn site-deploy -e -B --settings .github/maven-settings.xml; fi
+  - mvn install site -e -B
+  - if [[ $TRAVIS_TAG =~ ^v.*$ ]] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk9" ]; then travis_wait 40 mvn clean install site-deploy -e -B --settings .github/maven-settings.xml; fi
 # secure keys for GITHUB_TOKEN
 env:
   global:
