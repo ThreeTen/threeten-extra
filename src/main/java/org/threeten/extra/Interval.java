@@ -99,7 +99,7 @@ public final class Interval
         Objects.requireNonNull(startInclusive, "startInclusive");
         Objects.requireNonNull(endExclusive, "endExclusive");
         if (endExclusive.isBefore(startInclusive)) {
-            throw new DateTimeException("End instant must on or after start instant");
+            throw new DateTimeException("End instant must be equal or after start instant");
         }
         return new Interval(startInclusive, endExclusive);
     }
@@ -477,7 +477,7 @@ public final class Interval
     /**
      * Checks if this interval is after the specified instant.
      * <p>
-     * The result is true if the this instant starts after the specified instant.
+     * The result is true if this instant starts after the specified instant.
      * An empty interval behaves as though it is an instant for comparison purposes.
      *
      * @param instant  the other instant to compare to, not null
@@ -490,7 +490,7 @@ public final class Interval
     /**
      * Checks if this interval is before the specified instant.
      * <p>
-     * The result is true if the this instant ends before the specified instant.
+     * The result is true if this instant ends before the specified instant.
      * Since intervals do not include their end points, this will return true if the
      * instant equals the end of the interval.
      * An empty interval behaves as though it is an instant for comparison purposes.
@@ -506,7 +506,7 @@ public final class Interval
     /**
      * Checks if this interval is after the specified interval.
      * <p>
-     * The result is true if the this instant starts after the end of the specified interval.
+     * The result is true if this instant starts after the end of the specified interval.
      * Since intervals do not include their end points, this will return true if the
      * instant equals the end of the interval.
      * An empty interval behaves as though it is an instant for comparison purposes.
@@ -521,7 +521,7 @@ public final class Interval
     /**
      * Checks if this interval is before the specified interval.
      * <p>
-     * The result is true if the this instant ends before the start of the specified interval.
+     * The result is true if this instant ends before the start of the specified interval.
      * Since intervals do not include their end points, this will return true if the
      * two intervals abut.
      * An empty interval behaves as though it is an instant for comparison purposes.
