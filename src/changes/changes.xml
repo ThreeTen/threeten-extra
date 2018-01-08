@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.3" date="SNAPSHOT" description="v1.3">
+      <action dev="kinow" type="fix" >
+        Error message and Javadoc fixes in Interval.
+        See #89.
+      </action>
       <action dev="jodastephen" type="fix" >
         Interval.parse now handles Instant.MIN/MAX.
         See #80.
