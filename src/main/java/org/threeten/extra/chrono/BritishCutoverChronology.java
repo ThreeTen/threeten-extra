@@ -40,6 +40,7 @@ import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
+import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoChronology;
 import java.time.format.ResolverStyle;
@@ -183,7 +184,7 @@ public final class BritishCutoverChronology
      * Gets the ID of the chronology - 'BritishCutover'.
      * <p>
      * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chronology} using {@link Chronology#of(String)}.
      *
      * @return the chronology ID - 'BritishCutover'
      * @see #getCalendarType()

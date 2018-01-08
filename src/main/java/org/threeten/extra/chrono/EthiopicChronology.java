@@ -38,6 +38,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
+import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.format.ResolverStyle;
 import java.time.temporal.TemporalAccessor;
@@ -108,7 +109,7 @@ public final class EthiopicChronology
      * Gets the ID of the chronology - 'Ethiopic'.
      * <p>
      * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chronology} using {@link Chronology#of(String)}.
      *
      * @return the chronology ID - 'Ethiopic'
      * @see #getCalendarType()
@@ -123,7 +124,7 @@ public final class EthiopicChronology
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chronology} using {@link Chronology#of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      *

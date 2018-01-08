@@ -44,6 +44,7 @@ import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
+import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -248,7 +249,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * <p>
      * The ID uniquely identifies the {@code Chronology}, 
      * but does not differentiate between instances of {@code AccountingChronology}.
-     * It cannot be used to lookup the {@code Chronology} using {@link #of(String)},
+     * It cannot be used to lookup the {@code Chronology} using {@link Chronology#of(String)},
      * because each instance requires setup.
      *
      * @return the chronology ID - 'Accounting'

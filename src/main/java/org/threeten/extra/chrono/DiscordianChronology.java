@@ -39,6 +39,7 @@ import java.time.ZoneId;
 import java.time.chrono.AbstractChronology;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
+import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
@@ -172,7 +173,7 @@ public final class DiscordianChronology
      * Gets the ID of the chronology - 'Discordian'.
      * <p>
      * The ID uniquely identifies the {@code Chronology}.
-     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chronology} using {@link Chronology#of(String)}.
      *
      * @return the chronology ID - 'Discordian'
      * @see #getCalendarType()
