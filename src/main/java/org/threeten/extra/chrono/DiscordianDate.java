@@ -665,7 +665,7 @@ public final class DiscordianDate
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<DiscordianDate> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<DiscordianDate>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<DiscordianDate>) super.atTime(localTime);
     }
 
     @Override

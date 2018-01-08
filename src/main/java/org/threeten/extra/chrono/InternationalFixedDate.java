@@ -677,7 +677,7 @@ public final class InternationalFixedDate
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<InternationalFixedDate> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<InternationalFixedDate>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<InternationalFixedDate>) super.atTime(localTime);
     }
 
     @Override

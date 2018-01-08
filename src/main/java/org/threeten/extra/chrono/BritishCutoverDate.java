@@ -469,7 +469,7 @@ public final class BritishCutoverDate
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<BritishCutoverDate> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<BritishCutoverDate>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<BritishCutoverDate>) super.atTime(localTime);
     }
 
     @Override
@@ -520,7 +520,7 @@ public final class BritishCutoverDate
         if (query == TemporalQueries.localDate()) {
             return (R) isoDate;
         }
-        return ChronoLocalDate.super.query(query);
+        return super.query(query);
     }
 
     //-------------------------------------------------------------------------

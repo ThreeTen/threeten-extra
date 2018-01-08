@@ -593,7 +593,7 @@ public final class Symmetry454Date
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<Symmetry454Date> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<Symmetry454Date>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<Symmetry454Date>) super.atTime(localTime);
     }
 
     @Override

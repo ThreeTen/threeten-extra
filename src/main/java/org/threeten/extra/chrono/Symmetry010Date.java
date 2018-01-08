@@ -575,7 +575,7 @@ public final class Symmetry010Date
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<Symmetry010Date> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<Symmetry010Date>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<Symmetry010Date>) super.atTime(localTime);
     }
 
     @Override

@@ -622,7 +622,7 @@ public final class PaxDate
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<PaxDate> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<PaxDate>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<PaxDate>) super.atTime(localTime);
     }
 
     @Override

@@ -437,7 +437,7 @@ public final class JulianDate
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<JulianDate> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<JulianDate>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<JulianDate>) super.atTime(localTime);
     }
 
     @Override

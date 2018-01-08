@@ -380,7 +380,7 @@ public final class CopticDate
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<CopticDate> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<CopticDate>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<CopticDate>) super.atTime(localTime);
     }
 
     @Override

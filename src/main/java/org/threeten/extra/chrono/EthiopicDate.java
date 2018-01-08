@@ -382,7 +382,7 @@ public final class EthiopicDate
     @Override  // for covariant return type
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<EthiopicDate> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<EthiopicDate>) ChronoLocalDate.super.atTime(localTime);
+        return (ChronoLocalDateTime<EthiopicDate>) super.atTime(localTime);
     }
 
     @Override
