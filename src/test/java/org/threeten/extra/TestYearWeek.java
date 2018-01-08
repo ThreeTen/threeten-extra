@@ -447,6 +447,21 @@ public class TestYearWeek {
         assertEquals(actual, expected);
     }
 
+    @Test
+    public void test_atDay_loop20years() {
+        YearWeek yearWeek = YearWeek.of(1998, 51);
+        LocalDate expected = LocalDate.of(1998, 12, 14);
+        for (int i = 0; i < (20 * 53); i++) {
+            for (int j = 1; j <= 7; j++) {
+                DayOfWeek dow = DayOfWeek.of(j);
+                LocalDate actual = yearWeek.atDay(dow);
+                assertEquals(actual, expected);
+                expected = expected.plusDays(1);
+            }
+            yearWeek = yearWeek.plusWeeks(1);
+        }
+    }
+
     @Test(expectedExceptions = NullPointerException.class)
     public void test_atDay_null() {
         TEST.atDay(null);
