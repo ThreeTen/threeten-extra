@@ -255,6 +255,8 @@ public final class JulianDate
             case 11:
                 day = Math.min(day, 30);
                 break;
+            default:
+                break;
         }
         return new JulianDate(prolepticYear, month, day);
     }
@@ -284,6 +286,8 @@ public final class JulianDate
                 case 9:
                 case 11:
                     dom = 30;
+                    break;
+                default:
                     break;
             }
             if (dayOfMonth > dom) {

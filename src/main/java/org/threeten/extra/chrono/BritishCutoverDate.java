@@ -370,6 +370,8 @@ public final class BritishCutoverDate
             case 11:
                 dayOfMonth = Math.min(dayOfMonth, 30);
                 break;
+            default:
+                break;
         }
         return create(year, month, dayOfMonth);
     }
