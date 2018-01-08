@@ -229,7 +229,10 @@ public final class YearQuarter
             if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
-            return of(temporal.get(YEAR), temporal.get(QUARTER_OF_YEAR));
+            // need to use getLong() as JDK Parsed class get() doesn't work properly
+            int year = Math.toIntExact(temporal.getLong(YEAR));
+            int qoy = Math.toIntExact(temporal.getLong(QUARTER_OF_YEAR));
+            return of(year, qoy);
         } catch (DateTimeException ex) {
             throw new DateTimeException("Unable to obtain YearQuarter from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
@@ -403,6 +406,9 @@ public final class YearQuarter
      */
     @Override
     public ValueRange range(TemporalField field) {
+        if (field == QUARTER_OF_YEAR) {
+            return QUARTER_OF_YEAR.range();
+        }
         if (field == YEAR_OF_ERA) {
             return (getYear() <= 0 ? ValueRange.of(1, Year.MAX_VALUE + 1) : ValueRange.of(1, Year.MAX_VALUE));
         }
@@ -437,6 +443,20 @@ public final class YearQuarter
      */
     @Override
     public int get(TemporalField field) {
+        if (field == QUARTER_OF_YEAR) {
+            return quarter.getValue();
+        } else if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
+                case YEAR_OF_ERA:
+                    return (year < 1 ? 1 - year : year);
+                case YEAR:
+                    return year;
+                case ERA:
+                    return (year < 1 ? 0 : 1);
+                default:
+                    throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+            }
+        }
         return Temporal.super.get(field);
     }
 

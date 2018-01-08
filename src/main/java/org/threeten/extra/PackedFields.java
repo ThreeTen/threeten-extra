@@ -155,7 +155,7 @@ public final class PackedFields {
 
         @Override
         public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
-            if (isSupportedBy(temporal) == false) {
+            if (!temporal.isSupported(this)) {
                 throw new DateTimeException("Unsupported field: " + this);
             }
             return range();
@@ -260,7 +260,7 @@ public final class PackedFields {
 
         @Override
         public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
-            if (isSupportedBy(temporal) == false) {
+            if (!temporal.isSupported(this)) {
                 throw new DateTimeException("Unsupported field: " + this);
             }
             return range();
@@ -351,7 +351,7 @@ public final class PackedFields {
 
         @Override
         public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
-            if (isSupportedBy(temporal) == false) {
+            if (!temporal.isSupported(this)) {
                 throw new DateTimeException("Unsupported field: " + this);
             }
             return range();

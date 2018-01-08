@@ -63,7 +63,6 @@ import java.time.Period;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
-import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
@@ -426,8 +425,6 @@ public class TestJulianChronology {
             {2011, 2, 23, DAY_OF_MONTH, 1, 28},
             {2011, 2, 23, DAY_OF_YEAR, 1, 365},
             {2011, 2, 23, ALIGNED_WEEK_OF_MONTH, 1, 4},
-
-            {2011, 2, 23, IsoFields.QUARTER_OF_YEAR, 1, 4},
         };
     }
 

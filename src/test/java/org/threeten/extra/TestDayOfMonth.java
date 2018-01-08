@@ -92,6 +92,7 @@ import java.time.MonthDay;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -235,6 +236,11 @@ public class TestDayOfMonth {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         DayOfMonth.from((TemporalAccessor) null);
+    }
+
+    public void test_from_parse_CharSequence() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d");
+        assertEquals(formatter.parse("3", DayOfMonth::from), DayOfMonth.of(3));
     }
 
     //-----------------------------------------------------------------------

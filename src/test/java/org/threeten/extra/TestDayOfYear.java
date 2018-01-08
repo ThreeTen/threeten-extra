@@ -78,6 +78,7 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -176,6 +177,11 @@ public class TestDayOfYear {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         DayOfYear.from((TemporalAccessor) null);
+    }
+
+    public void test_from_parse_CharSequence() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("D");
+        assertEquals(formatter.parse("76", DayOfYear::from), DayOfYear.of(76));
     }
 
     //-----------------------------------------------------------------------

@@ -225,7 +225,10 @@ public final class YearWeek
             if (!IsoChronology.INSTANCE.equals(Chronology.from(temporal))) {
                 temporal = LocalDate.from(temporal);
             }
-            return of(temporal.get(WEEK_BASED_YEAR), (int) temporal.getLong(WEEK_OF_WEEK_BASED_YEAR));
+            // need to use getLong() as JDK Parsed class get() doesn't work properly
+            int year = Math.toIntExact(temporal.getLong(WEEK_BASED_YEAR));
+            int week = Math.toIntExact(temporal.getLong(WEEK_OF_WEEK_BASED_YEAR));
+            return of(year, week);
         } catch (DateTimeException ex) {
             throw new DateTimeException("Unable to obtain YearWeek from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);

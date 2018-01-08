@@ -65,6 +65,7 @@ import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static org.threeten.extra.Quarter.Q3;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
@@ -73,6 +74,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
@@ -185,6 +187,11 @@ public class TestQuarter {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         Quarter.from((TemporalAccessor) null);
+    }
+
+    public void test_from_parse_CharSequence() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'Q'Q");
+        assertEquals(formatter.parse("Q3", Quarter::from), Q3);
     }
 
     //-----------------------------------------------------------------------

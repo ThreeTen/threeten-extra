@@ -173,7 +173,9 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
             if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
-            return of(temporal.get(QUARTER_OF_YEAR));
+            // need to use getLong() as JDK Parsed class get() doesn't work properly
+            int qoy = Math.toIntExact(temporal.getLong(QUARTER_OF_YEAR));
+            return of(qoy);
         } catch (DateTimeException ex) {
             throw new DateTimeException("Unable to obtain Quarter from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
