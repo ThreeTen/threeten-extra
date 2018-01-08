@@ -31,9 +31,9 @@
  */
 package org.threeten.extra;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,21 +44,27 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test class.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestSeconds {
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_isSerializable() {
         assertTrue(Serializable.class.isAssignableFrom(Seconds.class));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_deserializationSingleton() throws Exception {
         Seconds test = Seconds.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -71,6 +77,7 @@ public class TestSeconds {
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_ZERO() {
         assertSame(Seconds.of(0), Seconds.ZERO);
         assertSame(Seconds.of(0), Seconds.ZERO);
@@ -78,6 +85,7 @@ public class TestSeconds {
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_of() {
         assertEquals(Seconds.of(0).getAmount(), 0);
         assertEquals(Seconds.of(1).getAmount(), 1);
@@ -89,6 +97,7 @@ public class TestSeconds {
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_ofHours() {
         assertEquals(Seconds.ofHours(0).getAmount(), 0);
         assertEquals(Seconds.ofHours(1).getAmount(), 3600);
@@ -99,12 +108,13 @@ public class TestSeconds {
         assertEquals(Seconds.ofHours(Integer.MIN_VALUE / 3600).getAmount(), (Integer.MIN_VALUE / 3600) * 3600);
     }
     
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_ofHours_overflow() {
         Seconds.ofHours((Integer.MAX_VALUE / 3600) + 3600);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_ofMinutes() {
         assertEquals(Seconds.ofMinutes(0).getAmount(), 0);
         assertEquals(Seconds.ofMinutes(1).getAmount(), 60);
@@ -115,14 +125,14 @@ public class TestSeconds {
         assertEquals(Seconds.ofMinutes(Integer.MIN_VALUE / 60).getAmount(), (Integer.MIN_VALUE / 60) * 60);
     }
     
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_ofMinutes_overflow() {
         Seconds.ofMinutes((Integer.MAX_VALUE / 60) + 60);
     }
     
     //-----------------------------------------------------------------------
-    @DataProvider(name = "parseValid")
-    Object[][] data_valid() {
+    @DataProvider
+    public static Object[][] data_valid() {
         return new Object[][] {
             {"PT0S", 0},
             {"PT1S", 1},
@@ -181,23 +191,26 @@ public class TestSeconds {
         };
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedSeconds) {
         assertEquals(Seconds.parse(str), Seconds.of(expectedSeconds));
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedSeconds) {
         assertEquals(Seconds.parse("+" + str), Seconds.of(expectedSeconds));
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedSeconds) {
         assertEquals(Seconds.parse("-" + str), Seconds.of(-expectedSeconds));
     }
 
-    @DataProvider(name = "parseInvalid")
-    Object[][] data_invalid() {
+    @DataProvider
+    public static Object[][] data_invalid() {
         return new Object[][] {
             {"P3W"},
             {"P3Q"},
@@ -216,17 +229,19 @@ public class TestSeconds {
         };
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class, dataProvider = "parseInvalid")
+    @Test(expected = DateTimeParseException.class)
+    @UseDataProvider("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
         Seconds.parse(str);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_parse_CharSequence_null() {
         Seconds.parse((CharSequence) null);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_plus_TemporalAmount_Seconds() {
         Seconds test5 = Seconds.of(5);
         assertEquals(Seconds.of(5), test5.plus(Seconds.of(0)));
@@ -236,22 +251,23 @@ public class TestSeconds {
         assertEquals(Seconds.of(Integer.MIN_VALUE), Seconds.of(Integer.MIN_VALUE + 1).plus(Seconds.of(-1)));
     }
     
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_TemporalAmount_overflowTooBig() {
         Seconds.of(Integer.MAX_VALUE - 1).plus(Seconds.of(2));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_TemporalAmount_overflowTooSmall() {
         Seconds.of(Integer.MIN_VALUE + 1).plus(Seconds.of(-2));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_plus_TemporalAmount_null() {
         Seconds.of(Integer.MIN_VALUE + 1).plus(null);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_plus_int() {
         Seconds test5 = Seconds.of(5);
         assertEquals(Seconds.of(5), test5.plus(0));
@@ -261,17 +277,18 @@ public class TestSeconds {
         assertEquals(Seconds.of(Integer.MIN_VALUE), Seconds.of(Integer.MIN_VALUE + 1).plus(-1));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_int_overflowTooBig() {
         Seconds.of(Integer.MAX_VALUE - 1).plus(2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_int_overflowTooSmall() {
         Seconds.of(Integer.MIN_VALUE + 1).plus(-2);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_minus_TemporalAmount_Seconds() {
         Seconds test5 = Seconds.of(5);
         assertEquals(Seconds.of(5), test5.minus(Seconds.of(0)));
@@ -281,22 +298,23 @@ public class TestSeconds {
         assertEquals(Seconds.of(Integer.MIN_VALUE), Seconds.of(Integer.MIN_VALUE + 1).minus(Seconds.of(1)));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_TemporalAmount_overflowTooBig() {
         Seconds.of(Integer.MAX_VALUE - 1).minus(Seconds.of(-2));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_TemporalAmount_overflowTooSmall() {
         Seconds.of(Integer.MIN_VALUE + 1).minus(Seconds.of(2));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_minus_TemporalAmount_null() {
         Seconds.of(Integer.MIN_VALUE + 1).minus(null);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_minus_int() {
         Seconds test5 = Seconds.of(5);
         assertEquals(Seconds.of(5), test5.minus(0));
@@ -306,17 +324,18 @@ public class TestSeconds {
         assertEquals(Seconds.of(Integer.MIN_VALUE), Seconds.of(Integer.MIN_VALUE + 1).minus(1));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_int_overflowTooBig() {
         Seconds.of(Integer.MAX_VALUE - 1).minus(-2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_int_overflowTooSmall() {
         Seconds.of(Integer.MIN_VALUE + 1).minus(2);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_multipliedBy() {
         Seconds test5 = Seconds.of(5);
         assertEquals(Seconds.of(0), test5.multipliedBy(0));
@@ -326,22 +345,24 @@ public class TestSeconds {
         assertEquals(Seconds.of(-15), test5.multipliedBy(-3));
     }
 
+    @Test
     public void test_multipliedBy_negate() {
         Seconds test5 = Seconds.of(5);
         assertEquals(Seconds.of(-15), test5.multipliedBy(-3));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_multipliedBy_overflowTooBig() {
         Seconds.of(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_multipliedBy_overflowTooSmall() {
         Seconds.of(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_dividedBy() {
         Seconds test12 = Seconds.of(12);
         assertEquals(Seconds.of(12), test12.dividedBy(1));
@@ -353,17 +374,19 @@ public class TestSeconds {
         assertEquals(Seconds.of(-4), test12.dividedBy(-3));
     }
 
+    @Test
     public void test_dividedBy_negate() {
         Seconds test12 = Seconds.of(12);
         assertEquals(Seconds.of(-4), test12.dividedBy(-3));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_dividedBy_divideByZero() {
         Seconds.of(1).dividedBy(0);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_negated() {
         assertEquals(Seconds.of(0), Seconds.of(0).negated());
         assertEquals(Seconds.of(-12), Seconds.of(12).negated());
@@ -371,12 +394,13 @@ public class TestSeconds {
         assertEquals(Seconds.of(-Integer.MAX_VALUE), Seconds.of(Integer.MAX_VALUE).negated());
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_negated_overflow() {
         Seconds.of(Integer.MIN_VALUE).negated();
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_abs() {
         assertEquals(Seconds.of(0), Seconds.of(0).abs());
         assertEquals(Seconds.of(12), Seconds.of(12).abs());
@@ -385,12 +409,13 @@ public class TestSeconds {
         assertEquals(Seconds.of(Integer.MAX_VALUE), Seconds.of(-Integer.MAX_VALUE).abs());
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_abs_overflow() {
         Seconds.of(Integer.MIN_VALUE).abs();
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_addTo() {
         LocalTime base = LocalTime.of(11, 30);
         assertEquals(Seconds.of(0).addTo(base), LocalTime.of(11, 30));
@@ -398,6 +423,7 @@ public class TestSeconds {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_subtractFrom() {
         LocalTime base = LocalTime.of(11, 30);
         assertEquals(Seconds.of(0).subtractFrom(base), LocalTime.of(11, 30));
@@ -405,6 +431,7 @@ public class TestSeconds {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toDuration() {
         for (int i = -20; i < 20; i++) {
             assertEquals(Seconds.of(i).toDuration(), Duration.ofSeconds(i));
@@ -412,6 +439,7 @@ public class TestSeconds {
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_compareTo() {
         Seconds test5 = Seconds.of(5);
         Seconds test6 = Seconds.of(6);
@@ -420,13 +448,14 @@ public class TestSeconds {
         assertEquals(1, test6.compareTo(test5));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_compareTo_null() {
         Seconds test5 = Seconds.of(5);
         test5.compareTo(null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_equals() {
         Seconds test5 = Seconds.of(5);
         Seconds test6 = Seconds.of(6);
@@ -435,17 +464,20 @@ public class TestSeconds {
         assertEquals(false, test6.equals(test5));
     }
 
+    @Test
     public void test_equals_null() {
         Seconds test5 = Seconds.of(5);
         assertEquals(false, test5.equals(null));
     }
 
+    @Test
     public void test_equals_otherClass() {
         Seconds test5 = Seconds.of(5);
         assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_hashCode() {
         Seconds test5 = Seconds.of(5);
         Seconds test6 = Seconds.of(6);
@@ -454,6 +486,7 @@ public class TestSeconds {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() {
         Seconds test5 = Seconds.of(5);
         assertEquals("PT5S", test5.toString());

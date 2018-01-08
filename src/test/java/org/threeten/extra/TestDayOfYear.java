@@ -61,8 +61,8 @@ import static java.time.temporal.ChronoField.SECOND_OF_DAY;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -86,13 +86,11 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test DayOfYear.
  */
-@Test
 public class TestDayOfYear {
 
     private static final Year YEAR_STANDARD = Year.of(2007);
@@ -102,11 +100,8 @@ public class TestDayOfYear {
     private static final DayOfYear TEST = DayOfYear.of(12);
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
 
-    @BeforeMethod
-    public void setUp() {
-    }
-
     //-----------------------------------------------------------------------
+    @Test
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(DayOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfYear.class));
@@ -114,6 +109,7 @@ public class TestDayOfYear {
         assertTrue(TemporalAccessor.class.isAssignableFrom(DayOfYear.class));
     }
 
+    @Test
     public void test_serialization() throws IOException, ClassNotFoundException {
         DayOfYear test = DayOfYear.of(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -128,6 +124,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // of(int)
     //-----------------------------------------------------------------------
+    @Test
     public void test_of_int() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.of(i);
@@ -136,12 +133,12 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_of_int_tooLow() {
         DayOfYear.of(0);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_of_int_tooHigh() {
         DayOfYear.of(367);
     }
@@ -149,6 +146,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // from(TemporalAccessor)
     //-----------------------------------------------------------------------
+    @Test
     public void test_from_TemporalAccessor_notLeapYear() {
         LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
@@ -160,6 +158,7 @@ public class TestDayOfYear {
         assertEquals(test.getValue(), 1);
     }
 
+    @Test
     public void test_from_TemporalAccessor_leapYear() {
         LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
@@ -169,16 +168,17 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_from_TemporalAccessor_noDerive() {
         DayOfYear.from(LocalTime.NOON);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         DayOfYear.from((TemporalAccessor) null);
     }
 
+    @Test
     public void test_from_parse_CharSequence() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("D");
         assertEquals(formatter.parse("76", DayOfYear::from), DayOfYear.of(76));
@@ -187,6 +187,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // isSupported(TemporalField)
     //-----------------------------------------------------------------------
+    @Test
     public void test_isSupported() {
         assertEquals(TEST.isSupported((TemporalField) null), false);
         assertEquals(TEST.isSupported(NANO_OF_SECOND), false);
@@ -224,16 +225,17 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // range(TemporalField)
     //-----------------------------------------------------------------------
+    @Test
     public void test_range() {
         assertEquals(TEST.range(DAY_OF_YEAR), DAY_OF_YEAR.range());
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_range_invalidField() {
         TEST.range(MONTH_OF_YEAR);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_range_null() {
         TEST.range((TemporalField) null);
     }
@@ -241,16 +243,17 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // get(TemporalField)
     //-----------------------------------------------------------------------
+    @Test
     public void test_get() {
         assertEquals(TEST.get(DAY_OF_YEAR), 12);
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_get_invalidField() {
         TEST.get(MONTH_OF_YEAR);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_get_null() {
         TEST.get((TemporalField) null);
     }
@@ -258,16 +261,17 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // getLong(TemporalField)
     //-----------------------------------------------------------------------
+    @Test
     public void test_getLong() {
         assertEquals(TEST.getLong(DAY_OF_YEAR), 12L);
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_getLong_invalidField() {
         TEST.getLong(MONTH_OF_YEAR);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_getLong_null() {
         TEST.getLong((TemporalField) null);
     }
@@ -283,6 +287,7 @@ public class TestDayOfYear {
         assertEquals(test.isValidYear(2013), false);
     }
 
+    @Test
     public void test_isValidYearMonth_365() {
         DayOfYear test = DayOfYear.of(365);
         assertEquals(test.isValidYear(2011), true);
@@ -307,6 +312,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // adjustInto(Temporal)
     //-----------------------------------------------------------------------
+    @Test
     public void test_adjustInto_fromStartOfYear_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
@@ -317,6 +323,7 @@ public class TestDayOfYear {
         }
     }
 
+    @Test
     public void test_adjustInto_fromEndOfYear_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 12, 31);
         LocalDate expected = LocalDate.of(2007, 1, 1);
@@ -327,20 +334,21 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_adjustInto_fromStartOfYear_notLeapYear_day366() {
         LocalDate base = LocalDate.of(2007, 1, 1);
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
         test.adjustInto(base);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_adjustInto_fromEndOfYear_notLeapYear_day366() {
         LocalDate base = LocalDate.of(2007, 12, 31);
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
         test.adjustInto(base);
     }
 
+    @Test
     public void test_adjustInto_fromStartOfYear_leapYear() {
         LocalDate base = LocalDate.of(2008, 1, 1);
         LocalDate expected = base;
@@ -351,6 +359,7 @@ public class TestDayOfYear {
         }
     }
 
+    @Test
     public void test_adjustInto_fromEndOfYear_leapYear() {
         LocalDate base = LocalDate.of(2008, 12, 31);
         LocalDate expected = LocalDate.of(2008, 1, 1);
@@ -361,7 +370,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_adjustInto_null() {
         TEST.adjustInto((Temporal) null);
     }
@@ -369,6 +378,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // atYear(Year)
     //-----------------------------------------------------------------------
+    @Test
     public void test_atYear_Year_notLeapYear() {
         LocalDate expected = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
@@ -378,12 +388,13 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_atYear_fromStartOfYear_notLeapYear_day366() {
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
         test.atYear(YEAR_STANDARD);
     }
 
+    @Test
     public void test_atYear_Year_leapYear() {
         LocalDate expected = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
@@ -393,7 +404,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_atYear_Year_nullYear() {
         TEST.atYear((Year) null);
     }
@@ -401,6 +412,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // atYear(int)
     //-----------------------------------------------------------------------
+    @Test
     public void test_atYear_int_notLeapYear() {
         LocalDate expected = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
@@ -410,12 +422,13 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_atYear_int_fromStartOfYear_notLeapYear_day366() {
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
         test.atYear(2007);
     }
 
+    @Test
     public void test_atYear_int_leapYear() {
         LocalDate expected = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
@@ -425,7 +438,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_atYear_int_invalidDay() {
         TEST.atYear(Year.MIN_VALUE - 1);
     }
@@ -433,6 +446,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
+    @Test
     public void test_compareTo() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear a = DayOfYear.of(i);
@@ -452,7 +466,7 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_compareTo_nullDayOfYear() {
         DayOfYear doy = null;
         DayOfYear test = DayOfYear.of(1);
@@ -462,6 +476,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
+    @Test
     public void test_equals() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear a = DayOfYear.of(i);
@@ -473,12 +488,14 @@ public class TestDayOfYear {
         }
     }
 
+    @Test
     public void test_equals_nullDayOfYear() {
         DayOfYear doy = null;
         DayOfYear test = DayOfYear.of(1);
         assertEquals(test.equals(doy), false);
     }
 
+    @Test
     public void test_equals_incorrectType() {
         DayOfYear test = DayOfYear.of(1);
         assertEquals(test.equals("Incorrect type"), false);
@@ -487,6 +504,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear a = DayOfYear.of(i);
@@ -497,6 +515,7 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
+    @Test
     public void test_now_clock_notLeapYear() {
         LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
@@ -508,6 +527,7 @@ public class TestDayOfYear {
         }
     }
 
+    @Test
     public void test_now_clock_leapYear() {
         LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {

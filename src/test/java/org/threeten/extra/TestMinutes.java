@@ -31,9 +31,9 @@
  */
 package org.threeten.extra;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,21 +44,27 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test class.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestMinutes {
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_isSerializable() {
         assertTrue(Serializable.class.isAssignableFrom(Minutes.class));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_deserializationSingleton() throws Exception {
         Minutes test = Minutes.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -71,6 +77,7 @@ public class TestMinutes {
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_ZERO() {
         assertSame(Minutes.of(0), Minutes.ZERO);
         assertSame(Minutes.of(0), Minutes.ZERO);
@@ -78,6 +85,7 @@ public class TestMinutes {
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_of() {
         assertEquals(Minutes.of(0).getAmount(), 0);
         assertEquals(Minutes.of(1).getAmount(), 1);
@@ -89,6 +97,7 @@ public class TestMinutes {
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_ofHours() {
         assertEquals(Minutes.ofHours(0).getAmount(), 0);
         assertEquals(Minutes.ofHours(1).getAmount(), 60);
@@ -99,14 +108,14 @@ public class TestMinutes {
         assertEquals(Minutes.ofHours(Integer.MIN_VALUE / 60).getAmount(), (Integer.MIN_VALUE / 60) * 60);
     }
     
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_ofHours_overflow() {
         Minutes.ofHours((Integer.MAX_VALUE / 60) + 60);
     }
     
     //-----------------------------------------------------------------------
-    @DataProvider(name = "parseValid")
-    Object[][] data_valid() {
+    @DataProvider
+    public static Object[][] data_valid() {
         return new Object[][] {
             {"PT0M", 0},
             {"PT1M", 1},
@@ -148,23 +157,26 @@ public class TestMinutes {
         };
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedMinutes) {
         assertEquals(Minutes.parse(str), Minutes.of(expectedMinutes));
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedMinutes) {
         assertEquals(Minutes.parse("+" + str), Minutes.of(expectedMinutes));
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedMinutes) {
         assertEquals(Minutes.parse("-" + str), Minutes.of(-expectedMinutes));
     }
 
-    @DataProvider(name = "parseInvalid")
-    Object[][] data_invalid() {
+    @DataProvider
+    public static Object[][] data_invalid() {
         return new Object[][] {
             {"P3W"},
             {"P3Q"},
@@ -185,17 +197,19 @@ public class TestMinutes {
         };
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class, dataProvider = "parseInvalid")
+    @Test(expected = DateTimeParseException.class)
+    @UseDataProvider("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
         Minutes.parse(str);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_parse_CharSequence_null() {
         Minutes.parse((CharSequence) null);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_plus_TemporalAmount_Minutes() {
         Minutes test5 = Minutes.of(5);
         assertEquals(Minutes.of(5), test5.plus(Minutes.of(0)));
@@ -205,22 +219,23 @@ public class TestMinutes {
         assertEquals(Minutes.of(Integer.MIN_VALUE), Minutes.of(Integer.MIN_VALUE + 1).plus(Minutes.of(-1)));
     }
     
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_TemporalAmount_overflowTooBig() {
         Minutes.of(Integer.MAX_VALUE - 1).plus(Minutes.of(2));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_TemporalAmount_overflowTooSmall() {
         Minutes.of(Integer.MIN_VALUE + 1).plus(Minutes.of(-2));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_plus_TemporalAmount_null() {
         Minutes.of(Integer.MIN_VALUE + 1).plus(null);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_plus_int() {
         Minutes test5 = Minutes.of(5);
         assertEquals(Minutes.of(5), test5.plus(0));
@@ -230,17 +245,18 @@ public class TestMinutes {
         assertEquals(Minutes.of(Integer.MIN_VALUE), Minutes.of(Integer.MIN_VALUE + 1).plus(-1));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_int_overflowTooBig() {
         Minutes.of(Integer.MAX_VALUE - 1).plus(2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_int_overflowTooSmall() {
         Minutes.of(Integer.MIN_VALUE + 1).plus(-2);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_minus_TemporalAmount_Minutes() {
         Minutes test5 = Minutes.of(5);
         assertEquals(Minutes.of(5), test5.minus(Minutes.of(0)));
@@ -250,22 +266,23 @@ public class TestMinutes {
         assertEquals(Minutes.of(Integer.MIN_VALUE), Minutes.of(Integer.MIN_VALUE + 1).minus(Minutes.of(1)));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_TemporalAmount_overflowTooBig() {
         Minutes.of(Integer.MAX_VALUE - 1).minus(Minutes.of(-2));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_TemporalAmount_overflowTooSmall() {
         Minutes.of(Integer.MIN_VALUE + 1).minus(Minutes.of(2));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_minus_TemporalAmount_null() {
         Minutes.of(Integer.MIN_VALUE + 1).minus(null);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_minus_int() {
         Minutes test5 = Minutes.of(5);
         assertEquals(Minutes.of(5), test5.minus(0));
@@ -275,17 +292,18 @@ public class TestMinutes {
         assertEquals(Minutes.of(Integer.MIN_VALUE), Minutes.of(Integer.MIN_VALUE + 1).minus(1));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_int_overflowTooBig() {
         Minutes.of(Integer.MAX_VALUE - 1).minus(-2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_int_overflowTooSmall() {
         Minutes.of(Integer.MIN_VALUE + 1).minus(2);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_multipliedBy() {
         Minutes test5 = Minutes.of(5);
         assertEquals(Minutes.of(0), test5.multipliedBy(0));
@@ -295,22 +313,24 @@ public class TestMinutes {
         assertEquals(Minutes.of(-15), test5.multipliedBy(-3));
     }
 
+    @Test
     public void test_multipliedBy_negate() {
         Minutes test5 = Minutes.of(5);
         assertEquals(Minutes.of(-15), test5.multipliedBy(-3));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_multipliedBy_overflowTooBig() {
         Minutes.of(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_multipliedBy_overflowTooSmall() {
         Minutes.of(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_dividedBy() {
         Minutes test12 = Minutes.of(12);
         assertEquals(Minutes.of(12), test12.dividedBy(1));
@@ -322,17 +342,19 @@ public class TestMinutes {
         assertEquals(Minutes.of(-4), test12.dividedBy(-3));
     }
 
+    @Test
     public void test_dividedBy_negate() {
         Minutes test12 = Minutes.of(12);
         assertEquals(Minutes.of(-4), test12.dividedBy(-3));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_dividedBy_divideByZero() {
         Minutes.of(1).dividedBy(0);
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_negated() {
         assertEquals(Minutes.of(0), Minutes.of(0).negated());
         assertEquals(Minutes.of(-12), Minutes.of(12).negated());
@@ -340,12 +362,13 @@ public class TestMinutes {
         assertEquals(Minutes.of(-Integer.MAX_VALUE), Minutes.of(Integer.MAX_VALUE).negated());
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_negated_overflow() {
         Minutes.of(Integer.MIN_VALUE).negated();
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_abs() {
         assertEquals(Minutes.of(0), Minutes.of(0).abs());
         assertEquals(Minutes.of(12), Minutes.of(12).abs());
@@ -354,12 +377,13 @@ public class TestMinutes {
         assertEquals(Minutes.of(Integer.MAX_VALUE), Minutes.of(-Integer.MAX_VALUE).abs());
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_abs_overflow() {
         Minutes.of(Integer.MIN_VALUE).abs();
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_addTo() {
         LocalTime base = LocalTime.of(11, 30);
         assertEquals(Minutes.of(0).addTo(base), LocalTime.of(11, 30));
@@ -367,6 +391,7 @@ public class TestMinutes {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_subtractFrom() {
         LocalTime base = LocalTime.of(11, 30);
         assertEquals(Minutes.of(0).subtractFrom(base), LocalTime.of(11, 30));
@@ -374,6 +399,7 @@ public class TestMinutes {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toDuration() {
         for (int i = -20; i < 20; i++) {
             assertEquals(Minutes.of(i).toDuration(), Duration.ofMinutes(i));
@@ -381,6 +407,7 @@ public class TestMinutes {
     }
     
     //-----------------------------------------------------------------------
+    @Test
     public void test_compareTo() {
         Minutes test5 = Minutes.of(5);
         Minutes test6 = Minutes.of(6);
@@ -389,13 +416,14 @@ public class TestMinutes {
         assertEquals(1, test6.compareTo(test5));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_compareTo_null() {
         Minutes test5 = Minutes.of(5);
         test5.compareTo(null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_equals() {
         Minutes test5 = Minutes.of(5);
         Minutes test6 = Minutes.of(6);
@@ -404,17 +432,20 @@ public class TestMinutes {
         assertEquals(false, test6.equals(test5));
     }
 
+    @Test
     public void test_equals_null() {
         Minutes test5 = Minutes.of(5);
         assertEquals(false, test5.equals(null));
     }
 
+    @Test
     public void test_equals_otherClass() {
         Minutes test5 = Minutes.of(5);
         assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_hashCode() {
         Minutes test5 = Minutes.of(5);
         Minutes test6 = Minutes.of(6);
@@ -423,6 +454,7 @@ public class TestMinutes {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() {
         Minutes test5 = Minutes.of(5);
         assertEquals("PT5M", test5.toString());

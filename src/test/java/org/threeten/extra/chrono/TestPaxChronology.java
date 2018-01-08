@@ -53,7 +53,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -73,15 +73,19 @@ import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test.
  */
-@Test
 @SuppressWarnings({"static-method", "javadoc"})
+@RunWith(DataProviderRunner.class)
 public class TestPaxChronology {
 
     //-----------------------------------------------------------------------
@@ -108,8 +112,8 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // creation, toLocalDate()
     //-----------------------------------------------------------------------
-    @DataProvider(name = "samples")
-    Object[][] data_samples() {
+    @DataProvider
+    public static Object[][] data_samples() {
         return new Object[][] {
             {PaxDate.of(1, 1, 1), LocalDate.of(0, 12, 31)},
             {PaxDate.of(1, 1, 2), LocalDate.of(1, 1, 1)},
@@ -173,47 +177,56 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_LocalDate_from_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(LocalDate.from(pax), iso);
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_PaxDate_from_LocalDate(PaxDate pax, LocalDate iso) {
         assertEquals(PaxDate.from(iso), pax);
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_PaxDate_chronology_dateEpochDay(PaxDate pax, LocalDate iso) {
         assertEquals(PaxChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), pax);
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_PaxDate_toEpochDay(PaxDate pax, LocalDate iso) {
         assertEquals(pax.toEpochDay(), iso.toEpochDay());
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_PaxDate_until_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(pax.until(pax), PaxChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_PaxDate_until_LocalDate(PaxDate pax, LocalDate iso) {
         assertEquals(pax.until(iso), PaxChronology.INSTANCE.period(0, 0, 0));
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_LocalDate_until_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(iso.until(pax), Period.ZERO);
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(PaxDate pax, LocalDate iso) {
         assertEquals(PaxChronology.INSTANCE.date(iso), pax);
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_plusDays(PaxDate pax, LocalDate iso) {
         assertEquals(LocalDate.from(pax.plus(0, DAYS)), iso);
         assertEquals(LocalDate.from(pax.plus(1, DAYS)), iso.plusDays(1));
@@ -222,7 +235,8 @@ public class TestPaxChronology {
         assertEquals(LocalDate.from(pax.plus(-60, DAYS)), iso.plusDays(-60));
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_minusDays(PaxDate pax, LocalDate iso) {
         assertEquals(LocalDate.from(pax.minus(0, DAYS)), iso);
         assertEquals(LocalDate.from(pax.minus(1, DAYS)), iso.minusDays(1));
@@ -231,7 +245,8 @@ public class TestPaxChronology {
         assertEquals(LocalDate.from(pax.minus(-60, DAYS)), iso.minusDays(-60));
     }
 
-    @Test(dataProvider = "samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_until_DAYS(PaxDate pax, LocalDate iso) {
         assertEquals(pax.until(iso.plusDays(0), DAYS), 0);
         assertEquals(pax.until(iso.plusDays(1), DAYS), 1);
@@ -239,8 +254,8 @@ public class TestPaxChronology {
         assertEquals(pax.until(iso.minusDays(40), DAYS), -40);
     }
 
-    @DataProvider(name = "badDates")
-    Object[][] data_badDates() {
+    @DataProvider
+    public static Object[][] data_badDates() {
         return new Object[][] {
             {1900, 0, 0},
 
@@ -286,12 +301,13 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(dataProvider = "badDates", expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
+    @UseDataProvider("data_badDates")
     public void test_badDates(int year, int month, int dom) {
         PaxDate.of(year, month, dom);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_chronology_dateYearDay_badDate() {
         PaxChronology.INSTANCE.dateYearDay(2001, 365);
     }
@@ -307,8 +323,8 @@ public class TestPaxChronology {
         };
         for (int year = -500; year < 500; year++) {
             PaxDate base = PaxDate.of(year, 1, 1);
-            assertEquals(base.isLeapYear(), isLeapYear.test(year), "Year " + year + " is failing");
-            assertEquals(PaxChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year), "Year " + year + " is failing");
+            assertEquals(base.isLeapYear(), isLeapYear.test(year));
+            assertEquals(PaxChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year));
         }
     }
 
@@ -336,8 +352,8 @@ public class TestPaxChronology {
         assertEquals(PaxChronology.INSTANCE.isLeapYear(-400), false);
     }
 
-    @DataProvider(name = "lengthOfMonth")
-    Object[][] data_lengthOfMonth() {
+    @DataProvider
+    public static Object[][] data_lengthOfMonth() {
         return new Object[][] {
             {1900, 1, 28},
             {1900, 2, 28},
@@ -365,7 +381,8 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(dataProvider = "lengthOfMonth")
+    @Test
+    @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(PaxDate.of(year, month, 1).lengthOfMonth(), length);
     }
@@ -413,7 +430,7 @@ public class TestPaxChronology {
         assertEquals(PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, 4), -3);
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
+    @Test(expected = ClassCastException.class)
     public void test_prolepticYear_badEra() {
         PaxChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
     }
@@ -424,7 +441,7 @@ public class TestPaxChronology {
         assertEquals(PaxChronology.INSTANCE.eraOf(0), PaxEra.BCE);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_Chronology_eraOf_invalid() {
         PaxChronology.INSTANCE.eraOf(2);
     }
@@ -451,8 +468,8 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.range
     //-----------------------------------------------------------------------
-    @DataProvider(name = "ranges")
-    Object[][] data_ranges() {
+    @DataProvider
+    public static Object[][] data_ranges() {
         return new Object[][] {
             {2012, 1, 23, DAY_OF_MONTH, 1, 28},
             {2012, 2, 23, DAY_OF_MONTH, 1, 28},
@@ -483,12 +500,13 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(dataProvider = "ranges")
+    @Test
+    @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
         assertEquals(PaxDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_range_unsupported() {
         PaxDate.of(2012, 6, 28).range(MINUTE_OF_DAY);
     }
@@ -496,8 +514,8 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.getLong
     //-----------------------------------------------------------------------
-    @DataProvider(name = "getLong")
-    Object[][] data_getLong() {
+    @DataProvider
+    public static Object[][] data_getLong() {
         return new Object[][] {
             {2014, 5, 26, DAY_OF_WEEK, 4},
             {2014, 5, 26, DAY_OF_MONTH, 26},
@@ -517,12 +535,13 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(dataProvider = "getLong")
+    @Test
+    @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
         assertEquals(PaxDate.of(year, month, dom).getLong(field), expected);
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_getLong_unsupported() {
         PaxDate.of(2012, 6, 28).getLong(MINUTE_OF_DAY);
     }
@@ -530,8 +549,8 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.with
     //-----------------------------------------------------------------------
-    @DataProvider(name = "with")
-    Object[][] data_with() {
+    @DataProvider
+    public static Object[][] data_with() {
         return new Object[][] {
             {2014, 5, 26, DAY_OF_WEEK, 3, 2014, 5, 25},
             {2014, 5, 26, DAY_OF_WEEK, 4, 2014, 5, 26},
@@ -567,14 +586,15 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(dataProvider = "with")
+    @Test
+    @UseDataProvider("data_with")
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
         assertEquals(PaxDate.of(year, month, dom).with(field, value), PaxDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_with_TemporalField_unsupported() {
         PaxDate.of(2012, 6, 28).with(MINUTE_OF_DAY, 0);
     }
@@ -606,7 +626,7 @@ public class TestPaxChronology {
         assertEquals(test, PaxDate.of(2012, 7, 27));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_adjust_toMonth() {
         PaxDate pax = PaxDate.of(2000, 1, 4);
         pax.with(Month.APRIL);
@@ -632,8 +652,8 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.plus
     //-----------------------------------------------------------------------
-    @DataProvider(name = "plus")
-    Object[][] data_plus() {
+    @DataProvider
+    public static Object[][] data_plus() {
         return new Object[][] {
             {2014, 5, 26, 0, DAYS, 2014, 5, 26},
             {2014, 5, 26, 8, DAYS, 2014, 6, 6},
@@ -670,8 +690,8 @@ public class TestPaxChronology {
         };
     }
 
-    @DataProvider(name = "plusLeap")
-    Object[][] data_plus_leap() {
+    @DataProvider
+    public static Object[][] data_plus_leap() {
         return new Object[][] {
             {2012, 12, 26, 1, MONTHS, 2012, 13, 7},
             {2012, 14, 26, -1, MONTHS, 2012, 13, 7},
@@ -679,8 +699,8 @@ public class TestPaxChronology {
         };
     }
 
-    @DataProvider(name = "minusLeap")
-    Object[][] data_minus_leap() {
+    @DataProvider
+    public static Object[][] data_minus_leap() {
         return new Object[][] {
             {2012, 13, 7, -1, MONTHS, 2012, 12, 26},
             {2012, 13, 7, 1, MONTHS, 2012, 14, 26},
@@ -688,21 +708,24 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(dataProvider = "plus")
+    @Test
+    @UseDataProvider("data_plus")
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
         assertEquals(PaxDate.of(year, month, dom).plus(amount, unit), PaxDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @Test(dataProvider = "plusLeap")
+    @Test
+    @UseDataProvider("data_plus_leap")
     public void test_plus_leap_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
         test_plus_TemporalUnit(year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
     }
 
-    @Test(dataProvider = "plus")
+    @Test
+    @UseDataProvider("data_plus")
     public void test_minus_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
@@ -710,14 +733,15 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(year, month, dom).minus(amount, unit), PaxDate.of(expectedYear, expectedMonth, expectedDom));
     }
 
-    @Test(dataProvider = "minusLeap")
+    @Test
+    @UseDataProvider("data_minus_leap")
     public void test_minus_leap_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
         test_minus_TemporalUnit(year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_plus_TemporalUnit_unsupported() {
         PaxDate.of(2012, 6, 10).plus(0, MINUTES);
     }
@@ -725,8 +749,8 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.until
     //-----------------------------------------------------------------------
-    @DataProvider(name = "until")
-    Object[][] data_until() {
+    @DataProvider
+    public static Object[][] data_until() {
         return new Object[][] {
             {2014, 5, 26, 2014, 5, 26, DAYS, 0},
             {2014, 5, 26, 2014, 6, 4, DAYS, 6},
@@ -767,8 +791,8 @@ public class TestPaxChronology {
         };
     }
 
-    @DataProvider(name = "until_period")
-    Object[][] data_until_period() {
+    @DataProvider
+    public static Object[][] data_until_period() {
         return new Object[][] {
             {2014, 5, 26, 2014, 5, 26, 0, 0, 0},
             {2014, 5, 26, 2014, 6, 4, 0, 0, 6},
@@ -795,7 +819,8 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(dataProvider = "until")
+    @Test
+    @UseDataProvider("data_until")
     public void test_until_TemporalUnit(
             int year1, int month1, int dom1,
             int year2, int month2, int dom2,
@@ -805,7 +830,8 @@ public class TestPaxChronology {
         assertEquals(start.until(end, unit), expected);
     }
 
-    @Test(dataProvider = "until_period")
+    @Test
+    @UseDataProvider("data_until_period")
     public void test_until_end(
             int year1, int month1, int dom1,
             int year2, int month2, int dom2,
@@ -816,7 +842,7 @@ public class TestPaxChronology {
         assertEquals(start.until(end), period);
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_until_TemporalUnit_unsupported() {
         PaxDate start = PaxDate.of(2012, 6, 28);
         PaxDate end = PaxDate.of(2012, 7, 1);
@@ -829,7 +855,7 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(2014, 5, 26).plus(PaxChronology.INSTANCE.period(0, 2, 2)), PaxDate.of(2014, 7, 28));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_plus_Period_ISO() {
         assertEquals(PaxDate.of(2014, 5, 26).plus(Period.ofMonths(2)), PaxDate.of(2014, 7, 26));
     }
@@ -839,7 +865,7 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(2014, 5, 26).minus(PaxChronology.INSTANCE.period(0, 2, 3)), PaxDate.of(2014, 3, 23));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_minus_Period_ISO() {
         assertEquals(PaxDate.of(2014, 5, 26).minus(Period.ofMonths(2)), PaxDate.of(2014, 3, 26));
     }
@@ -848,7 +874,7 @@ public class TestPaxChronology {
     // equals()
     //-----------------------------------------------------------------------
     @Test
-    void test_equals() {
+    public void test_equals() {
         PaxDate a1 = PaxDate.of(2000, 1, 3);
         PaxDate a2 = PaxDate.of(2000, 1, 3);
         PaxDate b = PaxDate.of(2000, 1, 4);
@@ -870,15 +896,16 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name = "toString")
-    Object[][] data_toString() {
+    @DataProvider
+    public static Object[][] data_toString() {
         return new Object[][] {
             {PaxDate.of(1, 1, 1), "Pax CE 1-01-01"},
             {PaxDate.of(2012, 6, 23), "Pax CE 2012-06-23"},
         };
     }
 
-    @Test(dataProvider = "toString")
+    @Test
+    @UseDataProvider("data_toString")
     public void test_toString(PaxDate pax, String expected) {
         assertEquals(pax.toString(), expected);
     }

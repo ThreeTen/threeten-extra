@@ -12,6 +12,9 @@
         Support Java 9.
         Update and redesign build.
       </action>
+      <action dev="jodastephen" type="add">
+        Switch from TestNG to JUnit 4.
+      </action>
       <action dev="kinow" type="fix" >
         Error message and Javadoc fixes in Interval.
         See #89.

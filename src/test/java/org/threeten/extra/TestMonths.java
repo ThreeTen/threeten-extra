@@ -31,9 +31,9 @@
  */
 package org.threeten.extra;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,21 +46,27 @@ import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAmount;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test class.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestMonths {
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_isSerializable() {
         assertTrue(Serializable.class.isAssignableFrom(Months.class));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_deserializationSingleton() throws Exception {
         Months test = Months.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -73,12 +79,14 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_ZERO() {
         assertSame(Months.of(0), Months.ZERO);
         assertSame(Months.of(0), Months.ZERO);
         assertEquals(Months.ZERO.getAmount(), 0);
     }
 
+    @Test
     public void test_ONE() {
         assertSame(Months.of(1), Months.ONE);
         assertSame(Months.of(1), Months.ONE);
@@ -86,6 +94,7 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_of() {
         assertEquals(Months.of(0).getAmount(), 0);
         assertEquals(Months.of(1).getAmount(), 1);
@@ -97,6 +106,7 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_ofYears() {
         assertEquals(Months.ofYears(0).getAmount(), 0);
         assertEquals(Months.ofYears(1).getAmount(), 12);
@@ -107,45 +117,50 @@ public class TestMonths {
         assertEquals(Months.ofYears(Integer.MIN_VALUE / 12).getAmount(), (Integer.MIN_VALUE / 12) * 12);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_ofYears_overflow() {
         Months.ofYears((Integer.MAX_VALUE / 12) + 12);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_from_Period_P0M() {
         assertEquals(Months.from(Period.ofMonths(0)), Months.of(0));
     }
 
+    @Test
     public void test_from_Period_P2M() {
         assertEquals(Months.from(Period.ofMonths(2)), Months.of(2));
     }
 
+    @Test
     public void test_from_P2Y() {
         assertEquals(Months.from(new MockYearsMonths(2, 0)), Months.of(24));
     }
 
+    @Test
     public void test_from_P2Y3M() {
         assertEquals(Months.from(new MockYearsMonths(2, 3)), Months.of(27));
     }
 
+    @Test
     public void test_from_yearsAndMonths() {
         assertEquals(Months.from(Period.of(3, 5, 0)), Months.of(41));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_from_wrongUnit_noConversion() {
         Months.from(Period.ofDays(2));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_from_null() {
         Months.from((TemporalAmount) null);
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "parseValid")
-    Object[][] data_valid() {
+    @DataProvider
+    public static Object[][] data_valid() {
         return new Object[][] {
             {"P0M", 0},
             {"P1M", 1},
@@ -175,23 +190,26 @@ public class TestMonths {
         };
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedDays) {
         assertEquals(Months.parse(str), Months.of(expectedDays));
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedDays) {
         assertEquals(Months.parse("+" + str), Months.of(expectedDays));
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedDays) {
         assertEquals(Months.parse("-" + str), Months.of(-expectedDays));
     }
 
-    @DataProvider(name = "parseInvalid")
-    Object[][] data_invalid() {
+    @DataProvider
+    public static Object[][] data_invalid() {
         return new Object[][] {
             {"P3W"},
             {"P3D"},
@@ -208,17 +226,19 @@ public class TestMonths {
         };
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class, dataProvider = "parseInvalid")
+    @Test(expected = DateTimeParseException.class)
+    @UseDataProvider("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
         Months.parse(str);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_parse_CharSequence_null() {
         Months.parse((CharSequence) null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_plus_TemporalAmount_Months() {
         Months test5 = Months.of(5);
         assertEquals(Months.of(5), test5.plus(Months.of(0)));
@@ -228,6 +248,7 @@ public class TestMonths {
         assertEquals(Months.of(Integer.MIN_VALUE), Months.of(Integer.MIN_VALUE + 1).plus(Months.of(-1)));
     }
 
+    @Test
     public void test_plus_TemporalAmount_Period() {
         Months test5 = Months.of(5);
         assertEquals(Months.of(5), test5.plus(Period.ofMonths(0)));
@@ -237,32 +258,33 @@ public class TestMonths {
         assertEquals(Months.of(Integer.MIN_VALUE), Months.of(Integer.MIN_VALUE + 1).plus(Period.ofMonths(-1)));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_plus_TemporalAmount_PeriodDays() {
         Months.of(1).plus(Period.ofDays(2));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_plus_TemporalAmount_Duration() {
         Months.of(1).plus(Duration.ofHours(2));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_TemporalAmount_overflowTooBig() {
         Months.of(Integer.MAX_VALUE - 1).plus(Months.of(2));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_TemporalAmount_overflowTooSmall() {
         Months.of(Integer.MIN_VALUE + 1).plus(Months.of(-2));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_plus_TemporalAmount_null() {
         Months.of(Integer.MIN_VALUE + 1).plus(null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_plus_int() {
         Months test5 = Months.of(5);
         assertEquals(Months.of(5), test5.plus(0));
@@ -272,17 +294,18 @@ public class TestMonths {
         assertEquals(Months.of(Integer.MIN_VALUE), Months.of(Integer.MIN_VALUE + 1).plus(-1));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_int_overflowTooBig() {
         Months.of(Integer.MAX_VALUE - 1).plus(2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_int_overflowTooSmall() {
         Months.of(Integer.MIN_VALUE + 1).plus(-2);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_minus_TemporalAmount_Months() {
         Months test5 = Months.of(5);
         assertEquals(Months.of(5), test5.minus(Months.of(0)));
@@ -292,6 +315,7 @@ public class TestMonths {
         assertEquals(Months.of(Integer.MIN_VALUE), Months.of(Integer.MIN_VALUE + 1).minus(Months.of(1)));
     }
 
+    @Test
     public void test_minus_TemporalAmount_Period() {
         Months test5 = Months.of(5);
         assertEquals(Months.of(5), test5.minus(Period.ofMonths(0)));
@@ -301,32 +325,33 @@ public class TestMonths {
         assertEquals(Months.of(Integer.MIN_VALUE), Months.of(Integer.MIN_VALUE + 1).minus(Period.ofMonths(1)));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_minus_TemporalAmount_PeriodDays() {
         Months.of(1).minus(Period.ofDays(2));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_minus_TemporalAmount_Duration() {
         Months.of(1).minus(Duration.ofHours(2));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_TemporalAmount_overflowTooBig() {
         Months.of(Integer.MAX_VALUE - 1).minus(Months.of(-2));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_TemporalAmount_overflowTooSmall() {
         Months.of(Integer.MIN_VALUE + 1).minus(Months.of(2));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_minus_TemporalAmount_null() {
         Months.of(Integer.MIN_VALUE + 1).minus(null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_minus_int() {
         Months test5 = Months.of(5);
         assertEquals(Months.of(5), test5.minus(0));
@@ -336,17 +361,18 @@ public class TestMonths {
         assertEquals(Months.of(Integer.MIN_VALUE), Months.of(Integer.MIN_VALUE + 1).minus(1));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_int_overflowTooBig() {
         Months.of(Integer.MAX_VALUE - 1).minus(-2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_int_overflowTooSmall() {
         Months.of(Integer.MIN_VALUE + 1).minus(2);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_multipliedBy() {
         Months test5 = Months.of(5);
         assertEquals(Months.of(0), test5.multipliedBy(0));
@@ -356,22 +382,24 @@ public class TestMonths {
         assertEquals(Months.of(-15), test5.multipliedBy(-3));
     }
 
+    @Test
     public void test_multipliedBy_negate() {
         Months test5 = Months.of(5);
         assertEquals(Months.of(-15), test5.multipliedBy(-3));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_multipliedBy_overflowTooBig() {
         Months.of(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_multipliedBy_overflowTooSmall() {
         Months.of(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_dividedBy() {
         Months test12 = Months.of(12);
         assertEquals(Months.of(12), test12.dividedBy(1));
@@ -383,17 +411,19 @@ public class TestMonths {
         assertEquals(Months.of(-4), test12.dividedBy(-3));
     }
 
+    @Test
     public void test_dividedBy_negate() {
         Months test12 = Months.of(12);
         assertEquals(Months.of(-4), test12.dividedBy(-3));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_dividedBy_divideByZero() {
         Months.of(1).dividedBy(0);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_negated() {
         assertEquals(Months.of(0), Months.of(0).negated());
         assertEquals(Months.of(-12), Months.of(12).negated());
@@ -401,12 +431,13 @@ public class TestMonths {
         assertEquals(Months.of(-Integer.MAX_VALUE), Months.of(Integer.MAX_VALUE).negated());
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_negated_overflow() {
         Months.of(Integer.MIN_VALUE).negated();
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_abs() {
         assertEquals(Months.of(0), Months.of(0).abs());
         assertEquals(Months.of(12), Months.of(12).abs());
@@ -415,12 +446,13 @@ public class TestMonths {
         assertEquals(Months.of(Integer.MAX_VALUE), Months.of(-Integer.MAX_VALUE).abs());
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_abs_overflow() {
         Months.of(Integer.MIN_VALUE).abs();
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toPeriod() {
         for (int i = -20; i < 20; i++) {
             assertEquals(Months.of(i).toPeriod(), Period.ofMonths(i));
@@ -428,6 +460,7 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_compareTo() {
         Months test5 = Months.of(5);
         Months test6 = Months.of(6);
@@ -436,13 +469,14 @@ public class TestMonths {
         assertEquals(1, test6.compareTo(test5));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_compareTo_null() {
         Months test5 = Months.of(5);
         test5.compareTo(null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_equals() {
         Months test5 = Months.of(5);
         Months test6 = Months.of(6);
@@ -451,17 +485,20 @@ public class TestMonths {
         assertEquals(false, test6.equals(test5));
     }
 
+    @Test
     public void test_equals_null() {
         Months test5 = Months.of(5);
         assertEquals(false, test5.equals(null));
     }
 
+    @Test
     public void test_equals_otherClass() {
         Months test5 = Months.of(5);
         assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_hashCode() {
         Months test5 = Months.of(5);
         Months test6 = Months.of(6);
@@ -470,6 +507,7 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() {
         Months test5 = Months.of(5);
         assertEquals("P5M", test5.toString());

@@ -73,8 +73,8 @@ import static java.time.temporal.ChronoField.SECOND_OF_DAY;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -100,24 +100,19 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test DayOfMonth.
  */
-@Test
 public class TestDayOfMonth {
 
     private static final int MAX_LENGTH = 31;
     private static final DayOfMonth TEST = DayOfMonth.of(12);
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
 
-    @BeforeMethod
-    public void setUp() {
-    }
-
     //-----------------------------------------------------------------------
+    @Test
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfMonth.class));
@@ -125,6 +120,7 @@ public class TestDayOfMonth {
         assertTrue(TemporalAccessor.class.isAssignableFrom(DayOfMonth.class));
     }
 
+    @Test
     public void test_serialization() throws IOException, ClassNotFoundException {
         DayOfMonth test = DayOfMonth.of(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -139,6 +135,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // of(int)
     //-----------------------------------------------------------------------
+    @Test
     public void test_of_int_singleton() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth test = DayOfMonth.of(i);
@@ -147,12 +144,12 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_of_int_tooLow() {
         DayOfMonth.of(0);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_of_int_tooHigh() {
         DayOfMonth.of(32);
     }
@@ -160,6 +157,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // from(TemporalAccessor)
     //-----------------------------------------------------------------------
+    @Test
     public void test_from_TemporalAccessor_notLeapYear() {
         LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
@@ -212,6 +210,7 @@ public class TestDayOfMonth {
         }
     }
 
+    @Test
     public void test_from_TemporalAccessor_leapYear() {
         LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
@@ -228,16 +227,17 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_from_TemporalAccessor_noDerive() {
         DayOfMonth.from(LocalTime.NOON);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         DayOfMonth.from((TemporalAccessor) null);
     }
 
+    @Test
     public void test_from_parse_CharSequence() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d");
         assertEquals(formatter.parse("3", DayOfMonth::from), DayOfMonth.of(3));
@@ -246,6 +246,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // isSupported(TemporalField)
     //-----------------------------------------------------------------------
+    @Test
     public void test_isSupported() {
         assertEquals(TEST.isSupported((TemporalField) null), false);
         assertEquals(TEST.isSupported(NANO_OF_SECOND), false);
@@ -283,16 +284,17 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // range(TemporalField)
     //-----------------------------------------------------------------------
+    @Test
     public void test_range() {
         assertEquals(TEST.range(DAY_OF_MONTH), DAY_OF_MONTH.range());
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_range_invalidField() {
         TEST.range(MONTH_OF_YEAR);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_range_null() {
         TEST.range((TemporalField) null);
     }
@@ -300,16 +302,17 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // get(TemporalField)
     //-----------------------------------------------------------------------
+    @Test
     public void test_get() {
         assertEquals(TEST.get(DAY_OF_MONTH), 12);
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_get_invalidField() {
         TEST.get(MONTH_OF_YEAR);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_get_null() {
         TEST.get((TemporalField) null);
     }
@@ -317,16 +320,17 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // getLong(TemporalField)
     //-----------------------------------------------------------------------
+    @Test
     public void test_getLong() {
         assertEquals(TEST.getLong(DAY_OF_MONTH), 12L);
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_getLong_invalidField() {
         TEST.getLong(MONTH_OF_YEAR);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_getLong_null() {
         TEST.getLong((TemporalField) null);
     }
@@ -420,6 +424,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // adjustInto(Temporal)
     //-----------------------------------------------------------------------
+    @Test
     public void test_adjustInto() {
         LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
@@ -430,21 +435,21 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_adjustInto_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.of(31);
         test.adjustInto(base);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_adjustInto_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);
         test.adjustInto(base);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_adjustInto_null() {
         TEST.adjustInto((Temporal) null);
     }
@@ -486,7 +491,7 @@ public class TestDayOfMonth {
         assertEquals(test.atMonth(DECEMBER), MonthDay.of(12, 28));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_atMonth_null() {
         TEST.atMonth((Month) null);
     }
@@ -528,12 +533,12 @@ public class TestDayOfMonth {
         assertEquals(test.atMonth(12), MonthDay.of(12, 28));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_atMonth_tooLow() {
         TEST.atMonth(0);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_atMonth_tooHigh() {
         TEST.atMonth(13);
     }
@@ -576,7 +581,7 @@ public class TestDayOfMonth {
         assertEquals(test.atYearMonth(YearMonth.of(2012, 12)), LocalDate.of(2012, 12, 28));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_atYearMonth_null() {
         TEST.atYearMonth((YearMonth) null);
     }
@@ -584,6 +589,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
+    @Test
     public void test_compareTo() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth a = DayOfMonth.of(i);
@@ -603,7 +609,7 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_compareTo_nullDayOfMonth() {
         DayOfMonth doy = null;
         DayOfMonth test = DayOfMonth.of(1);
@@ -613,6 +619,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
+    @Test
     public void test_equals() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth a = DayOfMonth.of(i);
@@ -624,12 +631,14 @@ public class TestDayOfMonth {
         }
     }
 
+    @Test
     public void test_equals_nullDayOfMonth() {
         DayOfMonth doy = null;
         DayOfMonth test = DayOfMonth.of(1);
         assertEquals(test.equals(doy), false);
     }
 
+    @Test
     public void test_equals_incorrectType() {
         DayOfMonth test = DayOfMonth.of(1);
         assertEquals(test.equals("Incorrect type"), false);
@@ -638,6 +647,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth a = DayOfMonth.of(i);
@@ -648,6 +658,7 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
+    @Test
     public void test_now_clock() {
         for (int i = 1; i <= 31; i++) {  // Jan
             Instant instant = LocalDate.of(2008, 1, i).atStartOfDay(PARIS).toInstant();

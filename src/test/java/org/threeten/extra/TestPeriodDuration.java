@@ -37,15 +37,15 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertThrows;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,13 +54,17 @@ import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test class.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestPeriodDuration {
 
     private static final Period P1Y2M3D = Period.of(1, 2, 3);
@@ -68,11 +72,13 @@ public class TestPeriodDuration {
     private static final Duration DUR_6 = Duration.ofSeconds(6);
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_isSerializable() {
         assertTrue(Serializable.class.isAssignableFrom(PeriodDuration.class));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_serialization() throws Exception {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -85,6 +91,7 @@ public class TestPeriodDuration {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_ZERO() {
         assertEquals(PeriodDuration.of(Period.ZERO, Duration.ZERO), PeriodDuration.ZERO);
         assertEquals(PeriodDuration.of(Period.ZERO), PeriodDuration.ZERO);
@@ -98,10 +105,15 @@ public class TestPeriodDuration {
         assertEquals(PeriodDuration.ZERO.get(DAYS), 0);
         assertEquals(PeriodDuration.ZERO.get(SECONDS), 0);
         assertEquals(PeriodDuration.ZERO.get(NANOS), 0);
-        assertThrows(() -> PeriodDuration.ZERO.get(ERAS));
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ZERO_getEra() {
+        PeriodDuration.ZERO.get(ERAS);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_of_both() {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(4));
         assertEquals(test.getPeriod(), P1Y2M3D);
@@ -114,6 +126,7 @@ public class TestPeriodDuration {
         assertEquals(test.get(NANOS), 0);
     }
 
+    @Test
     public void test_of_period() {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D);
         assertEquals(test.getPeriod(), P1Y2M3D);
@@ -126,6 +139,7 @@ public class TestPeriodDuration {
         assertEquals(test.get(NANOS), 0);
     }
 
+    @Test
     public void test_of_duration() {
         PeriodDuration test = PeriodDuration.of(Duration.ofSeconds(4));
         assertEquals(test.getPeriod(), Period.ZERO);
@@ -139,24 +153,28 @@ public class TestPeriodDuration {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_between_dates() {
         PeriodDuration test = PeriodDuration.between(LocalDate.of(2012, 6, 20), LocalDate.of(2012, 8, 25));
         assertEquals(test.getPeriod(), Period.between(LocalDate.of(2012, 6, 20), LocalDate.of(2012, 8, 25)));
         assertEquals(test.getDuration(), Duration.ZERO);
     }
 
+    @Test
     public void test_between_times() {
         PeriodDuration test = PeriodDuration.between(LocalTime.of(11, 20), LocalTime.of(12, 25));
         assertEquals(test.getPeriod(), Period.ZERO);
         assertEquals(test.getDuration(), Duration.between(LocalTime.of(11, 20), LocalTime.of(12, 25)));
     }
 
+    @Test
     public void test_between_mixed1() {
         PeriodDuration test = PeriodDuration.between(LocalDate.of(2012, 6, 20), LocalTime.of(11, 25));
         assertEquals(test.getPeriod(), Period.ZERO);
         assertEquals(test.getDuration(), Duration.ofHours(11).plusMinutes(25));
     }
 
+    @Test
     public void test_between_mixed2() {
         PeriodDuration test = PeriodDuration.between(LocalDate.of(2012, 6, 20), LocalDateTime.of(2012, 7, 22, 11, 25));
         assertEquals(test.getPeriod(), Period.of(0, 1, 2));
@@ -164,6 +182,7 @@ public class TestPeriodDuration {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_from() {
         assertEquals(PeriodDuration.from(PeriodDuration.of(P1Y2M3D)), PeriodDuration.from(PeriodDuration.of(P1Y2M3D)));
         assertEquals(PeriodDuration.from(Period.ofYears(2)), PeriodDuration.of(Period.ofYears(2)));
@@ -176,8 +195,8 @@ public class TestPeriodDuration {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "parseValid")
-    Object[][] data_valid() {
+    @DataProvider
+    public static Object[][] data_valid() {
         return new Object[][] {
                 {"P1Y2M3W4DT5H6M7S", Period.of(1, 2, 3 * 7 + 4), Duration.ofHours(5).plusMinutes(6).plusSeconds(7)},
                 {"P3Y", Period.ofYears(3), Duration.ZERO},
@@ -201,23 +220,26 @@ public class TestPeriodDuration {
         };
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.parse(str), PeriodDuration.of(period, duration));
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.parse("+" + str), PeriodDuration.of(period, duration));
     }
 
-    @Test(dataProvider = "parseValid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.parse("-" + str), PeriodDuration.of(period, duration).negated());
     }
 
-    @DataProvider(name = "parseInvalid")
-    Object[][] data_invalid() {
+    @DataProvider
+    public static Object[][] data_invalid() {
         return new Object[][] {
                 {"P3Q"},
                 {"P1M2Y"},
@@ -234,61 +256,65 @@ public class TestPeriodDuration {
         };
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class, dataProvider = "parseInvalid")
+    @Test(expected = DateTimeParseException.class)
+    @UseDataProvider("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
         PeriodDuration.parse(str);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_parse_CharSequence_null() {
         PeriodDuration.parse((CharSequence) null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_plus_TemporalAmount_PeriodDuration() {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
         assertEquals(test.plus(Period.of(3, 2, 1)), PeriodDuration.of(Period.of(4, 4, 4), DUR_5));
         assertEquals(test.plus(Duration.ofSeconds(4)), PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(9)));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_TemporalAmount_overflowTooBig() {
         PeriodDuration.of(Period.of(Integer.MAX_VALUE - 1, 0, 0)).plus(PeriodDuration.of(Period.ofYears(2)));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_plus_TemporalAmount_overflowTooSmall() {
         PeriodDuration.of(Period.of(Integer.MIN_VALUE + 1, 0, 0)).plus(PeriodDuration.of(Period.ofYears(-2)));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_plus_TemporalAmount_null() {
         P1Y2M3D.plus(null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_minus_TemporalAmount_PeriodDuration() {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
         assertEquals(test.minus(Period.of(1, 1, 1)), PeriodDuration.of(Period.of(0, 1, 2), DUR_5));
         assertEquals(test.minus(Duration.ofSeconds(4)), PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(1)));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_TemporalAmount_overflowTooBig() {
         PeriodDuration.of(Period.of(Integer.MAX_VALUE - 1, 0, 0)).minus(PeriodDuration.of(Period.ofYears(-2)));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_minus_TemporalAmount_overflowTooSmall() {
         PeriodDuration.of(Period.of(Integer.MIN_VALUE + 1, 0, 0)).minus(PeriodDuration.of(Period.ofYears(2)));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_minus_TemporalAmount_null() {
         P1Y2M3D.minus(null);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_multipliedBy() {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
         assertEquals(test.multipliedBy(0), PeriodDuration.ZERO);
@@ -297,32 +323,35 @@ public class TestPeriodDuration {
         assertEquals(test.multipliedBy(-3), PeriodDuration.of(Period.of(-3,  -6, -9), Duration.ofSeconds(-15)));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_multipliedBy_overflowTooBig() {
         PeriodDuration.of(Period.ofYears(Integer.MAX_VALUE / 2 + 1)).multipliedBy(2);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_multipliedBy_overflowTooSmall() {
         PeriodDuration.of(Period.ofYears(Integer.MIN_VALUE / 2 - 1)).multipliedBy(2);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_negated() {
         assertEquals(PeriodDuration.of(P1Y2M3D, DUR_5).negated(), PeriodDuration.of(P1Y2M3D.negated(), DUR_5.negated()));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_negated_overflow() {
         PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).negated();
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_normalizedYears() {
         assertEquals(PeriodDuration.of(P1Y2M3D, DUR_5).normalizedYears(), PeriodDuration.of(P1Y2M3D.normalized(), DUR_5));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_normalizedStandardDays() {
         assertEquals(
                 PeriodDuration.of(P1Y2M3D, Duration.ofHours(5)).normalizedStandardDays(),
@@ -335,24 +364,27 @@ public class TestPeriodDuration {
                 PeriodDuration.of(P1Y2M3D.plusDays(-3), Duration.ofHours(-1)));
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_normalizedStandardDaysn_overflow() {
         PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).normalizedStandardDays();
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_addTo() {
         LocalDateTime base = LocalDateTime.of(2012, 6, 20, 11, 30, 0);
         assertEquals(PeriodDuration.of(P1Y2M3D, DUR_5).addTo(base), LocalDateTime.of(2013, 8, 23, 11, 30, 5));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_subtractFrom() {
         LocalDateTime base = LocalDateTime.of(2012, 6, 20, 11, 30, 0);
         assertEquals(PeriodDuration.of(P1Y2M3D, DUR_5).subtractFrom(base), LocalDateTime.of(2011, 4, 17, 11, 29, 55));
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_equals() {
         PeriodDuration test5 = PeriodDuration.of(P1Y2M3D, DUR_5);
         PeriodDuration test6 = PeriodDuration.of(P1Y2M3D, DUR_6);
@@ -361,17 +393,20 @@ public class TestPeriodDuration {
         assertEquals(test6.equals(test5), false);
     }
 
+    @Test
     public void test_equals_null() {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
         assertEquals(test.equals(null), false);
     }
 
+    @Test
     public void test_equals_otherClass() {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
         assertEquals(test.equals(""), false);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_hashCode() {
         PeriodDuration test5 = PeriodDuration.of(P1Y2M3D, DUR_5);
         PeriodDuration test6 = PeriodDuration.of(P1Y2M3D, DUR_6);
@@ -380,6 +415,7 @@ public class TestPeriodDuration {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() {
         assertEquals("P1Y2M3DT5S", PeriodDuration.of(P1Y2M3D, DUR_5).toString());
         assertEquals("P1Y2M3D", PeriodDuration.of(P1Y2M3D, Duration.ZERO).toString());
