@@ -17,12 +17,12 @@ Various documentation is available:
 
 
 ### Releases
-Release 1.3 is the current release.
+Release 1.3.1 is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
 ThreeTen-Extra requires Java SE 8 or later and has no dependencies.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|1.3|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|1.3.1|jar)
 
 
 ### Support
@@ -31,6 +31,7 @@ Please use GitHub [issues](https://github.com/ThreeTen/threeten-extra/issues) an
 
 ### Release process
 
-* Update manual parts of version (README.md, index.md, changes.xml)
+* Update version (README.md, index.md, changes.xml)
+* Commit and push
 * `mvn clean release:clean release:prepare release:perform`
 * Website will be built and released by Travis
