@@ -7,6 +7,13 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.3.1" date="2018-01-22" description="v1.3.1">
+      <action dev="jodastephen" type="fix">
+        Fix build for Java 8.
+        Javac release flag is not correctly ignoring new overloaded methods.
+        Fixes #91.
+      </action>
+    </release>
     <release version="1.3" date="2018-01-08" description="v1.3">
       <action dev="jodastephen" type="add">
         Support Java 9.
