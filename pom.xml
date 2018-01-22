@@ -677,7 +677,7 @@
               <jdkToolchain>
                 <version>9</version>
               </jdkToolchain>
-              <release>${joda.release.version}</release>
+              <release>8</release>
             </configuration>
           </plugin>
           <!-- Hack to extract dependencies for Javadoc plugin -->

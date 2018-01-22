@@ -7,6 +7,13 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.3.2" date="SNAPSHOT" description="v1.3.2">
+      <action dev="jodastephen" type="fix">
+        Fix build for Java 8.
+        Found actual issue with Javac was in the pom.xml.
+        See #91.
+      </action>
+    </release>
     <release version="1.3.1" date="2018-01-22" description="v1.3.1">
       <action dev="jodastephen" type="fix">
         Fix build for Java 8.
