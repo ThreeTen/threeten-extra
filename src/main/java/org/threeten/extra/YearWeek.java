@@ -189,7 +189,7 @@ public final class YearWeek
     // from IsoFields in ThreeTen-Backport
     private static int weekRange(int weekBasedYear) {
         LocalDate date = LocalDate.of(weekBasedYear, 1, 1);
-        // 53 weeks if standard year starts on Thursday, or Wed in a leap year
+        // 53 weeks if year starts on Thursday, or Wed in a leap year
         if (date.getDayOfWeek() == THURSDAY || (date.getDayOfWeek() == WEDNESDAY && date.isLeapYear())) {
             return 53;
         }
