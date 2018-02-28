@@ -62,7 +62,7 @@ import java.util.Objects;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class Interval
+public class Interval
         implements Serializable {
 
     /**
@@ -252,11 +252,11 @@ public final class Interval
      *
      * @return the start of the time interval
      */
-    public Instant getStart() {
+    public final Instant getStart() {
         return start;
     }
 
-    /** 
+    /**
      * Gets the end of this time interval, exclusive.
      * <p>
      * This will return {@link Instant#MAX} if the range is unbounded at the end.
@@ -264,7 +264,7 @@ public final class Interval
      *
      * @return the end of the time interval, exclusive
      */
-    public Instant getEnd() {
+    public final Instant getEnd() {
         return end;
     }
 
@@ -273,28 +273,28 @@ public final class Interval
      * Checks if the range is empty.
      * <p>
      * An empty range occurs when the start date equals the inclusive end date.
-     * 
+     *
      * @return true if the range is empty
      */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return start.equals(end);
     }
 
     /**
      * Checks if the start of the interval is unbounded.
-     * 
+     *
      * @return true if start is unbounded
      */
-    public boolean isUnboundedStart() {
+    public final boolean isUnboundedStart() {
         return start.equals(Instant.MIN);
     }
 
     /**
      * Checks if the end of the interval is unbounded.
-     * 
+     *
      * @return true if end is unbounded
      */
-    public boolean isUnboundedEnd() {
+    public final boolean isUnboundedEnd() {
         return end.equals(Instant.MAX);
     }
 
@@ -306,7 +306,7 @@ public final class Interval
      * @return an interval with the end from this interval and the specified start
      * @throws DateTimeException if the resulting interval has end before start
      */
-    public Interval withStart(Instant start) {
+    public final Interval withStart(Instant start) {
         return Interval.of(start, end);
     }
 
@@ -317,7 +317,7 @@ public final class Interval
      * @return an interval with the start from this interval and the specified end
      * @throws DateTimeException if the resulting interval has end before start
      */
-    public Interval withEnd(Instant end) {
+    public final Interval withEnd(Instant end) {
         return Interval.of(start, end);
     }
 
@@ -333,7 +333,7 @@ public final class Interval
      * @param instant  the instant, not null
      * @return true if this interval contains the instant
      */
-    public boolean contains(Instant instant) {
+    public final boolean contains(Instant instant) {
         Objects.requireNonNull(instant, "instant");
         return start.compareTo(instant) <= 0 && (instant.compareTo(end) < 0 || isUnboundedEnd());
     }
@@ -347,7 +347,7 @@ public final class Interval
      * @param other  the other interval, not null
      * @return true if this interval contains the other interval
      */
-    public boolean encloses(Interval other) {
+    public final boolean encloses(Interval other) {
         Objects.requireNonNull(other, "other");
         return start.compareTo(other.start) <= 0 && other.end.compareTo(end) <= 0;
     }
@@ -361,7 +361,7 @@ public final class Interval
      * @param other  the other interval, not null
      * @return true if this interval abuts the other interval
      */
-    public boolean abuts(Interval other) {
+    public final boolean abuts(Interval other) {
         Objects.requireNonNull(other, "other");
         return end.equals(other.start) ^ start.equals(other.end);
     }
@@ -377,7 +377,7 @@ public final class Interval
      * @param other  the other interval, not null
      * @return true if this interval is connected to the other interval
      */
-    public boolean isConnected(Interval other) {
+    public final boolean isConnected(Interval other) {
         Objects.requireNonNull(other, "other");
         return this.equals(other) || (start.compareTo(other.end) <= 0 && other.start.compareTo(end) <= 0);
     }
@@ -393,7 +393,7 @@ public final class Interval
      * @param other  the time interval to compare to, null means a zero length interval now
      * @return true if the time intervals overlap
      */
-    public boolean overlaps(Interval other) {
+    public final boolean overlaps(Interval other) {
         Objects.requireNonNull(other, "other");
         return other.equals(this) || (start.compareTo(other.end) < 0 && other.start.compareTo(end) < 0);
     }
@@ -404,12 +404,12 @@ public final class Interval
      * <p>
      * This finds the intersection of two intervals.
      * This throws an exception if the two intervals are not {@linkplain #isConnected(Interval) connected}.
-     * 
+     *
      * @param other  the other interval to check for, not null
      * @return the interval that is the intersection of the two intervals
      * @throws DateTimeException if the intervals do not connect
      */
-    public Interval intersection(Interval other) {
+    public final Interval intersection(Interval other) {
         Objects.requireNonNull(other, "other");
         if (isConnected(other) == false) {
             throw new DateTimeException("Intervals do not connect: " + this + " and " + other);
@@ -432,12 +432,12 @@ public final class Interval
      * <p>
      * This finds the union of two intervals.
      * This throws an exception if the two intervals are not {@linkplain #isConnected(Interval) connected}.
-     * 
+     *
      * @param other  the other interval to check for, not null
      * @return the interval that is the union of the two intervals
      * @throws DateTimeException if the intervals do not connect
      */
-    public Interval union(Interval other) {
+    public final Interval union(Interval other) {
         Objects.requireNonNull(other, "other");
         if (isConnected(other) == false) {
             throw new DateTimeException("Intervals do not connect: " + this + " and " + other);
@@ -460,11 +460,11 @@ public final class Interval
      * <p>
      * The result of this method will {@linkplain #encloses(Interval) enclose}
      * this interval and the specified interval.
-     * 
+     *
      * @param other  the other interval to check for, not null
      * @return the interval that spans the two intervals
      */
-    public Interval span(Interval other) {
+    public final Interval span(Interval other) {
         Objects.requireNonNull(other, "other");
         int cmpStart = start.compareTo(other.start);
         int cmpEnd = end.compareTo(other.end);
@@ -483,7 +483,7 @@ public final class Interval
      * @param instant  the other instant to compare to, not null
      * @return true if the start of this interval is after the specified instant
      */
-    public boolean isAfter(Instant instant) {
+    public final boolean isAfter(Instant instant) {
         return start.compareTo(instant) > 0;
     }
 
@@ -498,7 +498,7 @@ public final class Interval
      * @param instant  the other instant to compare to, not null
      * @return true if the start of this interval is before the specified instant
      */
-    public boolean isBefore(Instant instant) {
+    public final boolean isBefore(Instant instant) {
         return end.compareTo(instant) <= 0 && start.compareTo(instant) < 0;
     }
 
@@ -514,7 +514,7 @@ public final class Interval
      * @param interval  the other interval to compare to, not null
      * @return true if this instant is after the specified instant
      */
-    public boolean isAfter(Interval interval) {
+    public final boolean isAfter(Interval interval) {
         return start.compareTo(interval.end) >= 0 && !interval.equals(this);
     }
 
@@ -529,7 +529,7 @@ public final class Interval
      * @param interval  the other interval to compare to, not null
      * @return true if this instant is before the specified instant
      */
-    public boolean isBefore(Interval interval) {
+    public final boolean isBefore(Interval interval) {
         return end.compareTo(interval.start) <= 0 && !interval.equals(this);
     }
 
@@ -543,7 +543,7 @@ public final class Interval
      * @return the duration of the time interval
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
-    public Duration toDuration() {
+    public final Duration toDuration() {
         return Duration.between(start, end);
     }
 
