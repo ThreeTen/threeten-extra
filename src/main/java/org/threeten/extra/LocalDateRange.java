@@ -295,7 +295,7 @@ public final class LocalDateRange
      * <p>
      * For example, to adjust the start to one week earlier:
      * <pre>
-     *  range = range.withStart(date -> date.minus(1, ChronoUnit.WEEKS));
+     *  range = range.withStart(date -&gt; date.minus(1, ChronoUnit.WEEKS));
      * </pre>
      * 
      * @param adjuster  the adjuster to use, not null
@@ -315,7 +315,7 @@ public final class LocalDateRange
      * <p>
      * For example, to adjust the end to one week later:
      * <pre>
-     *  range = range.withEnd(date -> date.plus(1, ChronoUnit.WEEKS));
+     *  range = range.withEnd(date -&gt; date.plus(1, ChronoUnit.WEEKS));
      * </pre>
      * 
      * @param adjuster  the adjuster to use, not null

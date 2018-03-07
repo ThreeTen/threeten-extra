@@ -72,7 +72,7 @@ import java.util.List;
  * <li>day-of-year - There are 364 days in a standard Symmetry454 year and 371 days in a leap year.
  *  The days are numbered accordingly.
  * <li>leap-year - Leap years occur every 5 or 6 years, evenly spread over 293 years according the formula:
- *     (52 > ((52 * year + 146) % 293)).
+ *     (52 &gt; ((52 * year + 146) % 293)).
  * <li>Week day - every month starts on a Monday.  There are no days outside of the week or month.
  * </ul>
  *
