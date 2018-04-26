@@ -9,6 +9,12 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.3.3" date="SNAPSHOT" description="v1.3.3">
       <action dev="jodastephen" type="fix">
+        Fix build for Java 9.
+        Resource files cannot be read from other modules in Java 9.
+        As such, the `LeapSeconds.txt` file has moved to be under META-INF,
+        `META-INF/org/threeten/extra/scale/LeapSeconds.txt`.
+      </action>
+      <action dev="jodastephen" type="fix">
         Fix OSGi for Java 9.
         Now that the build is on Java 9, the OSGi data had to be updated.
         See #92, #94.

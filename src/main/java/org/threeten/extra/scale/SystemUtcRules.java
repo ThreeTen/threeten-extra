@@ -59,6 +59,10 @@ import java.util.stream.Collectors;
 final class SystemUtcRules extends UtcRules implements Serializable {
 
     /**
+     * The leap seconds config file.
+     */
+    private static final String LEAP_SECONDS_TXT = "org/threeten/extra/scale/LeapSeconds.txt";
+    /**
      * Leap second file format.
      */
     private static final Pattern LEAP_FILE_FORMAT = Pattern.compile("([0-9-]{10})[ ]+([0-9]+)");
@@ -213,9 +217,27 @@ final class SystemUtcRules extends UtcRules implements Serializable {
         Data bestData = null;
         URL url = null;
         try {
-            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("org/threeten/extra/scale/LeapSeconds.txt");
+            // this is the new location of the file, working on Java 8, Java 9 class path and Java 9 module path
+            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("META-INF/" + LEAP_SECONDS_TXT);
             while (en.hasMoreElements()) {
                 url = en.nextElement();
+                Data candidate = loadLeapSeconds(url);
+                if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
+                    bestData = candidate;
+                }
+            }
+            // this location does not work on Java 9 module path because the resource is encapsulated
+            en = Thread.currentThread().getContextClassLoader().getResources(LEAP_SECONDS_TXT);
+            while (en.hasMoreElements()) {
+                url = en.nextElement();
+                Data candidate = loadLeapSeconds(url);
+                if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
+                    bestData = candidate;
+                }
+            }
+            // this location is the canonical one, and class-based loading works on Java 9 module path
+            url = SystemUtcRules.class.getResource("/" + LEAP_SECONDS_TXT);
+            if (url != null) {
                 Data candidate = loadLeapSeconds(url);
                 if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
                     bestData = candidate;
