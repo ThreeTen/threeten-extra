@@ -83,38 +83,38 @@ public class TestDays {
     public void test_ZERO() {
         assertSame(Days.of(0), Days.ZERO);
         assertSame(Days.of(0), Days.ZERO);
-        assertEquals(Days.ZERO.getAmount(), 0);
+        assertEquals(0, Days.ZERO.getAmount());
     }
 
     @Test
     public void test_ONE() {
         assertSame(Days.of(1), Days.ONE);
         assertSame(Days.of(1), Days.ONE);
-        assertEquals(Days.ONE.getAmount(), 1);
+        assertEquals(1, Days.ONE.getAmount());
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_of() {
-        assertEquals(Days.of(0).getAmount(), 0);
-        assertEquals(Days.of(1).getAmount(), 1);
-        assertEquals(Days.of(2).getAmount(), 2);
-        assertEquals(Days.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
-        assertEquals(Days.of(-1).getAmount(), -1);
-        assertEquals(Days.of(-2).getAmount(), -2);
-        assertEquals(Days.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+        assertEquals(0, Days.of(0).getAmount());
+        assertEquals(1, Days.of(1).getAmount());
+        assertEquals(2, Days.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE, Days.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1, Days.of(-1).getAmount());
+        assertEquals(-2, Days.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE, Days.of(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_ofWeeks() {
-        assertEquals(Days.ofWeeks(0).getAmount(), 0);
-        assertEquals(Days.ofWeeks(1).getAmount(), 7);
-        assertEquals(Days.ofWeeks(2).getAmount(), 14);
-        assertEquals(Days.ofWeeks(Integer.MAX_VALUE / 7).getAmount(), (Integer.MAX_VALUE / 7) * 7);
-        assertEquals(Days.ofWeeks(-1).getAmount(), -7);
-        assertEquals(Days.ofWeeks(-2).getAmount(), -14);
-        assertEquals(Days.ofWeeks(Integer.MIN_VALUE / 7).getAmount(), (Integer.MIN_VALUE / 7) * 7);
+        assertEquals(0, Days.ofWeeks(0).getAmount());
+        assertEquals(7, Days.ofWeeks(1).getAmount());
+        assertEquals(14, Days.ofWeeks(2).getAmount());
+        assertEquals((Integer.MAX_VALUE / 7) * 7, Days.ofWeeks(Integer.MAX_VALUE / 7).getAmount());
+        assertEquals(-7, Days.ofWeeks(-1).getAmount());
+        assertEquals(-14, Days.ofWeeks(-2).getAmount());
+        assertEquals((Integer.MIN_VALUE / 7) * 7, Days.ofWeeks(Integer.MIN_VALUE / 7).getAmount());
     }
 
     @Test(expected = ArithmeticException.class)
@@ -125,27 +125,27 @@ public class TestDays {
     //-----------------------------------------------------------------------
     @Test
     public void test_from_Period_P0D() {
-        assertEquals(Days.from(Period.ofDays(0)), Days.of(0));
+        assertEquals(Days.of(0), Days.from(Period.ofDays(0)));
     }
 
     @Test
     public void test_from_Period_P2D() {
-        assertEquals(Days.from(Period.ofDays(2)), Days.of(2));
+        assertEquals(Days.of(2), Days.from(Period.ofDays(2)));
     }
 
     @Test
     public void test_from_P2W() {
-        assertEquals(Days.from(new MockWeeksDays(2, 0)), Days.of(14));
+        assertEquals(Days.of(14), Days.from(new MockWeeksDays(2, 0)));
     }
 
     @Test
     public void test_from_P2W3D() {
-        assertEquals(Days.from(new MockWeeksDays(2, 3)), Days.of(17));
+        assertEquals(Days.of(17), Days.from(new MockWeeksDays(2, 3)));
     }
 
     @Test
     public void test_from_Duration() {
-        assertEquals(Days.from(Duration.ofDays(2)), Days.of(2));
+        assertEquals(Days.of(2), Days.from(Duration.ofDays(2)));
     }
 
     @Test(expected = DateTimeException.class)
@@ -198,19 +198,19 @@ public class TestDays {
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedDays) {
-        assertEquals(Days.parse(str), Days.of(expectedDays));
+        assertEquals(Days.of(expectedDays), Days.parse(str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedDays) {
-        assertEquals(Days.parse("+" + str), Days.of(expectedDays));
+        assertEquals(Days.of(expectedDays), Days.parse("+" + str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedDays) {
-        assertEquals(Days.parse("-" + str), Days.of(-expectedDays));
+        assertEquals(Days.of(-expectedDays), Days.parse("-" + str));
     }
 
     @DataProvider
@@ -462,7 +462,7 @@ public class TestDays {
     @Test
     public void test_toPeriod() {
         for (int i = -20; i < 20; i++) {
-            assertEquals(Days.of(i).toPeriod(), Period.ofDays(i));
+            assertEquals(Period.ofDays(i), Days.of(i).toPeriod());
         }
     }
 

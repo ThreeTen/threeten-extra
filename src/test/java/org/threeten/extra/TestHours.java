@@ -81,19 +81,19 @@ public class TestHours {
     public void test_ZERO() {
         assertSame(Hours.of(0), Hours.ZERO);
         assertSame(Hours.of(0), Hours.ZERO);
-        assertEquals(Hours.ZERO.getAmount(), 0);
+        assertEquals(0, Hours.ZERO.getAmount());
     }
     
     //-----------------------------------------------------------------------
     @Test
     public void test_of() {
-        assertEquals(Hours.of(0).getAmount(), 0);
-        assertEquals(Hours.of(1).getAmount(), 1);
-        assertEquals(Hours.of(2).getAmount(), 2);
-        assertEquals(Hours.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
-        assertEquals(Hours.of(-1).getAmount(), -1);
-        assertEquals(Hours.of(-2).getAmount(), -2);
-        assertEquals(Hours.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+        assertEquals(0, Hours.of(0).getAmount());
+        assertEquals(1, Hours.of(1).getAmount());
+        assertEquals(2, Hours.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE, Hours.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1, Hours.of(-1).getAmount());
+        assertEquals(-2, Hours.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE, Hours.of(Integer.MIN_VALUE).getAmount());
     }
     
     //-----------------------------------------------------------------------
@@ -126,19 +126,19 @@ public class TestHours {
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedDays) {
-        assertEquals(Hours.parse(str), Hours.of(expectedDays));
+        assertEquals(Hours.of(expectedDays), Hours.parse(str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedDays) {
-        assertEquals(Hours.parse("+" + str), Hours.of(expectedDays));
+        assertEquals(Hours.of(expectedDays), Hours.parse("+" + str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedDays) {
-        assertEquals(Hours.parse("-" + str), Hours.of(-expectedDays));
+        assertEquals(Hours.of(-expectedDays), Hours.parse("-" + str));
     }
 
     @DataProvider
@@ -370,24 +370,24 @@ public class TestHours {
     @Test
     public void test_addTo() {
         LocalTime base = LocalTime.of(11, 30);
-        assertEquals(Hours.of(0).addTo(base), LocalTime.of(11, 30));
-        assertEquals(Hours.of(6).addTo(base), LocalTime.of(17, 30));
+        assertEquals(LocalTime.of(11, 30), Hours.of(0).addTo(base));
+        assertEquals(LocalTime.of(17, 30), Hours.of(6).addTo(base));
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_subtractFrom() {
         LocalTime base = LocalTime.of(11, 30);
-        assertEquals(Hours.of(0).subtractFrom(base), LocalTime.of(11, 30));
-        assertEquals(Hours.of(6).subtractFrom(base), LocalTime.of(5, 30));
+        assertEquals(LocalTime.of(11, 30), Hours.of(0).subtractFrom(base));
+        assertEquals(LocalTime.of(5, 30), Hours.of(6).subtractFrom(base));
     }
 
     //-----------------------------------------------------------------------
     @SuppressWarnings("deprecation")
     public void test_toDuration() {
         for (int i = -20; i < 20; i++) {
-            assertEquals(Hours.of(i).toPeriod(), Duration.ofHours(i));
-            assertEquals(Hours.of(i).toDuration(), Duration.ofHours(i));
+            assertEquals(Duration.ofHours(i), Hours.of(i).toPeriod());
+            assertEquals(Duration.ofHours(i), Hours.of(i).toDuration());
         }
     }
 

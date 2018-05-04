@@ -75,7 +75,7 @@ public class TestTaiInstant {
             oos.writeObject(test);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-            assertEquals(ois.readObject(), test);
+            assertEquals(test, ois.readObject());
         }
     }
 
@@ -87,18 +87,18 @@ public class TestTaiInstant {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
                 TaiInstant t = TaiInstant.ofTaiSeconds(i, j);
-                assertEquals(t.getTaiSeconds(), i);
-                assertEquals(t.getNano(), j);
+                assertEquals(i, t.getTaiSeconds());
+                assertEquals(j, t.getNano());
             }
             for (int j = -10; j < 0; j++) {
                 TaiInstant t = TaiInstant.ofTaiSeconds(i, j);
-                assertEquals(t.getTaiSeconds(), i - 1);
-                assertEquals(t.getNano(), j + 1000000000);
+                assertEquals(i - 1, t.getTaiSeconds());
+                assertEquals(j + 1000000000, t.getNano());
             }
             for (int j = 999999990; j < 1000000000; j++) {
                 TaiInstant t = TaiInstant.ofTaiSeconds(i, j);
-                assertEquals(t.getTaiSeconds(), i);
-                assertEquals(t.getNano(), j);
+                assertEquals(i, t.getTaiSeconds());
+                assertEquals(j, t.getNano());
             }
         }
     }
@@ -106,8 +106,8 @@ public class TestTaiInstant {
     @Test
     public void factory_ofTaiSeconds_long_long_nanosNegativeAdjusted() {
         TaiInstant test = TaiInstant.ofTaiSeconds(2L, -1);
-        assertEquals(test.getTaiSeconds(), 1);
-        assertEquals(test.getNano(), 999999999);
+        assertEquals(1, test.getTaiSeconds());
+        assertEquals(999999999, test.getNano());
     }
 
     @Test(expected = ArithmeticException.class)
@@ -121,8 +121,8 @@ public class TestTaiInstant {
     @Test
     public void factory_of_Instant() {
         TaiInstant test = TaiInstant.of(Instant.ofEpochSecond(0, 2));
-        assertEquals(test.getTaiSeconds(), (40587L - 36204) * 24 * 60 * 60 + 10); //((1970 - 1958) * 365 + 3) * 24 * 60 * 60 + 10);
-        assertEquals(test.getNano(), 2);
+        assertEquals((40587L - 36204) * 24 * 60 * 60 + 10, test.getTaiSeconds()); //((1970 - 1958) * 365 + 3) * 24 * 60 * 60 + 10);
+        assertEquals(2, test.getNano());
     }
 
     @Test(expected = NullPointerException.class)
@@ -138,8 +138,8 @@ public class TestTaiInstant {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 0; j < 10; j++) {
                 TaiInstant test = TaiInstant.of(UtcInstant.ofModifiedJulianDay(36204 + i, j * 1000000000L + 2L));
-                assertEquals(test.getTaiSeconds(), i * 24 * 60 * 60 + j + 10);
-                assertEquals(test.getNano(), 2);
+                assertEquals(i * 24 * 60 * 60 + j + 10, test.getTaiSeconds());
+                assertEquals(2, test.getNano());
             }
         }
     }
@@ -158,8 +158,8 @@ public class TestTaiInstant {
             for (int j = 900000000; j < 990000000; j += 10000000) {
                 String str = i + "." + j + "s(TAI)";
                 TaiInstant test = TaiInstant.parse(str);
-                assertEquals(test.getTaiSeconds(), i);
-                assertEquals(test.getNano(), j);
+                assertEquals(i, test.getTaiSeconds());
+                assertEquals(j, test.getNano());
             }
         }
     }
@@ -206,8 +206,8 @@ public class TestTaiInstant {
     @UseDataProvider("data_withTAISeconds")
     public void test_withTAISeconds(long tai, long nanos, long newTai, Long expectedTai, Long expectedNanos) {
         TaiInstant i = TaiInstant.ofTaiSeconds(tai, nanos).withTaiSeconds(newTai);
-        assertEquals(i.getTaiSeconds(), expectedTai.longValue());
-        assertEquals(i.getNano(), expectedNanos.longValue());
+        assertEquals(expectedTai.longValue(), i.getTaiSeconds());
+        assertEquals(expectedNanos.longValue(), i.getNano());
     }
 
     //-----------------------------------------------------------------------
@@ -231,8 +231,8 @@ public class TestTaiInstant {
         TaiInstant i = TaiInstant.ofTaiSeconds(tai, nanos);
         if (expectedTai != null) {
             i = i.withNano(newNano);
-            assertEquals(i.getTaiSeconds(), expectedTai.longValue());
-            assertEquals(i.getNano(), expectedNanos.longValue());
+            assertEquals(expectedTai.longValue(), i.getTaiSeconds());
+            assertEquals(expectedNanos.longValue(), i.getNano());
         } else {
             try {
                 i = i.withNano(newNano);
@@ -435,8 +435,8 @@ public class TestTaiInstant {
     @UseDataProvider("data_plus")
     public void test_plus(long seconds, int nanos, long plusSeconds, int plusNanos, long expectedSeconds, int expectedNanoOfSecond) {
         TaiInstant i = TaiInstant.ofTaiSeconds(seconds, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
-        assertEquals(i.getTaiSeconds(), expectedSeconds);
-        assertEquals(i.getNano(), expectedNanoOfSecond);
+        assertEquals(expectedSeconds, i.getTaiSeconds());
+        assertEquals(expectedNanoOfSecond, i.getNano());
     }
 
     @Test(expected = ArithmeticException.class)
@@ -643,8 +643,8 @@ public class TestTaiInstant {
     @UseDataProvider("data_minus")
     public void test_minus(long seconds, int nanos, long minusSeconds, int minusNanos, long expectedSeconds, int expectedNanoOfSecond) {
         TaiInstant i = TaiInstant.ofTaiSeconds(seconds, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
-        assertEquals(i.getTaiSeconds(), expectedSeconds);
-        assertEquals(i.getNano(), expectedNanoOfSecond);
+        assertEquals(expectedSeconds, i.getTaiSeconds());
+        assertEquals(expectedNanoOfSecond, i.getNano());
     }
 
     @Test(expected = ArithmeticException.class)
@@ -667,8 +667,8 @@ public class TestTaiInstant {
         TaiInstant tai1 = TaiInstant.ofTaiSeconds(10, 0);
         TaiInstant tai2 = TaiInstant.ofTaiSeconds(25, 0);
         Duration test = tai1.durationUntil(tai2);
-        assertEquals(test.getSeconds(), 15);
-        assertEquals(test.getNano(), 0);
+        assertEquals(15, test.getSeconds());
+        assertEquals(0, test.getNano());
     }
 
     @Test
@@ -676,8 +676,8 @@ public class TestTaiInstant {
         TaiInstant tai1 = TaiInstant.ofTaiSeconds(4, 5);
         TaiInstant tai2 = TaiInstant.ofTaiSeconds(4, 7);
         Duration test = tai1.durationUntil(tai2);
-        assertEquals(test.getSeconds(), 0);
-        assertEquals(test.getNano(), 2);
+        assertEquals(0, test.getSeconds());
+        assertEquals(2, test.getNano());
     }
 
     @Test
@@ -685,8 +685,8 @@ public class TestTaiInstant {
         TaiInstant tai1 = TaiInstant.ofTaiSeconds(4, 9);
         TaiInstant tai2 = TaiInstant.ofTaiSeconds(4, 7);
         Duration test = tai1.durationUntil(tai2);
-        assertEquals(test.getSeconds(), -1);
-        assertEquals(test.getNano(), 999999998);
+        assertEquals(-1, test.getSeconds());
+        assertEquals(999999998, test.getNano());
     }
 
     //-----------------------------------------------------------------------
@@ -698,7 +698,7 @@ public class TestTaiInstant {
             for (int j = 0; j < 10; j++) {
                 UtcInstant expected = UtcInstant.ofModifiedJulianDay(36204 + i, j * 1000000000L + 2L);
                 TaiInstant test = TaiInstant.ofTaiSeconds(i * 24 * 60 * 60 + j + 10, 2);
-                assertEquals(test.toUtcInstant(), expected);
+                assertEquals(expected, test.toUtcInstant());
             }
         }
     }
@@ -712,7 +712,7 @@ public class TestTaiInstant {
             for (int j = 0; j < 10; j++) {
                 Instant expected = Instant.ofEpochSecond(-378691200L + i * 24 * 60 * 60 + j).plusNanos(2);
                 TaiInstant test = TaiInstant.ofTaiSeconds(i * 24 * 60 * 60 + j + 10, 2);
-                assertEquals(test.toInstant(), expected);
+                assertEquals(expected, test.toInstant());
             }
         }
     }
@@ -745,14 +745,14 @@ public class TestTaiInstant {
             for (int j = 0; j < instants.length; j++) {
                 TaiInstant b = instants[j];
                 if (i < j) {
-                    assertEquals(a.compareTo(b) < 0, true);
-                    assertEquals(a.equals(b), false);
+                    assertEquals(true, a.compareTo(b) < 0);
+                    assertEquals(false, a.equals(b));
                 } else if (i > j) {
-                    assertEquals(a.compareTo(b) > 0, true);
-                    assertEquals(a.equals(b), false);
+                    assertEquals(true, a.compareTo(b) > 0);
+                    assertEquals(false, a.equals(b));
                 } else {
-                    assertEquals(a.compareTo(b), 0);
-                    assertEquals(a.equals(b), true);
+                    assertEquals(0, a.compareTo(b));
+                    assertEquals(true, a.equals(b));
                 }
             }
         }
@@ -781,37 +781,37 @@ public class TestTaiInstant {
         TaiInstant test5n = TaiInstant.ofTaiSeconds(5L, 30);
         TaiInstant test6 = TaiInstant.ofTaiSeconds(6L, 20);
 
-        assertEquals(test5a.equals(test5a), true);
-        assertEquals(test5a.equals(test5b), true);
-        assertEquals(test5a.equals(test5n), false);
-        assertEquals(test5a.equals(test6), false);
+        assertEquals(true, test5a.equals(test5a));
+        assertEquals(true, test5a.equals(test5b));
+        assertEquals(false, test5a.equals(test5n));
+        assertEquals(false, test5a.equals(test6));
 
-        assertEquals(test5b.equals(test5a), true);
-        assertEquals(test5b.equals(test5b), true);
-        assertEquals(test5b.equals(test5n), false);
-        assertEquals(test5b.equals(test6), false);
+        assertEquals(true, test5b.equals(test5a));
+        assertEquals(true, test5b.equals(test5b));
+        assertEquals(false, test5b.equals(test5n));
+        assertEquals(false, test5b.equals(test6));
 
-        assertEquals(test5n.equals(test5a), false);
-        assertEquals(test5n.equals(test5b), false);
-        assertEquals(test5n.equals(test5n), true);
-        assertEquals(test5n.equals(test6), false);
+        assertEquals(false, test5n.equals(test5a));
+        assertEquals(false, test5n.equals(test5b));
+        assertEquals(true, test5n.equals(test5n));
+        assertEquals(false, test5n.equals(test6));
 
-        assertEquals(test6.equals(test5a), false);
-        assertEquals(test6.equals(test5b), false);
-        assertEquals(test6.equals(test5n), false);
-        assertEquals(test6.equals(test6), true);
+        assertEquals(false, test6.equals(test5a));
+        assertEquals(false, test6.equals(test5b));
+        assertEquals(false, test6.equals(test5n));
+        assertEquals(true, test6.equals(test6));
     }
 
     @Test
     public void test_equals_null() {
         TaiInstant test5 = TaiInstant.ofTaiSeconds(5L, 20);
-        assertEquals(test5.equals(null), false);
+        assertEquals(false, test5.equals(null));
     }
 
     @Test
     public void test_equals_otherClass() {
         TaiInstant test5 = TaiInstant.ofTaiSeconds(5L, 20);
-        assertEquals(test5.equals(""), false);
+        assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
@@ -824,12 +824,12 @@ public class TestTaiInstant {
         TaiInstant test5n = TaiInstant.ofTaiSeconds(5L, 30);
         TaiInstant test6 = TaiInstant.ofTaiSeconds(6L, 20);
 
-        assertEquals(test5a.hashCode() == test5a.hashCode(), true);
-        assertEquals(test5a.hashCode() == test5b.hashCode(), true);
-        assertEquals(test5b.hashCode() == test5b.hashCode(), true);
+        assertEquals(true, test5a.hashCode() == test5a.hashCode());
+        assertEquals(true, test5a.hashCode() == test5b.hashCode());
+        assertEquals(true, test5b.hashCode() == test5b.hashCode());
 
-        assertEquals(test5a.hashCode() == test5n.hashCode(), false);
-        assertEquals(test5a.hashCode() == test6.hashCode(), false);
+        assertEquals(false, test5a.hashCode() == test5n.hashCode());
+        assertEquals(false, test5a.hashCode() == test6.hashCode());
     }
 
     //-----------------------------------------------------------------------
@@ -838,19 +838,19 @@ public class TestTaiInstant {
     @Test
     public void test_toString_standard() {
         TaiInstant t = TaiInstant.ofTaiSeconds(123L, 123456789);
-        assertEquals(t.toString(), "123.123456789s(TAI)");
+        assertEquals("123.123456789s(TAI)", t.toString());
     }
 
     @Test
     public void test_toString_negative() {
         TaiInstant t = TaiInstant.ofTaiSeconds(-123L, 123456789);
-        assertEquals(t.toString(), "-123.123456789s(TAI)");
+        assertEquals("-123.123456789s(TAI)", t.toString());
     }
 
     @Test
     public void test_toString_zeroDecimal() {
         TaiInstant t = TaiInstant.ofTaiSeconds(0L, 567);
-        assertEquals(t.toString(), "0.000000567s(TAI)");
+        assertEquals("0.000000567s(TAI)", t.toString());
     }
 
 }

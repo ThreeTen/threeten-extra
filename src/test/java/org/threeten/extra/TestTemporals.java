@@ -117,7 +117,7 @@ public class TestTemporals {
                 switch (date.getDayOfWeek()) {
                     case FRIDAY:
                     case SATURDAY:
-                        assertEquals(test.getDayOfWeek(), MONDAY);
+                        assertEquals(MONDAY, test.getDayOfWeek());
                         break;
                     default:
                         assertEquals(date.getDayOfWeek().plus(1), test.getDayOfWeek());
@@ -127,18 +127,18 @@ public class TestTemporals {
                     int dayDiff = test.getDayOfYear() - date.getDayOfYear();
                     switch (date.getDayOfWeek()) {
                         case FRIDAY:
-                            assertEquals(dayDiff, 3);
+                            assertEquals(3, dayDiff);
                             break;
                         case SATURDAY:
-                            assertEquals(dayDiff, 2);
+                            assertEquals(2, dayDiff);
                             break;
                         default:
-                            assertEquals(dayDiff, 1);
+                            assertEquals(1, dayDiff);
                     }
                 } else {
-                    assertEquals(test.getYear(), 2008);
-                    assertEquals(test.getMonth(), JANUARY);
-                    assertEquals(test.getDayOfMonth(), 1);
+                    assertEquals(2008, test.getYear());
+                    assertEquals(JANUARY, test.getMonth());
+                    assertEquals(1, test.getDayOfMonth());
                 }
             }
         }
@@ -148,11 +148,11 @@ public class TestTemporals {
     public void test_nextWorkingDay_yearChange() {
         LocalDate friday = LocalDate.of(2010, DECEMBER, 31);
         Temporal test = Temporals.nextWorkingDay().adjustInto(friday);
-        assertEquals(test, LocalDate.of(2011, JANUARY, 3));
+        assertEquals(LocalDate.of(2011, JANUARY, 3), test);
 
         LocalDate saturday = LocalDate.of(2011, DECEMBER, 31);
         test = Temporals.nextWorkingDay().adjustInto(saturday);
-        assertEquals(test, LocalDate.of(2012, JANUARY, 2));
+        assertEquals(LocalDate.of(2012, JANUARY, 2), test);
     }
 
     //-----------------------------------------------------------------------
@@ -184,7 +184,7 @@ public class TestTemporals {
                 switch (date.getDayOfWeek()) {
                     case MONDAY:
                     case SUNDAY:
-                        assertEquals(test.getDayOfWeek(), FRIDAY);
+                        assertEquals(FRIDAY, test.getDayOfWeek());
                         break;
                     default:
                         assertEquals(date.getDayOfWeek().minus(1), test.getDayOfWeek());
@@ -194,18 +194,18 @@ public class TestTemporals {
                     int dayDiff = test.getDayOfYear() - date.getDayOfYear();
                     switch (date.getDayOfWeek()) {
                         case MONDAY:
-                            assertEquals(dayDiff, -3);
+                            assertEquals(-3, dayDiff);
                             break;
                         case SUNDAY:
-                            assertEquals(dayDiff, -2);
+                            assertEquals(-2, dayDiff);
                             break;
                         default:
-                            assertEquals(dayDiff, -1);
+                            assertEquals(-1, dayDiff);
                     }
                 } else {
-                    assertEquals(test.getYear(), 2006);
-                    assertEquals(test.getMonth(), DECEMBER);
-                    assertEquals(test.getDayOfMonth(), 29);
+                    assertEquals(2006, test.getYear());
+                    assertEquals(DECEMBER, test.getMonth());
+                    assertEquals(29, test.getDayOfMonth());
                 }
             }
         }
@@ -215,11 +215,11 @@ public class TestTemporals {
     public void test_previousWorkingDay_yearChange() {
         LocalDate monday = LocalDate.of(2011, JANUARY, 3);
         Temporal test = Temporals.previousWorkingDay().adjustInto(monday);
-        assertEquals(test, LocalDate.of(2010, DECEMBER, 31));
+        assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
 
         LocalDate sunday = LocalDate.of(2011, JANUARY, 2);
         test = Temporals.previousWorkingDay().adjustInto(sunday);
-        assertEquals(test, LocalDate.of(2010, DECEMBER, 31));
+        assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
     }
 
     //-----------------------------------------------------------------------
@@ -236,7 +236,7 @@ public class TestTemporals {
     @Test
     @UseDataProvider("data_parseFirstMatching")
     public void test_parseFirstMatching(String text, DateTimeFormatter fmt1, DateTimeFormatter fmt2) {
-        assertEquals(Temporals.parseFirstMatching(text, LocalDate::from, fmt1, fmt2), LocalDate.of(2016, 9, 6));
+        assertEquals(LocalDate.of(2016, 9, 6), Temporals.parseFirstMatching(text, LocalDate::from, fmt1, fmt2));
     }
 
     @Test(expected = DateTimeParseException.class)
@@ -246,7 +246,7 @@ public class TestTemporals {
 
     @Test
     public void test_parseFirstMatching_one() {
-        assertEquals(Temporals.parseFirstMatching("2016-09-06", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE), LocalDate.of(2016, 9, 6));
+        assertEquals(LocalDate.of(2016, 9, 6), Temporals.parseFirstMatching("2016-09-06", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE));
     }
 
     @Test(expected = DateTimeParseException.class)
@@ -273,7 +273,7 @@ public class TestTemporals {
     @Test
     @UseDataProvider("data_timeUnitConversion")
     public void test_timeUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
-        assertEquals(Temporals.timeUnit(chronoUnit), timeUnit);
+        assertEquals(timeUnit, Temporals.timeUnit(chronoUnit));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -289,7 +289,7 @@ public class TestTemporals {
     @Test
     @UseDataProvider("data_timeUnitConversion")
     public void test_chronoUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
-        assertEquals(Temporals.chronoUnit(timeUnit), chronoUnit);
+        assertEquals(chronoUnit, Temporals.chronoUnit(timeUnit));
     }
 
     @Test(expected = NullPointerException.class)
@@ -453,8 +453,8 @@ public class TestTemporals {
             long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
             long resultWhole, long resultRemainder) {
         long[] result = Temporals.convertAmount(fromAmount, fromUnit, resultUnit);
-        assertEquals(result[0], resultWhole);
-        assertEquals(result[1], resultRemainder);
+        assertEquals(resultWhole, result[0]);
+        assertEquals(resultRemainder, result[1]);
     }
 
     @Test
@@ -463,8 +463,8 @@ public class TestTemporals {
             long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
             long resultWhole, long resultRemainder) {
         long[] result = Temporals.convertAmount(-fromAmount, fromUnit, resultUnit);
-        assertEquals(result[0], -resultWhole);
-        assertEquals(result[1], -resultRemainder);
+        assertEquals(-resultWhole, result[0]);
+        assertEquals(-resultRemainder, result[1]);
     }
 
     @Test
@@ -472,8 +472,8 @@ public class TestTemporals {
         for (ChronoUnit unit : ChronoUnit.values()) {
             if (unit != ERAS && unit != FOREVER) {
                 long[] result = Temporals.convertAmount(0, unit, unit);
-                assertEquals(result[0], 0);
-                assertEquals(result[1], 0);
+                assertEquals(0, result[0]);
+                assertEquals(0, result[1]);
             }
         }
     }
@@ -483,8 +483,8 @@ public class TestTemporals {
         for (ChronoUnit unit : ChronoUnit.values()) {
             if (unit != ERAS && unit != FOREVER) {
                 long[] result = Temporals.convertAmount(2, unit, unit);
-                assertEquals(result[0], 2);
-                assertEquals(result[1], 0);
+                assertEquals(2, result[0]);
+                assertEquals(0, result[1]);
             }
         }
     }

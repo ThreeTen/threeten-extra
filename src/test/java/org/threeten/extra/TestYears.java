@@ -83,51 +83,51 @@ public class TestYears {
     public void test_ZERO() {
         assertSame(Years.of(0), Years.ZERO);
         assertSame(Years.of(0), Years.ZERO);
-        assertEquals(Years.ZERO.getAmount(), 0);
+        assertEquals(0, Years.ZERO.getAmount());
     }
 
     @Test
     public void test_ONE() {
         assertSame(Years.of(1), Years.ONE);
         assertSame(Years.of(1), Years.ONE);
-        assertEquals(Years.ONE.getAmount(), 1);
+        assertEquals(1, Years.ONE.getAmount());
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_of() {
-        assertEquals(Years.of(1).getAmount(), 1);
-        assertEquals(Years.of(2).getAmount(), 2);
-        assertEquals(Years.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
-        assertEquals(Years.of(-1).getAmount(), -1);
-        assertEquals(Years.of(-2).getAmount(), -2);
-        assertEquals(Years.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+        assertEquals(1, Years.of(1).getAmount());
+        assertEquals(2, Years.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE, Years.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1, Years.of(-1).getAmount());
+        assertEquals(-2, Years.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE, Years.of(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_from_P0Y() {
-        assertEquals(Years.from(Period.ofYears(0)), Years.of(0));
+        assertEquals(Years.of(0), Years.from(Period.ofYears(0)));
     }
 
     @Test
     public void test_from_P2Y() {
-        assertEquals(Years.from(Period.ofYears(2)), Years.of(2));
+        assertEquals(Years.of(2), Years.from(Period.ofYears(2)));
     }
 
     @Test
     public void test_from_P24M() {
-        assertEquals(Years.from(Period.ofMonths(24)), Years.of(2));
+        assertEquals(Years.of(2), Years.from(Period.ofMonths(24)));
     }
 
     @Test
     public void test_from_yearsAndMonths() {
-        assertEquals(Years.from(Period.of(3, 24, 0)), Years.of(5));
+        assertEquals(Years.of(5), Years.from(Period.of(3, 24, 0)));
     }
 
     @Test
     public void test_from_decadesAndMonths() {
-        assertEquals(Years.from(new MockDecadesMonths(2, -12)), Years.of(19));
+        assertEquals(Years.of(19), Years.from(new MockDecadesMonths(2, -12)));
     }
 
     @Test(expected = DateTimeException.class)
@@ -148,13 +148,13 @@ public class TestYears {
     //-----------------------------------------------------------------------
     @Test
     public void test_parse_CharSequence() {
-        assertEquals(Years.parse("P0Y"), Years.of(0));
-        assertEquals(Years.parse("P1Y"), Years.of(1));
-        assertEquals(Years.parse("P2Y"), Years.of(2));
-        assertEquals(Years.parse("P123456789Y"), Years.of(123456789));
-        assertEquals(Years.parse("P-2Y"), Years.of(-2));
-        assertEquals(Years.parse("-P2Y"), Years.of(-2));
-        assertEquals(Years.parse("-P-2Y"), Years.of(2));
+        assertEquals(Years.of(0), Years.parse("P0Y"));
+        assertEquals(Years.of(1), Years.parse("P1Y"));
+        assertEquals(Years.of(2), Years.parse("P2Y"));
+        assertEquals(Years.of(123456789), Years.parse("P123456789Y"));
+        assertEquals(Years.of(-2), Years.parse("P-2Y"));
+        assertEquals(Years.of(-2), Years.parse("-P2Y"));
+        assertEquals(Years.of(2), Years.parse("-P-2Y"));
     }
 
     @DataProvider
@@ -403,7 +403,7 @@ public class TestYears {
     @Test
     public void test_toPeriod() {
         for (int i = -20; i < 20; i++) {
-            assertEquals(Years.of(i).toPeriod(), Period.ofYears(i));
+            assertEquals(Period.ofYears(i), Years.of(i).toPeriod());
         }
     }
 

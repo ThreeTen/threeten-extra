@@ -81,31 +81,31 @@ public class TestSeconds {
     public void test_ZERO() {
         assertSame(Seconds.of(0), Seconds.ZERO);
         assertSame(Seconds.of(0), Seconds.ZERO);
-        assertEquals(Seconds.ZERO.getAmount(), 0);
+        assertEquals(0, Seconds.ZERO.getAmount());
     }
     
     //-----------------------------------------------------------------------
     @Test
     public void test_of() {
-        assertEquals(Seconds.of(0).getAmount(), 0);
-        assertEquals(Seconds.of(1).getAmount(), 1);
-        assertEquals(Seconds.of(2).getAmount(), 2);
-        assertEquals(Seconds.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
-        assertEquals(Seconds.of(-1).getAmount(), -1);
-        assertEquals(Seconds.of(-2).getAmount(), -2);
-        assertEquals(Seconds.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+        assertEquals(0, Seconds.of(0).getAmount());
+        assertEquals(1, Seconds.of(1).getAmount());
+        assertEquals(2, Seconds.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE, Seconds.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1, Seconds.of(-1).getAmount());
+        assertEquals(-2, Seconds.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE, Seconds.of(Integer.MIN_VALUE).getAmount());
     }
     
     //-----------------------------------------------------------------------
     @Test
     public void test_ofHours() {
-        assertEquals(Seconds.ofHours(0).getAmount(), 0);
-        assertEquals(Seconds.ofHours(1).getAmount(), 3600);
-        assertEquals(Seconds.ofHours(2).getAmount(), 7200);
-        assertEquals(Seconds.ofHours(Integer.MAX_VALUE / 3600).getAmount(), (Integer.MAX_VALUE / 3600) * 3600);
-        assertEquals(Seconds.ofHours(-1).getAmount(), -3600);
-        assertEquals(Seconds.ofHours(-2).getAmount(), -7200);
-        assertEquals(Seconds.ofHours(Integer.MIN_VALUE / 3600).getAmount(), (Integer.MIN_VALUE / 3600) * 3600);
+        assertEquals(0, Seconds.ofHours(0).getAmount());
+        assertEquals(3600, Seconds.ofHours(1).getAmount());
+        assertEquals(7200, Seconds.ofHours(2).getAmount());
+        assertEquals((Integer.MAX_VALUE / 3600) * 3600, Seconds.ofHours(Integer.MAX_VALUE / 3600).getAmount());
+        assertEquals(-3600, Seconds.ofHours(-1).getAmount());
+        assertEquals(-7200, Seconds.ofHours(-2).getAmount());
+        assertEquals((Integer.MIN_VALUE / 3600) * 3600, Seconds.ofHours(Integer.MIN_VALUE / 3600).getAmount());
     }
     
     @Test(expected = ArithmeticException.class)
@@ -116,13 +116,13 @@ public class TestSeconds {
     //-----------------------------------------------------------------------
     @Test
     public void test_ofMinutes() {
-        assertEquals(Seconds.ofMinutes(0).getAmount(), 0);
-        assertEquals(Seconds.ofMinutes(1).getAmount(), 60);
-        assertEquals(Seconds.ofMinutes(2).getAmount(), 120);
-        assertEquals(Seconds.ofMinutes(Integer.MAX_VALUE / 60).getAmount(), (Integer.MAX_VALUE / 60) * 60);
-        assertEquals(Seconds.ofMinutes(-1).getAmount(), -60);
-        assertEquals(Seconds.ofMinutes(-2).getAmount(), -120);
-        assertEquals(Seconds.ofMinutes(Integer.MIN_VALUE / 60).getAmount(), (Integer.MIN_VALUE / 60) * 60);
+        assertEquals(0, Seconds.ofMinutes(0).getAmount());
+        assertEquals(60, Seconds.ofMinutes(1).getAmount());
+        assertEquals(120, Seconds.ofMinutes(2).getAmount());
+        assertEquals((Integer.MAX_VALUE / 60) * 60, Seconds.ofMinutes(Integer.MAX_VALUE / 60).getAmount());
+        assertEquals(-60, Seconds.ofMinutes(-1).getAmount());
+        assertEquals(-120, Seconds.ofMinutes(-2).getAmount());
+        assertEquals((Integer.MIN_VALUE / 60) * 60, Seconds.ofMinutes(Integer.MIN_VALUE / 60).getAmount());
     }
     
     @Test(expected = ArithmeticException.class)
@@ -194,19 +194,19 @@ public class TestSeconds {
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedSeconds) {
-        assertEquals(Seconds.parse(str), Seconds.of(expectedSeconds));
+        assertEquals(Seconds.of(expectedSeconds), Seconds.parse(str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedSeconds) {
-        assertEquals(Seconds.parse("+" + str), Seconds.of(expectedSeconds));
+        assertEquals(Seconds.of(expectedSeconds), Seconds.parse("+" + str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedSeconds) {
-        assertEquals(Seconds.parse("-" + str), Seconds.of(-expectedSeconds));
+        assertEquals(Seconds.of(-expectedSeconds), Seconds.parse("-" + str));
     }
 
     @DataProvider
@@ -418,23 +418,23 @@ public class TestSeconds {
     @Test
     public void test_addTo() {
         LocalTime base = LocalTime.of(11, 30);
-        assertEquals(Seconds.of(0).addTo(base), LocalTime.of(11, 30));
-        assertEquals(Seconds.of(6).addTo(base), LocalTime.of(11, 30, 6));
+        assertEquals(LocalTime.of(11, 30), Seconds.of(0).addTo(base));
+        assertEquals(LocalTime.of(11, 30, 6), Seconds.of(6).addTo(base));
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_subtractFrom() {
         LocalTime base = LocalTime.of(11, 30);
-        assertEquals(Seconds.of(0).subtractFrom(base), LocalTime.of(11, 30));
-        assertEquals(Seconds.of(6).subtractFrom(base), LocalTime.of(11, 29, 54));
+        assertEquals(LocalTime.of(11, 30), Seconds.of(0).subtractFrom(base));
+        assertEquals(LocalTime.of(11, 29, 54), Seconds.of(6).subtractFrom(base));
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_toDuration() {
         for (int i = -20; i < 20; i++) {
-            assertEquals(Seconds.of(i).toDuration(), Duration.ofSeconds(i));
+            assertEquals(Duration.ofSeconds(i), Seconds.of(i).toDuration());
         }
     }
     

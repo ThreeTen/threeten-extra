@@ -83,38 +83,38 @@ public class TestMonths {
     public void test_ZERO() {
         assertSame(Months.of(0), Months.ZERO);
         assertSame(Months.of(0), Months.ZERO);
-        assertEquals(Months.ZERO.getAmount(), 0);
+        assertEquals(0, Months.ZERO.getAmount());
     }
 
     @Test
     public void test_ONE() {
         assertSame(Months.of(1), Months.ONE);
         assertSame(Months.of(1), Months.ONE);
-        assertEquals(Months.ONE.getAmount(), 1);
+        assertEquals(1, Months.ONE.getAmount());
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_of() {
-        assertEquals(Months.of(0).getAmount(), 0);
-        assertEquals(Months.of(1).getAmount(), 1);
-        assertEquals(Months.of(2).getAmount(), 2);
-        assertEquals(Months.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
-        assertEquals(Months.of(-1).getAmount(), -1);
-        assertEquals(Months.of(-2).getAmount(), -2);
-        assertEquals(Months.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+        assertEquals(0, Months.of(0).getAmount());
+        assertEquals(1, Months.of(1).getAmount());
+        assertEquals(2, Months.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE, Months.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1, Months.of(-1).getAmount());
+        assertEquals(-2, Months.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE, Months.of(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_ofYears() {
-        assertEquals(Months.ofYears(0).getAmount(), 0);
-        assertEquals(Months.ofYears(1).getAmount(), 12);
-        assertEquals(Months.ofYears(2).getAmount(), 24);
-        assertEquals(Months.ofYears(Integer.MAX_VALUE / 12).getAmount(), (Integer.MAX_VALUE / 12) * 12);
-        assertEquals(Months.ofYears(-1).getAmount(), -12);
-        assertEquals(Months.ofYears(-2).getAmount(), -24);
-        assertEquals(Months.ofYears(Integer.MIN_VALUE / 12).getAmount(), (Integer.MIN_VALUE / 12) * 12);
+        assertEquals(0, Months.ofYears(0).getAmount());
+        assertEquals(12, Months.ofYears(1).getAmount());
+        assertEquals(24, Months.ofYears(2).getAmount());
+        assertEquals((Integer.MAX_VALUE / 12) * 12, Months.ofYears(Integer.MAX_VALUE / 12).getAmount());
+        assertEquals(-12, Months.ofYears(-1).getAmount());
+        assertEquals(-24, Months.ofYears(-2).getAmount());
+        assertEquals((Integer.MIN_VALUE / 12) * 12, Months.ofYears(Integer.MIN_VALUE / 12).getAmount());
     }
 
     @Test(expected = ArithmeticException.class)
@@ -125,27 +125,27 @@ public class TestMonths {
     //-----------------------------------------------------------------------
     @Test
     public void test_from_Period_P0M() {
-        assertEquals(Months.from(Period.ofMonths(0)), Months.of(0));
+        assertEquals(Months.of(0), Months.from(Period.ofMonths(0)));
     }
 
     @Test
     public void test_from_Period_P2M() {
-        assertEquals(Months.from(Period.ofMonths(2)), Months.of(2));
+        assertEquals(Months.of(2), Months.from(Period.ofMonths(2)));
     }
 
     @Test
     public void test_from_P2Y() {
-        assertEquals(Months.from(new MockYearsMonths(2, 0)), Months.of(24));
+        assertEquals(Months.of(24), Months.from(new MockYearsMonths(2, 0)));
     }
 
     @Test
     public void test_from_P2Y3M() {
-        assertEquals(Months.from(new MockYearsMonths(2, 3)), Months.of(27));
+        assertEquals(Months.of(27), Months.from(new MockYearsMonths(2, 3)));
     }
 
     @Test
     public void test_from_yearsAndMonths() {
-        assertEquals(Months.from(Period.of(3, 5, 0)), Months.of(41));
+        assertEquals(Months.of(41), Months.from(Period.of(3, 5, 0)));
     }
 
     @Test(expected = DateTimeException.class)
@@ -193,19 +193,19 @@ public class TestMonths {
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedDays) {
-        assertEquals(Months.parse(str), Months.of(expectedDays));
+        assertEquals(Months.of(expectedDays), Months.parse(str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedDays) {
-        assertEquals(Months.parse("+" + str), Months.of(expectedDays));
+        assertEquals(Months.of(expectedDays), Months.parse("+" + str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedDays) {
-        assertEquals(Months.parse("-" + str), Months.of(-expectedDays));
+        assertEquals(Months.of(-expectedDays), Months.parse("-" + str));
     }
 
     @DataProvider
@@ -455,7 +455,7 @@ public class TestMonths {
     @Test
     public void test_toPeriod() {
         for (int i = -20; i < 20; i++) {
-            assertEquals(Months.of(i).toPeriod(), Period.ofMonths(i));
+            assertEquals(Period.ofMonths(i), Months.of(i).toPeriod());
         }
     }
 

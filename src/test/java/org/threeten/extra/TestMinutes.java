@@ -81,31 +81,31 @@ public class TestMinutes {
     public void test_ZERO() {
         assertSame(Minutes.of(0), Minutes.ZERO);
         assertSame(Minutes.of(0), Minutes.ZERO);
-        assertEquals(Minutes.ZERO.getAmount(), 0);
+        assertEquals(0, Minutes.ZERO.getAmount());
     }
     
     //-----------------------------------------------------------------------
     @Test
     public void test_of() {
-        assertEquals(Minutes.of(0).getAmount(), 0);
-        assertEquals(Minutes.of(1).getAmount(), 1);
-        assertEquals(Minutes.of(2).getAmount(), 2);
-        assertEquals(Minutes.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
-        assertEquals(Minutes.of(-1).getAmount(), -1);
-        assertEquals(Minutes.of(-2).getAmount(), -2);
-        assertEquals(Minutes.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+        assertEquals(0, Minutes.of(0).getAmount());
+        assertEquals(1, Minutes.of(1).getAmount());
+        assertEquals(2, Minutes.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE, Minutes.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1, Minutes.of(-1).getAmount());
+        assertEquals(-2, Minutes.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE, Minutes.of(Integer.MIN_VALUE).getAmount());
     }
     
     //-----------------------------------------------------------------------
     @Test
     public void test_ofHours() {
-        assertEquals(Minutes.ofHours(0).getAmount(), 0);
-        assertEquals(Minutes.ofHours(1).getAmount(), 60);
-        assertEquals(Minutes.ofHours(2).getAmount(), 120);
-        assertEquals(Minutes.ofHours(Integer.MAX_VALUE / 60).getAmount(), (Integer.MAX_VALUE / 60) * 60);
-        assertEquals(Minutes.ofHours(-1).getAmount(), -60);
-        assertEquals(Minutes.ofHours(-2).getAmount(), -120);
-        assertEquals(Minutes.ofHours(Integer.MIN_VALUE / 60).getAmount(), (Integer.MIN_VALUE / 60) * 60);
+        assertEquals(0, Minutes.ofHours(0).getAmount());
+        assertEquals(60, Minutes.ofHours(1).getAmount());
+        assertEquals(120, Minutes.ofHours(2).getAmount());
+        assertEquals((Integer.MAX_VALUE / 60) * 60, Minutes.ofHours(Integer.MAX_VALUE / 60).getAmount());
+        assertEquals(-60, Minutes.ofHours(-1).getAmount());
+        assertEquals(-120, Minutes.ofHours(-2).getAmount());
+        assertEquals((Integer.MIN_VALUE / 60) * 60, Minutes.ofHours(Integer.MIN_VALUE / 60).getAmount());
     }
     
     @Test(expected = ArithmeticException.class)
@@ -160,19 +160,19 @@ public class TestMinutes {
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedMinutes) {
-        assertEquals(Minutes.parse(str), Minutes.of(expectedMinutes));
+        assertEquals(Minutes.of(expectedMinutes), Minutes.parse(str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedMinutes) {
-        assertEquals(Minutes.parse("+" + str), Minutes.of(expectedMinutes));
+        assertEquals(Minutes.of(expectedMinutes), Minutes.parse("+" + str));
     }
 
     @Test
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedMinutes) {
-        assertEquals(Minutes.parse("-" + str), Minutes.of(-expectedMinutes));
+        assertEquals(Minutes.of(-expectedMinutes), Minutes.parse("-" + str));
     }
 
     @DataProvider
@@ -386,23 +386,23 @@ public class TestMinutes {
     @Test
     public void test_addTo() {
         LocalTime base = LocalTime.of(11, 30);
-        assertEquals(Minutes.of(0).addTo(base), LocalTime.of(11, 30));
-        assertEquals(Minutes.of(6).addTo(base), LocalTime.of(11, 36));
+        assertEquals(LocalTime.of(11, 30), Minutes.of(0).addTo(base));
+        assertEquals(LocalTime.of(11, 36), Minutes.of(6).addTo(base));
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_subtractFrom() {
         LocalTime base = LocalTime.of(11, 30);
-        assertEquals(Minutes.of(0).subtractFrom(base), LocalTime.of(11, 30));
-        assertEquals(Minutes.of(6).subtractFrom(base), LocalTime.of(11, 24));
+        assertEquals(LocalTime.of(11, 30), Minutes.of(0).subtractFrom(base));
+        assertEquals(LocalTime.of(11, 24), Minutes.of(6).subtractFrom(base));
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_toDuration() {
         for (int i = -20; i < 20; i++) {
-            assertEquals(Minutes.of(i).toDuration(), Duration.ofMinutes(i));
+            assertEquals(Duration.ofMinutes(i), Minutes.of(i).toDuration());
         }
     }
     

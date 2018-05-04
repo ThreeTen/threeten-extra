@@ -54,6 +54,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -94,12 +95,12 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_chronology_of_name() {
-        Assert.assertEquals(INSTANCE.getId(), "Accounting");
+        Assert.assertEquals("Accounting", INSTANCE.getId());
     }
 
     @Test
     public void test_chronology_of_name_id() {
-        Assert.assertEquals(INSTANCE.getCalendarType(), null);
+        Assert.assertEquals(null, INSTANCE.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -144,78 +145,78 @@ public class TestAccountingChronology {
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_from_AccountingDate(AccountingDate accounting, LocalDate iso) {
-        assertEquals(LocalDate.from(accounting), iso);
+        assertEquals(iso, LocalDate.from(accounting));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_AccountingDate_from_LocalDate(AccountingDate accounting, LocalDate iso) {
-        assertEquals(AccountingDate.from(INSTANCE, iso), accounting);
+        assertEquals(accounting, AccountingDate.from(INSTANCE, iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_AccountingDate_chronology_dateEpochDay(AccountingDate accounting, LocalDate iso) {
-        assertEquals(INSTANCE.dateEpochDay(iso.toEpochDay()), accounting);
+        assertEquals(accounting, INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_AccountingDate_toEpochDay(AccountingDate accounting, LocalDate iso) {
-        assertEquals(accounting.toEpochDay(), iso.toEpochDay());
+        assertEquals(iso.toEpochDay(), accounting.toEpochDay());
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_AccountingDate_until_CoptiDate(AccountingDate accounting, LocalDate iso) {
-        assertEquals(accounting.until(accounting), INSTANCE.period(0, 0, 0));
+        assertEquals(INSTANCE.period(0, 0, 0), accounting.until(accounting));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_AccountingDate_until_LocalDate(AccountingDate accounting, LocalDate iso) {
-        assertEquals(accounting.until(iso), INSTANCE.period(0, 0, 0));
+        assertEquals(INSTANCE.period(0, 0, 0), accounting.until(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_until_CoptiDate(AccountingDate accounting, LocalDate iso) {
-        assertEquals(iso.until(accounting), Period.ZERO);
+        assertEquals(Period.ZERO, iso.until(accounting));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(AccountingDate accounting, LocalDate iso) {
-        assertEquals(INSTANCE.date(iso), accounting);
+        assertEquals(accounting, INSTANCE.date(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_plusDays(AccountingDate accounting, LocalDate iso) {
-        assertEquals(LocalDate.from(accounting.plus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(accounting.plus(1, DAYS)), iso.plusDays(1));
-        assertEquals(LocalDate.from(accounting.plus(35, DAYS)), iso.plusDays(35));
-        assertEquals(LocalDate.from(accounting.plus(-1, DAYS)), iso.plusDays(-1));
-        assertEquals(LocalDate.from(accounting.plus(-60, DAYS)), iso.plusDays(-60));
+        assertEquals(iso, LocalDate.from(accounting.plus(0, DAYS)));
+        assertEquals(iso.plusDays(1), LocalDate.from(accounting.plus(1, DAYS)));
+        assertEquals(iso.plusDays(35), LocalDate.from(accounting.plus(35, DAYS)));
+        assertEquals(iso.plusDays(-1), LocalDate.from(accounting.plus(-1, DAYS)));
+        assertEquals(iso.plusDays(-60), LocalDate.from(accounting.plus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_minusDays(AccountingDate accounting, LocalDate iso) {
-        assertEquals(LocalDate.from(accounting.minus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(accounting.minus(1, DAYS)), iso.minusDays(1));
-        assertEquals(LocalDate.from(accounting.minus(35, DAYS)), iso.minusDays(35));
-        assertEquals(LocalDate.from(accounting.minus(-1, DAYS)), iso.minusDays(-1));
-        assertEquals(LocalDate.from(accounting.minus(-60, DAYS)), iso.minusDays(-60));
+        assertEquals(iso, LocalDate.from(accounting.minus(0, DAYS)));
+        assertEquals(iso.minusDays(1), LocalDate.from(accounting.minus(1, DAYS)));
+        assertEquals(iso.minusDays(35), LocalDate.from(accounting.minus(35, DAYS)));
+        assertEquals(iso.minusDays(-1), LocalDate.from(accounting.minus(-1, DAYS)));
+        assertEquals(iso.minusDays(-60), LocalDate.from(accounting.minus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_until_DAYS(AccountingDate accounting, LocalDate iso) {
-        assertEquals(accounting.until(iso.plusDays(0), DAYS), 0);
-        assertEquals(accounting.until(iso.plusDays(1), DAYS), 1);
-        assertEquals(accounting.until(iso.plusDays(35), DAYS), 35);
-        assertEquals(accounting.until(iso.minusDays(40), DAYS), -40);
+        assertEquals(0, accounting.until(iso.plusDays(0), DAYS));
+        assertEquals(1, accounting.until(iso.plusDays(1), DAYS));
+        assertEquals(35, accounting.until(iso.plusDays(35), DAYS));
+        assertEquals(-40, accounting.until(iso.minusDays(40), DAYS));
     }
 
     @DataProvider
@@ -314,28 +315,28 @@ public class TestAccountingChronology {
         };
         for (int year = -200; year < 200; year++) {
             AccountingDate base = INSTANCE.date(year, 1, 1);
-            assertEquals(base.isLeapYear(), isLeapYear.test(year));
-            assertEquals(INSTANCE.isLeapYear(year), isLeapYear.test(year));
+            assertEquals(isLeapYear.test(year), base.isLeapYear());
+            assertEquals(isLeapYear.test(year), INSTANCE.isLeapYear(year));
         }
     }
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(INSTANCE.isLeapYear(8), false);
-        assertEquals(INSTANCE.isLeapYear(7), false);
-        assertEquals(INSTANCE.isLeapYear(6), true);
-        assertEquals(INSTANCE.isLeapYear(5), false);
-        assertEquals(INSTANCE.isLeapYear(4), false);
-        assertEquals(INSTANCE.isLeapYear(3), false);
-        assertEquals(INSTANCE.isLeapYear(2), false);
-        assertEquals(INSTANCE.isLeapYear(1), false);
-        assertEquals(INSTANCE.isLeapYear(0), true);
-        assertEquals(INSTANCE.isLeapYear(-1), false);
-        assertEquals(INSTANCE.isLeapYear(-2), false);
-        assertEquals(INSTANCE.isLeapYear(-3), false);
-        assertEquals(INSTANCE.isLeapYear(-4), false);
-        assertEquals(INSTANCE.isLeapYear(-5), true);
-        assertEquals(INSTANCE.isLeapYear(-6), false);
+        assertEquals(false, INSTANCE.isLeapYear(8));
+        assertEquals(false, INSTANCE.isLeapYear(7));
+        assertEquals(true, INSTANCE.isLeapYear(6));
+        assertEquals(false, INSTANCE.isLeapYear(5));
+        assertEquals(false, INSTANCE.isLeapYear(4));
+        assertEquals(false, INSTANCE.isLeapYear(3));
+        assertEquals(false, INSTANCE.isLeapYear(2));
+        assertEquals(false, INSTANCE.isLeapYear(1));
+        assertEquals(true, INSTANCE.isLeapYear(0));
+        assertEquals(false, INSTANCE.isLeapYear(-1));
+        assertEquals(false, INSTANCE.isLeapYear(-2));
+        assertEquals(false, INSTANCE.isLeapYear(-3));
+        assertEquals(false, INSTANCE.isLeapYear(-4));
+        assertEquals(true, INSTANCE.isLeapYear(-5));
+        assertEquals(false, INSTANCE.isLeapYear(-6));
     }
 
     @DataProvider
@@ -365,7 +366,7 @@ public class TestAccountingChronology {
     @Test
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
-        assertEquals(INSTANCE.date(year, month, 1).lengthOfMonth(), length);
+        assertEquals(length, INSTANCE.date(year, month, 1).lengthOfMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -381,7 +382,7 @@ public class TestAccountingChronology {
             int yoe = (year <= 0 ? 1 - year : year);
             assertEquals(yoe, base.get(YEAR_OF_ERA));
             AccountingDate eraBased = INSTANCE.date(era, yoe, 1, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
@@ -395,20 +396,20 @@ public class TestAccountingChronology {
             int yoe = (year <= 0 ? 1 - year : year);
             assertEquals(yoe, base.get(YEAR_OF_ERA));
             AccountingDate eraBased = INSTANCE.dateYearDay(era, yoe, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
     @Test
     public void test_prolepticYear_specific() {
-        assertEquals(INSTANCE.prolepticYear(AccountingEra.CE, 4), 4);
-        assertEquals(INSTANCE.prolepticYear(AccountingEra.CE, 3), 3);
-        assertEquals(INSTANCE.prolepticYear(AccountingEra.CE, 2), 2);
-        assertEquals(INSTANCE.prolepticYear(AccountingEra.CE, 1), 1);
-        assertEquals(INSTANCE.prolepticYear(AccountingEra.BCE, 1), 0);
-        assertEquals(INSTANCE.prolepticYear(AccountingEra.BCE, 2), -1);
-        assertEquals(INSTANCE.prolepticYear(AccountingEra.BCE, 3), -2);
-        assertEquals(INSTANCE.prolepticYear(AccountingEra.BCE, 4), -3);
+        assertEquals(4, INSTANCE.prolepticYear(AccountingEra.CE, 4));
+        assertEquals(3, INSTANCE.prolepticYear(AccountingEra.CE, 3));
+        assertEquals(2, INSTANCE.prolepticYear(AccountingEra.CE, 2));
+        assertEquals(1, INSTANCE.prolepticYear(AccountingEra.CE, 1));
+        assertEquals(0, INSTANCE.prolepticYear(AccountingEra.BCE, 1));
+        assertEquals(-1, INSTANCE.prolepticYear(AccountingEra.BCE, 2));
+        assertEquals(-2, INSTANCE.prolepticYear(AccountingEra.BCE, 3));
+        assertEquals(-3, INSTANCE.prolepticYear(AccountingEra.BCE, 4));
     }
 
     @Test(expected = ClassCastException.class)
@@ -418,8 +419,8 @@ public class TestAccountingChronology {
 
     @Test
     public void test_Chronology_eraOf() {
-        assertEquals(INSTANCE.eraOf(1), AccountingEra.CE);
-        assertEquals(INSTANCE.eraOf(0), AccountingEra.BCE);
+        assertEquals(AccountingEra.CE, INSTANCE.eraOf(1));
+        assertEquals(AccountingEra.BCE, INSTANCE.eraOf(0));
     }
 
     @Test(expected = DateTimeException.class)
@@ -430,9 +431,9 @@ public class TestAccountingChronology {
     @Test
     public void test_Chronology_eras() {
         List<Era> eras = INSTANCE.eras();
-        assertEquals(eras.size(), 2);
-        assertEquals(eras.contains(AccountingEra.BCE), true);
-        assertEquals(eras.contains(AccountingEra.CE), true);
+        assertEquals(2, eras.size());
+        assertEquals(true, eras.contains(AccountingEra.BCE));
+        assertEquals(true, eras.contains(AccountingEra.CE));
     }
 
     //-----------------------------------------------------------------------
@@ -440,11 +441,11 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(INSTANCE.range(DAY_OF_WEEK), ValueRange.of(1, 7));
-        assertEquals(INSTANCE.range(DAY_OF_MONTH), ValueRange.of(1, 28, 35));
-        assertEquals(INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 364, 371));
-        assertEquals(INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(1, 13));
-        assertEquals(INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(1, 52, 53));
+        assertEquals(ValueRange.of(1, 7), INSTANCE.range(DAY_OF_WEEK));
+        assertEquals(ValueRange.of(1, 28, 35), INSTANCE.range(DAY_OF_MONTH));
+        assertEquals(ValueRange.of(1, 364, 371), INSTANCE.range(DAY_OF_YEAR));
+        assertEquals(ValueRange.of(1, 13), INSTANCE.range(MONTH_OF_YEAR));
+        assertEquals(ValueRange.of(1, 52, 53), INSTANCE.range(ALIGNED_WEEK_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -480,7 +481,7 @@ public class TestAccountingChronology {
     @Test
     @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
-        assertEquals(INSTANCE.date(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+        assertEquals(ValueRange.of(expectedMin, expectedMax), INSTANCE.date(year, month, dom).range(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -515,7 +516,7 @@ public class TestAccountingChronology {
     @Test
     @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
-        assertEquals(INSTANCE.date(year, month, dom).getLong(field), expected);
+        assertEquals(expected, INSTANCE.date(year, month, dom).getLong(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -569,7 +570,7 @@ public class TestAccountingChronology {
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(INSTANCE.date(year, month, dom).with(field, value), INSTANCE.date(expectedYear, expectedMonth, expectedDom));
+        assertEquals(INSTANCE.date(expectedYear, expectedMonth, expectedDom), INSTANCE.date(year, month, dom).with(field, value));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -584,14 +585,14 @@ public class TestAccountingChronology {
     public void test_adjust1() {
         AccountingDate base = INSTANCE.date(2012, 6, 23);
         AccountingDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, INSTANCE.date(2012, 6, 28));
+        assertEquals(INSTANCE.date(2012, 6, 28), test);
     }
 
     @Test
     public void test_adjust2() {
         AccountingDate base = INSTANCE.date(2012, 13, 23);
         AccountingDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, INSTANCE.date(2012, 13, 35));
+        assertEquals(INSTANCE.date(2012, 13, 35), test);
     }
 
     //-----------------------------------------------------------------------
@@ -601,7 +602,7 @@ public class TestAccountingChronology {
     public void test_adjust_toLocalDate() {
         AccountingDate accounting = INSTANCE.date(2000, 1, 4);
         AccountingDate test = accounting.with(LocalDate.of(2012, 7, 6));
-        assertEquals(test, INSTANCE.date(2012, 12, 5));
+        assertEquals(INSTANCE.date(2012, 12, 5), test);
     }
 
     @Test(expected = DateTimeException.class)
@@ -617,14 +618,14 @@ public class TestAccountingChronology {
     public void test_LocalDate_adjustToAccountingDate() {
         AccountingDate accounting = INSTANCE.date(2012, 6, 23);
         LocalDate test = LocalDate.MIN.with(accounting);
-        assertEquals(test, LocalDate.of(2012, 2, 7));
+        assertEquals(LocalDate.of(2012, 2, 7), test);
     }
 
     @Test
     public void test_LocalDateTime_adjustToAccountingDate() {
         AccountingDate accounting = INSTANCE.date(2012, 6, 23);
         LocalDateTime test = LocalDateTime.MIN.with(accounting);
-        assertEquals(test, LocalDateTime.of(2012, 2, 7, 0, 0));
+        assertEquals(LocalDateTime.of(2012, 2, 7, 0, 0), test);
     }
 
     //-----------------------------------------------------------------------
@@ -663,7 +664,7 @@ public class TestAccountingChronology {
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(INSTANCE.date(year, month, dom).plus(amount, unit), INSTANCE.date(expectedYear, expectedMonth, expectedDom));
+        assertEquals(INSTANCE.date(expectedYear, expectedMonth, expectedDom), INSTANCE.date(year, month, dom).plus(amount, unit));
     }
 
     @Test
@@ -672,7 +673,7 @@ public class TestAccountingChronology {
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
-        assertEquals(INSTANCE.date(year, month, dom).minus(amount, unit), INSTANCE.date(expectedYear, expectedMonth, expectedDom));
+        assertEquals(INSTANCE.date(expectedYear, expectedMonth, expectedDom), INSTANCE.date(year, month, dom).minus(amount, unit));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -720,7 +721,7 @@ public class TestAccountingChronology {
             TemporalUnit unit, long expected) {
         AccountingDate start = INSTANCE.date(year1, month1, dom1);
         AccountingDate end = INSTANCE.date(year2, month2, dom2);
-        assertEquals(start.until(end, unit), expected);
+        assertEquals(expected, start.until(end, unit));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -733,22 +734,22 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_Period() {
-        assertEquals(INSTANCE.date(2014, 5, 26).plus(INSTANCE.period(0, 2, 3)), INSTANCE.date(2014, 8, 1));
+        assertEquals(INSTANCE.date(2014, 8, 1), INSTANCE.date(2014, 5, 26).plus(INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_plus_Period_ISO() {
-        assertEquals(INSTANCE.date(2014, 5, 26).plus(Period.ofMonths(2)), INSTANCE.date(2014, 7, 26));
+        assertEquals(INSTANCE.date(2014, 7, 26), INSTANCE.date(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
     public void test_minus_Period() {
-        assertEquals(INSTANCE.date(2014, 5, 26).minus(INSTANCE.period(0, 2, 3)), INSTANCE.date(2014, 3, 23));
+        assertEquals(INSTANCE.date(2014, 3, 23), INSTANCE.date(2014, 5, 26).minus(INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_minus_Period_ISO() {
-        assertEquals(INSTANCE.date(2014, 5, 26).minus(Period.ofMonths(2)), INSTANCE.date(2014, 3, 26));
+        assertEquals(INSTANCE.date(2014, 3, 26), INSTANCE.date(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------
@@ -767,18 +768,18 @@ public class TestAccountingChronology {
                 .withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS)
                 .toChronology().date(2000, 1, 3);
 
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a1.equals(b), false);
-        assertEquals(a1.equals(c), false);
-        assertEquals(a1.equals(d), false);
+        assertEquals(true, a1.equals(a1));
+        assertEquals(true, a1.equals(a2));
+        assertEquals(false, a1.equals(b));
+        assertEquals(false, a1.equals(c));
+        assertEquals(false, a1.equals(d));
 
-        assertEquals(a1.equals(null), false);
-        assertEquals(a1.equals(""), false);
-        assertEquals(a1.getChronology().equals(other.getChronology()), false);
-        assertEquals(a1.equals(other), false);
+        assertEquals(false, a1.equals(null));
+        assertEquals(false, a1.equals(""));
+        assertEquals(false, a1.getChronology().equals(other.getChronology()));
+        assertEquals(false, a1.equals(other));
 
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertTrue(a1.hashCode() == a1.hashCode());
     }
 
     //-----------------------------------------------------------------------
@@ -795,7 +796,7 @@ public class TestAccountingChronology {
     @Test
     @UseDataProvider("data_toString")
     public void test_toString(AccountingDate accounting, String expected) {
-        assertEquals(accounting.toString(), expected);
+        assertEquals(expected, accounting.toString());
     }
 
 }

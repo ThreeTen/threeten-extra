@@ -55,6 +55,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -94,18 +95,18 @@ public class TestDiscordianChronology {
     public void test_chronology_of_name() {
         Chronology chrono = Chronology.of("Discordian");
         Assert.assertNotNull(chrono);
-        Assert.assertEquals(chrono, DiscordianChronology.INSTANCE);
-        Assert.assertEquals(chrono.getId(), "Discordian");
-        Assert.assertEquals(chrono.getCalendarType(), "discordian");
+        Assert.assertEquals(DiscordianChronology.INSTANCE, chrono);
+        Assert.assertEquals("Discordian", chrono.getId());
+        Assert.assertEquals("discordian", chrono.getCalendarType());
     }
 
     @Test
     public void test_chronology_of_name_id() {
         Chronology chrono = Chronology.of("discordian");
         Assert.assertNotNull(chrono);
-        Assert.assertEquals(chrono, DiscordianChronology.INSTANCE);
-        Assert.assertEquals(chrono.getId(), "Discordian");
-        Assert.assertEquals(chrono.getCalendarType(), "discordian");
+        Assert.assertEquals(DiscordianChronology.INSTANCE, chrono);
+        Assert.assertEquals("Discordian", chrono.getId());
+        Assert.assertEquals("discordian", chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -155,78 +156,78 @@ public class TestDiscordianChronology {
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_from_DiscordianDate(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(LocalDate.from(discordian), iso);
+        assertEquals(iso, LocalDate.from(discordian));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_DiscordianDate_from_LocalDate(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(DiscordianDate.from(iso), discordian);
+        assertEquals(discordian, DiscordianDate.from(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_DiscordianDate_chronology_dateEpochDay(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(DiscordianChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), discordian);
+        assertEquals(discordian, DiscordianChronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_DiscordianDate_toEpochDay(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(discordian.toEpochDay(), iso.toEpochDay());
+        assertEquals(iso.toEpochDay(), discordian.toEpochDay());
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_DiscordianDate_until_DiscordianDate(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(discordian.until(discordian), DiscordianChronology.INSTANCE.period(0, 0, 0));
+        assertEquals(DiscordianChronology.INSTANCE.period(0, 0, 0), discordian.until(discordian));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_DiscordianDate_until_LocalDate(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(discordian.until(iso), DiscordianChronology.INSTANCE.period(0, 0, 0));
+        assertEquals(DiscordianChronology.INSTANCE.period(0, 0, 0), discordian.until(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_until_DiscordianDate(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(iso.until(discordian), Period.ZERO);
+        assertEquals(Period.ZERO, iso.until(discordian));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(DiscordianChronology.INSTANCE.date(iso), discordian);
+        assertEquals(discordian, DiscordianChronology.INSTANCE.date(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_plusDays(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(LocalDate.from(discordian.plus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(discordian.plus(1, DAYS)), iso.plusDays(1));
-        assertEquals(LocalDate.from(discordian.plus(35, DAYS)), iso.plusDays(35));
-        assertEquals(LocalDate.from(discordian.plus(-1, DAYS)), iso.plusDays(-1));
-        assertEquals(LocalDate.from(discordian.plus(-60, DAYS)), iso.plusDays(-60));
+        assertEquals(iso, LocalDate.from(discordian.plus(0, DAYS)));
+        assertEquals(iso.plusDays(1), LocalDate.from(discordian.plus(1, DAYS)));
+        assertEquals(iso.plusDays(35), LocalDate.from(discordian.plus(35, DAYS)));
+        assertEquals(iso.plusDays(-1), LocalDate.from(discordian.plus(-1, DAYS)));
+        assertEquals(iso.plusDays(-60), LocalDate.from(discordian.plus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_minusDays(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(LocalDate.from(discordian.minus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(discordian.minus(1, DAYS)), iso.minusDays(1));
-        assertEquals(LocalDate.from(discordian.minus(35, DAYS)), iso.minusDays(35));
-        assertEquals(LocalDate.from(discordian.minus(-1, DAYS)), iso.minusDays(-1));
-        assertEquals(LocalDate.from(discordian.minus(-60, DAYS)), iso.minusDays(-60));
+        assertEquals(iso, LocalDate.from(discordian.minus(0, DAYS)));
+        assertEquals(iso.minusDays(1), LocalDate.from(discordian.minus(1, DAYS)));
+        assertEquals(iso.minusDays(35), LocalDate.from(discordian.minus(35, DAYS)));
+        assertEquals(iso.minusDays(-1), LocalDate.from(discordian.minus(-1, DAYS)));
+        assertEquals(iso.minusDays(-60), LocalDate.from(discordian.minus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_until_DAYS(DiscordianDate discordian, LocalDate iso) {
-        assertEquals(discordian.until(iso.plusDays(0), DAYS), 0);
-        assertEquals(discordian.until(iso.plusDays(1), DAYS), 1);
-        assertEquals(discordian.until(iso.plusDays(35), DAYS), 35);
-        assertEquals(discordian.until(iso.minusDays(40), DAYS), -40);
+        assertEquals(0, discordian.until(iso.plusDays(0), DAYS));
+        assertEquals(1, discordian.until(iso.plusDays(1), DAYS));
+        assertEquals(35, discordian.until(iso.plusDays(35), DAYS));
+        assertEquals(-40, discordian.until(iso.minusDays(40), DAYS));
     }
 
     @DataProvider
@@ -277,28 +278,28 @@ public class TestDiscordianChronology {
         };
         for (int year = 1066; year < 1567; year++) {
             DiscordianDate base = DiscordianDate.of(year, 1, 1);
-            assertEquals(base.isLeapYear(), isLeapYear.test(year));
-            assertEquals(DiscordianChronology.INSTANCE.isLeapYear(year), isLeapYear.test(year));
+            assertEquals(isLeapYear.test(year), base.isLeapYear());
+            assertEquals(isLeapYear.test(year), DiscordianChronology.INSTANCE.isLeapYear(year));
         }
     }
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1174), true);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1173), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1172), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1171), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1170), true);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1169), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1168), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1167), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1166), true);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1165), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1164), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1163), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1162), true);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1161), false);
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(1160), false);
+        assertEquals(true, DiscordianChronology.INSTANCE.isLeapYear(1174));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1173));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1172));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1171));
+        assertEquals(true, DiscordianChronology.INSTANCE.isLeapYear(1170));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1169));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1168));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1167));
+        assertEquals(true, DiscordianChronology.INSTANCE.isLeapYear(1166));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1165));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1164));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1163));
+        assertEquals(true, DiscordianChronology.INSTANCE.isLeapYear(1162));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1161));
+        assertEquals(false, DiscordianChronology.INSTANCE.isLeapYear(1160));
     }
 
     @DataProvider
@@ -322,14 +323,14 @@ public class TestDiscordianChronology {
     @Test
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
-        assertEquals(DiscordianDate.of(year, month, 1).lengthOfMonth(), length);
+        assertEquals(length, DiscordianDate.of(year, month, 1).lengthOfMonth());
     }
 
     @Test
     public void test_lengthOfMonth_specific() {
-        assertEquals(DiscordianDate.of(3178, 0, 0).lengthOfMonth(), 1);
-        assertEquals(DiscordianDate.of(3178, 1, 1).lengthOfMonth(), 73);
-        assertEquals(DiscordianDate.of(3178, 1, 73).lengthOfMonth(), 73);
+        assertEquals(1, DiscordianDate.of(3178, 0, 0).lengthOfMonth());
+        assertEquals(73, DiscordianDate.of(3178, 1, 1).lengthOfMonth());
+        assertEquals(73, DiscordianDate.of(3178, 1, 73).lengthOfMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -343,7 +344,7 @@ public class TestDiscordianChronology {
             assertEquals(DiscordianEra.YOLD, base.getEra());
             assertEquals(year, base.get(YEAR_OF_ERA));
             DiscordianDate eraBased = DiscordianChronology.INSTANCE.date(DiscordianEra.YOLD, year, 1, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
@@ -355,16 +356,16 @@ public class TestDiscordianChronology {
             assertEquals(DiscordianEra.YOLD, base.getEra());
             assertEquals(year, base.get(YEAR_OF_ERA));
             DiscordianDate eraBased = DiscordianChronology.INSTANCE.dateYearDay(DiscordianEra.YOLD, year, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
     @Test
     public void test_prolepticYear_specific() {
-        assertEquals(DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 4), 4);
-        assertEquals(DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 3), 3);
-        assertEquals(DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 2), 2);
-        assertEquals(DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 1), 1);
+        assertEquals(4, DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 4));
+        assertEquals(3, DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 3));
+        assertEquals(2, DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 2));
+        assertEquals(1, DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 1));
     }
 
     @Test(expected = ClassCastException.class)
@@ -374,7 +375,7 @@ public class TestDiscordianChronology {
 
     @Test
     public void test_Chronology_eraOf() {
-        assertEquals(DiscordianChronology.INSTANCE.eraOf(1), DiscordianEra.YOLD);
+        assertEquals(DiscordianEra.YOLD, DiscordianChronology.INSTANCE.eraOf(1));
     }
 
     @Test(expected = DateTimeException.class)
@@ -386,8 +387,8 @@ public class TestDiscordianChronology {
     @Test
     public void test_Chronology_eras() {
         List<Era> eras = DiscordianChronology.INSTANCE.eras();
-        assertEquals(eras.size(), 1);
-        assertEquals(eras.contains(DiscordianEra.YOLD), true);
+        assertEquals(1, eras.size());
+        assertEquals(true, eras.contains(DiscordianEra.YOLD));
     }
 
     //-----------------------------------------------------------------------
@@ -395,19 +396,19 @@ public class TestDiscordianChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(0, 1, 0, 5));
-        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(0, 1, 5, 5));
-        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(0, 1, 0, 15));
-        assertEquals(DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(0, 1, 73, 73));
-        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(0, 1, 0, 5));
-        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(0, 1, 0, 73));
-        assertEquals(DiscordianChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
-        assertEquals(DiscordianChronology.INSTANCE.range(EPOCH_DAY), ValueRange.of(-1_145_400, 999_999 * 365L + 242_499));
-        assertEquals(DiscordianChronology.INSTANCE.range(ERA), ValueRange.of(1, 1));
-        assertEquals(DiscordianChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(0, 1, 5, 5));
-        assertEquals(DiscordianChronology.INSTANCE.range(PROLEPTIC_MONTH), ValueRange.of(0, 999_999 * 5L + 5 - 1));
-        assertEquals(DiscordianChronology.INSTANCE.range(YEAR), ValueRange.of(1, 999_999));
-        assertEquals(DiscordianChronology.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(1, 999_999));
+        assertEquals(ValueRange.of(0, 1, 0, 5), DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+        assertEquals(ValueRange.of(0, 1, 5, 5), DiscordianChronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR));
+        assertEquals(ValueRange.of(0, 1, 0, 15), DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH));
+        assertEquals(ValueRange.of(0, 1, 73, 73), DiscordianChronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR));
+        assertEquals(ValueRange.of(0, 1, 0, 5), DiscordianChronology.INSTANCE.range(DAY_OF_WEEK));
+        assertEquals(ValueRange.of(0, 1, 0, 73), DiscordianChronology.INSTANCE.range(DAY_OF_MONTH));
+        assertEquals(ValueRange.of(1, 365, 366), DiscordianChronology.INSTANCE.range(DAY_OF_YEAR));
+        assertEquals(ValueRange.of(-1_145_400, 999_999 * 365L + 242_499), DiscordianChronology.INSTANCE.range(EPOCH_DAY));
+        assertEquals(ValueRange.of(1, 1), DiscordianChronology.INSTANCE.range(ERA));
+        assertEquals(ValueRange.of(0, 1, 5, 5), DiscordianChronology.INSTANCE.range(MONTH_OF_YEAR));
+        assertEquals(ValueRange.of(0, 999_999 * 5L + 5 - 1), DiscordianChronology.INSTANCE.range(PROLEPTIC_MONTH));
+        assertEquals(ValueRange.of(1, 999_999), DiscordianChronology.INSTANCE.range(YEAR));
+        assertEquals(ValueRange.of(1, 999_999), DiscordianChronology.INSTANCE.range(YEAR_OF_ERA));
     }
 
     //-----------------------------------------------------------------------
@@ -458,7 +459,7 @@ public class TestDiscordianChronology {
     @Test
     @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
-        assertEquals(DiscordianDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+        assertEquals(ValueRange.of(expectedMin, expectedMax), DiscordianDate.of(year, month, dom).range(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -512,7 +513,7 @@ public class TestDiscordianChronology {
     @Test
     @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
-        assertEquals(DiscordianDate.of(year, month, dom).getLong(field), expected);
+        assertEquals(expected, DiscordianDate.of(year, month, dom).getLong(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -603,7 +604,7 @@ public class TestDiscordianChronology {
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(DiscordianDate.of(year, month, dom).with(field, value), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(DiscordianDate.of(expectedYear, expectedMonth, expectedDom), DiscordianDate.of(year, month, dom).with(field, value));
     }
 
     @DataProvider
@@ -649,14 +650,14 @@ public class TestDiscordianChronology {
     public void test_adjust1() {
         DiscordianDate base = DiscordianDate.of(2014, 0, 0);
         DiscordianDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, DiscordianDate.of(2014, 0, 0));
+        assertEquals(DiscordianDate.of(2014, 0, 0), test);
     }
 
     @Test
     public void test_adjust2() {
         DiscordianDate base = DiscordianDate.of(2012, 2, 23);
         DiscordianDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, DiscordianDate.of(2012, 2, 73));
+        assertEquals(DiscordianDate.of(2012, 2, 73), test);
     }
 
     //-----------------------------------------------------------------------
@@ -666,7 +667,7 @@ public class TestDiscordianChronology {
     public void test_adjust_toLocalDate() {
         DiscordianDate discordian = DiscordianDate.of(2000, 1, 4);
         DiscordianDate test = discordian.with(LocalDate.of(2012, 7, 6));
-        assertEquals(test, DiscordianDate.of(3178, 3, 41));
+        assertEquals(DiscordianDate.of(3178, 3, 41), test);
     }
 
     @Test(expected = DateTimeException.class)
@@ -682,14 +683,14 @@ public class TestDiscordianChronology {
     public void test_LocalDate_adjustToDiscordianDate() {
         DiscordianDate discordian = DiscordianDate.of(3178, 3, 41);
         LocalDate test = LocalDate.MIN.with(discordian);
-        assertEquals(test, LocalDate.of(2012, 7, 6));
+        assertEquals(LocalDate.of(2012, 7, 6), test);
     }
 
     @Test
     public void test_LocalDateTime_adjustToDiscordianDate() {
         DiscordianDate discordian = DiscordianDate.of(3178, 3, 41);
         LocalDateTime test = LocalDateTime.MIN.with(discordian);
-        assertEquals(test, LocalDateTime.of(2012, 7, 6, 0, 0));
+        assertEquals(LocalDateTime.of(2012, 7, 6, 0, 0), test);
     }
 
     //-----------------------------------------------------------------------
@@ -769,7 +770,7 @@ public class TestDiscordianChronology {
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(DiscordianDate.of(year, month, dom).plus(amount, unit), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(DiscordianDate.of(expectedYear, expectedMonth, expectedDom), DiscordianDate.of(year, month, dom).plus(amount, unit));
     }
 
     @Test
@@ -777,7 +778,7 @@ public class TestDiscordianChronology {
     public void test_plus_leap_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(DiscordianDate.of(year, month, dom).plus(amount, unit), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(DiscordianDate.of(expectedYear, expectedMonth, expectedDom), DiscordianDate.of(year, month, dom).plus(amount, unit));
     }
 
     @Test
@@ -786,7 +787,7 @@ public class TestDiscordianChronology {
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
-        assertEquals(DiscordianDate.of(year, month, dom).minus(amount, unit), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(DiscordianDate.of(expectedYear, expectedMonth, expectedDom), DiscordianDate.of(year, month, dom).minus(amount, unit));
     }
 
     @Test
@@ -795,7 +796,7 @@ public class TestDiscordianChronology {
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
-        assertEquals(DiscordianDate.of(year, month, dom).minus(amount, unit), DiscordianDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(DiscordianDate.of(expectedYear, expectedMonth, expectedDom), DiscordianDate.of(year, month, dom).minus(amount, unit));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -926,7 +927,7 @@ public class TestDiscordianChronology {
             TemporalUnit unit, long expected) {
         DiscordianDate start = DiscordianDate.of(year1, month1, dom1);
         DiscordianDate end = DiscordianDate.of(year2, month2, dom2);
-        assertEquals(start.until(end, unit), expected);
+        assertEquals(expected, start.until(end, unit));
     }
 
     @Test
@@ -938,7 +939,7 @@ public class TestDiscordianChronology {
         DiscordianDate start = DiscordianDate.of(year1, month1, dom1);
         DiscordianDate end = DiscordianDate.of(year2, month2, dom2);
         ChronoPeriod period = DiscordianChronology.INSTANCE.period(yearPeriod, monthPeriod, domPeriod);
-        assertEquals(start.until(end), period);
+        assertEquals(period, start.until(end));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -951,22 +952,22 @@ public class TestDiscordianChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_Period() {
-        assertEquals(DiscordianDate.of(2014, 5, 26).plus(DiscordianChronology.INSTANCE.period(0, 2, 3)), DiscordianDate.of(2015, 2, 29));
+        assertEquals(DiscordianDate.of(2015, 2, 29), DiscordianDate.of(2014, 5, 26).plus(DiscordianChronology.INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_plus_Period_ISO() {
-        assertEquals(DiscordianDate.of(2014, 5, 26).plus(Period.ofMonths(2)), DiscordianDate.of(2015, 2, 26));
+        assertEquals(DiscordianDate.of(2015, 2, 26), DiscordianDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
     public void test_minus_Period() {
-        assertEquals(DiscordianDate.of(2014, 5, 26).minus(DiscordianChronology.INSTANCE.period(0, 2, 3)), DiscordianDate.of(2014, 3, 23));
+        assertEquals(DiscordianDate.of(2014, 3, 23), DiscordianDate.of(2014, 5, 26).minus(DiscordianChronology.INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_minus_Period_ISO() {
-        assertEquals(DiscordianDate.of(2014, 5, 26).minus(Period.ofMonths(2)), DiscordianDate.of(2014, 3, 26));
+        assertEquals(DiscordianDate.of(2014, 3, 26), DiscordianDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------
@@ -980,16 +981,16 @@ public class TestDiscordianChronology {
         DiscordianDate c = DiscordianDate.of(2000, 2, 3);
         DiscordianDate d = DiscordianDate.of(2001, 1, 3);
 
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a1.equals(b), false);
-        assertEquals(a1.equals(c), false);
-        assertEquals(a1.equals(d), false);
+        assertEquals(true, a1.equals(a1));
+        assertEquals(true, a1.equals(a2));
+        assertEquals(false, a1.equals(b));
+        assertEquals(false, a1.equals(c));
+        assertEquals(false, a1.equals(d));
 
-        assertEquals(a1.equals(null), false);
-        assertEquals(a1.equals(""), false);
+        assertEquals(false, a1.equals(null));
+        assertEquals(false, a1.equals(""));
 
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertTrue(a1.hashCode() == a2.hashCode());
     }
 
     //-----------------------------------------------------------------------
@@ -1007,7 +1008,7 @@ public class TestDiscordianChronology {
     @Test
     @UseDataProvider("data_toString")
     public void test_toString(DiscordianDate discordian, String expected) {
-        assertEquals(discordian.toString(), expected);
+        assertEquals(expected, discordian.toString());
     }
 
 }

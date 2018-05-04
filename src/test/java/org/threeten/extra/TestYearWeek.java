@@ -307,7 +307,7 @@ public class TestYearWeek {
         }
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
                 baos.toByteArray()));
-        assertEquals(ois.readObject(), test);
+        assertEquals(test, ois.readObject());
     }
 
     //-----------------------------------------------------------------------
@@ -324,7 +324,7 @@ public class TestYearWeek {
             expected = YearWeek.now(Clock.systemDefaultZone());
             test = YearWeek.now();
         }
-        assertEquals(test, expected);
+        assertEquals(expected, test);
     }
 
     //-----------------------------------------------------------------------
@@ -347,7 +347,7 @@ public class TestYearWeek {
             expected = YearWeek.now(Clock.system(zone));
             test = YearWeek.now(zone);
         }
-        assertEquals(test, expected);
+        assertEquals(expected, test);
     }
 
     //-----------------------------------------------------------------------
@@ -358,8 +358,8 @@ public class TestYearWeek {
         Instant instant = LocalDateTime.of(2010, 12, 31, 0, 0).toInstant(ZoneOffset.UTC);
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         YearWeek test = YearWeek.now(clock);
-        assertEquals(test.getYear(), 2010);
-        assertEquals(test.getWeek(), 52);
+        assertEquals(2010, test.getYear());
+        assertEquals(52, test.getWeek());
     }
 
     @Test(expected = NullPointerException.class)
@@ -374,8 +374,8 @@ public class TestYearWeek {
     @UseDataProvider("data_sampleYearWeeks")
     public void test_of(int year, int week) {
         YearWeek yearWeek = YearWeek.of(year, week);
-        assertEquals(yearWeek.getYear(), year);
-        assertEquals(yearWeek.getWeek(), week);
+        assertEquals(year, yearWeek.getYear());
+        assertEquals(week, yearWeek.getWeek());
     }
 
     @Test
@@ -408,41 +408,41 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_isSupported_TemporalField() {
-        assertEquals(TEST.isSupported((TemporalField) null), false);
-        assertEquals(TEST.isSupported(NANO_OF_SECOND), false);
-        assertEquals(TEST.isSupported(NANO_OF_DAY), false);
-        assertEquals(TEST.isSupported(MICRO_OF_SECOND), false);
-        assertEquals(TEST.isSupported(MICRO_OF_DAY), false);
-        assertEquals(TEST.isSupported(MILLI_OF_SECOND), false);
-        assertEquals(TEST.isSupported(MILLI_OF_DAY), false);
-        assertEquals(TEST.isSupported(SECOND_OF_MINUTE), false);
-        assertEquals(TEST.isSupported(SECOND_OF_DAY), false);
-        assertEquals(TEST.isSupported(MINUTE_OF_HOUR), false);
-        assertEquals(TEST.isSupported(MINUTE_OF_DAY), false);
-        assertEquals(TEST.isSupported(HOUR_OF_AMPM), false);
-        assertEquals(TEST.isSupported(CLOCK_HOUR_OF_AMPM), false);
-        assertEquals(TEST.isSupported(HOUR_OF_DAY), false);
-        assertEquals(TEST.isSupported(CLOCK_HOUR_OF_DAY), false);
-        assertEquals(TEST.isSupported(AMPM_OF_DAY), false);
-        assertEquals(TEST.isSupported(DAY_OF_WEEK), false);
-        assertEquals(TEST.isSupported(ALIGNED_DAY_OF_WEEK_IN_MONTH), false);
-        assertEquals(TEST.isSupported(ALIGNED_DAY_OF_WEEK_IN_YEAR), false);
-        assertEquals(TEST.isSupported(DAY_OF_MONTH), false);
-        assertEquals(TEST.isSupported(DAY_OF_YEAR), false);
-        assertEquals(TEST.isSupported(EPOCH_DAY), false);
-        assertEquals(TEST.isSupported(ALIGNED_WEEK_OF_MONTH), false);
-        assertEquals(TEST.isSupported(ALIGNED_WEEK_OF_YEAR), false);
-        assertEquals(TEST.isSupported(MONTH_OF_YEAR), false);
-        assertEquals(TEST.isSupported(PROLEPTIC_MONTH), false);
-        assertEquals(TEST.isSupported(YEAR_OF_ERA), false);
-        assertEquals(TEST.isSupported(YEAR), false);
-        assertEquals(TEST.isSupported(ERA), false);
-        assertEquals(TEST.isSupported(INSTANT_SECONDS), false);
-        assertEquals(TEST.isSupported(OFFSET_SECONDS), false);
-        assertEquals(TEST.isSupported(QUARTER_OF_YEAR), false);
-        assertEquals(TEST.isSupported(DAY_OF_QUARTER), false);
-        assertEquals(TEST.isSupported(WEEK_BASED_YEAR), true);
-        assertEquals(TEST.isSupported(WEEK_OF_WEEK_BASED_YEAR), true);
+        assertEquals(false, TEST.isSupported((TemporalField) null));
+        assertEquals(false, TEST.isSupported(NANO_OF_SECOND));
+        assertEquals(false, TEST.isSupported(NANO_OF_DAY));
+        assertEquals(false, TEST.isSupported(MICRO_OF_SECOND));
+        assertEquals(false, TEST.isSupported(MICRO_OF_DAY));
+        assertEquals(false, TEST.isSupported(MILLI_OF_SECOND));
+        assertEquals(false, TEST.isSupported(MILLI_OF_DAY));
+        assertEquals(false, TEST.isSupported(SECOND_OF_MINUTE));
+        assertEquals(false, TEST.isSupported(SECOND_OF_DAY));
+        assertEquals(false, TEST.isSupported(MINUTE_OF_HOUR));
+        assertEquals(false, TEST.isSupported(MINUTE_OF_DAY));
+        assertEquals(false, TEST.isSupported(HOUR_OF_AMPM));
+        assertEquals(false, TEST.isSupported(CLOCK_HOUR_OF_AMPM));
+        assertEquals(false, TEST.isSupported(HOUR_OF_DAY));
+        assertEquals(false, TEST.isSupported(CLOCK_HOUR_OF_DAY));
+        assertEquals(false, TEST.isSupported(AMPM_OF_DAY));
+        assertEquals(false, TEST.isSupported(DAY_OF_WEEK));
+        assertEquals(false, TEST.isSupported(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+        assertEquals(false, TEST.isSupported(ALIGNED_DAY_OF_WEEK_IN_YEAR));
+        assertEquals(false, TEST.isSupported(DAY_OF_MONTH));
+        assertEquals(false, TEST.isSupported(DAY_OF_YEAR));
+        assertEquals(false, TEST.isSupported(EPOCH_DAY));
+        assertEquals(false, TEST.isSupported(ALIGNED_WEEK_OF_MONTH));
+        assertEquals(false, TEST.isSupported(ALIGNED_WEEK_OF_YEAR));
+        assertEquals(false, TEST.isSupported(MONTH_OF_YEAR));
+        assertEquals(false, TEST.isSupported(PROLEPTIC_MONTH));
+        assertEquals(false, TEST.isSupported(YEAR_OF_ERA));
+        assertEquals(false, TEST.isSupported(YEAR));
+        assertEquals(false, TEST.isSupported(ERA));
+        assertEquals(false, TEST.isSupported(INSTANT_SECONDS));
+        assertEquals(false, TEST.isSupported(OFFSET_SECONDS));
+        assertEquals(false, TEST.isSupported(QUARTER_OF_YEAR));
+        assertEquals(false, TEST.isSupported(DAY_OF_QUARTER));
+        assertEquals(true, TEST.isSupported(WEEK_BASED_YEAR));
+        assertEquals(true, TEST.isSupported(WEEK_OF_WEEK_BASED_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -454,7 +454,7 @@ public class TestYearWeek {
         YearWeek yearWeek = YearWeek.of(weekBasedYear, weekOfWeekBasedYear);
         LocalDate expected = LocalDate.of(year, month, dayOfMonth);
         LocalDate actual = yearWeek.atDay(dayOfWeek);
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -465,7 +465,7 @@ public class TestYearWeek {
             for (int j = 1; j <= 7; j++) {
                 DayOfWeek dow = DayOfWeek.of(j);
                 LocalDate actual = yearWeek.atDay(dow);
-                assertEquals(actual, expected);
+                assertEquals(expected, actual);
                 expected = expected.plusDays(1);
             }
             yearWeek = yearWeek.plusWeeks(1);
@@ -499,41 +499,41 @@ public class TestYearWeek {
                     for (int week2 = 1; week2 < 53; week2++) {
                         YearWeek b = YearWeek.of(year2, week2);
                         if (year1 < year2) {
-                            assertEquals(a.compareTo(b) < 0, true);
-                            assertEquals(b.compareTo(a) > 0, true);
-                            assertEquals(a.isAfter(b), false);
-                            assertEquals(b.isBefore(a), false);
-                            assertEquals(b.isAfter(a), true);
-                            assertEquals(a.isBefore(b), true);
+                            assertEquals(true, a.compareTo(b) < 0);
+                            assertEquals(true, b.compareTo(a) > 0);
+                            assertEquals(false, a.isAfter(b));
+                            assertEquals(false, b.isBefore(a));
+                            assertEquals(true, b.isAfter(a));
+                            assertEquals(true, a.isBefore(b));
                         } else if (year1 > year2) {
-                            assertEquals(a.compareTo(b) > 0, true);
-                            assertEquals(b.compareTo(a) < 0, true);
-                            assertEquals(a.isAfter(b), true);
-                            assertEquals(b.isBefore(a), true);
-                            assertEquals(b.isAfter(a), false);
-                            assertEquals(a.isBefore(b), false);
+                            assertEquals(true, a.compareTo(b) > 0);
+                            assertEquals(true, b.compareTo(a) < 0);
+                            assertEquals(true, a.isAfter(b));
+                            assertEquals(true, b.isBefore(a));
+                            assertEquals(false, b.isAfter(a));
+                            assertEquals(false, a.isBefore(b));
                         } else {
                             if (week1 < week2) {
-                                assertEquals(a.compareTo(b) < 0, true);
-                                assertEquals(b.compareTo(a) > 0, true);
-                                assertEquals(a.isAfter(b), false);
-                                assertEquals(b.isBefore(a), false);
-                                assertEquals(b.isAfter(a), true);
-                                assertEquals(a.isBefore(b), true);
+                                assertEquals(true, a.compareTo(b) < 0);
+                                assertEquals(true, b.compareTo(a) > 0);
+                                assertEquals(false, a.isAfter(b));
+                                assertEquals(false, b.isBefore(a));
+                                assertEquals(true, b.isAfter(a));
+                                assertEquals(true, a.isBefore(b));
                             } else if (week1 > week2) {
-                                assertEquals(a.compareTo(b) > 0, true);
-                                assertEquals(b.compareTo(a) < 0, true);
-                                assertEquals(a.isAfter(b), true);
-                                assertEquals(b.isBefore(a), true);
-                                assertEquals(b.isAfter(a), false);
-                                assertEquals(a.isBefore(b), false);
+                                assertEquals(true, a.compareTo(b) > 0);
+                                assertEquals(true, b.compareTo(a) < 0);
+                                assertEquals(true, a.isAfter(b));
+                                assertEquals(true, b.isBefore(a));
+                                assertEquals(false, b.isAfter(a));
+                                assertEquals(false, a.isBefore(b));
                             } else {
-                                assertEquals(a.compareTo(b), 0);
-                                assertEquals(b.compareTo(a), 0);
-                                assertEquals(a.isAfter(b), false);
-                                assertEquals(b.isBefore(a), false);
-                                assertEquals(b.isAfter(a), false);
-                                assertEquals(a.isBefore(b), false);
+                                assertEquals(0, a.compareTo(b));
+                                assertEquals(0, b.compareTo(a));
+                                assertEquals(false, a.isAfter(b));
+                                assertEquals(false, b.isBefore(a));
+                                assertEquals(false, b.isAfter(a));
+                                assertEquals(false, a.isBefore(b));
                             }
                         }
                     }
@@ -555,9 +555,9 @@ public class TestYearWeek {
     public void test_from(int weekBasedYear, int weekOfWeekBasedYear, DayOfWeek dayOfWeek, int year, int month, int dayOfMonth) {
         YearWeek expected = YearWeek.of(weekBasedYear, weekOfWeekBasedYear);
         LocalDate ld = LocalDate.of(year, month, dayOfMonth);
-        assertEquals(YearWeek.from(ld), expected);
-        assertEquals(YearWeek.from(ThaiBuddhistDate.from(ld)), expected);
-        assertEquals(YearWeek.from(expected), expected);
+        assertEquals(expected, YearWeek.from(ld));
+        assertEquals(expected, YearWeek.from(ThaiBuddhistDate.from(ld)));
+        assertEquals(expected, YearWeek.from(expected));
     }
 
     @Test(expected = DateTimeException.class)
@@ -575,8 +575,8 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_get() {
-        assertEquals(TEST.get(WEEK_BASED_YEAR), 2015);
-        assertEquals(TEST.get(WEEK_OF_WEEK_BASED_YEAR), 1);
+        assertEquals(2015, TEST.get(WEEK_BASED_YEAR));
+        assertEquals(1, TEST.get(WEEK_OF_WEEK_BASED_YEAR));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -594,8 +594,8 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_getLong() {
-        assertEquals(TEST.getLong(WEEK_BASED_YEAR), 2015L);
-        assertEquals(TEST.getLong(WEEK_OF_WEEK_BASED_YEAR), 1L);
+        assertEquals(2015L, TEST.getLong(WEEK_BASED_YEAR));
+        assertEquals(1L, TEST.getLong(WEEK_OF_WEEK_BASED_YEAR));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -613,8 +613,8 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_lengthOfYear() {
-        assertEquals(YearWeek.of(2014, 1).lengthOfYear(), 364);
-        assertEquals(YearWeek.of(2015, 1).lengthOfYear(), 371);
+        assertEquals(364, YearWeek.of(2014, 1).lengthOfYear());
+        assertEquals(371, YearWeek.of(2015, 1).lengthOfYear());
     }
 
     //-----------------------------------------------------------------------
@@ -622,7 +622,7 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString() {
-        assertEquals(TEST.toString(), "2015-W01");
+        assertEquals("2015-W01", TEST.toString());
     }
 
     //-----------------------------------------------------------------------
@@ -630,7 +630,7 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_parse_CharSequence() {
-        assertEquals(YearWeek.parse("2015-W01"), TEST);
+        assertEquals(TEST, YearWeek.parse("2015-W01"));
     }
 
     @Test(expected = DateTimeParseException.class)
@@ -654,7 +654,7 @@ public class TestYearWeek {
     @Test
     public void test_parse_CharSequenceDateTimeFormatter() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY").withLocale(Locale.ENGLISH);
-        assertEquals(YearWeek.parse("Mon W1 2015", f), TEST);
+        assertEquals(TEST, YearWeek.parse("Mon W1 2015", f));
     }
 
     @Test(expected = DateTimeParseException.class)
@@ -684,7 +684,7 @@ public class TestYearWeek {
                 .appendLiteral('-')
                 .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
                 .toFormatter();
-        assertEquals(TEST.format(f), "2015-01");
+        assertEquals("2015-01", TEST.format(f));
     }
 
     //-----------------------------------------------------------------------
@@ -694,7 +694,7 @@ public class TestYearWeek {
     public void test_adjustInto() {
         YearWeek yw = YearWeek.of(2016, 1);
         LocalDate date = LocalDate.of(2015, 6, 20);
-        assertEquals(yw.adjustInto(date), LocalDate.of(2016, 1, 9));
+        assertEquals(LocalDate.of(2016, 1, 9), yw.adjustInto(date));
     }
 
     @Test(expected = DateTimeException.class)
@@ -709,11 +709,11 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_range() {
-        assertEquals(TEST_NON_LEAP.range(WEEK_BASED_YEAR), WEEK_BASED_YEAR.range());
-        assertEquals(TEST.range(WEEK_BASED_YEAR), WEEK_BASED_YEAR.range());
+        assertEquals(WEEK_BASED_YEAR.range(), TEST_NON_LEAP.range(WEEK_BASED_YEAR));
+        assertEquals(WEEK_BASED_YEAR.range(), TEST.range(WEEK_BASED_YEAR));
 
-        assertEquals(TEST_NON_LEAP.range(WEEK_OF_WEEK_BASED_YEAR), ValueRange.of(1, 52));
-        assertEquals(TEST.range(WEEK_OF_WEEK_BASED_YEAR), ValueRange.of(1, 53));
+        assertEquals(ValueRange.of(1, 52), TEST_NON_LEAP.range(WEEK_OF_WEEK_BASED_YEAR));
+        assertEquals(ValueRange.of(1, 53), TEST.range(WEEK_OF_WEEK_BASED_YEAR));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -731,18 +731,18 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_withYear() {
-        assertEquals(YearWeek.of(2015, 1).withYear(2014), YearWeek.of(2014, 1));
-        assertEquals(YearWeek.of(2015, 53).withYear(2009), YearWeek.of(2009, 53));
+        assertEquals(YearWeek.of(2014, 1), YearWeek.of(2015, 1).withYear(2014));
+        assertEquals(YearWeek.of(2009, 53), YearWeek.of(2015, 53).withYear(2009));
     }
 
     @Test
     public void test_withYear_sameYear() {
-        assertEquals(YearWeek.of(2015, 1).withYear(2015), YearWeek.of(2015, 1));
+        assertEquals(YearWeek.of(2015, 1), YearWeek.of(2015, 1).withYear(2015));
     }
 
     @Test
     public void test_withYear_resolve() {
-        assertEquals(YearWeek.of(2015, 53).withYear(2014), YearWeek.of(2014, 52));
+        assertEquals(YearWeek.of(2014, 52), YearWeek.of(2015, 53).withYear(2014));
     }
 
     @Test(expected = DateTimeException.class)
@@ -760,13 +760,13 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_withWeek() {
-        assertEquals(TEST.withWeek(52), YearWeek.of(2015, 52));
-        assertEquals(YearWeek.of(2014, 1).withWeek(53), TEST);
+        assertEquals(YearWeek.of(2015, 52), TEST.withWeek(52));
+        assertEquals(TEST, YearWeek.of(2014, 1).withWeek(53));
     }
 
     @Test
     public void test_withWeek_sameWeek() {
-        assertEquals(YearWeek.of(2014, 2).withWeek(2), YearWeek.of(2014, 2));
+        assertEquals(YearWeek.of(2014, 2), YearWeek.of(2014, 2).withWeek(2));
     }
 
     @Test(expected = DateTimeException.class)
@@ -784,19 +784,19 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_plusYears() {
-        assertEquals(TEST.plusYears(-2), YearWeek.of(2013, 1));
-        assertEquals(TEST.plusYears(-1), YearWeek.of(2014, 1));
-        assertEquals(TEST.plusYears(0), TEST);
-        assertEquals(TEST.plusYears(1), YearWeek.of(2016, 1));
-        assertEquals(TEST.plusYears(2), YearWeek.of(2017, 1));
+        assertEquals(YearWeek.of(2013, 1), TEST.plusYears(-2));
+        assertEquals(YearWeek.of(2014, 1), TEST.plusYears(-1));
+        assertEquals(TEST, TEST.plusYears(0));
+        assertEquals(YearWeek.of(2016, 1), TEST.plusYears(1));
+        assertEquals(YearWeek.of(2017, 1), TEST.plusYears(2));
     }
 
     @Test
     public void test_plusYears_changeWeek() {
-        assertEquals(YearWeek.of(2015, 53).plusYears(-1), YearWeek.of(2014, 52));
-        assertEquals(YearWeek.of(2015, 53).plusYears(0), YearWeek.of(2015, 53));
-        assertEquals(YearWeek.of(2015, 53).plusYears(1), YearWeek.of(2016, 52));
-        assertEquals(YearWeek.of(2015, 53).plusYears(5), YearWeek.of(2020, 53));
+        assertEquals(YearWeek.of(2014, 52), YearWeek.of(2015, 53).plusYears(-1));
+        assertEquals(YearWeek.of(2015, 53), YearWeek.of(2015, 53).plusYears(0));
+        assertEquals(YearWeek.of(2016, 52), YearWeek.of(2015, 53).plusYears(1));
+        assertEquals(YearWeek.of(2020, 53), YearWeek.of(2015, 53).plusYears(5));
     }
 
     @Test(expected = ArithmeticException.class)
@@ -814,24 +814,24 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_plusWeeks() {
-        assertEquals(TEST.plusWeeks(0), TEST);
-        assertEquals(TEST.plusWeeks(1), YearWeek.of(2015, 2));
-        assertEquals(TEST.plusWeeks(2), YearWeek.of(2015, 3));
-        assertEquals(TEST.plusWeeks(51), YearWeek.of(2015, 52));
-        assertEquals(TEST.plusWeeks(52), YearWeek.of(2015, 53));
-        assertEquals(TEST.plusWeeks(53), YearWeek.of(2016, 1));
-        assertEquals(TEST.plusWeeks(314), YearWeek.of(2021, 1));
+        assertEquals(TEST, TEST.plusWeeks(0));
+        assertEquals(YearWeek.of(2015, 2), TEST.plusWeeks(1));
+        assertEquals(YearWeek.of(2015, 3), TEST.plusWeeks(2));
+        assertEquals(YearWeek.of(2015, 52), TEST.plusWeeks(51));
+        assertEquals(YearWeek.of(2015, 53), TEST.plusWeeks(52));
+        assertEquals(YearWeek.of(2016, 1), TEST.plusWeeks(53));
+        assertEquals(YearWeek.of(2021, 1), TEST.plusWeeks(314));
     }
 
     @Test
     public void test_plusWeeks_negative() {
-        assertEquals(TEST.plusWeeks(0), TEST);
-        assertEquals(TEST.plusWeeks(-1), YearWeek.of(2014, 52));
-        assertEquals(TEST.plusWeeks(-2), YearWeek.of(2014, 51));
-        assertEquals(TEST.plusWeeks(-51), YearWeek.of(2014, 2));
-        assertEquals(TEST.plusWeeks(-52), YearWeek.of(2014, 1));
-        assertEquals(TEST.plusWeeks(-53), YearWeek.of(2013, 52));
-        assertEquals(TEST.plusWeeks(-261), YearWeek.of(2009, 53));
+        assertEquals(TEST, TEST.plusWeeks(0));
+        assertEquals(YearWeek.of(2014, 52), TEST.plusWeeks(-1));
+        assertEquals(YearWeek.of(2014, 51), TEST.plusWeeks(-2));
+        assertEquals(YearWeek.of(2014, 2), TEST.plusWeeks(-51));
+        assertEquals(YearWeek.of(2014, 1), TEST.plusWeeks(-52));
+        assertEquals(YearWeek.of(2013, 52), TEST.plusWeeks(-53));
+        assertEquals(YearWeek.of(2009, 53), TEST.plusWeeks(-261));
     }
 
     @Test(expected = ArithmeticException.class)
@@ -849,19 +849,19 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_minusYears() {
-        assertEquals(TEST.minusYears(-2), YearWeek.of(2017, 1));
-        assertEquals(TEST.minusYears(-1), YearWeek.of(2016, 1));
-        assertEquals(TEST.minusYears(0), TEST);
-        assertEquals(TEST.minusYears(1), YearWeek.of(2014, 1));
-        assertEquals(TEST.minusYears(2), YearWeek.of(2013, 1));
+        assertEquals(YearWeek.of(2017, 1), TEST.minusYears(-2));
+        assertEquals(YearWeek.of(2016, 1), TEST.minusYears(-1));
+        assertEquals(TEST, TEST.minusYears(0));
+        assertEquals(YearWeek.of(2014, 1), TEST.minusYears(1));
+        assertEquals(YearWeek.of(2013, 1), TEST.minusYears(2));
     }
 
     @Test
     public void test_minusYears_changeWeek() {
-        assertEquals(YearWeek.of(2015, 53).minusYears(-5), YearWeek.of(2020, 53));
-        assertEquals(YearWeek.of(2015, 53).minusYears(-1), YearWeek.of(2016, 52));
-        assertEquals(YearWeek.of(2015, 53).minusYears(0), YearWeek.of(2015, 53));
-        assertEquals(YearWeek.of(2015, 53).minusYears(1), YearWeek.of(2014, 52));
+        assertEquals(YearWeek.of(2020, 53), YearWeek.of(2015, 53).minusYears(-5));
+        assertEquals(YearWeek.of(2016, 52), YearWeek.of(2015, 53).minusYears(-1));
+        assertEquals(YearWeek.of(2015, 53), YearWeek.of(2015, 53).minusYears(0));
+        assertEquals(YearWeek.of(2014, 52), YearWeek.of(2015, 53).minusYears(1));
     }
 
     @Test(expected = ArithmeticException.class)
@@ -879,24 +879,24 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_minusWeeks() {
-        assertEquals(TEST.minusWeeks(0), TEST);
-        assertEquals(TEST.minusWeeks(1), YearWeek.of(2014, 52));
-        assertEquals(TEST.minusWeeks(2), YearWeek.of(2014, 51));
-        assertEquals(TEST.minusWeeks(51), YearWeek.of(2014, 2));
-        assertEquals(TEST.minusWeeks(52), YearWeek.of(2014, 1));
-        assertEquals(TEST.minusWeeks(53), YearWeek.of(2013, 52));
-        assertEquals(TEST.minusWeeks(261), YearWeek.of(2009, 53));
+        assertEquals(TEST, TEST.minusWeeks(0));
+        assertEquals(YearWeek.of(2014, 52), TEST.minusWeeks(1));
+        assertEquals(YearWeek.of(2014, 51), TEST.minusWeeks(2));
+        assertEquals(YearWeek.of(2014, 2), TEST.minusWeeks(51));
+        assertEquals(YearWeek.of(2014, 1), TEST.minusWeeks(52));
+        assertEquals(YearWeek.of(2013, 52), TEST.minusWeeks(53));
+        assertEquals(YearWeek.of(2009, 53), TEST.minusWeeks(261));
     }
 
     @Test
     public void test_minusWeeks_negative() {
-        assertEquals(TEST.minusWeeks(0), TEST);
-        assertEquals(TEST.minusWeeks(-1), YearWeek.of(2015, 2));
-        assertEquals(TEST.minusWeeks(-2), YearWeek.of(2015, 3));
-        assertEquals(TEST.minusWeeks(-51), YearWeek.of(2015, 52));
-        assertEquals(TEST.minusWeeks(-52), YearWeek.of(2015, 53));
-        assertEquals(TEST.minusWeeks(-53), YearWeek.of(2016, 1));
-        assertEquals(TEST.minusWeeks(-314), YearWeek.of(2021, 1));
+        assertEquals(TEST, TEST.minusWeeks(0));
+        assertEquals(YearWeek.of(2015, 2), TEST.minusWeeks(-1));
+        assertEquals(YearWeek.of(2015, 3), TEST.minusWeeks(-2));
+        assertEquals(YearWeek.of(2015, 52), TEST.minusWeeks(-51));
+        assertEquals(YearWeek.of(2015, 53), TEST.minusWeeks(-52));
+        assertEquals(YearWeek.of(2016, 1), TEST.minusWeeks(-53));
+        assertEquals(YearWeek.of(2021, 1), TEST.minusWeeks(-314));
     }
 
     @Test(expected = ArithmeticException.class)
@@ -914,13 +914,13 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     @Test
     public void test_query() {
-        assertEquals(TEST.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
-        assertEquals(TEST.query(TemporalQueries.localDate()), null);
-        assertEquals(TEST.query(TemporalQueries.localTime()), null);
-        assertEquals(TEST.query(TemporalQueries.offset()), null);
-        assertEquals(TEST.query(TemporalQueries.precision()), null);
-        assertEquals(TEST.query(TemporalQueries.zone()), null);
-        assertEquals(TEST.query(TemporalQueries.zoneId()), null);
+        assertEquals(IsoChronology.INSTANCE, TEST.query(TemporalQueries.chronology()));
+        assertEquals(null, TEST.query(TemporalQueries.localDate()));
+        assertEquals(null, TEST.query(TemporalQueries.localTime()));
+        assertEquals(null, TEST.query(TemporalQueries.offset()));
+        assertEquals(null, TEST.query(TemporalQueries.precision()));
+        assertEquals(null, TEST.query(TemporalQueries.zone()));
+        assertEquals(null, TEST.query(TemporalQueries.zoneId()));
     }
 
     //-----------------------------------------------------------------------
@@ -952,7 +952,7 @@ public class TestYearWeek {
     @Test
     public void test_equals_incorrectType() {
         assertTrue(TEST.equals(null) == false);
-        assertEquals(TEST.equals("Incorrect type"), false);
+        assertEquals(false, TEST.equals("Incorrect type"));
     }
 
     //-----------------------------------------------------------------------
@@ -974,7 +974,7 @@ public class TestYearWeek {
     public void test_toString(int year, int week, String expected) {
         YearWeek yearWeek = YearWeek.of(year, week);
         String s = yearWeek.toString();
-        assertEquals(s, expected);
+        assertEquals(expected, s);
     }
 
 }

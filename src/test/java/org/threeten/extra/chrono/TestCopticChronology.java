@@ -54,6 +54,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -91,18 +92,18 @@ public class TestCopticChronology {
     public void test_chronology_of_name() {
         Chronology chrono = Chronology.of("Coptic");
         Assert.assertNotNull(chrono);
-        Assert.assertEquals(chrono, CopticChronology.INSTANCE);
-        Assert.assertEquals(chrono.getId(), "Coptic");
-        Assert.assertEquals(chrono.getCalendarType(), "coptic");
+        Assert.assertEquals(CopticChronology.INSTANCE, chrono);
+        Assert.assertEquals("Coptic", chrono.getId());
+        Assert.assertEquals("coptic", chrono.getCalendarType());
     }
 
     @Test
     public void test_chronology_of_name_id() {
         Chronology chrono = Chronology.of("coptic");
         Assert.assertNotNull(chrono);
-        Assert.assertEquals(chrono, CopticChronology.INSTANCE);
-        Assert.assertEquals(chrono.getId(), "Coptic");
-        Assert.assertEquals(chrono.getCalendarType(), "coptic");
+        Assert.assertEquals(CopticChronology.INSTANCE, chrono);
+        Assert.assertEquals("Coptic", chrono.getId());
+        Assert.assertEquals("coptic", chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -139,78 +140,78 @@ public class TestCopticChronology {
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_from_CopticDate(CopticDate coptic, LocalDate iso) {
-        assertEquals(LocalDate.from(coptic), iso);
+        assertEquals(iso, LocalDate.from(coptic));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_CopticDate_from_LocalDate(CopticDate coptic, LocalDate iso) {
-        assertEquals(CopticDate.from(iso), coptic);
+        assertEquals(coptic, CopticDate.from(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_CopticDate_chronology_dateEpochDay(CopticDate coptic, LocalDate iso) {
-        assertEquals(CopticChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), coptic);
+        assertEquals(coptic, CopticChronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_CopticDate_toEpochDay(CopticDate coptic, LocalDate iso) {
-        assertEquals(coptic.toEpochDay(), iso.toEpochDay());
+        assertEquals(iso.toEpochDay(), coptic.toEpochDay());
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_CopticDate_until_CopticDate(CopticDate coptic, LocalDate iso) {
-        assertEquals(coptic.until(coptic), CopticChronology.INSTANCE.period(0, 0, 0));
+        assertEquals(CopticChronology.INSTANCE.period(0, 0, 0), coptic.until(coptic));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_CopticDate_until_LocalDate(CopticDate coptic, LocalDate iso) {
-        assertEquals(coptic.until(iso), CopticChronology.INSTANCE.period(0, 0, 0));
+        assertEquals(CopticChronology.INSTANCE.period(0, 0, 0), coptic.until(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_until_CopticDate(CopticDate coptic, LocalDate iso) {
-        assertEquals(iso.until(coptic), Period.ZERO);
+        assertEquals(Period.ZERO, iso.until(coptic));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(CopticDate coptic, LocalDate iso) {
-        assertEquals(CopticChronology.INSTANCE.date(iso), coptic);
+        assertEquals(coptic, CopticChronology.INSTANCE.date(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_plusDays(CopticDate coptic, LocalDate iso) {
-        assertEquals(LocalDate.from(coptic.plus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(coptic.plus(1, DAYS)), iso.plusDays(1));
-        assertEquals(LocalDate.from(coptic.plus(35, DAYS)), iso.plusDays(35));
-        assertEquals(LocalDate.from(coptic.plus(-1, DAYS)), iso.plusDays(-1));
-        assertEquals(LocalDate.from(coptic.plus(-60, DAYS)), iso.plusDays(-60));
+        assertEquals(iso, LocalDate.from(coptic.plus(0, DAYS)));
+        assertEquals(iso.plusDays(1), LocalDate.from(coptic.plus(1, DAYS)));
+        assertEquals(iso.plusDays(35), LocalDate.from(coptic.plus(35, DAYS)));
+        assertEquals(iso.plusDays(-1), LocalDate.from(coptic.plus(-1, DAYS)));
+        assertEquals(iso.plusDays(-60), LocalDate.from(coptic.plus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_minusDays(CopticDate coptic, LocalDate iso) {
-        assertEquals(LocalDate.from(coptic.minus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(coptic.minus(1, DAYS)), iso.minusDays(1));
-        assertEquals(LocalDate.from(coptic.minus(35, DAYS)), iso.minusDays(35));
-        assertEquals(LocalDate.from(coptic.minus(-1, DAYS)), iso.minusDays(-1));
-        assertEquals(LocalDate.from(coptic.minus(-60, DAYS)), iso.minusDays(-60));
+        assertEquals(iso, LocalDate.from(coptic.minus(0, DAYS)));
+        assertEquals(iso.minusDays(1), LocalDate.from(coptic.minus(1, DAYS)));
+        assertEquals(iso.minusDays(35), LocalDate.from(coptic.minus(35, DAYS)));
+        assertEquals(iso.minusDays(-1), LocalDate.from(coptic.minus(-1, DAYS)));
+        assertEquals(iso.minusDays(-60), LocalDate.from(coptic.minus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_until_DAYS(CopticDate coptic, LocalDate iso) {
-        assertEquals(coptic.until(iso.plusDays(0), DAYS), 0);
-        assertEquals(coptic.until(iso.plusDays(1), DAYS), 1);
-        assertEquals(coptic.until(iso.plusDays(35), DAYS), 35);
-        assertEquals(coptic.until(iso.minusDays(40), DAYS), -40);
+        assertEquals(0, coptic.until(iso.plusDays(0), DAYS));
+        assertEquals(1, coptic.until(iso.plusDays(1), DAYS));
+        assertEquals(35, coptic.until(iso.plusDays(35), DAYS));
+        assertEquals(-40, coptic.until(iso.minusDays(40), DAYS));
     }
 
     @DataProvider
@@ -263,28 +264,28 @@ public class TestCopticChronology {
     public void test_isLeapYear_loop() {
         for (int year = -200; year < 200; year++) {
             CopticDate base = CopticDate.of(year, 1, 1);
-            assertEquals(base.isLeapYear(), ((year - 3) % 4) == 0);
-            assertEquals(CopticChronology.INSTANCE.isLeapYear(year), ((year + 400 - 3) % 4) == 0);
+            assertEquals(((year - 3) % 4) == 0, base.isLeapYear());
+            assertEquals(((year + 400 - 3) % 4) == 0, CopticChronology.INSTANCE.isLeapYear(year));
         }
     }
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(8), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(7), true);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(6), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(5), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(4), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(3), true);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(2), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(1), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(0), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(-1), true);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(-2), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(-3), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(-4), false);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(-5), true);
-        assertEquals(CopticChronology.INSTANCE.isLeapYear(-6), false);
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(8));
+        assertEquals(true, CopticChronology.INSTANCE.isLeapYear(7));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(6));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(5));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(4));
+        assertEquals(true, CopticChronology.INSTANCE.isLeapYear(3));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(2));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(1));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(0));
+        assertEquals(true, CopticChronology.INSTANCE.isLeapYear(-1));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-2));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-3));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-4));
+        assertEquals(true, CopticChronology.INSTANCE.isLeapYear(-5));
+        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-6));
     }
 
     @DataProvider
@@ -310,7 +311,7 @@ public class TestCopticChronology {
     @Test
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
-        assertEquals(CopticDate.of(year, month, 1).lengthOfMonth(), length);
+        assertEquals(length, CopticDate.of(year, month, 1).lengthOfMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -326,7 +327,7 @@ public class TestCopticChronology {
             int yoe = (year <= 0 ? 1 - year : year);
             assertEquals(yoe, base.get(YEAR_OF_ERA));
             CopticDate eraBased = CopticChronology.INSTANCE.date(era, yoe, 1, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
@@ -340,26 +341,26 @@ public class TestCopticChronology {
             int yoe = (year <= 0 ? 1 - year : year);
             assertEquals(yoe, base.get(YEAR_OF_ERA));
             CopticDate eraBased = CopticChronology.INSTANCE.dateYearDay(era, yoe, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
     @Test
     public void test_prolepticYear_specific() {
-        assertEquals(CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 4), 4);
-        assertEquals(CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 3), 3);
-        assertEquals(CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 2), 2);
-        assertEquals(CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 1), 1);
-        assertEquals(CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 1), 0);
-        assertEquals(CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 2), -1);
-        assertEquals(CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 3), -2);
-        assertEquals(CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 4), -3);
+        assertEquals(4, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 4));
+        assertEquals(3, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 3));
+        assertEquals(2, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 2));
+        assertEquals(1, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 1));
+        assertEquals(0, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 1));
+        assertEquals(-1, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 2));
+        assertEquals(-2, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 3));
+        assertEquals(-3, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 4));
     }
 
     @Test
     public void test_Chronology_eraOf() {
-        assertEquals(CopticChronology.INSTANCE.eraOf(1), CopticEra.AM);
-        assertEquals(CopticChronology.INSTANCE.eraOf(0), CopticEra.BEFORE_AM);
+        assertEquals(CopticEra.AM, CopticChronology.INSTANCE.eraOf(1));
+        assertEquals(CopticEra.BEFORE_AM, CopticChronology.INSTANCE.eraOf(0));
     }
 
     @Test(expected = DateTimeException.class)
@@ -370,9 +371,9 @@ public class TestCopticChronology {
     @Test
     public void test_Chronology_eras() {
         List<Era> eras = CopticChronology.INSTANCE.eras();
-        assertEquals(eras.size(), 2);
-        assertEquals(eras.contains(CopticEra.BEFORE_AM), true);
-        assertEquals(eras.contains(CopticEra.AM), true);
+        assertEquals(2, eras.size());
+        assertEquals(true, eras.contains(CopticEra.BEFORE_AM));
+        assertEquals(true, eras.contains(CopticEra.AM));
     }
 
     //-----------------------------------------------------------------------
@@ -380,10 +381,10 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(CopticChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(1, 7));
-        assertEquals(CopticChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(1, 5, 30));
-        assertEquals(CopticChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
-        assertEquals(CopticChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(1, 13));
+        assertEquals(ValueRange.of(1, 7), CopticChronology.INSTANCE.range(DAY_OF_WEEK));
+        assertEquals(ValueRange.of(1, 5, 30), CopticChronology.INSTANCE.range(DAY_OF_MONTH));
+        assertEquals(ValueRange.of(1, 365, 366), CopticChronology.INSTANCE.range(DAY_OF_YEAR));
+        assertEquals(ValueRange.of(1, 13), CopticChronology.INSTANCE.range(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -421,7 +422,7 @@ public class TestCopticChronology {
     @Test
     @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
-        assertEquals(CopticDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+        assertEquals(ValueRange.of(expectedMin, expectedMax), CopticDate.of(year, month, dom).range(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -456,7 +457,7 @@ public class TestCopticChronology {
     @Test
     @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
-        assertEquals(CopticDate.of(year, month, dom).getLong(field), expected);
+        assertEquals(expected, CopticDate.of(year, month, dom).getLong(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -508,7 +509,7 @@ public class TestCopticChronology {
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(CopticDate.of(year, month, dom).with(field, value), CopticDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(CopticDate.of(expectedYear, expectedMonth, expectedDom), CopticDate.of(year, month, dom).with(field, value));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -523,14 +524,14 @@ public class TestCopticChronology {
     public void test_adjust1() {
         CopticDate base = CopticDate.of(1728, 10, 29);
         CopticDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, CopticDate.of(1728, 10, 30));
+        assertEquals(CopticDate.of(1728, 10, 30), test);
     }
 
     @Test
     public void test_adjust2() {
         CopticDate base = CopticDate.of(1728, 13, 2);
         CopticDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, CopticDate.of(1728, 13, 5));
+        assertEquals(CopticDate.of(1728, 13, 5), test);
     }
 
     //-----------------------------------------------------------------------
@@ -540,7 +541,7 @@ public class TestCopticChronology {
     public void test_adjust_toLocalDate() {
         CopticDate coptic = CopticDate.of(1726, 1, 4);
         CopticDate test = coptic.with(LocalDate.of(2012, 7, 6));
-        assertEquals(test, CopticDate.of(1728, 10, 29));
+        assertEquals(CopticDate.of(1728, 10, 29), test);
     }
 
     @Test(expected = DateTimeException.class)
@@ -556,14 +557,14 @@ public class TestCopticChronology {
     public void test_LocalDate_adjustToCopticDate() {
         CopticDate coptic = CopticDate.of(1728, 10, 29);
         LocalDate test = LocalDate.MIN.with(coptic);
-        assertEquals(test, LocalDate.of(2012, 7, 6));
+        assertEquals(LocalDate.of(2012, 7, 6), test);
     }
 
     @Test
     public void test_LocalDateTime_adjustToCopticDate() {
         CopticDate coptic = CopticDate.of(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN.with(coptic);
-        assertEquals(test, LocalDateTime.of(2012, 7, 6, 0, 0));
+        assertEquals(LocalDateTime.of(2012, 7, 6, 0, 0), test);
     }
 
     //-----------------------------------------------------------------------
@@ -602,7 +603,7 @@ public class TestCopticChronology {
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(CopticDate.of(year, month, dom).plus(amount, unit), CopticDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(CopticDate.of(expectedYear, expectedMonth, expectedDom), CopticDate.of(year, month, dom).plus(amount, unit));
     }
 
     @Test
@@ -611,7 +612,7 @@ public class TestCopticChronology {
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
-        assertEquals(CopticDate.of(year, month, dom).minus(amount, unit), CopticDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(CopticDate.of(expectedYear, expectedMonth, expectedDom), CopticDate.of(year, month, dom).minus(amount, unit));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -622,22 +623,22 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_Period() {
-        assertEquals(CopticDate.of(1727, 5, 26).plus(CopticChronology.INSTANCE.period(0, 2, 3)), CopticDate.of(1727, 7, 29));
+        assertEquals(CopticDate.of(1727, 7, 29), CopticDate.of(1727, 5, 26).plus(CopticChronology.INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_plus_Period_ISO() {
-        assertEquals(CopticDate.of(1727, 5, 26).plus(Period.ofMonths(2)), CopticDate.of(1727, 7, 26));
+        assertEquals(CopticDate.of(1727, 7, 26), CopticDate.of(1727, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
     public void test_minus_Period() {
-        assertEquals(CopticDate.of(1727, 5, 26).minus(CopticChronology.INSTANCE.period(0, 2, 3)), CopticDate.of(1727, 3, 23));
+        assertEquals(CopticDate.of(1727, 3, 23), CopticDate.of(1727, 5, 26).minus(CopticChronology.INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_minus_Period_ISO() {
-        assertEquals(CopticDate.of(1727, 5, 26).minus(Period.ofMonths(2)), CopticDate.of(1727, 3, 26));
+        assertEquals(CopticDate.of(1727, 3, 26), CopticDate.of(1727, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------
@@ -678,7 +679,7 @@ public class TestCopticChronology {
             TemporalUnit unit, long expected) {
         CopticDate start = CopticDate.of(year1, month1, dom1);
         CopticDate end = CopticDate.of(year2, month2, dom2);
-        assertEquals(start.until(end, unit), expected);
+        assertEquals(expected, start.until(end, unit));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -699,16 +700,16 @@ public class TestCopticChronology {
         CopticDate c = CopticDate.of(1728, 2, 3);
         CopticDate d = CopticDate.of(1729, 1, 3);
 
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a1.equals(b), false);
-        assertEquals(a1.equals(c), false);
-        assertEquals(a1.equals(d), false);
+        assertEquals(true, a1.equals(a1));
+        assertEquals(true, a1.equals(a2));
+        assertEquals(false, a1.equals(b));
+        assertEquals(false, a1.equals(c));
+        assertEquals(false, a1.equals(d));
 
-        assertEquals(a1.equals(null), false);
-        assertEquals(a1.equals(""), false);
+        assertEquals(false, a1.equals(null));
+        assertEquals(false, a1.equals(""));
 
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertTrue(a1.hashCode() == a2.hashCode());
     }
 
     //-----------------------------------------------------------------------
@@ -728,7 +729,7 @@ public class TestCopticChronology {
     @Test
     @UseDataProvider("data_toString")
     public void test_toString(CopticDate coptic, String expected) {
-        assertEquals(coptic.toString(), expected);
+        assertEquals(expected, coptic.toString());
     }
 
 }
