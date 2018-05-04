@@ -72,7 +72,7 @@ public class TestHours {
             oos.writeObject(test);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-            assertSame(ois.readObject(), test);
+            assertSame(test, ois.readObject());
         }
     }
     
@@ -80,7 +80,7 @@ public class TestHours {
     @Test
     public void test_ZERO() {
         assertSame(Hours.of(0), Hours.ZERO);
-        assertSame(Hours.of(0), Hours.ZERO);
+        assertEquals(Hours.of(0), Hours.ZERO);
         assertEquals(0, Hours.ZERO.getAmount());
     }
     

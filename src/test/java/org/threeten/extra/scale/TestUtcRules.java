@@ -89,7 +89,7 @@ public class TestUtcRules {
             oos.writeObject(test);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-            assertSame(ois.readObject(), test);
+            assertSame(test, ois.readObject());
         }
     }
 

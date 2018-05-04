@@ -74,6 +74,7 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -140,7 +141,7 @@ public class TestDayOfMonth {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth test = DayOfMonth.of(i);
             assertEquals(i, test.getValue());
-            assertEquals(test, DayOfMonth.of(i));
+            assertSame(test, DayOfMonth.of(i));
         }
     }
 

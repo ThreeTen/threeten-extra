@@ -74,7 +74,7 @@ public class TestMonths {
             oos.writeObject(test);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-            assertSame(ois.readObject(), test);
+            assertSame(test, ois.readObject());
         }
     }
 
@@ -82,14 +82,14 @@ public class TestMonths {
     @Test
     public void test_ZERO() {
         assertSame(Months.of(0), Months.ZERO);
-        assertSame(Months.of(0), Months.ZERO);
+        assertEquals(Months.of(0), Months.ZERO);
         assertEquals(0, Months.ZERO.getAmount());
     }
 
     @Test
     public void test_ONE() {
         assertSame(Months.of(1), Months.ONE);
-        assertSame(Months.of(1), Months.ONE);
+        assertEquals(Months.of(1), Months.ONE);
         assertEquals(1, Months.ONE.getAmount());
     }
 

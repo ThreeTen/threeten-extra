@@ -74,7 +74,7 @@ public class TestYears {
             oos.writeObject(test);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-            assertSame(ois.readObject(), test);
+            assertSame(test, ois.readObject());
         }
     }
 
@@ -82,14 +82,14 @@ public class TestYears {
     @Test
     public void test_ZERO() {
         assertSame(Years.of(0), Years.ZERO);
-        assertSame(Years.of(0), Years.ZERO);
+        assertEquals(Years.of(0), Years.ZERO);
         assertEquals(0, Years.ZERO.getAmount());
     }
 
     @Test
     public void test_ONE() {
         assertSame(Years.of(1), Years.ONE);
-        assertSame(Years.of(1), Years.ONE);
+        assertEquals(Years.of(1), Years.ONE);
         assertEquals(1, Years.ONE.getAmount());
     }
 

@@ -63,6 +63,7 @@ import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.HALF_DAYS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
@@ -118,10 +119,10 @@ public class TestAmPm {
     @Test
     public void test_ofHour_int_singleton() {
         for (int i = 0; i < 12; i++) {
-            assertEquals(AmPm.AM, AmPm.ofHour(i));
+            assertSame(AmPm.AM, AmPm.ofHour(i));
         }
         for (int i = 12; i < 24; i++) {
-            assertEquals(AmPm.PM, AmPm.ofHour(i));
+        	assertSame(AmPm.PM, AmPm.ofHour(i));
         }
     }
 

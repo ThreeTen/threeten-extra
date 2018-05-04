@@ -64,6 +64,7 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.threeten.extra.Quarter.Q3;
 
@@ -129,18 +130,18 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_ofMonth_int_singleton() {
-        assertEquals(Quarter.Q1, Quarter.ofMonth(1));
-        assertEquals(Quarter.Q1, Quarter.ofMonth(2));
-        assertEquals(Quarter.Q1, Quarter.ofMonth(3));
-        assertEquals(Quarter.Q2, Quarter.ofMonth(4));
-        assertEquals(Quarter.Q2, Quarter.ofMonth(5));
-        assertEquals(Quarter.Q2, Quarter.ofMonth(6));
-        assertEquals(Quarter.Q3, Quarter.ofMonth(7));
-        assertEquals(Quarter.Q3, Quarter.ofMonth(8));
-        assertEquals(Quarter.Q3, Quarter.ofMonth(9));
-        assertEquals(Quarter.Q4, Quarter.ofMonth(10));
-        assertEquals(Quarter.Q4, Quarter.ofMonth(11));
-        assertEquals(Quarter.Q4, Quarter.ofMonth(12));
+        assertSame(Quarter.Q1, Quarter.ofMonth(1));
+        assertSame(Quarter.Q1, Quarter.ofMonth(2));
+        assertSame(Quarter.Q1, Quarter.ofMonth(3));
+        assertSame(Quarter.Q2, Quarter.ofMonth(4));
+        assertSame(Quarter.Q2, Quarter.ofMonth(5));
+        assertSame(Quarter.Q2, Quarter.ofMonth(6));
+        assertSame(Quarter.Q3, Quarter.ofMonth(7));
+        assertSame(Quarter.Q3, Quarter.ofMonth(8));
+        assertSame(Quarter.Q3, Quarter.ofMonth(9));
+        assertSame(Quarter.Q4, Quarter.ofMonth(10));
+        assertSame(Quarter.Q4, Quarter.ofMonth(11));
+        assertSame(Quarter.Q4, Quarter.ofMonth(12));
     }
 
     @Test(expected = DateTimeException.class)
