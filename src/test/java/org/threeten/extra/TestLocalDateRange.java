@@ -549,15 +549,15 @@ public class TestLocalDateRange {
     @Test
     public void test_encloses_baseEmptyMax() {
         assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .encloses(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
+                        .encloses(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
+                        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
+                        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-				        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
+                        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-				        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
+                        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
     }
 
     @Test
@@ -573,15 +573,15 @@ public class TestLocalDateRange {
     @Test
     public void test_abuts_baseEmptyMax() {
         assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .abuts(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
+                        .abuts(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
         assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
+                        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
+                        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
         assertEquals(true, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-				        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
+                        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-				        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
+                        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
     }
 
     @Test
@@ -595,15 +595,15 @@ public class TestLocalDateRange {
     @Test
     public void test_isConnected_baseEmptyMax() {
         assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .isConnected(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
+                        .isConnected(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
         assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
+                        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
+                        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
         assertEquals(true, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-				        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
+                        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-				        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
+                        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
     }
 
     @Test
@@ -617,15 +617,15 @@ public class TestLocalDateRange {
     @Test
     public void test_overlaps_baseEmptyMax() {
         assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .overlaps(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
+                        .overlaps(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
+                        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-				        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
+                        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-				        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
+                        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
         assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-				        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
+                        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
     }
 
     //-----------------------------------------------------------------------
