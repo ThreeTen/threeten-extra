@@ -19,6 +19,10 @@
         Now that the build is on Java 9, the OSGi data had to be updated.
         See #92, #94.
       </action>
+      <action dev="perceptron8" type="fix">
+        Fix test parameter order.
+        See #98, #99.
+      </action>
     </release>
     <release version="1.3.2" date="2018-01-23" description="v1.3.2">
       <action dev="jodastephen" type="fix">
