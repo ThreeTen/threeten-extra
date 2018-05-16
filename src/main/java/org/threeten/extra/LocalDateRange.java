@@ -259,7 +259,7 @@ public final class LocalDateRange
     /**
      * Checks if the range is empty.
      * <p>
-     * An empty range occurs when the start date equals the inclusive end date.
+     * An empty range occurs when the start date equals the end date.
      * 
      * @return true if the range is empty
      */
@@ -331,9 +331,9 @@ public final class LocalDateRange
      * Checks if this range contains the specified date.
      * <p>
      * This checks if the specified date is within the bounds of this range.
-     * If this range has an unbounded start then {@code contains(LocalDate#MIN)} returns true.
-     * If this range has an unbounded end then {@code contains(LocalDate#MAX)} returns true.
      * If this range is empty then this method always returns false.
+     * Else if this range has an unbounded start then {@code contains(LocalDate#MIN)} returns true.
+     * Else if this range has an unbounded end then {@code contains(LocalDate#MAX)} returns true.
      * 
      * @param date  the date to check for, not null
      * @return true if this range contains the date
