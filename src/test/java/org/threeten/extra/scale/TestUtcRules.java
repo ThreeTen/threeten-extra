@@ -89,7 +89,7 @@ public class TestUtcRules {
             oos.writeObject(test);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-            assertSame(ois.readObject(), test);
+            assertSame(test, ois.readObject());
         }
     }
 
@@ -98,7 +98,7 @@ public class TestUtcRules {
     //-----------------------------------------------------------------------
     @Test
     public void test_getName() {
-        assertEquals(rules.getName(), "System");
+        assertEquals("System", rules.getName());
     }
 
     //-----------------------------------------------------------------------
@@ -240,14 +240,14 @@ public class TestUtcRules {
     @Test
     @UseDataProvider("data_leapSeconds")
     public void test_leapSeconds(long mjd, int adjust, int offset, String checkDate) {
-        assertEquals(mjd, LocalDate.parse(checkDate).getLong(JulianFields.MODIFIED_JULIAN_DAY));
+        assertEquals(LocalDate.parse(checkDate).getLong(JulianFields.MODIFIED_JULIAN_DAY), mjd);
 
-        assertEquals(rules.getLeapSecondAdjustment(mjd), adjust);
-        assertEquals(rules.getTaiOffset(mjd), offset);
+        assertEquals(adjust, rules.getLeapSecondAdjustment(mjd));
+        assertEquals(offset, rules.getTaiOffset(mjd));
         if (adjust != 0) {
             long[] leaps = rules.getLeapSecondDates();
             Arrays.sort(leaps);
-            assertEquals(Arrays.binarySearch(leaps, mjd) >= 0, true);
+            assertEquals(true, Arrays.binarySearch(leaps, mjd) >= 0);
         }
     }
 
@@ -275,13 +275,13 @@ public class TestUtcRules {
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_1980, 0);
         for (int i = -10; i < 10; i++) {
             Duration duration = Duration.ofNanos(i);
-            assertEquals(rules.convertToUtc(tai.plus(duration)), expected.plus(duration));
-            assertEquals(rules.convertToTai(expected.plus(duration)), tai.plus(duration)); // check reverse
+            assertEquals(expected.plus(duration), rules.convertToUtc(tai.plus(duration)));
+            assertEquals(tai.plus(duration), rules.convertToTai(expected.plus(duration))); // check reverse
         }
         for (int i = -10; i < 10; i++) {
             Duration duration = Duration.ofSeconds(i);
-            assertEquals(rules.convertToUtc(tai.plus(duration)), expected.plus(duration));
-            assertEquals(rules.convertToTai(expected.plus(duration)), tai.plus(duration)); // check reverse
+            assertEquals(expected.plus(duration), rules.convertToUtc(tai.plus(duration)));
+            assertEquals(tai.plus(duration), rules.convertToTai(expected.plus(duration))); // check reverse
         }
     }
 
@@ -289,64 +289,64 @@ public class TestUtcRules {
     public void test_convertToUtc_TaiInstant_furtherAfterLeap() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1980 + 1, 0);  // 1980-01-01 (19 leap secs added)
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_1980, NANOS_PER_SEC);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test
     public void test_convertToUtc_TaiInstant_justAfterLeap() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1980, 0);  // 1980-01-01 (19 leap secs added)
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_1980, 0);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test
     public void test_convertToUtc_TaiInstant_inLeap() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1980 - 1, 0);  // 1980-01-01 (1 second before 1980)
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_1980 - 1, SECS_PER_DAY * NANOS_PER_SEC);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test
     public void test_convertToUtc_TaiInstant_justBeforeLeap() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1980 - 2, 0);  // 1980-01-01 (2 seconds before 1980)
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_1980 - 1, (SECS_PER_DAY - 1) * NANOS_PER_SEC);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test
     public void test_convertToUtc_TaiInstant_1800() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1800, 0);  // 1800-01-01
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_1800, 0);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test
     public void test_convertToUtc_TaiInstant_1900() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1900, 0);  // 1900-01-01
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_1900, 0);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test
     public void test_convertToUtc_TaiInstant_1958() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC1958, 0);  // 1958-01-01
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_1958, 0);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test
     public void test_convertToUtc_TaiInstant_2100() {
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC2100, 0);  // 2100-01-01
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_2100, 0);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test(expected = NullPointerException.class)
@@ -365,8 +365,8 @@ public class TestUtcRules {
         rules.register(MJD_2100 - 1, -1);
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC2100_EXTRA_NEGATIVE_LEAP - 1, 0);  // 2100-01-01 (1 second before 2100)
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_2100 - 1, (SECS_PER_DAY - 2) * NANOS_PER_SEC);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     @Test
@@ -374,8 +374,8 @@ public class TestUtcRules {
         rules.register(MJD_2100 - 1, -1);
         TaiInstant tai = TaiInstant.ofTaiSeconds(TAI_SECS_UTC2100_EXTRA_NEGATIVE_LEAP, 0);  // 2100-01-01
         UtcInstant expected = UtcInstant.ofModifiedJulianDay(MJD_2100, 0);
-        assertEquals(rules.convertToUtc(tai), expected);
-        assertEquals(rules.convertToTai(expected), tai); // check reverse
+        assertEquals(expected, rules.convertToUtc(tai));
+        assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
     //-----------------------------------------------------------------------
@@ -386,8 +386,8 @@ public class TestUtcRules {
         OffsetDateTime odt = OffsetDateTime.of(1979, 12, 31, 23, 43, 21, 0, ZoneOffset.UTC);
         Instant instant = odt.toInstant();
         UtcInstant utc = UtcInstant.ofModifiedJulianDay(MJD_1980 - 1, (SECS_PER_DAY + 1 - 1000) * NANOS_PER_SEC);
-        assertEquals(rules.convertToInstant(utc), instant);
-        assertEquals(rules.convertToUtc(instant), utc);
+        assertEquals(instant, rules.convertToInstant(utc));
+        assertEquals(utc, rules.convertToUtc(instant));
     }
 
     @Test
@@ -402,8 +402,8 @@ public class TestUtcRules {
             Instant instant = odt.toInstant();
             UtcInstant utc = UtcInstant.ofModifiedJulianDay(
                     MJD_1980 - 1, (SECS_PER_DAY + 1 - 1000) * NANOS_PER_SEC + i * NANOS_PER_SEC);
-            assertEquals(rules.convertToInstant(utc), instant);
-            assertEquals(rules.convertToUtc(instant), utc);
+            assertEquals(instant, rules.convertToInstant(utc));
+            assertEquals(utc, rules.convertToUtc(instant));
         }
     }
 
@@ -417,8 +417,8 @@ public class TestUtcRules {
             Instant instant = odt.toInstant();
             UtcInstant utc = UtcInstant.ofModifiedJulianDay(
                     MJD_1980 - 1, (SECS_PER_DAY + 1 - 1000) * NANOS_PER_SEC + i * 1000000);
-            assertEquals(rules.convertToInstant(utc), instant);
-            assertEquals(rules.convertToUtc(instant), utc);
+            assertEquals(instant, rules.convertToInstant(utc));
+            assertEquals(utc, rules.convertToUtc(instant));
         }
     }
 
@@ -432,8 +432,8 @@ public class TestUtcRules {
             Instant instant = odt.toInstant();
             UtcInstant utc = UtcInstant.ofModifiedJulianDay(
                     MJD_1980 - 1, (SECS_PER_DAY + 1 - 1000) * NANOS_PER_SEC + i * 1000);
-            assertEquals(rules.convertToInstant(utc), instant);
-            assertEquals(rules.convertToUtc(instant), utc);
+            assertEquals(instant, rules.convertToInstant(utc));
+            assertEquals(utc, rules.convertToUtc(instant));
         }
     }
 
@@ -446,10 +446,10 @@ public class TestUtcRules {
             OffsetDateTime odt = OffsetDateTime.of(1979, 12, 31, 23, 43, 21, (int) (slsNanos % NANOS_PER_SEC), ZoneOffset.UTC);
             Instant instant = odt.toInstant();
             UtcInstant utc = UtcInstant.ofModifiedJulianDay(MJD_1980 - 1, utcNanos);
-            assertEquals(rules.convertToInstant(utc), instant);
+            assertEquals(instant, rules.convertToInstant(utc));
             // not all instants can map back to the correct UTC value
             long reverseUtcNanos = startSls + ((slsNanos - startSls) * 1000L) / (1000L - 1);
-            assertEquals(rules.convertToUtc(instant), UtcInstant.ofModifiedJulianDay(MJD_1980 - 1, reverseUtcNanos));
+            assertEquals(UtcInstant.ofModifiedJulianDay(MJD_1980 - 1, reverseUtcNanos), rules.convertToUtc(instant));
         }
     }
 
@@ -458,8 +458,8 @@ public class TestUtcRules {
         OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         Instant instant = odt.toInstant();
         UtcInstant utc = UtcInstant.ofModifiedJulianDay(MJD_1980, 0);
-        assertEquals(rules.convertToInstant(utc), instant);
-        assertEquals(rules.convertToUtc(instant), utc);
+        assertEquals(instant, rules.convertToInstant(utc));
+        assertEquals(utc, rules.convertToUtc(instant));
     }
 
     @Test
@@ -467,8 +467,8 @@ public class TestUtcRules {
         OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 1, 0, ZoneOffset.UTC);
         Instant instant = odt.toInstant();
         UtcInstant utc = UtcInstant.ofModifiedJulianDay(MJD_1980, NANOS_PER_SEC);
-        assertEquals(rules.convertToInstant(utc), instant);
-        assertEquals(rules.convertToUtc(instant), utc);
+        assertEquals(instant, rules.convertToInstant(utc));
+        assertEquals(utc, rules.convertToUtc(instant));
     }
 
     //-----------------------------------------------------------------------
@@ -480,9 +480,9 @@ public class TestUtcRules {
         long mjd = dates[dates.length - 1] + 1;
         rules.register(mjd, 1);
         long[] test = rules.getLeapSecondDates();
-        assertEquals(test.length, dates.length + 1);
-        assertEquals(test[test.length - 1], mjd);
-        assertEquals(rules.getLeapSecondAdjustment(mjd), 1);
+        assertEquals(dates.length + 1, test.length);
+        assertEquals(mjd, test[test.length - 1]);
+        assertEquals(1, rules.getLeapSecondAdjustment(mjd));
     }
 
     @Test
@@ -491,9 +491,9 @@ public class TestUtcRules {
         long mjd = dates[dates.length - 1] + 1;
         rules.register(mjd, -1);
         long[] test = rules.getLeapSecondDates();
-        assertEquals(test.length, dates.length + 1);
-        assertEquals(test[test.length - 1], mjd);
-        assertEquals(rules.getLeapSecondAdjustment(mjd), -1);
+        assertEquals(dates.length + 1, test.length);
+        assertEquals(mjd, test[test.length - 1]);
+        assertEquals(-1, rules.getLeapSecondAdjustment(mjd));
     }
 
     @Test
@@ -503,8 +503,8 @@ public class TestUtcRules {
         int adj = rules.getLeapSecondAdjustment(mjd);
         rules.register(mjd, adj);
         long[] test = rules.getLeapSecondDates();
-        assertEquals(Arrays.equals(test, dates), true);
-        assertEquals(rules.getLeapSecondAdjustment(mjd), adj);
+        assertEquals(true, Arrays.equals(test, dates));
+        assertEquals(adj, rules.getLeapSecondAdjustment(mjd));
     }
 
     @Test
@@ -514,8 +514,8 @@ public class TestUtcRules {
         int adj = rules.getLeapSecondAdjustment(mjd);
         rules.register(mjd, adj);
         long[] test = rules.getLeapSecondDates();
-        assertEquals(Arrays.equals(test, dates), true);
-        assertEquals(rules.getLeapSecondAdjustment(mjd), adj);
+        assertEquals(true, Arrays.equals(test, dates));
+        assertEquals(adj, rules.getLeapSecondAdjustment(mjd));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -561,7 +561,7 @@ public class TestUtcRules {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString() {
-        assertEquals(rules.toString(), "UtcRules[System]");
+        assertEquals("UtcRules[System]", rules.toString());
     }
 
 }

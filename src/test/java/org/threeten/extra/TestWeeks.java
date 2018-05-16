@@ -74,7 +74,7 @@ public class TestWeeks {
             oos.writeObject(test);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-            assertSame(ois.readObject(), test);
+            assertSame(test, ois.readObject());
         }
     }
 
@@ -82,47 +82,47 @@ public class TestWeeks {
     @Test
     public void test_ZERO() {
         assertSame(Weeks.of(0), Weeks.ZERO);
-        assertSame(Weeks.of(0), Weeks.ZERO);
-        assertEquals(Weeks.ZERO.getAmount(), 0);
+        assertEquals(Weeks.of(0), Weeks.ZERO);
+        assertEquals(0, Weeks.ZERO.getAmount());
     }
 
     @Test
     public void test_ONE() {
         assertSame(Weeks.of(1), Weeks.ONE);
-        assertSame(Weeks.of(1), Weeks.ONE);
-        assertEquals(Weeks.ONE.getAmount(), 1);
+        assertEquals(Weeks.of(1), Weeks.ONE);
+        assertEquals(1, Weeks.ONE.getAmount());
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_of() {
-        assertEquals(Weeks.of(1).getAmount(), 1);
-        assertEquals(Weeks.of(2).getAmount(), 2);
-        assertEquals(Weeks.of(Integer.MAX_VALUE).getAmount(), Integer.MAX_VALUE);
-        assertEquals(Weeks.of(-1).getAmount(), -1);
-        assertEquals(Weeks.of(-2).getAmount(), -2);
-        assertEquals(Weeks.of(Integer.MIN_VALUE).getAmount(), Integer.MIN_VALUE);
+        assertEquals(1, Weeks.of(1).getAmount());
+        assertEquals(2, Weeks.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE, Weeks.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1, Weeks.of(-1).getAmount());
+        assertEquals(-2, Weeks.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE, Weeks.of(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_from_P0W() {
-        assertEquals(Weeks.from(Period.ofWeeks(0)), Weeks.of(0));
+        assertEquals(Weeks.of(0), Weeks.from(Period.ofWeeks(0)));
     }
 
     @Test
     public void test_from_P2W() {
-        assertEquals(Weeks.from(Period.ofWeeks(2)), Weeks.of(2));
+        assertEquals(Weeks.of(2), Weeks.from(Period.ofWeeks(2)));
     }
 
     @Test
     public void test_from_P14D() {
-        assertEquals(Weeks.from(Period.ofDays(14)), Weeks.of(2));
+        assertEquals(Weeks.of(2), Weeks.from(Period.ofDays(14)));
     }
 
     @Test
     public void test_from_Duration() {
-        assertEquals(Weeks.from(Duration.ofDays(14)), Weeks.of(2));
+        assertEquals(Weeks.of(2), Weeks.from(Duration.ofDays(14)));
     }
 
     @Test(expected = DateTimeException.class)
@@ -143,13 +143,13 @@ public class TestWeeks {
     //-----------------------------------------------------------------------
     @Test
     public void test_parse_CharSequence() {
-        assertEquals(Weeks.parse("P0W"), Weeks.of(0));
-        assertEquals(Weeks.parse("P1W"), Weeks.of(1));
-        assertEquals(Weeks.parse("P2W"), Weeks.of(2));
-        assertEquals(Weeks.parse("P123456789W"), Weeks.of(123456789));
-        assertEquals(Weeks.parse("P-2W"), Weeks.of(-2));
-        assertEquals(Weeks.parse("-P2W"), Weeks.of(-2));
-        assertEquals(Weeks.parse("-P-2W"), Weeks.of(2));
+        assertEquals(Weeks.of(0), Weeks.parse("P0W"));
+        assertEquals(Weeks.of(1), Weeks.parse("P1W"));
+        assertEquals(Weeks.of(2), Weeks.parse("P2W"));
+        assertEquals(Weeks.of(123456789), Weeks.parse("P123456789W"));
+        assertEquals(Weeks.of(-2), Weeks.parse("P-2W"));
+        assertEquals(Weeks.of(-2), Weeks.parse("-P2W"));
+        assertEquals(Weeks.of(2), Weeks.parse("-P-2W"));
     }
 
     @DataProvider
@@ -398,7 +398,7 @@ public class TestWeeks {
     @Test
     public void test_toPeriod() {
         for (int i = -20; i < 20; i++) {
-            assertEquals(Weeks.of(i).toPeriod(), Period.ofWeeks(i));
+            assertEquals(Period.ofWeeks(i), Weeks.of(i).toPeriod());
         }
     }
 

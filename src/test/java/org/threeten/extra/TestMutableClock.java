@@ -70,23 +70,23 @@ public class TestMutableClock {
     @Test
     public void test_of() {
         assertEquals(
-                MutableClock.of(Instant.EPOCH, ZoneOffset.UTC).instant(),
-                Instant.EPOCH);
+                Instant.EPOCH,
+                MutableClock.of(Instant.EPOCH, ZoneOffset.UTC).instant());
         assertEquals(
-                MutableClock.of(Instant.MIN, ZoneOffset.UTC).instant(),
-                Instant.MIN);
+                Instant.MIN,
+                MutableClock.of(Instant.MIN, ZoneOffset.UTC).instant());
         assertEquals(
-                MutableClock.of(Instant.MAX, ZoneOffset.UTC).instant(),
-                Instant.MAX);
+                Instant.MAX,
+                MutableClock.of(Instant.MAX, ZoneOffset.UTC).instant());
         assertEquals(
-                MutableClock.of(Instant.EPOCH, ZoneOffset.UTC).getZone(),
-                ZoneOffset.UTC);
+                ZoneOffset.UTC,
+                MutableClock.of(Instant.EPOCH, ZoneOffset.UTC).getZone());
         assertEquals(
-                MutableClock.of(Instant.EPOCH, ZoneOffset.MIN).getZone(),
-                ZoneOffset.MIN);
+                ZoneOffset.MIN,
+                MutableClock.of(Instant.EPOCH, ZoneOffset.MIN).getZone());
         assertEquals(
-                MutableClock.of(Instant.EPOCH, ZoneOffset.MAX).getZone(),
-                ZoneOffset.MAX);
+                ZoneOffset.MAX,
+                MutableClock.of(Instant.EPOCH, ZoneOffset.MAX).getZone());
     }
 
     @Test(expected = NullPointerException.class)
@@ -101,20 +101,20 @@ public class TestMutableClock {
 
     @Test
     public void test_epochUTC() {
-        assertEquals(MutableClock.epochUTC().instant(), Instant.EPOCH);
-        assertEquals(MutableClock.epochUTC().getZone(), ZoneOffset.UTC);
+        assertEquals(Instant.EPOCH, MutableClock.epochUTC().instant());
+        assertEquals(ZoneOffset.UTC, MutableClock.epochUTC().getZone());
     }
 
     @Test
     public void test_setInstant() {
         MutableClock clock = MutableClock.epochUTC();
-        assertEquals(clock.instant(), Instant.EPOCH);
+        assertEquals(Instant.EPOCH, clock.instant());
         clock.setInstant(Instant.MIN);
-        assertEquals(clock.instant(), Instant.MIN);
+        assertEquals(Instant.MIN, clock.instant());
         clock.setInstant(Instant.MAX);
-        assertEquals(clock.instant(), Instant.MAX);
+        assertEquals(Instant.MAX, clock.instant());
         clock.setInstant(Instant.EPOCH.plusSeconds(10));
-        assertEquals(clock.instant(), Instant.EPOCH.plusSeconds(10));
+        assertEquals(Instant.EPOCH.plusSeconds(10), clock.instant());
     }
 
     @Test(expected = NullPointerException.class)
@@ -132,13 +132,13 @@ public class TestMutableClock {
         clock.add(Duration.ZERO);
         clock.add(Period.ZERO);
         assertEquals(
-                clock.instant(),
                 ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
                         .plusNanos(3)
                         .plusMonths(2)
                         .minusSeconds(5)
                         .minusWeeks(7)
-                        .toInstant());
+                        .toInstant(),
+                clock.instant());
     }
 
     @Test(expected = NullPointerException.class)
@@ -156,13 +156,13 @@ public class TestMutableClock {
         clock.add(0, ChronoUnit.MILLIS);
         clock.add(0, ChronoUnit.YEARS);
         assertEquals(
-                clock.instant(),
                 ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
                         .plusNanos(3)
                         .plusMonths(2)
                         .minusSeconds(5)
                         .minusWeeks(7)
-                        .toInstant());
+                        .toInstant(),
+                clock.instant());
     }
 
     @Test(expected = NullPointerException.class)
@@ -178,14 +178,14 @@ public class TestMutableClock {
         clock.set(TemporalAdjusters.firstDayOfNextMonth());
         clock.set(TemporalAdjusters.next(DayOfWeek.WEDNESDAY));
         assertEquals(
-                clock.instant(),
                 LocalDateTime.of(0, 1, 2, 3, 4, 5)
                         .with(TemporalAdjusters.firstDayOfNextMonth())
                         .with(TemporalAdjusters.next(DayOfWeek.WEDNESDAY))
                         .atZone(ZoneOffset.UTC)
-                        .toInstant());
+                        .toInstant(),
+                clock.instant());
         clock.set(Instant.EPOCH);
-        assertEquals(clock.instant(), Instant.EPOCH);
+        assertEquals(Instant.EPOCH, clock.instant());
     }
 
     @Test(expected = NullPointerException.class)
@@ -203,10 +203,10 @@ public class TestMutableClock {
         clock.set(ChronoField.MINUTE_OF_HOUR, 4);
         clock.set(ChronoField.SECOND_OF_MINUTE, 5);
         assertEquals(
-                clock.instant(),
                 LocalDateTime.of(0, 1, 2, 3, 4, 5)
                         .atZone(ZoneOffset.UTC)
-                        .toInstant());
+                        .toInstant(),
+                clock.instant());
     }
 
     @Test(expected = NullPointerException.class)
@@ -219,9 +219,9 @@ public class TestMutableClock {
         MutableClock clock = MutableClock.epochUTC();
         MutableClock withOtherZone = clock.withZone(ZoneOffset.MIN);
         MutableClock ofOtherZone = MutableClock.of(Instant.EPOCH, ZoneOffset.MAX);
-        assertEquals(clock.getZone(), ZoneOffset.UTC);
-        assertEquals(withOtherZone.getZone(), ZoneOffset.MIN);
-        assertEquals(ofOtherZone.getZone(), ZoneOffset.MAX);
+        assertEquals(ZoneOffset.UTC, clock.getZone());
+        assertEquals(ZoneOffset.MIN, withOtherZone.getZone());
+        assertEquals(ZoneOffset.MAX, ofOtherZone.getZone());
     }
 
     @Test
@@ -230,12 +230,12 @@ public class TestMutableClock {
         MutableClock withOtherZone = clock.withZone(ZoneOffset.MIN);
         MutableClock withSameZone = withOtherZone.withZone(ZoneOffset.UTC);
         clock.setInstant(Instant.MIN);
-        assertEquals(withOtherZone.instant(), Instant.MIN);
-        assertEquals(withSameZone.instant(), Instant.MIN);
-        assertEquals(withOtherZone.getZone(), ZoneOffset.MIN);
-        assertEquals(withSameZone.getZone(), ZoneOffset.UTC);
-        assertNotEquals(withOtherZone, clock);
-        assertEquals(withSameZone, clock);
+        assertEquals(Instant.MIN, withOtherZone.instant());
+        assertEquals(Instant.MIN, withSameZone.instant());
+        assertEquals(ZoneOffset.MIN, withOtherZone.getZone());
+        assertEquals(ZoneOffset.UTC, withSameZone.getZone());
+        assertNotEquals(clock, withOtherZone);
+        assertEquals(clock, withSameZone);
     }
 
     @Test(expected = NullPointerException.class)
@@ -247,12 +247,12 @@ public class TestMutableClock {
     public void test_instant() {
         MutableClock clock = MutableClock.epochUTC();
         MutableClock withOtherZone = clock.withZone(ZoneOffset.MIN);
-        assertEquals(clock.instant(), Instant.EPOCH);
+        assertEquals(Instant.EPOCH, clock.instant());
         clock.add(Duration.ofSeconds(5));
-        assertEquals(clock.instant(), Instant.EPOCH.plusSeconds(5));
+        assertEquals(Instant.EPOCH.plusSeconds(5), clock.instant());
         clock.setInstant(Instant.MIN);
-        assertEquals(clock.instant(), Instant.MIN);
-        assertEquals(withOtherZone.instant(), Instant.MIN);
+        assertEquals(Instant.MIN, clock.instant());
+        assertEquals(Instant.MIN, withOtherZone.instant());
     }
 
     @Test
@@ -265,8 +265,8 @@ public class TestMutableClock {
         assertNotEquals(null, clock);
         assertNotEquals("", clock);
         assertNotEquals(withOtherZone, clock);
-        assertEquals(withSameZone, clock);
-        assertNotEquals(independent, clock);
+        assertEquals(clock, withSameZone);
+        assertNotEquals(clock, independent);
     }
 
     @Test
@@ -274,13 +274,13 @@ public class TestMutableClock {
         MutableClock clock = MutableClock.epochUTC();
         int hash = clock.hashCode();
         clock.add(Period.ofMonths(1));
-        assertEquals(clock.hashCode(), hash);
+        assertEquals(hash, clock.hashCode());
         clock.add(1, ChronoUnit.DAYS);
-        assertEquals(clock.hashCode(), hash);
+        assertEquals(hash, clock.hashCode());
         clock.set(Year.of(2000));
-        assertEquals(clock.hashCode(), hash);
+        assertEquals(hash, clock.hashCode());
         clock.set(ChronoField.INSTANT_SECONDS, -1);
-        assertEquals(clock.hashCode(), hash);
+        assertEquals(hash, clock.hashCode());
     }
 
     @Test
@@ -295,16 +295,16 @@ public class TestMutableClock {
     public void test_toString() {
         MutableClock clock = MutableClock.epochUTC();
         assertEquals(
-                clock.toString(),
-                "MutableClock[1970-01-01T00:00:00Z,Z]");
+                "MutableClock[1970-01-01T00:00:00Z,Z]",
+                clock.toString());
         clock.add(Period.ofYears(30));
         assertEquals(
-                clock.toString(),
-                "MutableClock[2000-01-01T00:00:00Z,Z]");
+                "MutableClock[2000-01-01T00:00:00Z,Z]",
+                clock.toString());
         MutableClock withOtherZone = clock.withZone(ZoneOffset.MIN);
         assertEquals(
-                withOtherZone.toString(),
-                "MutableClock[2000-01-01T00:00:00Z,-18:00]");
+                "MutableClock[2000-01-01T00:00:00Z,-18:00]",
+                withOtherZone.toString());
     }
 
     @Test
@@ -321,8 +321,8 @@ public class TestMutableClock {
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
             MutableClock ser = (MutableClock) ois.readObject();
-            assertEquals(ser.instant(), test.instant());
-            assertEquals(ser.getZone(), test.getZone());
+            assertEquals(test.instant(), ser.instant());
+            assertEquals(test.getZone(), ser.getZone());
             // no shared updates
             assertNotEquals(ser, test);
             test.add(Duration.ofSeconds(1));
@@ -352,7 +352,7 @@ public class TestMutableClock {
             }
         }
         assertEquals(
-                clock.instant(),
-                Instant.EPOCH.plus(increment.multipliedBy(updateCount)));
+                Instant.EPOCH.plus(increment.multipliedBy(updateCount)),
+                clock.instant());
     }
 }

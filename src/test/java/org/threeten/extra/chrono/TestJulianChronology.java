@@ -54,6 +54,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -92,18 +93,18 @@ public class TestJulianChronology {
     public void test_chronology_of_name() {
         Chronology chrono = Chronology.of("Julian");
         Assert.assertNotNull(chrono);
-        Assert.assertEquals(chrono, JulianChronology.INSTANCE);
-        Assert.assertEquals(chrono.getId(), "Julian");
-        Assert.assertEquals(chrono.getCalendarType(), "julian");
+        Assert.assertEquals(JulianChronology.INSTANCE, chrono);
+        Assert.assertEquals("Julian", chrono.getId());
+        Assert.assertEquals("julian", chrono.getCalendarType());
     }
 
     @Test
     public void test_chronology_of_name_id() {
         Chronology chrono = Chronology.of("julian");
         Assert.assertNotNull(chrono);
-        Assert.assertEquals(chrono, JulianChronology.INSTANCE);
-        Assert.assertEquals(chrono.getId(), "Julian");
-        Assert.assertEquals(chrono.getCalendarType(), "julian");
+        Assert.assertEquals(JulianChronology.INSTANCE, chrono);
+        Assert.assertEquals("Julian", chrono.getId());
+        Assert.assertEquals("julian", chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -148,78 +149,78 @@ public class TestJulianChronology {
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_from_JulianDate(JulianDate julian, LocalDate iso) {
-        assertEquals(LocalDate.from(julian), iso);
+        assertEquals(iso, LocalDate.from(julian));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_JulianDate_from_LocalDate(JulianDate julian, LocalDate iso) {
-        assertEquals(JulianDate.from(iso), julian);
+        assertEquals(julian, JulianDate.from(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_JulianDate_chronology_dateEpochDay(JulianDate julian, LocalDate iso) {
-        assertEquals(JulianChronology.INSTANCE.dateEpochDay(iso.toEpochDay()), julian);
+        assertEquals(julian, JulianChronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_JulianDate_toEpochDay(JulianDate julian, LocalDate iso) {
-        assertEquals(julian.toEpochDay(), iso.toEpochDay());
+        assertEquals(iso.toEpochDay(), julian.toEpochDay());
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_JulianDate_until_JulianDate(JulianDate julian, LocalDate iso) {
-        assertEquals(julian.until(julian), JulianChronology.INSTANCE.period(0, 0, 0));
+        assertEquals(JulianChronology.INSTANCE.period(0, 0, 0), julian.until(julian));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_JulianDate_until_LocalDate(JulianDate julian, LocalDate iso) {
-        assertEquals(julian.until(iso), JulianChronology.INSTANCE.period(0, 0, 0));
+        assertEquals(JulianChronology.INSTANCE.period(0, 0, 0), julian.until(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_until_JulianDate(JulianDate julian, LocalDate iso) {
-        assertEquals(iso.until(julian), Period.ZERO);
+        assertEquals(Period.ZERO, iso.until(julian));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(JulianDate julian, LocalDate iso) {
-        assertEquals(JulianChronology.INSTANCE.date(iso), julian);
+        assertEquals(julian, JulianChronology.INSTANCE.date(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_plusDays(JulianDate julian, LocalDate iso) {
-        assertEquals(LocalDate.from(julian.plus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(julian.plus(1, DAYS)), iso.plusDays(1));
-        assertEquals(LocalDate.from(julian.plus(35, DAYS)), iso.plusDays(35));
-        assertEquals(LocalDate.from(julian.plus(-1, DAYS)), iso.plusDays(-1));
-        assertEquals(LocalDate.from(julian.plus(-60, DAYS)), iso.plusDays(-60));
+        assertEquals(iso, LocalDate.from(julian.plus(0, DAYS)));
+        assertEquals(iso.plusDays(1), LocalDate.from(julian.plus(1, DAYS)));
+        assertEquals(iso.plusDays(35), LocalDate.from(julian.plus(35, DAYS)));
+        assertEquals(iso.plusDays(-1), LocalDate.from(julian.plus(-1, DAYS)));
+        assertEquals(iso.plusDays(-60), LocalDate.from(julian.plus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_minusDays(JulianDate julian, LocalDate iso) {
-        assertEquals(LocalDate.from(julian.minus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(julian.minus(1, DAYS)), iso.minusDays(1));
-        assertEquals(LocalDate.from(julian.minus(35, DAYS)), iso.minusDays(35));
-        assertEquals(LocalDate.from(julian.minus(-1, DAYS)), iso.minusDays(-1));
-        assertEquals(LocalDate.from(julian.minus(-60, DAYS)), iso.minusDays(-60));
+        assertEquals(iso, LocalDate.from(julian.minus(0, DAYS)));
+        assertEquals(iso.minusDays(1), LocalDate.from(julian.minus(1, DAYS)));
+        assertEquals(iso.minusDays(35), LocalDate.from(julian.minus(35, DAYS)));
+        assertEquals(iso.minusDays(-1), LocalDate.from(julian.minus(-1, DAYS)));
+        assertEquals(iso.minusDays(-60), LocalDate.from(julian.minus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_until_DAYS(JulianDate julian, LocalDate iso) {
-        assertEquals(julian.until(iso.plusDays(0), DAYS), 0);
-        assertEquals(julian.until(iso.plusDays(1), DAYS), 1);
-        assertEquals(julian.until(iso.plusDays(35), DAYS), 35);
-        assertEquals(julian.until(iso.minusDays(40), DAYS), -40);
+        assertEquals(0, julian.until(iso.plusDays(0), DAYS));
+        assertEquals(1, julian.until(iso.plusDays(1), DAYS));
+        assertEquals(35, julian.until(iso.plusDays(35), DAYS));
+        assertEquals(-40, julian.until(iso.minusDays(40), DAYS));
     }
 
     @DataProvider
@@ -283,28 +284,28 @@ public class TestJulianChronology {
     public void test_isLeapYear_loop() {
         for (int year = -200; year < 200; year++) {
             JulianDate base = JulianDate.of(year, 1, 1);
-            assertEquals(base.isLeapYear(), (year % 4) == 0);
-            assertEquals(JulianChronology.INSTANCE.isLeapYear(year), (year % 4) == 0);
+            assertEquals((year % 4) == 0, base.isLeapYear());
+            assertEquals((year % 4) == 0, JulianChronology.INSTANCE.isLeapYear(year));
         }
     }
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(8), true);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(7), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(6), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(5), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(4), true);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(3), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(2), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(1), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(0), true);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(-1), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(-2), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(-3), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(-4), true);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(-5), false);
-        assertEquals(JulianChronology.INSTANCE.isLeapYear(-6), false);
+        assertEquals(true, JulianChronology.INSTANCE.isLeapYear(8));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(7));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(6));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(5));
+        assertEquals(true, JulianChronology.INSTANCE.isLeapYear(4));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(3));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(2));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(1));
+        assertEquals(true, JulianChronology.INSTANCE.isLeapYear(0));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-1));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-2));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-3));
+        assertEquals(true, JulianChronology.INSTANCE.isLeapYear(-4));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-5));
+        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-6));
     }
 
     @DataProvider
@@ -335,7 +336,7 @@ public class TestJulianChronology {
     @Test
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
-        assertEquals(JulianDate.of(year, month, 1).lengthOfMonth(), length);
+        assertEquals(length, JulianDate.of(year, month, 1).lengthOfMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -351,7 +352,7 @@ public class TestJulianChronology {
             int yoe = (year <= 0 ? 1 - year : year);
             assertEquals(yoe, base.get(YEAR_OF_ERA));
             JulianDate eraBased = JulianChronology.INSTANCE.date(era, yoe, 1, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
@@ -365,20 +366,20 @@ public class TestJulianChronology {
             int yoe = (year <= 0 ? 1 - year : year);
             assertEquals(yoe, base.get(YEAR_OF_ERA));
             JulianDate eraBased = JulianChronology.INSTANCE.dateYearDay(era, yoe, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
     @Test
     public void test_prolepticYear_specific() {
-        assertEquals(JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 4), 4);
-        assertEquals(JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 3), 3);
-        assertEquals(JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 2), 2);
-        assertEquals(JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 1), 1);
-        assertEquals(JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 1), 0);
-        assertEquals(JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 2), -1);
-        assertEquals(JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 3), -2);
-        assertEquals(JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 4), -3);
+        assertEquals(4, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 4));
+        assertEquals(3, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 3));
+        assertEquals(2, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 2));
+        assertEquals(1, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 1));
+        assertEquals(0, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 1));
+        assertEquals(-1, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 2));
+        assertEquals(-2, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 3));
+        assertEquals(-3, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 4));
     }
 
     @Test(expected = ClassCastException.class)
@@ -388,8 +389,8 @@ public class TestJulianChronology {
 
     @Test
     public void test_Chronology_eraOf() {
-        assertEquals(JulianChronology.INSTANCE.eraOf(1), JulianEra.AD);
-        assertEquals(JulianChronology.INSTANCE.eraOf(0), JulianEra.BC);
+        assertEquals(JulianEra.AD, JulianChronology.INSTANCE.eraOf(1));
+        assertEquals(JulianEra.BC, JulianChronology.INSTANCE.eraOf(0));
     }
 
     @Test(expected = DateTimeException.class)
@@ -400,9 +401,9 @@ public class TestJulianChronology {
     @Test
     public void test_Chronology_eras() {
         List<Era> eras = JulianChronology.INSTANCE.eras();
-        assertEquals(eras.size(), 2);
-        assertEquals(eras.contains(JulianEra.BC), true);
-        assertEquals(eras.contains(JulianEra.AD), true);
+        assertEquals(2, eras.size());
+        assertEquals(true, eras.contains(JulianEra.BC));
+        assertEquals(true, eras.contains(JulianEra.AD));
     }
 
     //-----------------------------------------------------------------------
@@ -410,10 +411,10 @@ public class TestJulianChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(JulianChronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(1, 7));
-        assertEquals(JulianChronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(1, 28, 31));
-        assertEquals(JulianChronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 365, 366));
-        assertEquals(JulianChronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(1, 12));
+        assertEquals(ValueRange.of(1, 7), JulianChronology.INSTANCE.range(DAY_OF_WEEK));
+        assertEquals(ValueRange.of(1, 28, 31), JulianChronology.INSTANCE.range(DAY_OF_MONTH));
+        assertEquals(ValueRange.of(1, 365, 366), JulianChronology.INSTANCE.range(DAY_OF_YEAR));
+        assertEquals(ValueRange.of(1, 12), JulianChronology.INSTANCE.range(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -448,7 +449,7 @@ public class TestJulianChronology {
     @Test
     @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
-        assertEquals(JulianDate.of(year, month, dom).range(field), ValueRange.of(expectedMin, expectedMax));
+        assertEquals(ValueRange.of(expectedMin, expectedMax), JulianDate.of(year, month, dom).range(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -483,7 +484,7 @@ public class TestJulianChronology {
     @Test
     @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
-        assertEquals(JulianDate.of(year, month, dom).getLong(field), expected);
+        assertEquals(expected, JulianDate.of(year, month, dom).getLong(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -536,7 +537,7 @@ public class TestJulianChronology {
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(JulianDate.of(year, month, dom).with(field, value), JulianDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(JulianDate.of(expectedYear, expectedMonth, expectedDom), JulianDate.of(year, month, dom).with(field, value));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -551,14 +552,14 @@ public class TestJulianChronology {
     public void test_adjust1() {
         JulianDate base = JulianDate.of(2012, 6, 23);
         JulianDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, JulianDate.of(2012, 6, 30));
+        assertEquals(JulianDate.of(2012, 6, 30), test);
     }
 
     @Test
     public void test_adjust2() {
         JulianDate base = JulianDate.of(2012, 2, 23);
         JulianDate test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, JulianDate.of(2012, 2, 29));
+        assertEquals(JulianDate.of(2012, 2, 29), test);
     }
 
     //-----------------------------------------------------------------------
@@ -568,7 +569,7 @@ public class TestJulianChronology {
     public void test_adjust_toLocalDate() {
         JulianDate julian = JulianDate.of(2000, 1, 4);
         JulianDate test = julian.with(LocalDate.of(2012, 7, 6));
-        assertEquals(test, JulianDate.of(2012, 6, 23));
+        assertEquals(JulianDate.of(2012, 6, 23), test);
     }
 
     @Test(expected = DateTimeException.class)
@@ -584,14 +585,14 @@ public class TestJulianChronology {
     public void test_LocalDate_adjustToJulianDate() {
         JulianDate julian = JulianDate.of(2012, 6, 23);
         LocalDate test = LocalDate.MIN.with(julian);
-        assertEquals(test, LocalDate.of(2012, 7, 6));
+        assertEquals(LocalDate.of(2012, 7, 6), test);
     }
 
     @Test
     public void test_LocalDateTime_adjustToJulianDate() {
         JulianDate julian = JulianDate.of(2012, 6, 23);
         LocalDateTime test = LocalDateTime.MIN.with(julian);
-        assertEquals(test, LocalDateTime.of(2012, 7, 6, 0, 0));
+        assertEquals(LocalDateTime.of(2012, 7, 6, 0, 0), test);
     }
 
     //-----------------------------------------------------------------------
@@ -630,7 +631,7 @@ public class TestJulianChronology {
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(JulianDate.of(year, month, dom).plus(amount, unit), JulianDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(JulianDate.of(expectedYear, expectedMonth, expectedDom), JulianDate.of(year, month, dom).plus(amount, unit));
     }
 
     @Test
@@ -639,7 +640,7 @@ public class TestJulianChronology {
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
-        assertEquals(JulianDate.of(year, month, dom).minus(amount, unit), JulianDate.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(JulianDate.of(expectedYear, expectedMonth, expectedDom), JulianDate.of(year, month, dom).minus(amount, unit));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -687,7 +688,7 @@ public class TestJulianChronology {
             TemporalUnit unit, long expected) {
         JulianDate start = JulianDate.of(year1, month1, dom1);
         JulianDate end = JulianDate.of(year2, month2, dom2);
-        assertEquals(start.until(end, unit), expected);
+        assertEquals(expected, start.until(end, unit));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -700,22 +701,22 @@ public class TestJulianChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_Period() {
-        assertEquals(JulianDate.of(2014, 5, 26).plus(JulianChronology.INSTANCE.period(0, 2, 3)), JulianDate.of(2014, 7, 29));
+        assertEquals(JulianDate.of(2014, 7, 29), JulianDate.of(2014, 5, 26).plus(JulianChronology.INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_plus_Period_ISO() {
-        assertEquals(JulianDate.of(2014, 5, 26).plus(Period.ofMonths(2)), JulianDate.of(2014, 7, 26));
+        assertEquals(JulianDate.of(2014, 7, 26), JulianDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
     public void test_minus_Period() {
-        assertEquals(JulianDate.of(2014, 5, 26).minus(JulianChronology.INSTANCE.period(0, 2, 3)), JulianDate.of(2014, 3, 23));
+        assertEquals(JulianDate.of(2014, 3, 23), JulianDate.of(2014, 5, 26).minus(JulianChronology.INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_minus_Period_ISO() {
-        assertEquals(JulianDate.of(2014, 5, 26).minus(Period.ofMonths(2)), JulianDate.of(2014, 3, 26));
+        assertEquals(JulianDate.of(2014, 3, 26), JulianDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------
@@ -729,16 +730,16 @@ public class TestJulianChronology {
         JulianDate c = JulianDate.of(2000, 2, 3);
         JulianDate d = JulianDate.of(2001, 1, 3);
 
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a1.equals(b), false);
-        assertEquals(a1.equals(c), false);
-        assertEquals(a1.equals(d), false);
+        assertEquals(true, a1.equals(a1));
+        assertEquals(true, a1.equals(a2));
+        assertEquals(false, a1.equals(b));
+        assertEquals(false, a1.equals(c));
+        assertEquals(false, a1.equals(d));
 
-        assertEquals(a1.equals(null), false);
-        assertEquals(a1.equals(""), false);
+        assertEquals(false, a1.equals(null));
+        assertEquals(false, a1.equals(""));
 
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertTrue(a1.hashCode() == a2.hashCode());
     }
 
     //-----------------------------------------------------------------------
@@ -755,7 +756,7 @@ public class TestJulianChronology {
     @Test
     @UseDataProvider("data_toString")
     public void test_toString(JulianDate julian, String expected) {
-        assertEquals(julian.toString(), expected);
+        assertEquals(expected, julian.toString());
     }
 
 }

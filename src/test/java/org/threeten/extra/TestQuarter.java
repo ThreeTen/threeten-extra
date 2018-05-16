@@ -64,6 +64,7 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.threeten.extra.Quarter.Q3;
 
@@ -110,7 +111,7 @@ public class TestQuarter {
     public void test_of_int_singleton() {
         for (int i = 1; i <= 4; i++) {
             Quarter test = Quarter.of(i);
-            assertEquals(test.getValue(), i);
+            assertEquals(i, test.getValue());
         }
     }
 
@@ -129,18 +130,18 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_ofMonth_int_singleton() {
-        assertEquals(Quarter.ofMonth(1), Quarter.Q1);
-        assertEquals(Quarter.ofMonth(2), Quarter.Q1);
-        assertEquals(Quarter.ofMonth(3), Quarter.Q1);
-        assertEquals(Quarter.ofMonth(4), Quarter.Q2);
-        assertEquals(Quarter.ofMonth(5), Quarter.Q2);
-        assertEquals(Quarter.ofMonth(6), Quarter.Q2);
-        assertEquals(Quarter.ofMonth(7), Quarter.Q3);
-        assertEquals(Quarter.ofMonth(8), Quarter.Q3);
-        assertEquals(Quarter.ofMonth(9), Quarter.Q3);
-        assertEquals(Quarter.ofMonth(10), Quarter.Q4);
-        assertEquals(Quarter.ofMonth(11), Quarter.Q4);
-        assertEquals(Quarter.ofMonth(12), Quarter.Q4);
+        assertSame(Quarter.Q1, Quarter.ofMonth(1));
+        assertSame(Quarter.Q1, Quarter.ofMonth(2));
+        assertSame(Quarter.Q1, Quarter.ofMonth(3));
+        assertSame(Quarter.Q2, Quarter.ofMonth(4));
+        assertSame(Quarter.Q2, Quarter.ofMonth(5));
+        assertSame(Quarter.Q2, Quarter.ofMonth(6));
+        assertSame(Quarter.Q3, Quarter.ofMonth(7));
+        assertSame(Quarter.Q3, Quarter.ofMonth(8));
+        assertSame(Quarter.Q3, Quarter.ofMonth(9));
+        assertSame(Quarter.Q4, Quarter.ofMonth(10));
+        assertSame(Quarter.Q4, Quarter.ofMonth(11));
+        assertSame(Quarter.Q4, Quarter.ofMonth(12));
     }
 
     @Test(expected = DateTimeException.class)
@@ -158,24 +159,24 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_from_TemporalAccessor() {
-        assertEquals(Quarter.from(LocalDate.of(2011, 6, 6)), Quarter.Q2);
-        assertEquals(Quarter.from(LocalDateTime.of(2012, 2, 3, 12, 30)), Quarter.Q1);
+        assertEquals(Quarter.Q2, Quarter.from(LocalDate.of(2011, 6, 6)));
+        assertEquals(Quarter.Q1, Quarter.from(LocalDateTime.of(2012, 2, 3, 12, 30)));
     }
 
     @Test
     public void test_from_TemporalAccessor_Month() {
-        assertEquals(Quarter.from(Month.JANUARY), Quarter.Q1);
-        assertEquals(Quarter.from(Month.FEBRUARY), Quarter.Q1);
-        assertEquals(Quarter.from(Month.MARCH), Quarter.Q1);
-        assertEquals(Quarter.from(Month.APRIL), Quarter.Q2);
-        assertEquals(Quarter.from(Month.MAY), Quarter.Q2);
-        assertEquals(Quarter.from(Month.JUNE), Quarter.Q2);
-        assertEquals(Quarter.from(Month.JULY), Quarter.Q3);
-        assertEquals(Quarter.from(Month.AUGUST), Quarter.Q3);
-        assertEquals(Quarter.from(Month.SEPTEMBER), Quarter.Q3);
-        assertEquals(Quarter.from(Month.OCTOBER), Quarter.Q4);
-        assertEquals(Quarter.from(Month.NOVEMBER), Quarter.Q4);
-        assertEquals(Quarter.from(Month.DECEMBER), Quarter.Q4);
+        assertEquals(Quarter.Q1, Quarter.from(Month.JANUARY));
+        assertEquals(Quarter.Q1, Quarter.from(Month.FEBRUARY));
+        assertEquals(Quarter.Q1, Quarter.from(Month.MARCH));
+        assertEquals(Quarter.Q2, Quarter.from(Month.APRIL));
+        assertEquals(Quarter.Q2, Quarter.from(Month.MAY));
+        assertEquals(Quarter.Q2, Quarter.from(Month.JUNE));
+        assertEquals(Quarter.Q3, Quarter.from(Month.JULY));
+        assertEquals(Quarter.Q3, Quarter.from(Month.AUGUST));
+        assertEquals(Quarter.Q3, Quarter.from(Month.SEPTEMBER));
+        assertEquals(Quarter.Q4, Quarter.from(Month.OCTOBER));
+        assertEquals(Quarter.Q4, Quarter.from(Month.NOVEMBER));
+        assertEquals(Quarter.Q4, Quarter.from(Month.DECEMBER));
     }
 
     @Test(expected = DateTimeException.class)
@@ -191,7 +192,7 @@ public class TestQuarter {
     @Test
     public void test_from_parse_CharSequence() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'Q'Q");
-        assertEquals(formatter.parse("Q3", Quarter::from), Q3);
+        assertEquals(Q3, formatter.parse("Q3", Quarter::from));
     }
 
     //-----------------------------------------------------------------------
@@ -199,7 +200,7 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_getDisplayName() {
-        assertEquals(Quarter.Q1.getDisplayName(TextStyle.SHORT, Locale.US), "Q1");
+        assertEquals("Q1", Quarter.Q1.getDisplayName(TextStyle.SHORT, Locale.US));
     }
 
     @Test(expected = NullPointerException.class)
@@ -218,38 +219,38 @@ public class TestQuarter {
     @Test
     public void test_isSupported() {
         Quarter test = Quarter.Q1;
-        assertEquals(test.isSupported(null), false);
-        assertEquals(test.isSupported(NANO_OF_SECOND), false);
-        assertEquals(test.isSupported(NANO_OF_DAY), false);
-        assertEquals(test.isSupported(MICRO_OF_SECOND), false);
-        assertEquals(test.isSupported(MICRO_OF_DAY), false);
-        assertEquals(test.isSupported(MILLI_OF_SECOND), false);
-        assertEquals(test.isSupported(MILLI_OF_DAY), false);
-        assertEquals(test.isSupported(SECOND_OF_MINUTE), false);
-        assertEquals(test.isSupported(SECOND_OF_DAY), false);
-        assertEquals(test.isSupported(MINUTE_OF_HOUR), false);
-        assertEquals(test.isSupported(MINUTE_OF_DAY), false);
-        assertEquals(test.isSupported(HOUR_OF_AMPM), false);
-        assertEquals(test.isSupported(CLOCK_HOUR_OF_AMPM), false);
-        assertEquals(test.isSupported(HOUR_OF_DAY), false);
-        assertEquals(test.isSupported(CLOCK_HOUR_OF_DAY), false);
-        assertEquals(test.isSupported(AMPM_OF_DAY), false);
-        assertEquals(test.isSupported(DAY_OF_WEEK), false);
-        assertEquals(test.isSupported(ALIGNED_DAY_OF_WEEK_IN_MONTH), false);
-        assertEquals(test.isSupported(ALIGNED_DAY_OF_WEEK_IN_YEAR), false);
-        assertEquals(test.isSupported(DAY_OF_MONTH), false);
-        assertEquals(test.isSupported(DAY_OF_YEAR), false);
-        assertEquals(test.isSupported(EPOCH_DAY), false);
-        assertEquals(test.isSupported(ALIGNED_WEEK_OF_MONTH), false);
-        assertEquals(test.isSupported(ALIGNED_WEEK_OF_YEAR), false);
-        assertEquals(test.isSupported(MONTH_OF_YEAR), false);
-        assertEquals(test.isSupported(PROLEPTIC_MONTH), false);
-        assertEquals(test.isSupported(YEAR_OF_ERA), false);
-        assertEquals(test.isSupported(YEAR), false);
-        assertEquals(test.isSupported(ERA), false);
-        assertEquals(test.isSupported(INSTANT_SECONDS), false);
-        assertEquals(test.isSupported(OFFSET_SECONDS), false);
-        assertEquals(test.isSupported(QUARTER_OF_YEAR), true);
+        assertEquals(false, test.isSupported(null));
+        assertEquals(false, test.isSupported(NANO_OF_SECOND));
+        assertEquals(false, test.isSupported(NANO_OF_DAY));
+        assertEquals(false, test.isSupported(MICRO_OF_SECOND));
+        assertEquals(false, test.isSupported(MICRO_OF_DAY));
+        assertEquals(false, test.isSupported(MILLI_OF_SECOND));
+        assertEquals(false, test.isSupported(MILLI_OF_DAY));
+        assertEquals(false, test.isSupported(SECOND_OF_MINUTE));
+        assertEquals(false, test.isSupported(SECOND_OF_DAY));
+        assertEquals(false, test.isSupported(MINUTE_OF_HOUR));
+        assertEquals(false, test.isSupported(MINUTE_OF_DAY));
+        assertEquals(false, test.isSupported(HOUR_OF_AMPM));
+        assertEquals(false, test.isSupported(CLOCK_HOUR_OF_AMPM));
+        assertEquals(false, test.isSupported(HOUR_OF_DAY));
+        assertEquals(false, test.isSupported(CLOCK_HOUR_OF_DAY));
+        assertEquals(false, test.isSupported(AMPM_OF_DAY));
+        assertEquals(false, test.isSupported(DAY_OF_WEEK));
+        assertEquals(false, test.isSupported(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+        assertEquals(false, test.isSupported(ALIGNED_DAY_OF_WEEK_IN_YEAR));
+        assertEquals(false, test.isSupported(DAY_OF_MONTH));
+        assertEquals(false, test.isSupported(DAY_OF_YEAR));
+        assertEquals(false, test.isSupported(EPOCH_DAY));
+        assertEquals(false, test.isSupported(ALIGNED_WEEK_OF_MONTH));
+        assertEquals(false, test.isSupported(ALIGNED_WEEK_OF_YEAR));
+        assertEquals(false, test.isSupported(MONTH_OF_YEAR));
+        assertEquals(false, test.isSupported(PROLEPTIC_MONTH));
+        assertEquals(false, test.isSupported(YEAR_OF_ERA));
+        assertEquals(false, test.isSupported(YEAR));
+        assertEquals(false, test.isSupported(ERA));
+        assertEquals(false, test.isSupported(INSTANT_SECONDS));
+        assertEquals(false, test.isSupported(OFFSET_SECONDS));
+        assertEquals(true, test.isSupported(QUARTER_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -257,7 +258,7 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_range() {
-        assertEquals(Quarter.Q1.range(QUARTER_OF_YEAR), QUARTER_OF_YEAR.range());
+        assertEquals(QUARTER_OF_YEAR.range(), Quarter.Q1.range(QUARTER_OF_YEAR));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -275,10 +276,10 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_get() {
-        assertEquals(Quarter.Q1.get(QUARTER_OF_YEAR), 1);
-        assertEquals(Quarter.Q2.get(QUARTER_OF_YEAR), 2);
-        assertEquals(Quarter.Q3.get(QUARTER_OF_YEAR), 3);
-        assertEquals(Quarter.Q4.get(QUARTER_OF_YEAR), 4);
+        assertEquals(1, Quarter.Q1.get(QUARTER_OF_YEAR));
+        assertEquals(2, Quarter.Q2.get(QUARTER_OF_YEAR));
+        assertEquals(3, Quarter.Q3.get(QUARTER_OF_YEAR));
+        assertEquals(4, Quarter.Q4.get(QUARTER_OF_YEAR));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -296,10 +297,10 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_getLong() {
-        assertEquals(Quarter.Q1.getLong(QUARTER_OF_YEAR), 1);
-        assertEquals(Quarter.Q2.getLong(QUARTER_OF_YEAR), 2);
-        assertEquals(Quarter.Q3.getLong(QUARTER_OF_YEAR), 3);
-        assertEquals(Quarter.Q4.getLong(QUARTER_OF_YEAR), 4);
+        assertEquals(1, Quarter.Q1.getLong(QUARTER_OF_YEAR));
+        assertEquals(2, Quarter.Q2.getLong(QUARTER_OF_YEAR));
+        assertEquals(3, Quarter.Q3.getLong(QUARTER_OF_YEAR));
+        assertEquals(4, Quarter.Q4.getLong(QUARTER_OF_YEAR));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -335,7 +336,7 @@ public class TestQuarter {
     @Test
     @UseDataProvider("data_plus")
     public void test_plus_long(int base, long amount, int expected) {
-        assertEquals(Quarter.of(base).plus(amount), Quarter.of(expected));
+        assertEquals(Quarter.of(expected), Quarter.of(base).plus(amount));
     }
 
     //-----------------------------------------------------------------------
@@ -361,7 +362,7 @@ public class TestQuarter {
     @Test
     @UseDataProvider("data_minus")
     public void test_minus_long(int base, long amount, int expected) {
-        assertEquals(Quarter.of(base).minus(amount), Quarter.of(expected));
+        assertEquals(Quarter.of(expected), Quarter.of(base).minus(amount));
     }
 
     //-----------------------------------------------------------------------
@@ -369,14 +370,14 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_length_boolean() {
-        assertEquals(Quarter.Q1.length(true), 91);
-        assertEquals(Quarter.Q1.length(false), 90);
-        assertEquals(Quarter.Q2.length(true), 91);
-        assertEquals(Quarter.Q2.length(false), 91);
-        assertEquals(Quarter.Q3.length(true), 92);
-        assertEquals(Quarter.Q3.length(false), 92);
-        assertEquals(Quarter.Q4.length(true), 92);
-        assertEquals(Quarter.Q4.length(false), 92);
+        assertEquals(91, Quarter.Q1.length(true));
+        assertEquals(90, Quarter.Q1.length(false));
+        assertEquals(91, Quarter.Q2.length(true));
+        assertEquals(91, Quarter.Q2.length(false));
+        assertEquals(92, Quarter.Q3.length(true));
+        assertEquals(92, Quarter.Q3.length(false));
+        assertEquals(92, Quarter.Q4.length(true));
+        assertEquals(92, Quarter.Q4.length(false));
     }
 
     //-----------------------------------------------------------------------
@@ -384,10 +385,10 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_firstMonth() {
-        assertEquals(Quarter.Q1.firstMonth(), Month.JANUARY);
-        assertEquals(Quarter.Q2.firstMonth(), Month.APRIL);
-        assertEquals(Quarter.Q3.firstMonth(), Month.JULY);
-        assertEquals(Quarter.Q4.firstMonth(), Month.OCTOBER);
+        assertEquals(Month.JANUARY, Quarter.Q1.firstMonth());
+        assertEquals(Month.APRIL, Quarter.Q2.firstMonth());
+        assertEquals(Month.JULY, Quarter.Q3.firstMonth());
+        assertEquals(Month.OCTOBER, Quarter.Q4.firstMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -395,13 +396,13 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_query() {
-        assertEquals(Quarter.Q1.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
-        assertEquals(Quarter.Q1.query(TemporalQueries.localDate()), null);
-        assertEquals(Quarter.Q1.query(TemporalQueries.localTime()), null);
-        assertEquals(Quarter.Q1.query(TemporalQueries.offset()), null);
-        assertEquals(Quarter.Q1.query(TemporalQueries.precision()), QUARTER_YEARS);
-        assertEquals(Quarter.Q1.query(TemporalQueries.zone()), null);
-        assertEquals(Quarter.Q1.query(TemporalQueries.zoneId()), null);
+        assertEquals(IsoChronology.INSTANCE, Quarter.Q1.query(TemporalQueries.chronology()));
+        assertEquals(null, Quarter.Q1.query(TemporalQueries.localDate()));
+        assertEquals(null, Quarter.Q1.query(TemporalQueries.localTime()));
+        assertEquals(null, Quarter.Q1.query(TemporalQueries.offset()));
+        assertEquals(QUARTER_YEARS, Quarter.Q1.query(TemporalQueries.precision()));
+        assertEquals(null, Quarter.Q1.query(TemporalQueries.zone()));
+        assertEquals(null, Quarter.Q1.query(TemporalQueries.zoneId()));
     }
 
     //-----------------------------------------------------------------------
@@ -409,10 +410,10 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString() {
-        assertEquals(Quarter.Q1.toString(), "Q1");
-        assertEquals(Quarter.Q2.toString(), "Q2");
-        assertEquals(Quarter.Q3.toString(), "Q3");
-        assertEquals(Quarter.Q4.toString(), "Q4");
+        assertEquals("Q1", Quarter.Q1.toString());
+        assertEquals("Q2", Quarter.Q2.toString());
+        assertEquals("Q3", Quarter.Q3.toString());
+        assertEquals("Q4", Quarter.Q4.toString());
     }
 
     //-----------------------------------------------------------------------
@@ -420,8 +421,8 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_enum() {
-        assertEquals(Quarter.valueOf("Q4"), Quarter.Q4);
-        assertEquals(Quarter.values()[0], Quarter.Q1);
+        assertEquals(Quarter.Q4, Quarter.valueOf("Q4"));
+        assertEquals(Quarter.Q1, Quarter.values()[0]);
     }
 
 }

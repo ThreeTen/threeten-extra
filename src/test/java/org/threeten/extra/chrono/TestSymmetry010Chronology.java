@@ -101,9 +101,9 @@ public class TestSymmetry010Chronology {
     public void test_chronology() {
         Chronology chrono = Chronology.of("Sym010");
         assertNotNull(chrono);
-        assertEquals(chrono, Symmetry010Chronology.INSTANCE);
-        assertEquals(chrono.getId(), "Sym010");
-        assertEquals(chrono.getCalendarType(), null);
+        assertEquals(Symmetry010Chronology.INSTANCE, chrono);
+        assertEquals("Sym010", chrono.getId());
+        assertEquals(null, chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -149,78 +149,78 @@ public class TestSymmetry010Chronology {
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_from_Symmetry010Date(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(LocalDate.from(sym010), iso);
+        assertEquals(iso, LocalDate.from(sym010));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Symmetry010Date_from_LocalDate(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(Symmetry010Date.from(iso), sym010);
+        assertEquals(sym010, Symmetry010Date.from(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Symmetry010Date_chronology_dateEpochDay(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(Symmetry010Chronology.INSTANCE.dateEpochDay(iso.toEpochDay()), sym010);
+        assertEquals(sym010, Symmetry010Chronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Symmetry010Date_toEpochDay(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(sym010.toEpochDay(), iso.toEpochDay());
+        assertEquals(iso.toEpochDay(), sym010.toEpochDay());
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Symmetry010Date_until_Symmetry010Date(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(sym010.until(sym010), Symmetry010Chronology.INSTANCE.period(0, 0, 0));
+        assertEquals(Symmetry010Chronology.INSTANCE.period(0, 0, 0), sym010.until(sym010));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Symmetry010Date_until_LocalDate(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(sym010.until(iso), Symmetry010Chronology.INSTANCE.period(0, 0, 0));
+        assertEquals(Symmetry010Chronology.INSTANCE.period(0, 0, 0), sym010.until(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(Symmetry010Chronology.INSTANCE.date(iso), sym010);
+        assertEquals(sym010, Symmetry010Chronology.INSTANCE.date(iso));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_LocalDate_until_Symmetry010Date(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(iso.until(sym010), Period.ZERO);
+        assertEquals(Period.ZERO, iso.until(sym010));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_plusDays(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(LocalDate.from(sym010.plus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(sym010.plus(1, DAYS)), iso.plusDays(1));
-        assertEquals(LocalDate.from(sym010.plus(35, DAYS)), iso.plusDays(35));
-        assertEquals(LocalDate.from(sym010.plus(-1, DAYS)), iso.plusDays(-1));
-        assertEquals(LocalDate.from(sym010.plus(-60, DAYS)), iso.plusDays(-60));
+        assertEquals(iso, LocalDate.from(sym010.plus(0, DAYS)));
+        assertEquals(iso.plusDays(1), LocalDate.from(sym010.plus(1, DAYS)));
+        assertEquals(iso.plusDays(35), LocalDate.from(sym010.plus(35, DAYS)));
+        assertEquals(iso.plusDays(-1), LocalDate.from(sym010.plus(-1, DAYS)));
+        assertEquals(iso.plusDays(-60), LocalDate.from(sym010.plus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_minusDays(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(LocalDate.from(sym010.minus(0, DAYS)), iso);
-        assertEquals(LocalDate.from(sym010.minus(1, DAYS)), iso.minusDays(1));
-        assertEquals(LocalDate.from(sym010.minus(35, DAYS)), iso.minusDays(35));
-        assertEquals(LocalDate.from(sym010.minus(-1, DAYS)), iso.minusDays(-1));
-        assertEquals(LocalDate.from(sym010.minus(-60, DAYS)), iso.minusDays(-60));
+        assertEquals(iso, LocalDate.from(sym010.minus(0, DAYS)));
+        assertEquals(iso.minusDays(1), LocalDate.from(sym010.minus(1, DAYS)));
+        assertEquals(iso.minusDays(35), LocalDate.from(sym010.minus(35, DAYS)));
+        assertEquals(iso.minusDays(-1), LocalDate.from(sym010.minus(-1, DAYS)));
+        assertEquals(iso.minusDays(-60), LocalDate.from(sym010.minus(-60, DAYS)));
     }
 
     @Test
     @UseDataProvider("data_samples")
     public void test_until_DAYS(Symmetry010Date sym010, LocalDate iso) {
-        assertEquals(sym010.until(iso.plusDays(0), DAYS), 0);
-        assertEquals(sym010.until(iso.plusDays(1), DAYS), 1);
-        assertEquals(sym010.until(iso.plusDays(35), DAYS), 35);
-        assertEquals(sym010.until(iso.minusDays(40), DAYS), -40);
+        assertEquals(0, sym010.until(iso.plusDays(0), DAYS));
+        assertEquals(1, sym010.until(iso.plusDays(1), DAYS));
+        assertEquals(35, sym010.until(iso.plusDays(35), DAYS));
+        assertEquals(-40, sym010.until(iso.minusDays(40), DAYS));
     }
 
     @DataProvider
@@ -329,19 +329,19 @@ public class TestSymmetry010Chronology {
     @Test
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int day, int length) {
-        assertEquals(Symmetry010Date.of(year, month, day).lengthOfMonth(), length);
+        assertEquals(length, Symmetry010Date.of(year, month, day).lengthOfMonth());
     }
 
     @Test
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonthFirst(int year, int month, int day, int length) {
-        assertEquals(Symmetry010Date.of(year, month, 1).lengthOfMonth(), length);
+        assertEquals(length, Symmetry010Date.of(year, month, 1).lengthOfMonth());
     }
 
     @Test
     public void test_lengthOfMonth_specific() {
-        assertEquals(Symmetry010Date.of(2000, 12, 1).lengthOfMonth(), 30);
-        assertEquals(Symmetry010Date.of(2004, 12, 1).lengthOfMonth(), 37);
+        assertEquals(30, Symmetry010Date.of(2000, 12, 1).lengthOfMonth());
+        assertEquals(37, Symmetry010Date.of(2004, 12, 1).lengthOfMonth());
     }
 
     //-----------------------------------------------------------------------
@@ -358,7 +358,7 @@ public class TestSymmetry010Chronology {
             assertEquals(era, base.getEra());
             assertEquals(year, base.get(YEAR_OF_ERA));
             Symmetry010Date eraBased = Symmetry010Chronology.INSTANCE.date(era, year, 1, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
 
         for (int year = -200; year < 0; year++) {
@@ -368,7 +368,7 @@ public class TestSymmetry010Chronology {
             assertEquals(era, base.getEra());
             assertEquals(1 - year, base.get(YEAR_OF_ERA));
             Symmetry010Date eraBased = Symmetry010Chronology.INSTANCE.date(era, year, 1, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
@@ -381,18 +381,18 @@ public class TestSymmetry010Chronology {
             assertEquals(era, base.getEra());
             assertEquals(year, base.get(YEAR_OF_ERA));
             Symmetry010Date eraBased = Symmetry010Chronology.INSTANCE.dateYearDay(era, year, 1);
-            assertEquals(eraBased, base);
+            assertEquals(base, eraBased);
         }
     }
 
     @Test
     public void test_prolepticYear_specific() {
-        assertEquals(Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 4), 4);
-        assertEquals(Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 3), 3);
-        assertEquals(Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 2), 2);
-        assertEquals(Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 1), 1);
-        assertEquals(Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 2000), 2000);
-        assertEquals(Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 1582), 1582);
+        assertEquals(4, Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 4));
+        assertEquals(3, Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 3));
+        assertEquals(2, Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 2));
+        assertEquals(1, Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 1));
+        assertEquals(2000, Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 2000));
+        assertEquals(1582, Symmetry010Chronology.INSTANCE.prolepticYear(IsoEra.CE, 1582));
     }
 
     @DataProvider
@@ -430,8 +430,8 @@ public class TestSymmetry010Chronology {
 
     @Test
     public void test_Chronology_eraOf() {
-        assertEquals(Symmetry010Chronology.INSTANCE.eraOf(0), IsoEra.BCE);
-        assertEquals(Symmetry010Chronology.INSTANCE.eraOf(1), IsoEra.CE);
+        assertEquals(IsoEra.BCE, Symmetry010Chronology.INSTANCE.eraOf(0));
+        assertEquals(IsoEra.CE, Symmetry010Chronology.INSTANCE.eraOf(1));
     }
 
     @Test(expected = DateTimeException.class)
@@ -442,7 +442,7 @@ public class TestSymmetry010Chronology {
     @Test
     public void test_Chronology_eras() {
         List<Era> eras = Symmetry010Chronology.INSTANCE.eras();
-        assertEquals(eras.size(), 2);
+        assertEquals(2, eras.size());
         assertTrue(eras.contains(IsoEra.BCE));
         assertTrue(eras.contains(IsoEra.CE));
     }
@@ -452,19 +452,19 @@ public class TestSymmetry010Chronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_Chronology_range() {
-        assertEquals(Symmetry010Chronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH), ValueRange.of(1, 7));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR), ValueRange.of(1, 7));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH), ValueRange.of(1, 4, 5));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR), ValueRange.of(1, 52, 53));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(DAY_OF_WEEK), ValueRange.of(1, 7));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(DAY_OF_MONTH), ValueRange.of(1, 30, 37));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(DAY_OF_YEAR), ValueRange.of(1, 364, 371));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(ERA), ValueRange.of(0, 1));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(EPOCH_DAY), ValueRange.of(-1_000_000 * 364L - 177_474 * 7 - 719_162, 1_000_000 * 364L + 177_474 * 7 - 719_162));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(MONTH_OF_YEAR), ValueRange.of(1, 12));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(PROLEPTIC_MONTH), ValueRange.of(-12_000_000L, 11_999_999L));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(YEAR), ValueRange.of(-1_000_000L, 1_000_000));
-        assertEquals(Symmetry010Chronology.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(-1_000_000, 1_000_000));
+        assertEquals(ValueRange.of(1, 7), Symmetry010Chronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+        assertEquals(ValueRange.of(1, 7), Symmetry010Chronology.INSTANCE.range(ALIGNED_DAY_OF_WEEK_IN_YEAR));
+        assertEquals(ValueRange.of(1, 4, 5), Symmetry010Chronology.INSTANCE.range(ALIGNED_WEEK_OF_MONTH));
+        assertEquals(ValueRange.of(1, 52, 53), Symmetry010Chronology.INSTANCE.range(ALIGNED_WEEK_OF_YEAR));
+        assertEquals(ValueRange.of(1, 7), Symmetry010Chronology.INSTANCE.range(DAY_OF_WEEK));
+        assertEquals(ValueRange.of(1, 30, 37), Symmetry010Chronology.INSTANCE.range(DAY_OF_MONTH));
+        assertEquals(ValueRange.of(1, 364, 371), Symmetry010Chronology.INSTANCE.range(DAY_OF_YEAR));
+        assertEquals(ValueRange.of(0, 1), Symmetry010Chronology.INSTANCE.range(ERA));
+        assertEquals(ValueRange.of(-1_000_000 * 364L - 177_474 * 7 - 719_162, 1_000_000 * 364L + 177_474 * 7 - 719_162), Symmetry010Chronology.INSTANCE.range(EPOCH_DAY));
+        assertEquals(ValueRange.of(1, 12), Symmetry010Chronology.INSTANCE.range(MONTH_OF_YEAR));
+        assertEquals(ValueRange.of(-12_000_000L, 11_999_999L), Symmetry010Chronology.INSTANCE.range(PROLEPTIC_MONTH));
+        assertEquals(ValueRange.of(-1_000_000L, 1_000_000), Symmetry010Chronology.INSTANCE.range(YEAR));
+        assertEquals(ValueRange.of(-1_000_000, 1_000_000), Symmetry010Chronology.INSTANCE.range(YEAR_OF_ERA));
     }
 
     //-----------------------------------------------------------------------
@@ -519,7 +519,7 @@ public class TestSymmetry010Chronology {
     @Test
     @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, ValueRange range) {
-        assertEquals(Symmetry010Date.of(year, month, dom).range(field), range);
+        assertEquals(range, Symmetry010Date.of(year, month, dom).range(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -568,7 +568,7 @@ public class TestSymmetry010Chronology {
     @Test
     @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
-        assertEquals(Symmetry010Date.of(year, month, dom).getLong(field), expected);
+        assertEquals(expected, Symmetry010Date.of(year, month, dom).getLong(field));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -660,7 +660,7 @@ public class TestSymmetry010Chronology {
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(Symmetry010Date.of(year, month, dom).with(field, value), Symmetry010Date.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(Symmetry010Date.of(expectedYear, expectedMonth, expectedDom), Symmetry010Date.of(year, month, dom).with(field, value));
     }
 
     @DataProvider
@@ -741,7 +741,7 @@ public class TestSymmetry010Chronology {
         Symmetry010Date base = Symmetry010Date.of(year, month, day);
         Symmetry010Date expected = Symmetry010Date.of(expectedYear, expectedMonth, expectedDay);
         Symmetry010Date actual = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     //-----------------------------------------------------------------------
@@ -751,7 +751,7 @@ public class TestSymmetry010Chronology {
     public void test_adjust_toLocalDate() {
         Symmetry010Date sym010 = Symmetry010Date.of(2000, 1, 4);
         Symmetry010Date test = sym010.with(LocalDate.of(2012, 7, 6));
-        assertEquals(test, Symmetry010Date.of(2012, 7, 5));
+        assertEquals(Symmetry010Date.of(2012, 7, 5), test);
     }
 
     @Test(expected = DateTimeException.class)
@@ -767,14 +767,14 @@ public class TestSymmetry010Chronology {
     public void test_LocalDate_adjustToSymmetry010Date() {
         Symmetry010Date sym010 = Symmetry010Date.of(2012, 7, 19);
         LocalDate test = LocalDate.MIN.with(sym010);
-        assertEquals(test, LocalDate.of(2012, 7, 20));
+        assertEquals(LocalDate.of(2012, 7, 20), test);
     }
 
     @Test
     public void test_LocalDateTime_adjustToSymmetry010Date() {
         Symmetry010Date sym010 = Symmetry010Date.of(2012, 7, 19);
         LocalDateTime test = LocalDateTime.MIN.with(sym010);
-        assertEquals(test, LocalDateTime.of(2012, 7, 20, 0, 0));
+        assertEquals(LocalDateTime.of(2012, 7, 20, 0, 0), test);
     }
 
     //-----------------------------------------------------------------------
@@ -842,7 +842,7 @@ public class TestSymmetry010Chronology {
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(Symmetry010Date.of(year, month, dom).plus(amount, unit), Symmetry010Date.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(Symmetry010Date.of(expectedYear, expectedMonth, expectedDom), Symmetry010Date.of(year, month, dom).plus(amount, unit));
     }
 
     @Test
@@ -850,7 +850,7 @@ public class TestSymmetry010Chronology {
     public void test_plus_leapWeek_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
-        assertEquals(Symmetry010Date.of(year, month, dom).plus(amount, unit), Symmetry010Date.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(Symmetry010Date.of(expectedYear, expectedMonth, expectedDom), Symmetry010Date.of(year, month, dom).plus(amount, unit));
     }
 
     @Test
@@ -859,7 +859,7 @@ public class TestSymmetry010Chronology {
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
-        assertEquals(Symmetry010Date.of(year, month, dom).minus(amount, unit), Symmetry010Date.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(Symmetry010Date.of(expectedYear, expectedMonth, expectedDom), Symmetry010Date.of(year, month, dom).minus(amount, unit));
     }
 
     @Test
@@ -868,7 +868,7 @@ public class TestSymmetry010Chronology {
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
             int year, int month, int dom) {
-        assertEquals(Symmetry010Date.of(year, month, dom).minus(amount, unit), Symmetry010Date.of(expectedYear, expectedMonth, expectedDom));
+        assertEquals(Symmetry010Date.of(expectedYear, expectedMonth, expectedDom), Symmetry010Date.of(year, month, dom).minus(amount, unit));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -930,7 +930,7 @@ public class TestSymmetry010Chronology {
             TemporalUnit unit, long expected) {
         Symmetry010Date start = Symmetry010Date.of(year1, month1, dom1);
         Symmetry010Date end = Symmetry010Date.of(year2, month2, dom2);
-        assertEquals(start.until(end, unit), expected);
+        assertEquals(expected, start.until(end, unit));
     }
 
     @Test
@@ -942,7 +942,7 @@ public class TestSymmetry010Chronology {
         Symmetry010Date start = Symmetry010Date.of(year1, month1, dom1);
         Symmetry010Date end = Symmetry010Date.of(year2, month2, dom2);
         ChronoPeriod period = Symmetry010Chronology.INSTANCE.period(yearPeriod, monthPeriod, dayPeriod);
-        assertEquals(start.until(end), period);
+        assertEquals(period, start.until(end));
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)
@@ -957,25 +957,25 @@ public class TestSymmetry010Chronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_Period() {
-        assertEquals(Symmetry010Date.of(2014, 5, 21).plus(Symmetry010Chronology.INSTANCE.period(0, 2, 8)),
-                Symmetry010Date.of(2014, 7, 29));
+        assertEquals(Symmetry010Date.of(2014, 7, 29),
+                Symmetry010Date.of(2014, 5, 21).plus(Symmetry010Chronology.INSTANCE.period(0, 2, 8)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_plus_Period_ISO() {
-        assertEquals(Symmetry010Date.of(2014, 5, 26).plus(Period.ofMonths(2)),
-                Symmetry010Date.of(2014, 7, 26));
+        assertEquals(Symmetry010Date.of(2014, 7, 26),
+                Symmetry010Date.of(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
     public void test_minus_Period() {
-        assertEquals(Symmetry010Date.of(2014, 5, 26).minus(Symmetry010Chronology.INSTANCE.period(0, 2, 3)),
-                Symmetry010Date.of(2014, 3, 23));
+        assertEquals(Symmetry010Date.of(2014, 3, 23),
+                Symmetry010Date.of(2014, 5, 26).minus(Symmetry010Chronology.INSTANCE.period(0, 2, 3)));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_minus_Period_ISO() {
-        assertEquals(Symmetry010Date.of(2014, 5, 26).minus(Period.ofMonths(2)), Symmetry010Date.of(2014, 3, 26));
+        assertEquals(Symmetry010Date.of(2014, 3, 26), Symmetry010Date.of(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------
@@ -1018,6 +1018,6 @@ public class TestSymmetry010Chronology {
     @Test
     @UseDataProvider("data_toString")
     public void test_toString(Symmetry010Date date, String expected) {
-        assertEquals(date.toString(), expected);
+        assertEquals(expected, date.toString());
     }
 }
