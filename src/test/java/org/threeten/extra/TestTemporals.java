@@ -154,6 +154,7 @@ public class TestTemporals {
         test = Temporals.nextWorkingDay().adjustInto(saturday);
         assertEquals(test, LocalDate.of(2012, JANUARY, 2));
     }
+    
     //-----------------------------------------------------------------------
     // nextWorkingDayOrSame()
     //-----------------------------------------------------------------------
@@ -219,6 +220,7 @@ public class TestTemporals {
         test = Temporals.nextWorkingDayOrSame().adjustInto(sunday);
         assertEquals(LocalDate.of(2018, JANUARY, 1), test);
     }
+    
     //-----------------------------------------------------------------------
     // previousWorkingDay()
     //-----------------------------------------------------------------------
@@ -311,7 +313,7 @@ public class TestTemporals {
                 assertFalse(test.getDayOfWeek().equals(SUNDAY));
 
                 switch (date.getDayOfWeek()) {
-                	case SATURDAY:
+                    case SATURDAY:
                     case SUNDAY:
                         assertEquals(test.getDayOfWeek(), FRIDAY);
                         break;
@@ -322,9 +324,9 @@ public class TestTemporals {
                 if (test.getYear() == 2007) {
                     int dayDiff = test.getDayOfYear() - date.getDayOfYear();
                     switch (date.getDayOfWeek()) {
-					    case SATURDAY:
-						    assertEquals(dayDiff, -1);
-						    break;
+                        case SATURDAY:
+                            assertEquals(dayDiff, -1);
+                            break;
                         case SUNDAY:
                             assertEquals(dayDiff, -2);
                             break;
