@@ -154,7 +154,73 @@ public class TestTemporals {
         test = Temporals.nextWorkingDay().adjustInto(saturday);
         assertEquals(LocalDate.of(2012, JANUARY, 2), test);
     }
+    
+    //-----------------------------------------------------------------------
+    // nextWorkingDayOrSame()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_nextWorkingDayOrSame_serialization() throws IOException, ClassNotFoundException {
+        TemporalAdjuster test = Temporals.nextWorkingDayOrSame();
+        assertTrue(test instanceof Serializable);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertSame(ois.readObject(), test);
+        }
+    }
 
+    @Test
+    public void test_nextWorkingDayOrSame() {
+        for (Month month : Month.values()) {
+            for (int i = 1; i <= month.length(false); i++) {
+                LocalDate date = LocalDate.of(2007, month, i);
+                LocalDate test = (LocalDate) Temporals.nextWorkingDayOrSame().adjustInto(date);
+                assertFalse(test.getDayOfWeek().equals(SATURDAY));
+                assertFalse(test.getDayOfWeek().equals(SUNDAY));
+
+                switch (date.getDayOfWeek()) {
+                    case SATURDAY:
+                    case SUNDAY:
+                        assertEquals(test.getDayOfWeek(), MONDAY);
+                        break;
+                    default:
+                        assertEquals(date.getDayOfWeek(), test.getDayOfWeek());
+                }
+
+                if (test.getYear() == 2007) {
+                    int dayDiff = test.getDayOfYear() - date.getDayOfYear();
+                    switch (date.getDayOfWeek()) {
+                        case SATURDAY:
+                            assertEquals(dayDiff, 2);
+                            break;
+                        case SUNDAY:
+                            assertEquals(dayDiff, 1);
+                            break;
+                        default:
+                            assertEquals(dayDiff, 0);
+                    }
+                } else {
+                    assertEquals(test.getYear(), 2008);
+                    assertEquals(test.getMonth(), JANUARY);
+                    assertEquals(test.getDayOfMonth(), 1);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void test_nextWorkingDayOrSame_yearChange() {
+        LocalDate saturday = LocalDate.of(2016, DECEMBER, 31);
+        Temporal test = Temporals.nextWorkingDayOrSame().adjustInto(saturday);
+        assertEquals(LocalDate.of(2017, JANUARY, 2), test );
+        
+        LocalDate sunday = LocalDate.of(2017, DECEMBER, 31);
+        test = Temporals.nextWorkingDayOrSame().adjustInto(sunday);
+        assertEquals(LocalDate.of(2018, JANUARY, 1), test);
+    }
+    
     //-----------------------------------------------------------------------
     // previousWorkingDay()
     //-----------------------------------------------------------------------
@@ -221,7 +287,72 @@ public class TestTemporals {
         test = Temporals.previousWorkingDay().adjustInto(sunday);
         assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
     }
+  //-----------------------------------------------------------------------
+    // previousWorkingDayOrSame()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_previousWorkingDayOrSame_serialization() throws IOException, ClassNotFoundException {
+        TemporalAdjuster test = Temporals.previousWorkingDayOrSame();
+        assertTrue(test instanceof Serializable);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            assertSame(ois.readObject(), test);
+        }
+    }
 
+    @Test
+    public void test_previousWorkingDayOrSame() {
+        for (Month month : Month.values()) {
+            for (int i = 1; i <= month.length(false); i++) {
+                LocalDate date = LocalDate.of(2007, month, i);
+                LocalDate test = (LocalDate) Temporals.previousWorkingDayOrSame().adjustInto(date);
+                assertFalse(test.getDayOfWeek().equals(SATURDAY));
+                assertFalse(test.getDayOfWeek().equals(SUNDAY));
+
+                switch (date.getDayOfWeek()) {
+                    case SATURDAY:
+                    case SUNDAY:
+                        assertEquals(test.getDayOfWeek(), FRIDAY);
+                        break;
+                    default:
+                        assertEquals(date.getDayOfWeek(), test.getDayOfWeek());
+                }
+
+                if (test.getYear() == 2007) {
+                    int dayDiff = test.getDayOfYear() - date.getDayOfYear();
+                    switch (date.getDayOfWeek()) {
+                        case SATURDAY:
+                            assertEquals(dayDiff, -1);
+                            break;
+                        case SUNDAY:
+                            assertEquals(dayDiff, -2);
+                            break;
+                        default:
+                            assertEquals(dayDiff, 0);
+                    }
+                } else {
+                    assertEquals(test.getYear(), 2006);
+                    assertEquals(test.getMonth(), DECEMBER);
+                    assertEquals(test.getDayOfMonth(), 29);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void test_previousWorkingDayOrSame_yearChange() {
+
+        LocalDate sunday = LocalDate.of(2011, JANUARY, 2);
+        Temporal test = Temporals.previousWorkingDayOrSame().adjustInto(sunday);
+        assertEquals(test, LocalDate.of(2010, DECEMBER, 31));
+        
+        LocalDate saturday = LocalDate.of(2011, JANUARY, 1);
+        test = Temporals.previousWorkingDayOrSame().adjustInto(saturday);
+        assertEquals(test, LocalDate.of(2010, DECEMBER, 31));
+    }
     //-----------------------------------------------------------------------
     // parseFirstMatching()
     //-----------------------------------------------------------------------

@@ -86,7 +86,20 @@ public final class Temporals {
     public static TemporalAdjuster nextWorkingDay() {
         return Adjuster.NEXT_WORKING;
     }
-
+    
+    /**
+     * Returns an adjuster that returns the next working day or same day if already working day, ignoring Saturday and Sunday.
+     * <p>
+     * Some territories have weekends that do not consist of Saturday and Sunday.
+     * No implementation is supplied to support this, however an adjuster
+     * can be easily written to do so.
+     * 
+     * @return the next working day or same adjuster, not null
+     */
+    public static TemporalAdjuster nextWorkingDayOrSame() {
+        return Adjuster.NEXT_WORKING_OR_SAME;
+    }
+    
     /**
      * Returns an adjuster that returns the previous working day, ignoring Saturday and Sunday.
      * <p>
@@ -99,7 +112,20 @@ public final class Temporals {
     public static TemporalAdjuster previousWorkingDay() {
         return Adjuster.PREVIOUS_WORKING;
     }
-
+    
+    /**
+     * Returns an adjuster that returns the previous working day or same day if already working day, ignoring Saturday and Sunday.
+     * <p>
+     * Some territories have weekends that do not consist of Saturday and Sunday.
+     * No implementation is supplied to support this, however an adjuster
+     * can be easily written to do so.
+     * 
+     * @return the previous working day or same adjuster, not null
+     */
+    public static TemporalAdjuster previousWorkingDayOrSame() {
+        return Adjuster.PREVIOUS_WORKING_OR_SAME;
+    }
+    
     //-----------------------------------------------------------------------
     /**
      * Enum implementing the adjusters.
@@ -135,6 +161,36 @@ public final class Temporals {
                 }
             }
         },
+        /** Next working day or same adjuster. */
+        NEXT_WORKING_OR_SAME {
+            @Override
+            public Temporal adjustInto(Temporal temporal) {
+                int dow = temporal.get(DAY_OF_WEEK);
+                switch (dow) {
+                case 6: // Saturday
+                    return temporal.plus(2, DAYS);
+                case 7: // Sunday
+                    return temporal.plus(1, DAYS);
+                default:
+                    return temporal;
+                }
+            }
+        },
+        /** Previous working day or same adjuster. */
+        PREVIOUS_WORKING_OR_SAME {
+            @Override
+            public Temporal adjustInto(Temporal temporal) {
+                int dow = temporal.get(DAY_OF_WEEK);
+                switch (dow) {
+                    case 6: //Saturday
+                        return temporal.minus(1, DAYS);
+                    case 7:  // Sunday
+                        return temporal.minus(2, DAYS);
+                    default:
+                        return temporal;
+                }
+            }
+        }
     }
 
     //-------------------------------------------------------------------------
