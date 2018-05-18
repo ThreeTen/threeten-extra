@@ -135,16 +135,14 @@ public class TestLocalDateRange {
         assertEquals("-999999999-01-01/+999999999-12-31", test.toString());
     }
 
-    @Test
+    @Test(expected = DateTimeException.class)
     public void test_of_MIN_MIN() {
-        LocalDateRange test = LocalDateRange.of(LocalDate.MIN, LocalDate.MIN);
-        assertEquals(LocalDate.MIN, test.getStart());
-        assertEquals(LocalDate.MIN, test.getEndInclusive());
-        assertEquals(LocalDate.MIN, test.getEnd());
-        assertEquals(true, test.isEmpty());
-        assertEquals(true, test.isUnboundedStart());
-        assertEquals(false, test.isUnboundedEnd());
-        assertEquals("-999999999-01-01/-999999999-01-01", test.toString());
+        LocalDateRange.of(LocalDate.MIN, LocalDate.MIN);
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_of_MAX_MAX() {
+        LocalDateRange.of(LocalDate.MAX, LocalDate.MAX);
     }
 
     @Test
@@ -176,42 +174,116 @@ public class TestLocalDateRange {
         assertEquals("2012-07-28/2012-07-31", test.toString());
     }
 
-    @Test
+    @Test(expected = DateTimeException.class)
     public void test_ofClosed_MIN() {
-        LocalDateRange test = LocalDateRange.ofClosed(LocalDate.MIN, DATE_2012_07_30);
-        assertEquals(LocalDate.MIN, test.getStart());
-        assertEquals(DATE_2012_07_30, test.getEndInclusive());
-        assertEquals(DATE_2012_07_31, test.getEnd());
-        assertEquals(true, test.isUnboundedStart());
-        assertEquals(false, test.isUnboundedEnd());
-        assertEquals("-999999999-01-01/2012-07-31", test.toString());
+        LocalDateRange.ofClosed(LocalDate.MIN, DATE_2012_07_30);
     }
 
-    @Test
+    @Test(expected = DateTimeException.class)
     public void test_ofClosed_MAX() {
-        LocalDateRange test = LocalDateRange.ofClosed(DATE_2012_07_28, LocalDate.MAX);
-        assertEquals(DATE_2012_07_28, test.getStart());
-        assertEquals(LocalDate.MAX, test.getEndInclusive());
-        assertEquals(LocalDate.MAX, test.getEnd());
-        assertEquals(false, test.isUnboundedStart());
-        assertEquals(true, test.isUnboundedEnd());
-        assertEquals("2012-07-28/+999999999-12-31", test.toString());
+        LocalDateRange.ofClosed(DATE_2012_07_28, LocalDate.MAX);
     }
 
-    @Test
+    @Test(expected = DateTimeException.class)
+    public void test_ofClosed_MAXM1() {
+        LocalDateRange.ofClosed(DATE_2012_07_28, LocalDate.MAX.minusDays(1));
+    }
+
+    @Test(expected = DateTimeException.class)
     public void test_ofClosed_MIN_MAX() {
-        LocalDateRange test = LocalDateRange.ofClosed(LocalDate.MIN, LocalDate.MAX);
-        assertEquals(LocalDate.MIN, test.getStart());
-        assertEquals(LocalDate.MAX, test.getEndInclusive());
-        assertEquals(LocalDate.MAX, test.getEnd());
-        assertEquals(true, test.isUnboundedStart());
-        assertEquals(true, test.isUnboundedEnd());
-        assertEquals("-999999999-01-01/+999999999-12-31", test.toString());
+        LocalDateRange.ofClosed(LocalDate.MIN, LocalDate.MAX);
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ofClosed_MIN_MIN() {
+        LocalDateRange.ofClosed(LocalDate.MIN, LocalDate.MIN);
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ofClosed_MAX_MAX() {
+        LocalDateRange.ofClosed(LocalDate.MAX, LocalDate.MAX);
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ofClosed_MAXM1_MAXM1() {
+        LocalDateRange.ofClosed(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1));
     }
 
     @Test(expected = DateTimeException.class)
     public void test_ofClosed_badOrder() {
         LocalDateRange.ofClosed(DATE_2012_07_31, DATE_2012_07_30);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_ofEmpty() {
+        LocalDateRange test = LocalDateRange.ofEmpty(DATE_2012_07_30);
+        assertEquals(DATE_2012_07_30, test.getStart());
+        assertEquals(DATE_2012_07_29, test.getEndInclusive());
+        assertEquals(DATE_2012_07_30, test.getEnd());
+        assertEquals(true, test.isEmpty());
+        assertEquals(false, test.isUnboundedStart());
+        assertEquals(false, test.isUnboundedEnd());
+        assertEquals("2012-07-30/2012-07-30", test.toString());
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ofEmpty_MIN() {
+        LocalDateRange.ofEmpty(LocalDate.MIN);
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ofEmpty_MAX() {
+        LocalDateRange.ofEmpty(LocalDate.MAX);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_ofUnbounded() {
+        LocalDateRange test = LocalDateRange.ofUnbounded();
+        assertEquals(LocalDate.MIN, test.getStart());
+        assertEquals(LocalDate.MAX, test.getEndInclusive());
+        assertEquals(LocalDate.MAX, test.getEnd());
+        assertEquals(false, test.isEmpty());
+        assertEquals(true, test.isUnboundedStart());
+        assertEquals(true, test.isUnboundedEnd());
+        assertEquals("-999999999-01-01/+999999999-12-31", test.toString());
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_ofUnboundedStart() {
+        LocalDateRange test = LocalDateRange.ofUnboundedStart(DATE_2012_07_30);
+        assertEquals(LocalDate.MIN, test.getStart());
+        assertEquals(DATE_2012_07_29, test.getEndInclusive());
+        assertEquals(DATE_2012_07_30, test.getEnd());
+        assertEquals(false, test.isEmpty());
+        assertEquals(true, test.isUnboundedStart());
+        assertEquals(false, test.isUnboundedEnd());
+        assertEquals("-999999999-01-01/2012-07-30", test.toString());
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ofUnboundedStart_MIN() {
+        LocalDateRange.ofUnboundedStart(LocalDate.MIN);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_ofUnboundedEnd() {
+        LocalDateRange test = LocalDateRange.ofUnboundedEnd(DATE_2012_07_30);
+        assertEquals(DATE_2012_07_30, test.getStart());
+        assertEquals(LocalDate.MAX, test.getEndInclusive());
+        assertEquals(LocalDate.MAX, test.getEnd());
+        assertEquals(false, test.isEmpty());
+        assertEquals(false, test.isUnboundedStart());
+        assertEquals(true, test.isUnboundedEnd());
+        assertEquals("2012-07-30/+999999999-12-31", test.toString());
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ofUnboundedEnd_MAX() {
+        LocalDateRange.ofUnboundedEnd(LocalDate.MAX);
     }
 
     //-----------------------------------------------------------------------
@@ -224,6 +296,16 @@ public class TestLocalDateRange {
         assertEquals(false, test.isUnboundedStart());
         assertEquals(false, test.isUnboundedEnd());
         assertEquals("2012-07-28/2012-07-31", test.toString());
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_of_period_atMIN() {
+        LocalDateRange.of(LocalDate.MIN, Period.ofDays(0));
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_of_period_atMAX() {
+        LocalDateRange.of(LocalDate.MAX, Period.ofDays(0));
     }
 
     @Test(expected = DateTimeException.class)
@@ -547,20 +629,6 @@ public class TestLocalDateRange {
     }
 
     @Test
-    public void test_encloses_baseEmptyMax() {
-        assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .encloses(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-                        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-                        .encloses(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
-    }
-
-    @Test
     public void test_abuts_baseEmpty() {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_28);
         assertEquals(false, test.abuts(LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_27)));
@@ -568,20 +636,6 @@ public class TestLocalDateRange {
         assertEquals(false, test.abuts(LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_29)));
         assertEquals(true, test.abuts(LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_28)));
         assertEquals(true, test.abuts(LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_29)));
-    }
-
-    @Test
-    public void test_abuts_baseEmptyMax() {
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .abuts(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
-        assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
-        assertEquals(true, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-                        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-                        .abuts(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
     }
 
     @Test
@@ -593,39 +647,11 @@ public class TestLocalDateRange {
     }
 
     @Test
-    public void test_isConnected_baseEmptyMax() {
-        assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .isConnected(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
-        assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
-        assertEquals(true, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-                        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-                        .isConnected(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
-    }
-
-    @Test
     public void test_overlaps_baseEmpty() {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_28);
         assertEquals(false, test.overlaps(LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_27)));
         assertEquals(true, test.overlaps(LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_28)));
         assertEquals(false, test.overlaps(LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_29)));
-    }
-
-    @Test
-    public void test_overlaps_baseEmptyMax() {
-        assertEquals(true, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .overlaps(LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX)));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX, LocalDate.MAX)
-                        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-                        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(1))));
-        assertEquals(false, LocalDateRange.of(LocalDate.MAX.minusDays(1), LocalDate.MAX.minusDays(1))
-                        .overlaps(LocalDateRange.of(DATE_2012_07_01, LocalDate.MAX.minusDays(2))));
     }
 
     //-----------------------------------------------------------------------
