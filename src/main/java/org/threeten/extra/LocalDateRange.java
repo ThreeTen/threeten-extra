@@ -233,9 +233,12 @@ public final class LocalDateRange
      * Gets the end date of this range, inclusive.
      * 
      * @return the end date, inclusive
-     * @throws DateTimeException if end is equal to LocalDate.MIN
+     * @throws DateTimeException if range is empty
      */
     public LocalDate getEndInclusive() {
+        if (isEmpty()) {
+            throw new DateTimeException("Range is empty");
+        }
         return end.minusDays(1);
     }
 

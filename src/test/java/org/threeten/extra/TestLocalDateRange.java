@@ -126,7 +126,6 @@ public class TestLocalDateRange {
     public void test_of_empty() {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_30, DATE_2012_07_30);
         assertEquals(DATE_2012_07_30, test.getStart());
-        assertEquals(DATE_2012_07_29, test.getEndInclusive());
         assertEquals(DATE_2012_07_30, test.getEnd());
         assertEquals(true, test.isEmpty());
         assertEquals("2012-07-30/2012-07-30", test.toString());
@@ -138,8 +137,9 @@ public class TestLocalDateRange {
     }
 
     @Test(expected = DateTimeException.class)
-    public void test_of_allEndInclusive() {
-        LocalDateRange.of(LocalDate.MIN, LocalDate.MIN).getEndInclusive();
+    public void test_of_emptyEndInclusive() {
+        LocalDateRange empty = LocalDateRange.of(DATE_2012_07_01, DATE_2012_07_01);
+        empty.getEndInclusive();
     }
 
     //-----------------------------------------------------------------------
@@ -296,7 +296,6 @@ public class TestLocalDateRange {
         LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         LocalDateRange test = base.withStart(DATE_2012_07_31);
         assertEquals(DATE_2012_07_31, test.getStart());
-        assertEquals(DATE_2012_07_30, test.getEndInclusive());
         assertEquals(DATE_2012_07_31, test.getEnd());
     }
 
@@ -338,7 +337,6 @@ public class TestLocalDateRange {
         LocalDateRange base = LocalDateRange.of(DATE_2012_07_30, DATE_2012_07_31);
         LocalDateRange test = base.withEnd(DATE_2012_07_30);
         assertEquals(DATE_2012_07_30, test.getStart());
-        assertEquals(DATE_2012_07_29, test.getEndInclusive());
         assertEquals(DATE_2012_07_30, test.getEnd());
     }
 
