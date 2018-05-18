@@ -19,6 +19,10 @@
         Now that the build is on Java 9, the OSGi data had to be updated.
         See #92, #94.
       </action>
+      <action dev="jjcard" type="add">
+        Add Temporals.nextWorkingDayOrSame() and Temporals.previousWorkingDayOrSame().
+        Fixes #101.
+      </action>
       <action dev="perceptron8" type="fix">
         Fix test parameter order.
         See #98, #99.

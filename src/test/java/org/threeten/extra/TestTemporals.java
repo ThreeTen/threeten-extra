@@ -214,13 +214,13 @@ public class TestTemporals {
     public void test_nextWorkingDayOrSame_yearChange() {
         LocalDate saturday = LocalDate.of(2016, DECEMBER, 31);
         Temporal test = Temporals.nextWorkingDayOrSame().adjustInto(saturday);
-        assertEquals(LocalDate.of(2017, JANUARY, 2), test );
-        
+        assertEquals(LocalDate.of(2017, JANUARY, 2), test);
+
         LocalDate sunday = LocalDate.of(2017, DECEMBER, 31);
         test = Temporals.nextWorkingDayOrSame().adjustInto(sunday);
         assertEquals(LocalDate.of(2018, JANUARY, 1), test);
     }
-    
+
     //-----------------------------------------------------------------------
     // previousWorkingDay()
     //-----------------------------------------------------------------------
@@ -287,7 +287,8 @@ public class TestTemporals {
         test = Temporals.previousWorkingDay().adjustInto(sunday);
         assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
     }
-  //-----------------------------------------------------------------------
+
+    //-----------------------------------------------------------------------
     // previousWorkingDayOrSame()
     //-----------------------------------------------------------------------
     @Test
@@ -348,11 +349,12 @@ public class TestTemporals {
         LocalDate sunday = LocalDate.of(2011, JANUARY, 2);
         Temporal test = Temporals.previousWorkingDayOrSame().adjustInto(sunday);
         assertEquals(test, LocalDate.of(2010, DECEMBER, 31));
-        
+
         LocalDate saturday = LocalDate.of(2011, JANUARY, 1);
         test = Temporals.previousWorkingDayOrSame().adjustInto(saturday);
         assertEquals(test, LocalDate.of(2010, DECEMBER, 31));
     }
+
     //-----------------------------------------------------------------------
     // parseFirstMatching()
     //-----------------------------------------------------------------------
