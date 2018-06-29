@@ -115,12 +115,12 @@ public final class MutableClock
     /**
      * The mutable instant of this clock.
      */
-    private transient final InstantHolder instantHolder;
+    private final transient InstantHolder instantHolder;
 
     /**
      * The fixed time-zone of this clock.
      */
-    private transient final ZoneId zone;
+    private final transient ZoneId zone;
 
     /**
      * Obtains a new {@code MutableClock} set to the epoch of

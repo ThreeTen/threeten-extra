@@ -379,6 +379,13 @@
           <configuration>
             <excludes>module-info.java</excludes>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyle.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <!-- Setup SpotBugs dependency -->
         <plugin>
@@ -823,7 +830,7 @@
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
@@ -859,6 +866,7 @@
     <notimestamp>true</notimestamp>
     <doclint>none</doclint>
     <!-- Properties for maven-checkstyle-plugin -->
+    <checkstyle.version>8.10.1</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
     <!-- Properties for maven-bundle-plugin -->
