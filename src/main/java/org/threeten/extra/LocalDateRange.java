@@ -597,7 +597,7 @@ public final class LocalDateRange
      * @return the stream of dates from the start to the end
      */
     public Stream<LocalDate> stream() {
-        long count = end.toEpochDay() - start.toEpochDay() + (isUnboundedEnd() ? 2 : 1);
+        long count = end.toEpochDay() - start.toEpochDay() + (isUnboundedEnd() ? 1 : 0);
         Spliterator<LocalDate> spliterator = new Spliterators.AbstractSpliterator<LocalDate>(
                 count,
                 Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT | Spliterator.ORDERED |
