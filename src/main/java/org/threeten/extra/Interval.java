@@ -121,7 +121,7 @@ public final class Interval
         Objects.requireNonNull(startInclusive, "startInclusive");
         Objects.requireNonNull(duration, "duration");
         if (duration.isNegative()) {
-            throw new DateTimeException("Duration must not be zero or negative");
+            throw new DateTimeException("Duration must not be negative");
         }
         return new Interval(startInclusive, startInclusive.plus(duration));
     }

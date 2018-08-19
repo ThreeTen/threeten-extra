@@ -57,7 +57,7 @@ import java.util.stream.StreamSupport;
  * between a half-open and a closed range when the end is {@link LocalDate#MAX}.
  * <p>
  * Date ranges are not comparable. To compare the length of two ranges, it is
- * generally recommended to compare the number of days the contain.
+ * generally recommended to compare the number of days they contain.
  *
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
@@ -91,13 +91,12 @@ public final class LocalDateRange
     /**
      * Obtains a half-open range of dates, including the start and excluding the end.
      * <p>
-     * The range includes the start date and excludes the end date, unless the end
-     * is {@link LocalDate#MAX}.
+    * The range includes the start date and excludes the end date, unless the end is {@code LocalDate.MAX}.
      * The end date must be equal to or after the start date.
      * This definition permits an empty range located at a specific date.
      *
-     * @param startInclusive  the start date, inclusive, LocalDate.MIN treated as unbounded, not null
-     * @param endExclusive  the end date, exclusive, LocalDate.MAX treated as unbounded, not null
+     * @param startInclusive  the start date, inclusive, {@code LocalDate.MIN} treated as unbounded, not null
+     * @param endExclusive  the end date, exclusive, {@code LocalDate.MAX} treated as unbounded, not null
      * @return the half-open range, not null
      * @throws DateTimeException if the end is before the start
      */
@@ -116,8 +115,8 @@ public final class LocalDateRange
      * The range includes the start date and the end date.
      * The end date must be equal to or after the start date.
      * 
-     * @param startInclusive  the inclusive start date, LocalDate.MIN treated as unbounded, not null
-     * @param endInclusive  the inclusive end date, LocalDate.MAX treated as unbounded, not null
+     * @param startInclusive  the inclusive start date, {@code LocalDate.MIN} treated as unbounded, not null
+     * @param endInclusive  the inclusive end date, {@code LocalDate.MAX} treated as unbounded, not null
      * @return the closed range
      * @throws DateTimeException if the end is before the start
      */
@@ -125,7 +124,7 @@ public final class LocalDateRange
         Objects.requireNonNull(startInclusive, "startInclusive");
         Objects.requireNonNull(endInclusive, "endInclusive");
         if (endInclusive.isBefore(startInclusive)) {
-            throw new DateTimeException("Start date must on or before end date");
+            throw new DateTimeException("Start date must be on or before end date");
         }
         LocalDate end = (endInclusive.equals(LocalDate.MAX) ? LocalDate.MAX : endInclusive.plusDays(1));
         return new LocalDateRange(startInclusive, end);
