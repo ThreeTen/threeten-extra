@@ -6,7 +6,7 @@ cd target
 
 echo "## clone..."
 git clone https://${GITHUB_TOKEN}@github.com/ThreeTen/threeten.github.io.git
-cd jodaorg.github.io
+cd threeten.github.io
 git status
 
 echo "## copy..."
