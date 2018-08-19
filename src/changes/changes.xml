@@ -11,7 +11,9 @@
       <action dev="jodastephen" type="fix">
         Enhance LocalDateRange.
         Add more factory methods for empty and unbounded.
-        Reject empty ranges that include LocalDate.MIN/LocalDate.MAX.
+        Ensure that unbounded ranges are more clearly specified.
+        Reject certain ranges near LocalDate.MIN/LocalDate.MAX.
+        Alter behaviour of lengthInDays() and toPeriod().
         Fixes #100.
       </action>
       <action dev="jodastephen" type="fix">

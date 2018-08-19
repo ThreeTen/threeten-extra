@@ -677,23 +677,33 @@ public final class LocalDateRange
      * Obtains the length of this range in days.
      * <p>
      * This returns the number of days between the start and end dates.
+     * If the range is too large, the length will be {@code Integer.MAX_VALUE}.
+     * Unbounded ranges return {@code Integer.MAX_VALUE}.
      *
-     * @return the length in days
-     * @throws ArithmeticException if the length exceeds the capacity of an {@code int}
+     * @return the length in days, Integer.MAX_VALUE if unbounded or too large
      */
     public int lengthInDays() {
-        return Math.toIntExact(end.toEpochDay() - start.toEpochDay());
+        if (isUnboundedStart() || isUnboundedEnd()) {
+            return Integer.MAX_VALUE;
+        }
+        long length = end.toEpochDay() - start.toEpochDay();
+        return length > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) length;
     }
 
     /**
      * Obtains the length of this range as a period.
      * <p>
      * This returns the {@link Period} between the start and end dates.
+     * Unbounded ranges throw {@link ArithmeticException}.
      *
      * @return the period of the range
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Period}
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Period},
+     *   or the range is unbounded
      */
     public Period toPeriod() {
+        if (isUnboundedStart() || isUnboundedEnd()) {
+            throw new ArithmeticException("Unbounded range cannot be converted to a Period");
+        }
         return Period.between(start, end);
     }
 
