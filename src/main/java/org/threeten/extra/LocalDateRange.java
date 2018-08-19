@@ -52,9 +52,9 @@ import java.util.stream.StreamSupport;
  * Internally, the class stores the start and end dates, with the start inclusive and the end exclusive.
  * The end date is always greater than or equal to the start date.
  * <p>
- * The constants {@link LocalDate#MIN} and {@link LocalDate#MAX} can be used
+ * The constants {@code LocalDate.MIN} and {@code LocalDate.MAX} can be used
  * to indicate an unbounded far-past or far-future. Note that there is no difference
- * between a half-open and a closed range when the end is {@link LocalDate#MAX}.
+ * between a half-open and a closed range when the end is {@code LocalDate.MAX}.
  * <p>
  * Date ranges are not comparable. To compare the length of two ranges, it is
  * generally recommended to compare the number of days they contain.
@@ -272,7 +272,7 @@ public final class LocalDateRange
     /**
      * Gets the start date of this range, inclusive.
      * <p>
-     * This will return {@link LocalDate#MIN} if the range is unbounded at the start.
+     * This will return {@code LocalDate#MIN} if the range is unbounded at the start.
      * In this case, the range includes all dates into the far-past.
      *
      * @return the start date
@@ -284,7 +284,7 @@ public final class LocalDateRange
     /**
      * Gets the end date of this range, exclusive.
      * <p>
-     * This will return {@link LocalDate#MAX} if the range is unbounded at the end.
+     * This will return {@code LocalDate.MAX} if the range is unbounded at the end.
      * In this case, the range includes all dates into the far-future.
      *
      * @return the end date, exclusive
@@ -296,7 +296,7 @@ public final class LocalDateRange
     /**
      * Gets the end date of this range, inclusive.
      * <p>
-     * This will return {@link LocalDate#MAX} if the range is unbounded at the end.
+     * This will return {@code LocalDate.MAX} if the range is unbounded at the end.
      * In this case, the range includes all dates into the far-future.
      * 
      * @return the end date, inclusive
