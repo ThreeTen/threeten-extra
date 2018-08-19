@@ -68,6 +68,7 @@ public class TestLocalDateRange {
     private static final LocalDate MINP2 = LocalDate.MIN.plusDays(2);
     private static final LocalDate MINP3 = LocalDate.MIN.plusDays(3);
     private static final LocalDate MAXM1 = LocalDate.MAX.minusDays(1);
+    private static final LocalDate MAXM2 = LocalDate.MAX.minusDays(2);
     private static final LocalDate DATE_2012_07_01 = LocalDate.of(2012, 7, 1);
     private static final LocalDate DATE_2012_07_27 = LocalDate.of(2012, 7, 27);
     private static final LocalDate DATE_2012_07_28 = LocalDate.of(2012, 7, 28);
@@ -985,6 +986,26 @@ public class TestLocalDateRange {
         assertEquals(DATE_2012_07_28, result.get(0));
         assertEquals(DATE_2012_07_29, result.get(1));
         assertEquals(DATE_2012_07_30, result.get(2));
+    }
+
+    @Test
+    public void test_stream_MIN_MINP3() {
+        LocalDateRange test = LocalDateRange.of(LocalDate.MIN, MINP3);
+        List<LocalDate> result = test.stream().collect(Collectors.toList());
+        assertEquals(3, result.size());
+        assertEquals(LocalDate.MIN, result.get(0));
+        assertEquals(MINP1, result.get(1));
+        assertEquals(MINP2, result.get(2));
+    }
+
+    @Test
+    public void test_stream_MAXM2_MAX() {
+        LocalDateRange test = LocalDateRange.of(MAXM2, LocalDate.MAX);
+        List<LocalDate> result = test.stream().collect(Collectors.toList());
+        assertEquals(3, result.size());
+        assertEquals(MAXM2, result.get(0));
+        assertEquals(MAXM1, result.get(1));
+        assertEquals(LocalDate.MAX, result.get(2));
     }
 
     //-----------------------------------------------------------------------

@@ -37,10 +37,11 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjuster;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -166,7 +167,7 @@ public final class LocalDateRange
      * <p>
      * The constant {@code LocalDate.MIN} can be used to indicate an unbounded far-past.
      * <p>
-     * The period must not be zero when the start date is {@code LocalDate.MIN}.
+     * The period must not be zero or one day when the start date is {@code LocalDate.MIN}.
      *
      * @param startInclusive  the inclusive start date, not null
      * @param period  the period from the start to the end, not null
@@ -596,25 +597,36 @@ public final class LocalDateRange
      * @return the stream of dates from the start to the end
      */
     public Stream<LocalDate> stream() {
-        Iterator<LocalDate> it = new Iterator<LocalDate>() {
+        long count = end.toEpochDay() - start.toEpochDay() + (isUnboundedEnd() ? 2 : 1);
+        Spliterator<LocalDate> spliterator = new Spliterators.AbstractSpliterator<LocalDate>(
+                count,
+                Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT | Spliterator.ORDERED |
+                        Spliterator.SORTED | Spliterator.SIZED | Spliterator.SUBSIZED) {
+
             private LocalDate current = start;
-
+            
             @Override
-            public LocalDate next() {
-                LocalDate result = current;
-                current = current.plusDays(1);
-                return result;
+            public boolean tryAdvance(Consumer<? super LocalDate> action) {
+                if (current != null) {
+                    if (current.isBefore(end)) {
+                        action.accept(current);
+                        current = current.plusDays(1);
+                        return true;
+                    }
+                    if (current.equals(LocalDate.MAX)) {
+                        current = null;
+                        action.accept(LocalDate.MAX);
+                        return true;
+                    }
+                }
+                return false;
             }
-
+            
             @Override
-            public boolean hasNext() {
-                return current.isBefore(end);
+            public Comparator<? super LocalDate> getComparator() {
+                return Comparator.naturalOrder();
             }
         };
-        long count = end.toEpochDay() - start.toEpochDay() + 1;
-        Spliterator<LocalDate> spliterator = Spliterators.spliterator(it, count,
-                Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT | Spliterator.ORDERED |
-                        Spliterator.SORTED | Spliterator.SIZED | Spliterator.SUBSIZED);
         return StreamSupport.stream(spliterator, false);
     }
 
