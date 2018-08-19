@@ -9,6 +9,12 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.3.3" date="SNAPSHOT" description="v1.3.3">
       <action dev="jodastephen" type="fix">
+        Enhance LocalDateRange.
+        Add more factory methods for empty and unbounded.
+        Reject empty ranges that include LocalDate.MIN/LocalDate.MAX.
+        Fixes #100.
+      </action>
+      <action dev="jodastephen" type="fix">
         Fix build for Java 9.
         Resource files cannot be read from other modules in Java 9.
         As such, the `LeapSeconds.txt` file has moved to be under META-INF,
