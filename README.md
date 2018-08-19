@@ -22,7 +22,7 @@ This release is considered stable and worthy of the 1.x tag.
 
 ThreeTen-Extra requires Java SE 8 or later and has no dependencies.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.threeten|threeten-extra|1.3.2|jar)
+Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.threeten%20AND%20a:threeten-extra&core=gav)
 
 
 ### Support
