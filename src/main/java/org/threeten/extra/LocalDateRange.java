@@ -614,8 +614,8 @@ public final class LocalDateRange
                         return true;
                     }
                     if (current.equals(LocalDate.MAX)) {
-                        current = null;
                         action.accept(LocalDate.MAX);
+                        current = null;
                         return true;
                     }
                 }
@@ -624,7 +624,7 @@ public final class LocalDateRange
             
             @Override
             public Comparator<? super LocalDate> getComparator() {
-                return Comparator.naturalOrder();
+                return null;
             }
         };
         return StreamSupport.stream(spliterator, false);
