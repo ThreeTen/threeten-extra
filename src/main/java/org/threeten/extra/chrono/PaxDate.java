@@ -72,7 +72,7 @@ import java.time.temporal.ValueRange;
  * The Pax differs from the Gregorian in terms of month count and length, and the leap year rule.
  * Dates are aligned such that {@code 0001-01-01 (Pax)} is {@code 0000-12-31 (ISO)}.
  * <p>
- * More information is available in the <a href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
+ * More information is available in the <a href="https://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
  *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.

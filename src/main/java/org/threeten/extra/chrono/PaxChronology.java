@@ -75,7 +75,7 @@ import java.util.Map;
  * <li>leap-year - Leap years occur in every year whose last two digits are divisible by {@code 6}, are {@code 99}, or are {@code 00} and the year is <b>not</b> divisible by 400.
  * </ul>
  * <p>
- * For more information, please read the <a href="http://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
+ * For more information, please read the <a href="https://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
  *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.

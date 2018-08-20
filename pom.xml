@@ -12,7 +12,7 @@
   <name>ThreeTen-Extra</name>
   <version>1.4.1-SNAPSHOT</version>
   <description>Additional functionality that enhances JSR-310 dates and times in Java SE 8 and later</description>
-  <url>http://www.threeten.org/threeten-extra</url>
+  <url>https://www.threeten.org/threeten-extra</url>
 
   <!-- ==================================================================== -->
   <issueManagement>
@@ -91,12 +91,12 @@
   <scm>
     <connection>scm:git:https://github.com/ThreeTen/threeten-extra.git</connection>
     <developerConnection>scm:git:https://github.com/ThreeTen/threeten-extra.git</developerConnection>
-    <url>http://github.com/ThreeTen/threeten-extra</url>
+    <url>https://github.com/ThreeTen/threeten-extra</url>
     <tag>HEAD</tag>
   </scm>
   <organization>
     <name>ThreeTen.org</name>
-    <url>http://www.threeten.org</url>
+    <url>https://www.threeten.org</url>
   </organization>
 
   <!-- ==================================================================== -->
@@ -567,17 +567,17 @@
     <repository>
       <id>sonatype-threeten-staging</id>
       <name>Sonatype OSS staging repository</name>
-      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       <layout>default</layout>
     </repository>
     <snapshotRepository>
       <uniqueVersion>false</uniqueVersion>
       <id>sonatype-threeten-snapshot</id>
       <name>Sonatype OSS snapshot repository</name>
-      <url>http://oss.sonatype.org/content/repositories/threeten-snapshots</url>
+      <url>https://oss.sonatype.org/content/repositories/threeten-snapshots</url>
       <layout>default</layout>
     </snapshotRepository>
-    <downloadUrl>http://oss.sonatype.org/content/repositories/threeten-releases</downloadUrl>
+    <downloadUrl>https://oss.sonatype.org/content/repositories/threeten-releases</downloadUrl>
   </distributionManagement>
 
   <!-- ==================================================================== -->
@@ -761,7 +761,7 @@
             <version>1.1.1</version>
             <configuration>
               <releaseName>Release v${project.version}</releaseName>
-              <description>See the [change notes](http://www.threeten.org/threeten-extra/changes-report.html) for more information.</description>
+              <description>See the [change notes](https://www.threeten.org/threeten-extra/changes-report.html) for more information.</description>
               <tag>v${project.version}</tag>
               <overwriteArtifact>true</overwriteArtifact>
             </configuration>

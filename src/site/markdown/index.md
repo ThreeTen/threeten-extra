@@ -6,7 +6,7 @@
 Not every piece of date/time logic is destined for the JDK.
 Some concepts are too specialized or too bulky to make it in.
 This project provides some of those additional classes as a well-tested and reliable jar.
-It is curated by the primary author of the Java 8 date and time library, [Stephen Colebourne](http://www.joda.org/).
+It is curated by the primary author of the Java 8 date and time library, [Stephen Colebourne](https://www.joda.org/).
 
 ThreeTen-Extra is licensed under the business-friendly [BSD 3-clause license](license.html).
 
