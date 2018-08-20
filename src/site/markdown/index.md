@@ -47,7 +47,7 @@ Various documentation is available:
 
 ## <i></i> Releases
 
-Release 1.3.2 is the current release.
+Release 1.4 is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
 ThreeTen-Extra requires Java SE 8 or later and has no [dependencies](dependencies.html).
@@ -58,7 +58,7 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.threeten%20
 <dependency>
   <groupId>org.threeten</groupId>
   <artifactId>threeten-extra</artifactId>
-  <version>1.3.2</version>
+  <version>1.4</version>
 </dependency>
 ```
 
