@@ -263,7 +263,7 @@ final class SystemUtcRules extends UtcRules implements Serializable {
     private static Data loadLeapSeconds(URL url) throws ClassNotFoundException, IOException {
         List<String> lines;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-            lines = reader.lines().collect(Collectors.toList());
+            lines = reader.lines().parallel().collect(Collectors.toList());
         }
         List<Long> dates = new ArrayList<>();
         List<Integer> offsets = new ArrayList<>();
