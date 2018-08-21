@@ -627,7 +627,7 @@ public final class LocalDateRange
                 return null;
             }
         };
-        return StreamSupport.stream(spliterator, false);
+        return StreamSupport.stream(spliterator, false).parallel();
     }
 
     //-----------------------------------------------------------------------
