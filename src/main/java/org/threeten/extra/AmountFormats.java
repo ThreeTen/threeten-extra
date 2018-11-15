@@ -54,6 +54,66 @@ public final class AmountFormats {
      */
     private static final String BUNDLE_NAME = "org.threeten.extra.wordbased";
 
+    /**
+     * the property file key for the separator ", "
+     */
+    private static final String WORDBASED_COMMASPACE = "WordBased.commaspace";
+    
+    /**
+     * the property file key for the separator " and "
+     */
+    private static final String WORDBASED_SPACEANDSPACE = "WordBased.spaceandspace";
+    
+    /**
+     * the property file key for the word "year"
+     */
+    private static final String WORDBASED_YEAR = "WordBased.year";
+    
+    /**
+     * the property file key for the word "years"
+     */
+    private static final String WORDBASED_YEARS = "WordBased.years";
+    
+    /**
+     * the property file key for the word "month"
+     */
+    private static final String WORDBASED_MONTH = "WordBased.month";
+    
+    /**
+     * the property file key for the word "months"
+     */
+    private static final String WORDBASED_MONTHS = "WordBased.months";
+    
+    /**
+     * the property file key for the word "day"
+     */
+    private static final String WORDBASED_DAY = "WordBased.day";
+    
+    /**
+     * the property file key for the word "days"
+     */
+    private static final String WORDBASED_DAYS = "WordBased.days";
+    
+    /**
+     * the property file key for the word "second"
+     */
+    private static final String WORDBASED_SECOND = "WordBased.second";
+    
+    /**
+     * the property file key for the word "seconds"
+     */
+    private static final String WORDBASED_SECONDS = "WordBased.seconds";
+    
+    /**
+     * the property file key for the word "millisecond"
+     */
+    private static final String WORDBASED_MILLISECOND = "WordBased.millisecond";
+    
+    /**
+     * the property file key for the word "milliseconds"
+     */
+    private static final String WORDBASED_MILLISECONDS = "WordBased.milliseconds";
+    
     //-----------------------------------------------------------------------
     /**
      * Formats a period and duration to a string in ISO-8601 format.
@@ -108,10 +168,10 @@ public final class AmountFormats {
         Objects.requireNonNull(locale, "locale must not be null");
         ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
         UnitFormat[] formats = {
-            new UnitFormat(" year", " years"),
-            new UnitFormat(" month", " months"),
-            new UnitFormat(" day", " days")};
-        WordBased wb = new WordBased(formats, ", ", " and ");
+            new UnitFormat(bundle.getString(WORDBASED_YEAR), bundle.getString(WORDBASED_YEARS)),
+            new UnitFormat(bundle.getString(WORDBASED_MONTH), bundle.getString(WORDBASED_MONTHS)),
+            new UnitFormat(bundle.getString(WORDBASED_DAY), bundle.getString(WORDBASED_DAYS))};
+        WordBased wb = new WordBased(formats, WORDBASED_COMMASPACE, WORDBASED_SPACEANDSPACE);
         int[] values = {period.getYears(), period.getMonths(), period.getDays()};
         return wb.format(values);
         //        if (bundle.containsKey("WordBased.regex.separator")) {
@@ -120,6 +180,29 @@ public final class AmountFormats {
         //        }
     }
 
+    /**
+     * Formats a duration to a string in a localized word-based format.
+     * <p>
+     * This returns a word-based format for the duration.
+     * The words are configured in a resource bundle text file -
+     * {@code org.threeten.extra.wordbased.properties} - with overrides per language.
+     *
+     * @param duration  the duration to format
+     * @param locale  the locale to use
+     * @return the localized word-based format for the duration
+     */
+    public static String wordBased(Duration duration, Locale locale) {
+        Objects.requireNonNull(duration, "duration must not be null");
+        Objects.requireNonNull(locale, "locale must not be null");
+        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        UnitFormat[] formats = {
+            new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)),
+            new UnitFormat(bundle.getString(WORDBASED_MILLISECOND), bundle.getString(WORDBASED_MILLISECONDS))};
+        WordBased wb = new WordBased(formats, WORDBASED_COMMASPACE, WORDBASED_SPACEANDSPACE);
+        int[] values = {(int)duration.getSeconds()};
+        return wb.format(values);
+    }
+    
     private AmountFormats() {
     }
 

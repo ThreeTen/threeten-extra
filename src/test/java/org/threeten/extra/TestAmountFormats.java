@@ -68,6 +68,14 @@ public class TestAmountFormats {
             {Period.ofYears(12), Locale.ROOT, "12 years"},
             {Period.ofYears(-1), Locale.ROOT, "-1 years"},
 
+            {Period.ofWeeks(0), Locale.ENGLISH, "0 days"},
+            {Period.ofWeeks(1), Locale.ENGLISH, "7 days"},
+            {Period.ofWeeks(4), Locale.ENGLISH, "28 days"},
+            
+            {Period.ofMonths(0), Locale.ENGLISH, "0 days"},
+            {Period.ofMonths(1), Locale.ENGLISH, "1 month"},
+            {Period.ofMonths(4), Locale.ENGLISH, "4 months"},
+            
             {Period.ofYears(0), Locale.ENGLISH, "0 days"},
             {Period.ofYears(1), Locale.ENGLISH, "1 year"},
             {Period.ofYears(2), Locale.ENGLISH, "2 years"},
@@ -82,4 +90,19 @@ public class TestAmountFormats {
         assertEquals(AmountFormats.wordBased(period, locale), expected);
     }
 
+    @DataProvider
+    public static Object[][] duration_wordBased() {
+        return new Object[][] {
+            
+            {Duration.ofSeconds(100), Locale.ENGLISH, "100 seconds"},
+            {Duration.ofMillis(1_000), Locale.ENGLISH, "1 second"},
+            {Duration.ofMillis(3_000), Locale.ENGLISH, "3 seconds"},
+        };
+    }
+    
+    @Test
+    @UseDataProvider("duration_wordBased")
+    public void test_wordBased(Duration duration, Locale locale, String expected) {
+        assertEquals(AmountFormats.wordBased(duration, locale), expected);
+    }
 }
