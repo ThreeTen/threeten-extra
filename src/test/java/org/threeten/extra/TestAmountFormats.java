@@ -95,6 +95,7 @@ public class TestAmountFormats {
     public static Object[][] duration_wordBased() {
         return new Object[][] {
         	{Duration.ofMinutes(180 + 2), Locale.ENGLISH, "3 hours 2 minutes"},
+        	{Duration.ofMinutes(-60 - 40), Locale.ENGLISH, "-1 hour -40 minutes"},
         	{Duration.ofSeconds(180), Locale.ENGLISH, "3 minutes"},
             {Duration.ofSeconds(100), Locale.ENGLISH, "1 minute 40 seconds"},
             {Duration.ofSeconds(-140), Locale.ENGLISH, "-2 minutes -20 seconds"},

@@ -237,7 +237,7 @@ public final class AmountFormats {
         	new UnitFormat(bundle.getString(WORDBASED_MINUTE), bundle.getString(WORDBASED_MINUTES)),
             new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)) };
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_SPACE), bundle.getString(WORDBASED_SPACE));
-        long hours = duration.toHours()<0?0:duration.toHours();
+        long hours = duration.toHours();
         long mins = duration.toMinutes() % MINUTES_PER_HOUR;
         long secs = duration.getSeconds() % SECONDS_PER_MINUTE;
         int[] values = {(int)hours, (int)mins, (int)secs};
