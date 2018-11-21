@@ -49,11 +49,26 @@ import java.util.ResourceBundle;
  */
 public final class AmountFormats {
 
+	/**
+     * The number of minutes per hour.
+     */
+    private static final int MINUTES_PER_HOUR = 60;
+    
+    /**
+     * The number of seconds per minute.
+     */
+    private static final int SECONDS_PER_MINUTE = 60;
+    
     /**
      * The resource bundle name.
      */
     private static final String BUNDLE_NAME = "org.threeten.extra.wordbased";
-
+   
+    /**
+     * the property file key for the separator " "
+     */
+    private static final String WORDBASED_SPACE = "WordBased.space";
+    
     /**
      * the property file key for the separator ", "
      */
@@ -93,6 +108,26 @@ public final class AmountFormats {
      * the property file key for the word "days"
      */
     private static final String WORDBASED_DAYS = "WordBased.days";
+    
+    /**
+     * the property file key for the word "hour"
+     */
+    private static final String WORDBASED_HOUR = "WordBased.hour";
+    
+    /**
+     * the property file key for the word "hours"
+     */
+    private static final String WORDBASED_HOURS = "WordBased.hours";
+    
+    /**
+     * the property file key for the word "minute"
+     */
+    private static final String WORDBASED_MINUTE  = "WordBased.minute";
+    
+    /**
+     * the property file key for the word "minutes"
+     */
+    private static final String WORDBASED_MINUTES  = "WordBased.minutes";
     
     /**
      * the property file key for the word "second"
@@ -171,7 +206,7 @@ public final class AmountFormats {
             new UnitFormat(bundle.getString(WORDBASED_YEAR), bundle.getString(WORDBASED_YEARS)),
             new UnitFormat(bundle.getString(WORDBASED_MONTH), bundle.getString(WORDBASED_MONTHS)),
             new UnitFormat(bundle.getString(WORDBASED_DAY), bundle.getString(WORDBASED_DAYS))};
-        WordBased wb = new WordBased(formats, WORDBASED_COMMASPACE, WORDBASED_SPACEANDSPACE);
+        WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
         int[] values = {period.getYears(), period.getMonths(), period.getDays()};
         return wb.format(values);
         //        if (bundle.containsKey("WordBased.regex.separator")) {
@@ -195,11 +230,16 @@ public final class AmountFormats {
         Objects.requireNonNull(duration, "duration must not be null");
         Objects.requireNonNull(locale, "locale must not be null");
         ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        
         UnitFormat[] formats = {
-            new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)),
-            new UnitFormat(bundle.getString(WORDBASED_MILLISECOND), bundle.getString(WORDBASED_MILLISECONDS))};
-        WordBased wb = new WordBased(formats, WORDBASED_COMMASPACE, WORDBASED_SPACEANDSPACE);
-        int[] values = {(int)duration.getSeconds()};
+        	new UnitFormat(bundle.getString(WORDBASED_HOUR), bundle.getString(WORDBASED_HOURS)),
+        	new UnitFormat(bundle.getString(WORDBASED_MINUTE), bundle.getString(WORDBASED_MINUTES)),
+            new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)) };
+        WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_SPACE), bundle.getString(WORDBASED_SPACE));
+        long hours = duration.toHours()<0?0:duration.toHours();
+        long mins = duration.toMinutes() % MINUTES_PER_HOUR;
+        long secs = duration.getSeconds() % SECONDS_PER_MINUTE;
+        int[] values = {(int)hours, (int)mins, (int)secs};
         return wb.format(values);
     }
     

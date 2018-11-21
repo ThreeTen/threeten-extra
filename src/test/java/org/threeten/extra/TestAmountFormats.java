@@ -93,8 +93,9 @@ public class TestAmountFormats {
     @DataProvider
     public static Object[][] duration_wordBased() {
         return new Object[][] {
-            
-            {Duration.ofSeconds(100), Locale.ENGLISH, "100 seconds"},
+        	{Duration.ofMinutes(180 + 2), Locale.ENGLISH, "3 hours 2 minutes"},
+        	{Duration.ofSeconds(180), Locale.ENGLISH, "3 minutes"},
+            {Duration.ofSeconds(100), Locale.ENGLISH, "1 minute 40 seconds"},
             {Duration.ofMillis(1_000), Locale.ENGLISH, "1 second"},
             {Duration.ofMillis(3_000), Locale.ENGLISH, "3 seconds"},
         };
