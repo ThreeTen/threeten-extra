@@ -66,7 +66,7 @@ public class TestAmountFormats {
             {Period.ofYears(1), Locale.ROOT, "1 year"},
             {Period.ofYears(2), Locale.ROOT, "2 years"},
             {Period.ofYears(12), Locale.ROOT, "12 years"},
-            {Period.ofYears(-1), Locale.ROOT, "-1 years"},
+            {Period.ofYears(-1), Locale.ROOT, "-1 year"},
 
             {Period.ofWeeks(0), Locale.ENGLISH, "0 days"},
             {Period.ofWeeks(1), Locale.ENGLISH, "7 days"},
@@ -75,12 +75,13 @@ public class TestAmountFormats {
             {Period.ofMonths(0), Locale.ENGLISH, "0 days"},
             {Period.ofMonths(1), Locale.ENGLISH, "1 month"},
             {Period.ofMonths(4), Locale.ENGLISH, "4 months"},
+            {Period.ofMonths(14), Locale.ENGLISH, "1 year and 2 months"},
             
             {Period.ofYears(0), Locale.ENGLISH, "0 days"},
             {Period.ofYears(1), Locale.ENGLISH, "1 year"},
             {Period.ofYears(2), Locale.ENGLISH, "2 years"},
             {Period.ofYears(12), Locale.ENGLISH, "12 years"},
-            {Period.ofYears(-1), Locale.ENGLISH, "-1 years"},
+            {Period.ofYears(-1), Locale.ENGLISH, "-1 year"},
         };
     }
 
@@ -96,6 +97,9 @@ public class TestAmountFormats {
         	{Duration.ofMinutes(180 + 2), Locale.ENGLISH, "3 hours 2 minutes"},
         	{Duration.ofSeconds(180), Locale.ENGLISH, "3 minutes"},
             {Duration.ofSeconds(100), Locale.ENGLISH, "1 minute 40 seconds"},
+            {Duration.ofSeconds(-140), Locale.ENGLISH, "-2 minutes -20 seconds"},
+            {Duration.ofSeconds(-90), Locale.ENGLISH, "-1 minute -30 seconds"},
+            {Duration.ofSeconds(-40), Locale.ENGLISH, "-40 seconds"},
             {Duration.ofMillis(1_000), Locale.ENGLISH, "1 second"},
             {Duration.ofMillis(3_000), Locale.ENGLISH, "3 seconds"},
         };

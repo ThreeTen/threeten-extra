@@ -207,7 +207,8 @@ public final class AmountFormats {
             new UnitFormat(bundle.getString(WORDBASED_MONTH), bundle.getString(WORDBASED_MONTHS)),
             new UnitFormat(bundle.getString(WORDBASED_DAY), bundle.getString(WORDBASED_DAYS))};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
-        int[] values = {period.getYears(), period.getMonths(), period.getDays()};
+        Period normPeriod = period.normalized();
+        int[] values = {normPeriod.getYears(), normPeriod.getMonths(), normPeriod.getDays()};
         return wb.format(values);
         //        if (bundle.containsKey("WordBased.regex.separator")) {
         //            return buildRegExFormatter(bundle, locale);
@@ -292,7 +293,7 @@ public final class AmountFormats {
         }
 
         void formatTo(int value, StringBuilder buf) {
-            buf.append(value).append(value == 1 ? single : plural);
+            buf.append(value).append(value == 1 || value == -1 ? single : plural);
         }
     }
 
