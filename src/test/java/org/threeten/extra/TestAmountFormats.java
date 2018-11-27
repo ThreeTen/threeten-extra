@@ -69,19 +69,29 @@ public class TestAmountFormats {
             {Period.ofYears(-1), Locale.ROOT, "-1 year"},
 
             {Period.ofWeeks(0), Locale.ENGLISH, "0 days"},
-            {Period.ofWeeks(1), Locale.ENGLISH, "7 days"},
-            {Period.ofWeeks(4), Locale.ENGLISH, "28 days"},
+            {Period.ofWeeks(1), Locale.ENGLISH, "1 week"},
+            {Period.ofWeeks(4), Locale.ENGLISH, "4 weeks"},
             
             {Period.ofMonths(0), Locale.ENGLISH, "0 days"},
             {Period.ofMonths(1), Locale.ENGLISH, "1 month"},
             {Period.ofMonths(4), Locale.ENGLISH, "4 months"},
             {Period.ofMonths(14), Locale.ENGLISH, "1 year and 2 months"},
             
-            {Period.ofYears(0), Locale.ENGLISH, "0 days"},
-            {Period.ofYears(1), Locale.ENGLISH, "1 year"},
-            {Period.ofYears(2), Locale.ENGLISH, "2 years"},
-            {Period.ofYears(12), Locale.ENGLISH, "12 years"},
-            {Period.ofYears(-1), Locale.ENGLISH, "-1 year"},
+            {Period.ofDays(1), Locale.ENGLISH, "1 day"},
+            {Period.ofDays(2), Locale.ENGLISH, "2 days"},
+            {Period.ofDays(5), Locale.ENGLISH, "5 days"},
+            {Period.ofDays(7), Locale.ENGLISH, "1 week"},
+            {Period.ofDays(-1), Locale.ENGLISH, "-1 day"},
+            
+            
+            {Period.ofDays(1), new Locale("ro"), "1 zi"},
+            {Period.ofDays(2), new Locale("ro"), "2 zile"},
+            {Period.ofDays(5), new Locale("ro"), "5 zile"},
+            {Period.ofDays(7), new Locale("ro"), "1 săptămână"},
+            {Period.ofWeeks(3), new Locale("ro"), "3 săptămâni"},
+            {Period.ofMonths(14), new Locale("ro"), "1 an și 2 luni"},
+            {Period.ofMonths(1), new Locale("ro"), "1 lună"},
+            {Period.ofYears(2), new Locale("ro"), "2 ani"},
         };
     }
 
@@ -94,15 +104,25 @@ public class TestAmountFormats {
     @DataProvider
     public static Object[][] duration_wordBased() {
         return new Object[][] {
-        	{Duration.ofMinutes(180 + 2), Locale.ENGLISH, "3 hours 2 minutes"},
-        	{Duration.ofMinutes(-60 - 40), Locale.ENGLISH, "-1 hour -40 minutes"},
+        	{Duration.ofMinutes(180 + 2), Locale.ENGLISH, "3 hours and 2 minutes"},
+        	{Duration.ofMinutes(-60 - 40), Locale.ENGLISH, "-1 hour and -40 minutes"},
         	{Duration.ofSeconds(180), Locale.ENGLISH, "3 minutes"},
-            {Duration.ofSeconds(100), Locale.ENGLISH, "1 minute 40 seconds"},
-            {Duration.ofSeconds(-140), Locale.ENGLISH, "-2 minutes -20 seconds"},
-            {Duration.ofSeconds(-90), Locale.ENGLISH, "-1 minute -30 seconds"},
+            {Duration.ofSeconds(100), Locale.ENGLISH, "1 minute and 40 seconds"},
+            {Duration.ofSeconds(-140), Locale.ENGLISH, "-2 minutes and -20 seconds"},
+            {Duration.ofSeconds(-90), Locale.ENGLISH, "-1 minute and -30 seconds"},
             {Duration.ofSeconds(-40), Locale.ENGLISH, "-40 seconds"},
             {Duration.ofMillis(1_000), Locale.ENGLISH, "1 second"},
             {Duration.ofMillis(3_000), Locale.ENGLISH, "3 seconds"},
+            {Duration.ofNanos(1_000_000), Locale.ENGLISH, "1 millisecond"},
+            {Duration.ofNanos(1000_000_000 + 2_000_000), Locale.ENGLISH, "1 second and 2 milliseconds"},
+            
+            {Duration.ofMinutes(60 + 1), new Locale("ro"), "1 oră și 1 minut"},
+            {Duration.ofMinutes(180 + 2), new Locale("ro"), "3 ore și 2 minute"},
+        	{Duration.ofMinutes(-60 - 40), new Locale("ro"), "-1 oră și -40 minute"},
+        	{Duration.ofSeconds(-90), new Locale("ro"), "-1 minut și -30 secunde"},
+            {Duration.ofNanos(1_000_000), new Locale("ro"), "1 milisecundă"},
+            {Duration.ofNanos(1000_000_000 + 2_000_000), new Locale("ro"), "1 secundă și 2 milisecunde"},
+
         };
     }
     

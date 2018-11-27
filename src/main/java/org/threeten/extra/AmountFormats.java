@@ -50,15 +50,21 @@ import java.util.ResourceBundle;
 public final class AmountFormats {
 
 	/**
+     * The number of days per week.
+     */
+    private static final int DAYS_PER_WEEK = 7;
+	/**
      * The number of minutes per hour.
      */
     private static final int MINUTES_PER_HOUR = 60;
-    
     /**
      * The number of seconds per minute.
      */
     private static final int SECONDS_PER_MINUTE = 60;
-    
+    /**
+     * The number of nanosecond per millisecond.
+     */
+    private static final int NANOS_PER_MILLIS = 1000_000;
     /**
      * The resource bundle name.
      */
@@ -98,6 +104,16 @@ public final class AmountFormats {
      * the property file key for the word "months"
      */
     private static final String WORDBASED_MONTHS = "WordBased.months";
+    
+    /**
+     * the property file key for the word "week"
+     */
+    private static final String WORDBASED_WEEK = "WordBased.week";
+    
+    /**
+     * the property file key for the word "weeks"
+     */
+    private static final String WORDBASED_WEEKS = "WordBased.weeks";
     
     /**
      * the property file key for the word "day"
@@ -205,10 +221,17 @@ public final class AmountFormats {
         UnitFormat[] formats = {
             new UnitFormat(bundle.getString(WORDBASED_YEAR), bundle.getString(WORDBASED_YEARS)),
             new UnitFormat(bundle.getString(WORDBASED_MONTH), bundle.getString(WORDBASED_MONTHS)),
+            new UnitFormat(bundle.getString(WORDBASED_WEEK), bundle.getString(WORDBASED_WEEKS)),
             new UnitFormat(bundle.getString(WORDBASED_DAY), bundle.getString(WORDBASED_DAYS))};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
         Period normPeriod = period.normalized();
-        int[] values = {normPeriod.getYears(), normPeriod.getMonths(), normPeriod.getDays()};
+        int weeks = 0, days = 0;
+        if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
+        	weeks = normPeriod.getDays() / DAYS_PER_WEEK;
+        } else {
+        	days = normPeriod.getDays();
+        }
+        int[] values = {normPeriod.getYears(), normPeriod.getMonths(), weeks, days};
         return wb.format(values);
         //        if (bundle.containsKey("WordBased.regex.separator")) {
         //            return buildRegExFormatter(bundle, locale);
@@ -235,12 +258,14 @@ public final class AmountFormats {
         UnitFormat[] formats = {
         	new UnitFormat(bundle.getString(WORDBASED_HOUR), bundle.getString(WORDBASED_HOURS)),
         	new UnitFormat(bundle.getString(WORDBASED_MINUTE), bundle.getString(WORDBASED_MINUTES)),
-            new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)) };
-        WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_SPACE), bundle.getString(WORDBASED_SPACE));
+            new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)),
+            new UnitFormat(bundle.getString(WORDBASED_MILLISECOND), bundle.getString(WORDBASED_MILLISECONDS))};
+        WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_SPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
         long hours = duration.toHours();
         long mins = duration.toMinutes() % MINUTES_PER_HOUR;
         long secs = duration.getSeconds() % SECONDS_PER_MINUTE;
-        int[] values = {(int)hours, (int)mins, (int)secs};
+        int millis = duration.getNano() / NANOS_PER_MILLIS;
+        int[] values = {(int)hours, (int)mins, (int)secs, millis};
         return wb.format(values);
     }
     
