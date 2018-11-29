@@ -49,11 +49,11 @@ import java.util.ResourceBundle;
  */
 public final class AmountFormats {
 
-	/**
+    /**
      * The number of days per week.
      */
     private static final int DAYS_PER_WEEK = 7;
-	/**
+    /**
      * The number of minutes per hour.
      */
     private static final int MINUTES_PER_HOUR = 60;
@@ -227,9 +227,9 @@ public final class AmountFormats {
         Period normPeriod = period.normalized();
         int weeks = 0, days = 0;
         if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
-        	weeks = normPeriod.getDays() / DAYS_PER_WEEK;
+           weeks = normPeriod.getDays() / DAYS_PER_WEEK;
         } else {
-        	days = normPeriod.getDays();
+           days = normPeriod.getDays();
         }
         int[] values = {normPeriod.getYears(), normPeriod.getMonths(), weeks, days};
         return wb.format(values);
@@ -256,17 +256,43 @@ public final class AmountFormats {
         ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
         
         UnitFormat[] formats = {
-        	new UnitFormat(bundle.getString(WORDBASED_HOUR), bundle.getString(WORDBASED_HOURS)),
-        	new UnitFormat(bundle.getString(WORDBASED_MINUTE), bundle.getString(WORDBASED_MINUTES)),
-            new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)),
-            new UnitFormat(bundle.getString(WORDBASED_MILLISECOND), bundle.getString(WORDBASED_MILLISECONDS))};
+           new UnitFormat(bundle.getString(WORDBASED_HOUR), bundle.getString(WORDBASED_HOURS)),
+           new UnitFormat(bundle.getString(WORDBASED_MINUTE), bundle.getString(WORDBASED_MINUTES)),
+           new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)),
+           new UnitFormat(bundle.getString(WORDBASED_MILLISECOND), bundle.getString(WORDBASED_MILLISECONDS))};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_SPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
         long hours = duration.toHours();
         long mins = duration.toMinutes() % MINUTES_PER_HOUR;
         long secs = duration.getSeconds() % SECONDS_PER_MINUTE;
         int millis = duration.getNano() / NANOS_PER_MILLIS;
-        int[] values = {(int)hours, (int)mins, (int)secs, millis};
+        int[] values = {(int) hours, (int) mins, (int) secs, millis};
         return wb.format(values);
+    }
+    
+    /**
+     * Formats a period and duration to a string in a localized word-based format.
+     * <p>
+     * This returns a word-based format for the period.
+     * The words are configured in a resource bundle text file -
+     * {@code org.threeten.extra.wordbased.properties} - with overrides per language.
+     *
+     * @param period  the period to format
+     * @param duration  the duration to format
+     * @param locale  the locale to use
+     * @return the localized word-based format for the period and duration
+     */
+    public static String wordBased(Period period, Duration duration, Locale locale) {
+        Objects.requireNonNull(period, "period must not be null");
+        Objects.requireNonNull(duration, "duration must not be null");
+        Objects.requireNonNull(locale, "locale must not be null");
+        if (period.isZero()) {
+            return wordBased(duration, locale);
+        }
+        if (duration.isZero()) {
+            return wordBased(period, locale);
+        }
+        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        return wordBased(period, locale) + bundle.getString(WORDBASED_SPACE) + wordBased(duration, locale);
     }
     
     private AmountFormats() {

@@ -131,4 +131,27 @@ public class TestAmountFormats {
     public void test_wordBased(Duration duration, Locale locale, String expected) {
         assertEquals(AmountFormats.wordBased(duration, locale), expected);
     }
+    
+    @DataProvider
+    public static Object[][] period_duration_wordBased() {
+        return new Object[][] {
+            {Period.ofDays(1), Duration.ofMinutes(180 + 2), Locale.ROOT, "1 day 3 hours and 2 minutes"},
+            {Period.ofDays(2), Duration.ofSeconds(180), Locale.ROOT, "2 days 3 minutes"},
+            {Period.ofDays(7), Duration.ofMinutes(80), Locale.ROOT, "1 week 1 hour and 20 minutes"},
+            {Period.ZERO, Duration.ofMillis(1_000), Locale.ROOT, "1 second"},
+
+            {Period.ofMonths(0), Duration.ofSeconds(0), Locale.ENGLISH, "0 milliseconds"},
+            {Period.ofMonths(0), Duration.ofHours(9), Locale.ENGLISH, "9 hours"},
+            {Period.ofMonths(1), Duration.ZERO, Locale.ENGLISH, "1 month"},
+            {Period.ofMonths(4), Duration.ZERO, Locale.ENGLISH, "4 months"},
+            {Period.of(1, 2, 5), Duration.ofHours(4), Locale.ENGLISH, "1 year, 2 months and 5 days 4 hours"}
+        };
+    }
+    
+    @Test
+    @UseDataProvider("period_duration_wordBased")
+    public void test_wordBased(Period period, Duration duration, Locale locale, String expected) {
+        assertEquals(AmountFormats.wordBased(period, duration, locale), expected);
+    }
+    
 }
