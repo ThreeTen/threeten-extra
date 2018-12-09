@@ -31,9 +31,12 @@
  */
 package org.threeten.extra;
 
+import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.THURSDAY;
 import static java.time.DayOfWeek.WEDNESDAY;
+import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
+import static java.time.temporal.IsoFields.WEEK_BASED_YEARS;
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 
 import java.io.Serializable;
@@ -41,6 +44,7 @@ import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.chrono.Chronology;
@@ -50,13 +54,16 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.SignStyle;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
@@ -89,7 +96,7 @@ import java.util.Objects;
  * identity hash code or use the distinction between equals() and ==.
  */
 public final class YearWeek
-        implements TemporalAccessor, TemporalAdjuster, Comparable<YearWeek>, Serializable {
+        implements Temporal, TemporalAdjuster, Comparable<YearWeek>, Serializable {
 
     /**
      * Serialization version.
@@ -337,6 +344,37 @@ public final class YearWeek
         return field != null && field.isSupportedBy(this);
     }
 
+    /**
+     * Checks if the specified unit is supported.
+     * <p>
+     * This checks if the specified unit can be added to, or subtracted from, this date-time.
+     * If false, then calling the {@link #plus(long, TemporalUnit)} and
+     * {@link #minus(long, TemporalUnit) minus} methods will throw an exception.
+     * <p>
+     * If the unit is a {@link ChronoUnit} then the query is implemented here.
+     * The supported units are:
+     * <ul>
+     * <li>{@code WEEKS}
+     * <li>{@code WEEK_BASED_YEARS}
+     * </ul>
+     * All other {@code ChronoUnit} instances will return false.
+     * <p>
+     * If the unit is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.isSupportedBy(Temporal)}
+     * passing {@code this} as the argument.
+     * Whether the unit is supported is determined by the unit.
+     *
+     * @param unit  the unit to check, null returns false
+     * @return true if the unit can be added/subtracted, false if not
+     */
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return unit == WEEKS || unit == WEEK_BASED_YEARS;
+        }
+        return unit != null && unit.isSupportedBy(this);
+    }
+    
     //-----------------------------------------------------------------------
     /**
      * Gets the range of valid values for the specified field.
@@ -363,7 +401,7 @@ public final class YearWeek
         if (field == WEEK_OF_WEEK_BASED_YEAR) {
             return ValueRange.of(1, weekRange(year));
         }
-        return TemporalAccessor.super.range(field);
+        return Temporal.super.range(field);
     }
 
     /**
@@ -394,7 +432,7 @@ public final class YearWeek
         if (field == WEEK_OF_WEEK_BASED_YEAR) {
             return week;
         }
-        return TemporalAccessor.super.get(field);
+        return Temporal.super.get(field);
     }
 
     /**
@@ -479,6 +517,75 @@ public final class YearWeek
 
     //-----------------------------------------------------------------------
     /**
+     * Returns an adjusted copy of this year-week.
+     * <p>
+     * This returns a {@code YearWeek}, based on this one, with the year-week adjusted.
+     * The adjustment takes place using the specified adjuster strategy object.
+     * Read the documentation of the adjuster to understand what adjustment will be made.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalAdjuster#adjustInto(Temporal)} method on the
+     * specified adjuster passing {@code this} as the argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster the adjuster to use, not null
+     * @return a {@code YearWeek} based on {@code this} with the adjustment made, not null
+     * @throws DateTimeException if the adjustment cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public YearWeek with(TemporalAdjuster adjuster) {
+        return (YearWeek) adjuster.adjustInto(this);
+    }
+
+    /**
+     * Returns a copy of this year-week with the specified field set to a new value.
+     * <p>
+     * This returns a {@code YearWeek}, based on this one, with the value
+     * for the specified field changed.
+     * This can be used to change any supported field, such as the year or week.
+     * If it is not possible to set the value, because the field is not supported or for
+     * some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the adjustment is implemented here.
+     * The supported fields behave as follows:
+     * <ul>
+     * <li>{@code WEEK_OF_WEEK_BASED_YEAR} -
+     *  Returns a {@code YearWeek} with the specified week-of-year set as per {@link #withWeek(int)}.
+     * <li>{@code WEEK_BASED_YEAR} -
+     *  Returns a {@code YearWeek} with the specified year set as per {@link #withYear(int)}.
+     * </ul>
+     * <p>
+     * All {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
+     * passing {@code this} as the argument. In this case, the field determines
+     * whether and how to adjust the instant.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result
+     * @return a {@code YearWeek} based on {@code this} with the specified field set, not null
+     * @throws DateTimeException if the field cannot be set
+     * @throws UnsupportedTemporalTypeException if the field is not supported
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public YearWeek with(TemporalField field, long newValue) {
+        if (field == WEEK_OF_WEEK_BASED_YEAR) {
+            return withWeek(WEEK_OF_WEEK_BASED_YEAR.range().checkValidIntValue(newValue, WEEK_OF_WEEK_BASED_YEAR));
+        } else if (field == WEEK_BASED_YEAR) {
+            return withYear(WEEK_BASED_YEAR.range().checkValidIntValue(newValue, WEEK_BASED_YEAR));
+        } else if (field instanceof ChronoField) {
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+        }
+        return field.adjustInto(this, newValue);
+    }
+
+    /**
      * Returns a copy of this {@code YearWeek} with the week-based-year altered.
      * <p>
      * This returns a year-week with the specified week-based-year.
@@ -517,6 +624,75 @@ public final class YearWeek
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this year-week with the specified amount added.
+     * <p>
+     * This returns a {@code YearWeek}, based on this one, with the specified amount added.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
+     * <p>
+     * The calculation is delegated to the amount object by calling
+     * {@link TemporalAmount#addTo(Temporal)}. The amount implementation is free
+     * to implement the addition in any way it wishes, however it typically
+     * calls back to {@link #plus(long, TemporalUnit)}. Consult the documentation
+     * of the amount implementation to determine if it can be successfully added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amountToAdd  the amount to add, not null
+     * @return a {@code YearWeek} based on this year-week with the addition made, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public YearWeek plus(TemporalAmount amountToAdd) {
+        return (YearWeek) amountToAdd.addTo(this);
+    }
+
+    /**
+     * Returns a copy of this year-week with the specified amount added.
+     * <p>
+     * This returns a {@code YearWeek}, based on this one, with the amount
+     * in terms of the unit added. If it is not possible to add the amount, because the
+     * unit is not supported or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoUnit} then the addition is implemented here.
+     * The supported fields behave as follows:
+     * <ul>
+     * <li>{@code WEEKS} -
+     *  Returns a {@code YearWeek} with the weeks added as per {@link #plusWeeks(long)}.
+     * <li>{@code WEEK_BASED_YEARS} -
+     *  Returns a {@code YearWeek} with the years added as per {@link #plusYears(long)}.
+     * </ul>
+     * <p>
+     * All {@code ChronoUnit} instances will throw an {@code UnsupportedTemporalTypeException}.
+     * <p>
+     * If the field is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.addTo(Temporal, long)}
+     * passing {@code this} as the argument. In this case, the unit determines
+     * whether and how to perform the addition.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amountToAdd  the amount of the unit to add to the result, may be negative
+     * @param unit  the unit of the amount to add, not null
+     * @return a {@code YearWeek} based on this year-week with the specified amount added, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws UnsupportedTemporalTypeException if the unit is not supported
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public YearWeek plus(long amountToAdd, TemporalUnit unit) {
+        if (unit == WEEKS) {
+            return plusWeeks(amountToAdd);
+        } else if (unit == WEEK_BASED_YEARS) {
+            return plusYears(amountToAdd);
+        } else if (unit instanceof ChronoUnit) {
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
+        }
+        return unit.addTo(this, amountToAdd);
+    }
+
+    /**
      * Returns a copy of this year-week with the specified number of years added.
      * <p>
      * If the week of this instance is 53 and the new year does not have 53 weeks,
@@ -547,8 +723,58 @@ public final class YearWeek
         if (weeksToAdd == 0) {
             return this;
         }
-        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).plusWeeks(weeksToAdd);
+        LocalDate mondayOfWeek = atDay(MONDAY).plusWeeks(weeksToAdd);
         return YearWeek.from(mondayOfWeek);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this year-week with the specified amount subtracted.
+     * <p>
+     * This returns a {@code YearWeek}, based on this one, with the specified amount subtracted.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
+     * <p>
+     * The calculation is delegated to the amount object by calling
+     * {@link TemporalAmount#subtractFrom(Temporal)}. The amount implementation is free
+     * to implement the subtraction in any way it wishes, however it typically
+     * calls back to {@link #minus(long, TemporalUnit)}. Consult the documentation
+     * of the amount implementation to determine if it can be successfully subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amountToSubtract  the amount to subtract, not null
+     * @return a {@code YearWeek} based on this year-week with the subtraction made, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public YearWeek minus(TemporalAmount amountToSubtract) {
+        return (YearWeek) amountToSubtract.subtractFrom(this);
+    }
+
+    /**
+     * Returns a copy of this year-week with the specified amount subtracted.
+     * <p>
+     * This returns a {@code YearWeek}, based on this one, with the amount
+     * in terms of the unit subtracted. If it is not possible to subtract the amount,
+     * because the unit is not supported or for some other reason, an exception is thrown.
+     * <p>
+     * This method is equivalent to {@link #plus(long, TemporalUnit)} with the amount negated.
+     * See that method for a full description of how addition, and thus subtraction, works.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
+     * @param unit  the unit of the amount to subtract, not null
+     * @return a {@code YearWeek} based on this year-week with the specified amount subtracted, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws UnsupportedTemporalTypeException if the unit is not supported
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public YearWeek minus(long amountToSubtract, TemporalUnit unit) {
+        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     /**
@@ -582,7 +808,7 @@ public final class YearWeek
         if (weeksToSubtract == 0) {
             return this;
         }
-        LocalDate mondayOfWeek = atDay(DayOfWeek.MONDAY).minusWeeks(weeksToSubtract);
+        LocalDate mondayOfWeek = atDay(MONDAY).minusWeeks(weeksToSubtract);
         return YearWeek.from(mondayOfWeek);
     }
 
@@ -611,7 +837,7 @@ public final class YearWeek
         if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         }
-        return TemporalAccessor.super.query(query);
+        return Temporal.super.query(query);
     }
 
     /**
@@ -647,6 +873,67 @@ public final class YearWeek
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(WEEK_BASED_YEAR, year).with(WEEK_OF_WEEK_BASED_YEAR, week);
+    }
+
+    /**
+     * Calculates the amount of time until another year-week in terms of the specified unit.
+     * <p>
+     * This calculates the amount of time between two {@code YearWeek}
+     * objects in terms of a single {@code TemporalUnit}.
+     * The start and end points are {@code this} and the specified year-week.
+     * The result will be negative if the end is before the start.
+     * The {@code Temporal} passed to this method is converted to a
+     * {@code YearWeek} using {@link #from(TemporalAccessor)}.
+     * For example, the period in years between two year-weeks can be calculated
+     * using {@code startYearWeek.until(endYearWeek, YEARS)}.
+     * <p>
+     * The calculation returns a whole number, representing the number of
+     * complete units between the two year-weeks.
+     * For example, the period in years between 2012-W23 and 2032-W22
+     * will only be 9 years as it is one week short of 10 years.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method.
+     * The second is to use {@link TemporalUnit#between(Temporal, Temporal)}:
+     * <pre>
+     *   // these two lines are equivalent
+     *   amount = start.until(end, WEEKS);
+     *   amount = WEEKS.between(start, end);
+     * </pre>
+     * The choice should be made based on which makes the code more readable.
+     * <p>
+     * The calculation is implemented in this method for units {@code WEEKS}
+     * and {@code WEEK_BASED_YEARS}.
+     * Other {@code ChronoUnit} values will throw an exception.
+     * <p>
+     * If the unit is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
+     * passing {@code this} as the first argument and the converted input temporal
+     * as the second argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param endExclusive  the end date, exclusive, which is converted to a {@code YearWeek}, not null
+     * @param unit  the unit to measure the amount in, not null
+     * @return the amount of time between this year-week and the end year-week
+     * @throws DateTimeException if the amount cannot be calculated, or the end
+     *  temporal cannot be converted to a {@code YearWeek}
+     * @throws UnsupportedTemporalTypeException if the unit is not supported
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        YearWeek end = YearWeek.from(endExclusive);
+        if (unit == WEEKS) {
+            LocalDate startDate = this.atDay(MONDAY);
+            LocalDate endDate = end.atDay(MONDAY);
+            return endDate.toEpochDay() - startDate.toEpochDay();
+        } else if (unit == WEEK_BASED_YEARS) {
+            return end.year - this.year + (end.week < this.week ? -1 : 0);
+        } else if (unit instanceof ChronoUnit) {
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
+        }
+        return unit.between(this, end);
     }
 
     /**
