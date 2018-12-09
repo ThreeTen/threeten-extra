@@ -69,102 +69,83 @@ public final class AmountFormats {
      * The resource bundle name.
      */
     private static final String BUNDLE_NAME = "org.threeten.extra.wordbased";
-   
     /**
      * the property file key for the separator " "
      */
     private static final String WORDBASED_SPACE = "WordBased.space";
-    
     /**
      * the property file key for the separator ", "
      */
     private static final String WORDBASED_COMMASPACE = "WordBased.commaspace";
-    
     /**
      * the property file key for the separator " and "
      */
     private static final String WORDBASED_SPACEANDSPACE = "WordBased.spaceandspace";
-    
     /**
      * the property file key for the word "year"
      */
     private static final String WORDBASED_YEAR = "WordBased.year";
-    
     /**
      * the property file key for the word "years"
      */
     private static final String WORDBASED_YEARS = "WordBased.years";
-    
     /**
      * the property file key for the word "month"
      */
     private static final String WORDBASED_MONTH = "WordBased.month";
-    
     /**
      * the property file key for the word "months"
      */
     private static final String WORDBASED_MONTHS = "WordBased.months";
-    
     /**
      * the property file key for the word "week"
      */
     private static final String WORDBASED_WEEK = "WordBased.week";
-    
     /**
      * the property file key for the word "weeks"
      */
     private static final String WORDBASED_WEEKS = "WordBased.weeks";
-    
     /**
      * the property file key for the word "day"
      */
     private static final String WORDBASED_DAY = "WordBased.day";
-    
     /**
      * the property file key for the word "days"
      */
     private static final String WORDBASED_DAYS = "WordBased.days";
-    
     /**
      * the property file key for the word "hour"
      */
     private static final String WORDBASED_HOUR = "WordBased.hour";
-    
     /**
      * the property file key for the word "hours"
      */
     private static final String WORDBASED_HOURS = "WordBased.hours";
-    
     /**
      * the property file key for the word "minute"
      */
-    private static final String WORDBASED_MINUTE  = "WordBased.minute";
-    
+    private static final String WORDBASED_MINUTE = "WordBased.minute";
     /**
      * the property file key for the word "minutes"
      */
-    private static final String WORDBASED_MINUTES  = "WordBased.minutes";
-    
+    private static final String WORDBASED_MINUTES = "WordBased.minutes";
     /**
      * the property file key for the word "second"
      */
     private static final String WORDBASED_SECOND = "WordBased.second";
-    
     /**
      * the property file key for the word "seconds"
      */
     private static final String WORDBASED_SECONDS = "WordBased.seconds";
-    
     /**
      * the property file key for the word "millisecond"
      */
     private static final String WORDBASED_MILLISECOND = "WordBased.millisecond";
-    
     /**
      * the property file key for the word "milliseconds"
      */
     private static final String WORDBASED_MILLISECONDS = "WordBased.milliseconds";
-    
+
     //-----------------------------------------------------------------------
     /**
      * Formats a period and duration to a string in ISO-8601 format.
@@ -227,9 +208,9 @@ public final class AmountFormats {
         Period normPeriod = period.normalized();
         int weeks = 0, days = 0;
         if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
-           weeks = normPeriod.getDays() / DAYS_PER_WEEK;
+            weeks = normPeriod.getDays() / DAYS_PER_WEEK;
         } else {
-           days = normPeriod.getDays();
+            days = normPeriod.getDays();
         }
         int[] values = {normPeriod.getYears(), normPeriod.getMonths(), weeks, days};
         return wb.format(values);
@@ -254,12 +235,12 @@ public final class AmountFormats {
         Objects.requireNonNull(duration, "duration must not be null");
         Objects.requireNonNull(locale, "locale must not be null");
         ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
-        
+
         UnitFormat[] formats = {
-           new UnitFormat(bundle.getString(WORDBASED_HOUR), bundle.getString(WORDBASED_HOURS)),
-           new UnitFormat(bundle.getString(WORDBASED_MINUTE), bundle.getString(WORDBASED_MINUTES)),
-           new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)),
-           new UnitFormat(bundle.getString(WORDBASED_MILLISECOND), bundle.getString(WORDBASED_MILLISECONDS))};
+            new UnitFormat(bundle.getString(WORDBASED_HOUR), bundle.getString(WORDBASED_HOURS)),
+            new UnitFormat(bundle.getString(WORDBASED_MINUTE), bundle.getString(WORDBASED_MINUTES)),
+            new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)),
+            new UnitFormat(bundle.getString(WORDBASED_MILLISECOND), bundle.getString(WORDBASED_MILLISECONDS))};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_SPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
         long hours = duration.toHours();
         long mins = duration.toMinutes() % MINUTES_PER_HOUR;
@@ -268,7 +249,7 @@ public final class AmountFormats {
         int[] values = {(int) hours, (int) mins, (int) secs, millis};
         return wb.format(values);
     }
-    
+
     /**
      * Formats a period and duration to a string in a localized word-based format.
      * <p>
@@ -294,7 +275,7 @@ public final class AmountFormats {
         ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
         return wordBased(period, locale) + bundle.getString(WORDBASED_SPACE) + wordBased(duration, locale);
     }
-    
+
     private AmountFormats() {
     }
 
