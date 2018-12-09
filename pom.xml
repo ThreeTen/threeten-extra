@@ -826,7 +826,7 @@
     <bndlib.version>4.1.0</bndlib.version>
     <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-    <spotbugs-maven-plugin.version>3.1.6</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>3.1.9</spotbugs-maven-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
     <maven.compiler.source>1.8</maven.compiler.source>
