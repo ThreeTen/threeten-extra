@@ -798,7 +798,7 @@
   <properties>
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-    <maven-bundle-plugin.version>2.5.4</maven-bundle-plugin.version>
+    <maven-bundle-plugin.version>4.1.0</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <!-- v3.0.0 does not work with Eclipse -->
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
@@ -820,11 +820,11 @@
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.22.0</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
-    <bndlib.version>3.5.0</bndlib.version>
-    <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
+    <bndlib.version>4.1.0</bndlib.version>
+    <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <spotbugs-maven-plugin.version>3.1.6</spotbugs-maven-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
