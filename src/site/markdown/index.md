@@ -31,6 +31,7 @@ The following features are included:
 * [Coptic](apidocs/org/threeten/extra/chrono/CopticChronology.html) calendar system
 * [Ethiopic](apidocs/org/threeten/extra/chrono/EthiopicChronology.html) calendar system
 * [Julian](apidocs/org/threeten/extra/chrono/JulianChronology.html) calendar system
+* [Word-based](apidocs/org/threeten/extra/AmountFormats.html) period and duration formatting
 * Support for the TAI and UTC [time-scales](apidocs/org/threeten/extra/scale/package-summary.html)
 
 

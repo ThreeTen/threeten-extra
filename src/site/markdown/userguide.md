@@ -23,6 +23,21 @@ These include:
 * [`PeriodDuration`](apidocs/org/threeten/extra/PeriodDuration.html) - combines a `Period` and a `Duration`
 
 
+## Period/Duration formatting
+
+The JDK does not provide a mechanism to format periods or durations beyond ISO-8601.
+A simple mechanism is provided here in [`AmountFormats`](apidocs/org/threeten/extra/AmountFormats.html):
+
+```
+ Period period = Period.of(1, 6, 5);
+ String str = AmountFormats.wordBased(period, Locale.ENGLISH);
+ // output: "1 year, 6 months and 5 days"
+```
+
+Translations are provided for cs, da, de, en, es, fr, it, ja, nl, pl, pt, ro, ru, tr.
+Feel free to raise PRs for other languages.
+
+
 ## Calendar systems
 
 The additional calendar systems operate exactly as per similar classes in Java SE 8.
