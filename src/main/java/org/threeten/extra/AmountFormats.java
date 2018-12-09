@@ -37,6 +37,9 @@ import java.time.temporal.TemporalAmount;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.function.IntPredicate;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Provides the ability to format a temporal amount.
@@ -54,6 +57,10 @@ public final class AmountFormats {
      */
     private static final int DAYS_PER_WEEK = 7;
     /**
+     * The number of hours per day.
+     */
+    private static final int HOURS_PER_DAY = 24;
+    /**
      * The number of minutes per hour.
      */
     private static final int MINUTES_PER_HOUR = 60;
@@ -70,81 +77,62 @@ public final class AmountFormats {
      */
     private static final String BUNDLE_NAME = "org.threeten.extra.wordbased";
     /**
-     * the property file key for the separator " "
+     * The pattern to split lists with.
      */
-    private static final String WORDBASED_SPACE = "WordBased.space";
+    private static final Pattern SPLITTER = Pattern.compile("[|][|][|]");
     /**
-     * the property file key for the separator ", "
+     * The property file key for the separator ", ".
      */
     private static final String WORDBASED_COMMASPACE = "WordBased.commaspace";
     /**
-     * the property file key for the separator " and "
+     * The property file key for the separator " and ".
      */
     private static final String WORDBASED_SPACEANDSPACE = "WordBased.spaceandspace";
     /**
-     * the property file key for the word "year"
+     * The property file key for the word "year".
      */
     private static final String WORDBASED_YEAR = "WordBased.year";
     /**
-     * the property file key for the word "years"
-     */
-    private static final String WORDBASED_YEARS = "WordBased.years";
-    /**
-     * the property file key for the word "month"
+     * The property file key for the word "month".
      */
     private static final String WORDBASED_MONTH = "WordBased.month";
     /**
-     * the property file key for the word "months"
-     */
-    private static final String WORDBASED_MONTHS = "WordBased.months";
-    /**
-     * the property file key for the word "week"
+     * The property file key for the word "week".
      */
     private static final String WORDBASED_WEEK = "WordBased.week";
     /**
-     * the property file key for the word "weeks"
-     */
-    private static final String WORDBASED_WEEKS = "WordBased.weeks";
-    /**
-     * the property file key for the word "day"
+     * The property file key for the word "day".
      */
     private static final String WORDBASED_DAY = "WordBased.day";
     /**
-     * the property file key for the word "days"
-     */
-    private static final String WORDBASED_DAYS = "WordBased.days";
-    /**
-     * the property file key for the word "hour"
+     * The property file key for the word "hour".
      */
     private static final String WORDBASED_HOUR = "WordBased.hour";
     /**
-     * the property file key for the word "hours"
-     */
-    private static final String WORDBASED_HOURS = "WordBased.hours";
-    /**
-     * the property file key for the word "minute"
+     * The property file key for the word "minute".
      */
     private static final String WORDBASED_MINUTE = "WordBased.minute";
     /**
-     * the property file key for the word "minutes"
-     */
-    private static final String WORDBASED_MINUTES = "WordBased.minutes";
-    /**
-     * the property file key for the word "second"
+     * The property file key for the word "second".
      */
     private static final String WORDBASED_SECOND = "WordBased.second";
     /**
-     * the property file key for the word "seconds"
-     */
-    private static final String WORDBASED_SECONDS = "WordBased.seconds";
-    /**
-     * the property file key for the word "millisecond"
+     * The property file key for the word "millisecond".
      */
     private static final String WORDBASED_MILLISECOND = "WordBased.millisecond";
     /**
-     * the property file key for the word "milliseconds"
+     * The predicate that matches 1 or -1.
      */
-    private static final String WORDBASED_MILLISECONDS = "WordBased.milliseconds";
+    private static final IntPredicate PREDICATE_1 = value -> value == 1 || value == -1;
+    /**
+     * The predicate that matches numbers ending 2, 3 or 4, but not ending 12, 13 or 14.
+     */
+    private static final IntPredicate PREDICATE_END234_NOTTEENS = value -> {
+        int abs = Math.abs(value);
+        int last = abs % 10;
+        int secondLast = (abs % 100) / 10;
+        return (last >= 2 && last <= 4 && secondLast != 1);
+    };
 
     //-----------------------------------------------------------------------
     /**
@@ -187,11 +175,12 @@ public final class AmountFormats {
         Objects.requireNonNull(locale, "locale must not be null");
         ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
         UnitFormat[] formats = {
-            new UnitFormat(bundle.getString(WORDBASED_YEAR), bundle.getString(WORDBASED_YEARS)),
-            new UnitFormat(bundle.getString(WORDBASED_MONTH), bundle.getString(WORDBASED_MONTHS)),
-            new UnitFormat(bundle.getString(WORDBASED_WEEK), bundle.getString(WORDBASED_WEEKS)),
-            new UnitFormat(bundle.getString(WORDBASED_DAY), bundle.getString(WORDBASED_DAYS))};
+            UnitFormat.of(bundle, WORDBASED_YEAR),
+            UnitFormat.of(bundle, WORDBASED_MONTH),
+            UnitFormat.of(bundle, WORDBASED_WEEK),
+            UnitFormat.of(bundle, WORDBASED_DAY)};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
+        
         Period normPeriod = period.normalized();
         int weeks = 0, days = 0;
         if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
@@ -218,13 +207,13 @@ public final class AmountFormats {
         Objects.requireNonNull(duration, "duration must not be null");
         Objects.requireNonNull(locale, "locale must not be null");
         ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
-
         UnitFormat[] formats = {
-            new UnitFormat(bundle.getString(WORDBASED_HOUR), bundle.getString(WORDBASED_HOURS)),
-            new UnitFormat(bundle.getString(WORDBASED_MINUTE), bundle.getString(WORDBASED_MINUTES)),
-            new UnitFormat(bundle.getString(WORDBASED_SECOND), bundle.getString(WORDBASED_SECONDS)),
-            new UnitFormat(bundle.getString(WORDBASED_MILLISECOND), bundle.getString(WORDBASED_MILLISECONDS))};
-        WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_SPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
+            UnitFormat.of(bundle, WORDBASED_HOUR),
+            UnitFormat.of(bundle, WORDBASED_MINUTE),
+            UnitFormat.of(bundle, WORDBASED_SECOND),
+            UnitFormat.of(bundle, WORDBASED_MILLISECOND)};
+        WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
+        
         long hours = duration.toHours();
         long mins = duration.toMinutes() % MINUTES_PER_HOUR;
         long secs = duration.getSeconds() % SECONDS_PER_MINUTE;
@@ -249,14 +238,35 @@ public final class AmountFormats {
         Objects.requireNonNull(period, "period must not be null");
         Objects.requireNonNull(duration, "duration must not be null");
         Objects.requireNonNull(locale, "locale must not be null");
-        if (period.isZero()) {
-            return wordBased(duration, locale);
-        }
-        if (duration.isZero()) {
-            return wordBased(period, locale);
-        }
         ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
-        return wordBased(period, locale) + bundle.getString(WORDBASED_SPACE) + wordBased(duration, locale);
+        UnitFormat[] formats = {
+            UnitFormat.of(bundle, WORDBASED_YEAR),
+            UnitFormat.of(bundle, WORDBASED_MONTH),
+            UnitFormat.of(bundle, WORDBASED_WEEK),
+            UnitFormat.of(bundle, WORDBASED_DAY),
+            UnitFormat.of(bundle, WORDBASED_HOUR),
+            UnitFormat.of(bundle, WORDBASED_MINUTE),
+            UnitFormat.of(bundle, WORDBASED_SECOND),
+            UnitFormat.of(bundle, WORDBASED_MILLISECOND)};
+        WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
+        
+        Period normPeriod = period.normalized();
+        int weeks = 0, days = 0;
+        if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
+            weeks = normPeriod.getDays() / DAYS_PER_WEEK;
+        } else {
+            days = normPeriod.getDays();
+        }
+        long totalHours = duration.toHours();
+        days += (int) (totalHours / HOURS_PER_DAY);
+        int hours = (int) (totalHours % HOURS_PER_DAY);
+        int mins = (int) (duration.toMinutes() % MINUTES_PER_HOUR);
+        int secs = (int) (duration.getSeconds() % SECONDS_PER_MINUTE);
+        int millis = duration.getNano() / NANOS_PER_MILLIS;
+        int[] values = {
+            normPeriod.getYears(), normPeriod.getMonths(), weeks, days,
+            (int) hours, mins, secs, millis};
+        return wb.format(values);
     }
 
     private AmountFormats() {
@@ -300,17 +310,74 @@ public final class AmountFormats {
     }
 
     // data holder for single/plural formats
-    static final class UnitFormat {
+    static interface UnitFormat {
+        
+        static UnitFormat of(ResourceBundle bundle, String keyStem) {
+            if (bundle.containsKey(keyStem + "s.predicates")) {
+                String predicateList = bundle.getString(keyStem + "s.predicates");
+                String textList = bundle.getString(keyStem + "s.list");
+                String[] regexes = SPLITTER.split(predicateList);
+                String[] text = SPLITTER.split(textList);
+                return new PredicateFormat(regexes, text);
+            } else {
+                String single = bundle.getString(keyStem);
+                String plural = bundle.getString(keyStem + "s");
+                return new SinglePluralFormat(single, plural);
+            }
+        }
+        
+        void formatTo(int value, StringBuilder buf);
+    }
+
+    // data holder for single/plural formats
+    static final class SinglePluralFormat implements UnitFormat {
         private final String single;
         private final String plural;
 
-        public UnitFormat(String single, String plural) {
+        SinglePluralFormat(String single, String plural) {
             this.single = single;
             this.plural = plural;
         }
 
-        void formatTo(int value, StringBuilder buf) {
+        @Override
+        public void formatTo(int value, StringBuilder buf) {
             buf.append(value).append(value == 1 || value == -1 ? single : plural);
+        }
+    }
+
+    // data holder for predicate formats
+    static final class PredicateFormat implements UnitFormat {
+        private final IntPredicate[] predicates;
+        private final String[] text;
+
+        PredicateFormat(String[] predicateStrs, String[] text) {
+            if (predicateStrs.length + 1 != text.length) {
+                throw new IllegalStateException("Invalid word-based resource");
+            }
+            this.predicates = Stream.of(predicateStrs)
+                    .map(predicateStr -> findPredicate(predicateStr))
+                    .toArray(IntPredicate[]::new);
+            this.text = text;
+        }
+
+        private IntPredicate findPredicate(String predicateStr) {
+            switch (predicateStr) {
+                case "One": return PREDICATE_1;
+                case "End234NotTeens": return PREDICATE_END234_NOTTEENS;
+                default: throw new IllegalStateException("Invalid word-based resource");
+            }
+        }
+
+        @Override
+        public void formatTo(int value, StringBuilder buf) {
+            for (int i = 0; i < predicates.length; i++) {
+                if (predicates[i].test(value)) {
+                    buf.append(value).append(text[i]);
+                    return;
+                }
+            }
+            buf.append(value).append(text[predicates.length]);
+            return;
         }
     }
 
