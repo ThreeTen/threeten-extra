@@ -7,6 +7,14 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.5" date="SNAPSHOT" description="v1.5">
+      <action dev="monicagg" type="add">
+        Add word-based period formatting.
+        Note that textual data can only be altered by PRs to ThreeTen-Extra.
+        Based on original code from Joda-Time.
+        Fixes #113, #41.
+      </action>
+    </release>
     <release version="1.4" date="2018-08-20" description="v1.4">
       <action dev="jodastephen" type="fix">
         Enhance LocalDateRange.
