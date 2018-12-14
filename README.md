@@ -24,9 +24,18 @@ ThreeTen-Extra requires Java SE 8 or later and has no dependencies.
 
 Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.threeten%20AND%20a:threeten-extra&core=gav)
 
+![Tidelift dependency check](https://tidelift.com/badges/github/ThreeTen/threeten-extra)
+
 
 ### Support
-Please use GitHub [issues](https://github.com/ThreeTen/threeten-extra/issues) and Pull Requests for support.
+Please use [Stack Overflow](https://stackoverflow.com/search?q=threeten-extra) for general usage questions.
+GitHub [issues](https://github.com/ThreeTen/threeten-extra/issues) and [pull requests](https://github.com/ThreeTen/threeten-extra/pulls)
+should be used when you want to help advance the project.
+Commercial support is available via the
+[Tidelift subscription](https://tidelift.com/subscription/pkg/maven-org-threeten-threeten-extra?utm_source=maven-org-threeten-threeten-extra&utm_medium=referral&utm_campaign=readme).
+
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.
 
 
 ### Release process

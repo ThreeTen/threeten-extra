@@ -67,10 +67,11 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.threeten%20
 
 ### Support
 
-Support on bugs, library usage or enhancement requests is available on a best efforts basis.
+Please use [Stack Overflow](https://stackoverflow.com/search?q=threeten-extra) for general usage questions.
+GitHub [issues](https://github.com/ThreeTen/threeten-extra/issues) and [pull requests](https://github.com/ThreeTen/threeten-extra/pulls)
+should be used when you want to help advance the project.
+Commercial support is available via the
+[Tidelift subscription](https://tidelift.com/subscription/pkg/maven-org-threeten-threeten-extra?utm_source=maven-org-threeten-threeten-extra&utm_medium=referral&utm_campaign=website).
 
-To suggest enhancements or contribute, please [fork the source code](https://github.com/ThreeTen/threeten-extra)
-on GitHub and send a Pull Request.
-
-Alternatively, use GitHub [issues](https://github.com/ThreeTen/threeten-extra/issues).
-
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.

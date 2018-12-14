@@ -14,6 +14,9 @@
         Based on original code from Joda-Time.
         Fixes #113, #41.
       </action>
+      <action dev="jodastephen" type="add">
+        Add Tidelift commercial support and security policy.
+      </action>
     </release>
     <release version="1.4" date="2018-08-20" description="v1.4">
       <action dev="jodastephen" type="fix">
