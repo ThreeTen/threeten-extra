@@ -13,7 +13,7 @@ Various documentation is available:
 
 * The [home page](https://www.threeten.org/threeten-extra/)
 * The [user guide](https://www.threeten.org/threeten-extra/userguide.html)
-* The [Javadoc](https://www.threeten.org/threeten-extra/apidocs/index.html)
+* The [Javadoc](https://www.threeten.org/threeten-extra/apidocs/org.threeten.extra/module-summary.html)
 
 
 ### Releases

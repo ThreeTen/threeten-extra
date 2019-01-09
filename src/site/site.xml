@@ -68,7 +68,7 @@
     <menu name="Documentation">
       <item name="Home" href="index.html"/>
       <item name="User guide" href="userguide.html"/>
-      <item name="Javadoc" href="apidocs/index.html"/>
+      <item name="Javadoc" href="apidocs/org.threeten.extra/module-summary.html"/>
       <item name="License" href="licenses.html"/>
     </menu>
 

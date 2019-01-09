@@ -15,24 +15,24 @@ ThreeTen-Extra is licensed under the business-friendly [BSD 3-clause license](li
 
 The following features are included:
 
-* [`DayOfMonth`](apidocs/org/threeten/extra/DayOfMonth.html) - a day-of-month without month or year
-* [`DayOfYear`](apidocs/org/threeten/extra/DayOfYear.html) - a day-of-year without year
-* [`AmPm`](apidocs/org/threeten/extra/AmPm.html) - before or after midday
-* [`Quarter`](apidocs/org/threeten/extra/Quarter.html) - the four quarters, Q1, Q2, Q3 and Q4
-* [`YearQuarter`](apidocs/org/threeten/extra/YearQuarter.html) - combines a year and quarter, 2014-Q4
-* [`YearWeek`](apidocs/org/threeten/extra/YearWeek.html) - combines a week-based-year and a week, 2014-W06
-* [`Days`](apidocs/org/threeten/extra/Days.html),
-[`Weeks`](apidocs/org/threeten/extra/Weeks.html),
-[`Months`](apidocs/org/threeten/extra/Months.html) and
-[`Years`](apidocs/org/threeten/extra/Years.html) - amounts of time
-* [`Interval`](apidocs/org/threeten/extra/Interval.html) - an interval between two instants
-* [`PeriodDuration`](apidocs/org/threeten/extra/PeriodDuration.html) - combines `Period` and `Duration`
+* [`DayOfMonth`](apidocs/org.threeten.extra/org/threeten/extra/DayOfMonth.html) - a day-of-month without month or year
+* [`DayOfYear`](apidocs/org.threeten.extra/org/threeten/extra/DayOfYear.html) - a day-of-year without year
+* [`AmPm`](apidocs/org.threeten.extra/org/threeten/extra/AmPm.html) - before or after midday
+* [`Quarter`](apidocs/org.threeten.extra/org/threeten/extra/Quarter.html) - the four quarters, Q1, Q2, Q3 and Q4
+* [`YearQuarter`](apidocs/org.threeten.extra/org/threeten/extra/YearQuarter.html) - combines a year and quarter, 2014-Q4
+* [`YearWeek`](apidocs/org.threeten.extra/org/threeten/extra/YearWeek.html) - combines a week-based-year and a week, 2014-W06
+* [`Days`](apidocs/org.threeten.extra/org/threeten/extra/Days.html),
+[`Weeks`](apidocs/org.threeten.extra/org/threeten/extra/Weeks.html),
+[`Months`](apidocs/org.threeten.extra/org/threeten/extra/Months.html) and
+[`Years`](apidocs/org.threeten.extra/org/threeten/extra/Years.html) - amounts of time
+* [`Interval`](apidocs/org.threeten.extra/org/threeten/extra/Interval.html) - an interval between two instants
+* [`PeriodDuration`](apidocs/org.threeten.extra/org/threeten/extra/PeriodDuration.html) - combines `Period` and `Duration`
 * Weekend adjusters
-* [Coptic](apidocs/org/threeten/extra/chrono/CopticChronology.html) calendar system
-* [Ethiopic](apidocs/org/threeten/extra/chrono/EthiopicChronology.html) calendar system
-* [Julian](apidocs/org/threeten/extra/chrono/JulianChronology.html) calendar system
-* [Word-based](apidocs/org/threeten/extra/AmountFormats.html) period and duration formatting
-* Support for the TAI and UTC [time-scales](apidocs/org/threeten/extra/scale/package-summary.html)
+* [Coptic](apidocs/org.threeten.extra/org/threeten/extra/chrono/CopticChronology.html) calendar system
+* [Ethiopic](apidocs/org.threeten.extra/org/threeten/extra/chrono/EthiopicChronology.html) calendar system
+* [Julian](apidocs/org.threeten.extra/org/threeten/extra/chrono/JulianChronology.html) calendar system
+* [Word-based](apidocs/org.threeten.extra/org/threeten/extra/AmountFormats.html) period and duration formatting
+* Support for the TAI and UTC [time-scales](apidocs/org.threeten.extra/org/threeten/extra/scale/package-summary.html)
 
 
 ## <i></i> Documentation
@@ -40,7 +40,7 @@ The following features are included:
 Various documentation is available:
 
 * The helpful [user guide](userguide.html)
-* The [Javadoc](apidocs/index.html)
+* The [Javadoc](apidocs/org.threeten.extra/module-summary.html)
 * The [change notes](changes-report.html) for each release
 * The [GitHub](https://github.com/ThreeTen/threeten-extra) source repository
 
