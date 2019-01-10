@@ -622,6 +622,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
+              <skip>true</skip>
               <sourceFileExcludes>
                 <sourceFileExclude>module-info.java</sourceFileExclude>
               </sourceFileExcludes>
@@ -666,33 +667,6 @@
             <!-- setup defaults for compile and testCompile -->
             <configuration>
               <release>8</release>
-            </configuration>
-          </plugin>
-          <!-- Hack to extract dependencies for Javadoc plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-dependencies</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>copy-dependencies</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
-                  <overWriteReleases>true</overWriteReleases>
-                  <overWriteIfNewer>true</overWriteIfNewer>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <!-- Javadoc plugin v3.0.0 is broken, https://issues.apache.org/jira/browse/MJAVADOC-506 -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <additionalparam>--module-path ${project.build.directory}/dependencies</additionalparam>
             </configuration>
           </plugin>
         </plugins>
