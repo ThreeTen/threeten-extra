@@ -34,9 +34,7 @@ package org.threeten.extra;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.time.format.TextStyle;
 import java.time.temporal.*;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -417,6 +415,6 @@ public final class DayTime
 
     @Override
     public String toString() {
-        return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()) + " " + localTime.toString();
+        return dayOfWeek + "@" + localTime;
     }
 }
