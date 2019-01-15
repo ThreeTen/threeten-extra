@@ -45,6 +45,9 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * A range of local dates.
  * <p>
@@ -258,6 +261,7 @@ public final class LocalDateRange
      * @return the parsed range, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
+    @FromString
     public static LocalDateRange parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         for (int i = 0; i < text.length(); i++) {
@@ -761,6 +765,7 @@ public final class LocalDateRange
      * @return a string representation of this date, not null
      */
     @Override
+    @ToString
     public String toString() {
         return start.toString() + '/' + end.toString();
     }

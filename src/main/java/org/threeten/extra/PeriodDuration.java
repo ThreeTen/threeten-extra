@@ -59,6 +59,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * An amount of time in the ISO-8601 calendar system that combines a period and a duration.
  * <p>
@@ -268,6 +271,7 @@ public final class PeriodDuration
      * @return the parsed period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
+    @FromString
     public static PeriodDuration parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         String upper = text.toString().toUpperCase(Locale.ENGLISH);
@@ -656,6 +660,7 @@ public final class PeriodDuration
      * @return the period in ISO-8601 string format
      */
     @Override
+    @ToString
     public String toString() {
         if (period.isZero()) {
             return duration.toString();

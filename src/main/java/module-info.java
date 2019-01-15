@@ -39,6 +39,9 @@
  */
 module org.threeten.extra {
 
+    // only annotations are used, thus they are optional
+    requires static org.joda.convert;
+
     // export all packages
     exports org.threeten.extra;
     exports org.threeten.extra.chrono;

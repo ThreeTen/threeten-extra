@@ -48,6 +48,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * A week-based amount of time, such as '12 weeks'.
  * <p>
@@ -173,6 +176,7 @@ public final class Weeks
      * @return the parsed period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
+    @FromString
     public static Weeks parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
@@ -530,6 +534,7 @@ public final class Weeks
      * @return the number of weeks in ISO-8601 string format
      */
     @Override
+    @ToString
     public String toString() {
         return "P" + weeks + "W";
     }

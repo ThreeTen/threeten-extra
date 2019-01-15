@@ -72,6 +72,9 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * A year-quarter in the ISO-8601 calendar system, such as {@code 2007-Q2}.
  * <p>
@@ -251,6 +254,7 @@ public final class YearQuarter
      * @return the parsed year-quarter, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
+    @FromString
     public static YearQuarter parse(CharSequence text) {
         return parse(text, PARSER);
     }
@@ -1222,6 +1226,7 @@ public final class YearQuarter
      * @return a string representation of this year-quarter, not null
      */
     @Override
+    @ToString
     public String toString() {
         int absYear = Math.abs(year);
         StringBuilder buf = new StringBuilder(10);

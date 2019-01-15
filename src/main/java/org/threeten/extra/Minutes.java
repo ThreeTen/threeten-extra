@@ -48,6 +48,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * A minute-based amount of time, such as '8 minutes'.
  * <p>
@@ -211,6 +214,7 @@ public final class Minutes
      * @return the parsed period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
+    @FromString
     public static Minutes parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
@@ -590,6 +594,7 @@ public final class Minutes
      * @return the number of minutes in ISO-8601 string format
      */
     @Override
+    @ToString
     public String toString() {
         return "PT" + minutes + "M";
     }

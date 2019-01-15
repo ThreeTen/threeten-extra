@@ -15,6 +15,10 @@
         Fixes #113, #41.
       </action>
       <action dev="jodastephen" type="add">
+        Add Joda-Convert annotations.
+        The additional Joda-Convert dependency is optional (except that on Scala it is apparently mandatory).
+      </action>
+      <action dev="jodastephen" type="add">
         Add Tidelift commercial support and security policy.
       </action>
     </release>
