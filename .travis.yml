@@ -15,6 +15,8 @@ script:
   - mvn install site -e -B
   - if [[ $TRAVIS_TAG =~ ^website.*$ ]] && [ "$TRAVIS_JDK_VERSION" == "openjdk11" ]; then chmod +x ./.github/website.sh; .github/website.sh; fi
   - if [[ $TRAVIS_TAG =~ ^v.*$ ]] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk11" ]; then chmod +x ./.github/website.sh; .github/website.sh; fi
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 # secure keys for GITHUB_TOKEN
 env:
   global:
