@@ -191,20 +191,6 @@
           </archive>
         </configuration>
       </plugin>
-      <!-- Setup Javadoc jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Setup source jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -623,9 +609,6 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
               <skip>true</skip>
-              <sourceFileExcludes>
-                <sourceFileExclude>module-info.java</sourceFileExclude>
-              </sourceFileExcludes>
             </configuration>
           </plugin>
         </plugins>
@@ -639,6 +622,20 @@
       </activation>
       <build>
         <plugins>
+          <!-- Setup Javadoc jar, v3.0.1 of the plugin does not work with Java 8 -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
           <!-- Compile twice -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -671,19 +668,6 @@
           </plugin>
         </plugins>
       </build>
-      <reporting>
-        <plugins>
-          <!-- Javadoc plugin v3.0.0 is broken -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven-javadoc-plugin.version}</version>
-            <configuration>
-              <additionalparam>--module-path ${project.build.directory}/dependencies</additionalparam>
-            </configuration>
-          </plugin>
-        </plugins>
-      </reporting>
     </profile>
     <!-- Deployment profile, activated by -Doss.repo -->
     <profile>
