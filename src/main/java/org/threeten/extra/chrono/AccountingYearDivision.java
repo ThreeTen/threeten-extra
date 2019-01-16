@@ -200,7 +200,7 @@ public enum AccountingYearDivision {
      */
     int getMonthFromElapsedWeeks(int weeksElapsed, int leapWeekInMonth) {
         if (weeksElapsed < 0 || weeksElapsed >= (leapWeekInMonth == 0 ? 52 : 53)) {
-            throw new DateTimeException("Count of '" + elapsedWeeks + "' elapsed weeks not valid,"
+            throw new DateTimeException("Count of '" + elapsedWeeks.length + "' elapsed weeks not valid,"
                     + " should be in the range [0, " + (leapWeekInMonth == 0 ? 52 : 53) + ")");
         }
         leapWeekInMonth = (leapWeekInMonth == 0 ? 0 : monthsInYearRange.checkValidIntValue(leapWeekInMonth, ChronoField.MONTH_OF_YEAR));

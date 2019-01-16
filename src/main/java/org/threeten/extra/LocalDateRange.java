@@ -75,10 +75,6 @@ public final class LocalDateRange
         implements Serializable {
 
     /**
-     * A range over the whole time-line.
-     */
-    public static final LocalDateRange ALL = new LocalDateRange(LocalDate.MIN, LocalDate.MAX);
-    /**
      * The day after the MIN date.
      */
     private static final LocalDate MINP1 = LocalDate.MIN.plusDays(1);
@@ -86,6 +82,10 @@ public final class LocalDateRange
      * The day before the MAX date.
      */
     private static final LocalDate MAXM1 = LocalDate.MAX.minusDays(1);
+    /**
+     * A range over the whole time-line.
+     */
+    public static final LocalDateRange ALL = new LocalDateRange(LocalDate.MIN, LocalDate.MAX);
 
     /**
      * Serialization version.

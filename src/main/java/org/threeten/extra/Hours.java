@@ -190,7 +190,7 @@ public final class Hours
         Objects.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
-            int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
+            int negate = "-".equals(matcher.group(1)) ? -1 : 1;
             String daysStr = matcher.group(2);
             String hoursStr = matcher.group(3);
             if (daysStr != null || hoursStr != null) {
@@ -281,7 +281,7 @@ public final class Hours
      */
     @Override
     public List<TemporalUnit> getUnits() {
-        return Collections.singletonList(ChronoUnit.HOURS);
+        return Collections.singletonList(HOURS);
     }
 
     //-----------------------------------------------------------------------

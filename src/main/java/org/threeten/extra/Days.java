@@ -207,7 +207,7 @@ public final class Days
         Objects.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
-            int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
+            int negate = "-".equals(matcher.group(1)) ? -1 : 1;
             String weeksStr = matcher.group(2);
             String daysStr = matcher.group(3);
             if (weeksStr != null || daysStr != null) {
@@ -281,7 +281,7 @@ public final class Days
      */
     @Override
     public long get(TemporalUnit unit) {
-        if (unit == ChronoUnit.DAYS) {
+        if (unit == DAYS) {
             return days;
         }
         throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
