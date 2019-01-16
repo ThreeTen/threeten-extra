@@ -427,6 +427,13 @@
   <!-- ==================================================================== -->
   <dependencies>
     <dependency>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-convert</artifactId>
+      <version>2.2.0</version>
+      <scope>compile</scope>
+      <optional>true</optional><!-- mandatory in Scala -->
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>26.0-jre</version>
@@ -622,6 +629,33 @@
       </activation>
       <build>
         <plugins>
+          <!-- Hack to extract dependencies for Surefire and Javadoc plugin -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-dependencies</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteIfNewer>true</overWriteIfNewer>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Surefire plugin is broken, https://issues.apache.org/jira/browse/SUREFIRE-1501 -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <argLine>--add-modules org.joda.convert --module-path ${project.build.directory}/dependencies ${argLine}</argLine>
+            </configuration>
+          </plugin>
           <!-- Setup Javadoc jar, v3.0.1 of the plugin does not work with Java 8 -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -635,6 +669,9 @@
                 </goals>
               </execution>
             </executions>
+            <configuration>
+              <additionalparam>--module-path ${project.build.directory}/dependencies</additionalparam>
+            </configuration>
           </plugin>
           <!-- Compile twice -->
           <plugin>

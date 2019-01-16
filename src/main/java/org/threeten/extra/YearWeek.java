@@ -61,6 +61,9 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * A year-week in the ISO week date system such as {@code 2015-W13}
  * <p>
@@ -248,6 +251,7 @@ public final class YearWeek
      * @return the parsed year-week, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
+    @FromString
     public static YearWeek parse(CharSequence text) {
         return parse(text, PARSER);
     }
@@ -770,6 +774,7 @@ public final class YearWeek
      * @return a string representation of this year-week, not null
      */
     @Override
+    @ToString
     public String toString() {
         int absYear = Math.abs(year);
         StringBuilder buf = new StringBuilder(10);

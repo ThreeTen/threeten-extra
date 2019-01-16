@@ -43,6 +43,9 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * An immutable interval of time between two instants.
  * <p>
@@ -150,6 +153,7 @@ public final class Interval
      * @return the parsed interval, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
+    @FromString
     public static Interval parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         for (int i = 0; i < text.length(); i++) {
@@ -589,6 +593,7 @@ public final class Interval
      * @return a string representation of this instant, not null
      */
     @Override
+    @ToString
     public String toString() {
         return start.toString() + '/' + end.toString();
     }

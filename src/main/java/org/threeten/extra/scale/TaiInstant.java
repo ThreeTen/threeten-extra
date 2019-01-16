@@ -40,6 +40,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.
  * <p>
@@ -195,6 +198,7 @@ public final class TaiInstant
      * @return the parsed instant, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
+    @FromString
     public static TaiInstant parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         Matcher matcher = PARSER.matcher(text);
@@ -452,6 +456,7 @@ public final class TaiInstant
      * @return a representation of this instant, not null
      */
     @Override
+    @ToString
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append(seconds);

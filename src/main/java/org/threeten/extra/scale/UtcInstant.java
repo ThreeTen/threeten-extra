@@ -47,6 +47,9 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.JulianFields;
 import java.time.temporal.TemporalAccessor;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale
  * with leap seconds.
@@ -203,6 +206,7 @@ public final class UtcInstant
      * @throws DateTimeParseException if the text cannot be parsed
      * @throws DateTimeException if parsed text represents an invalid leap second
      */
+    @FromString
     public static UtcInstant parse(CharSequence text) {
         TemporalAccessor parsed = DateTimeFormatter.ISO_INSTANT.parse(text);
         long epochSecond = parsed.getLong(INSTANT_SECONDS);
@@ -461,6 +465,7 @@ public final class UtcInstant
      * @return a representation of this instant, not null
      */
     @Override
+    @ToString
     public String toString() {
         LocalDate date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay);  // TODO: capacity/import issues
         StringBuilder buf = new StringBuilder(30);

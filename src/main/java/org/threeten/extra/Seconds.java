@@ -48,6 +48,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * A second-based amount of time, such as '8 seconds'.
  * <p>
@@ -237,6 +240,7 @@ public final class Seconds
      * @return the parsed period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
+    @FromString
     public static Seconds parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
@@ -625,6 +629,7 @@ public final class Seconds
      * @return the number of seconds in ISO-8601 string format
      */
     @Override
+    @ToString
     public String toString() {
         return "PT" + seconds + "S";
     }
