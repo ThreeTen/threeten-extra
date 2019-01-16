@@ -42,8 +42,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
 import org.junit.Test;
@@ -235,6 +239,33 @@ public class TestMonths {
     @Test(expected = NullPointerException.class)
     public void test_parse_CharSequence_null() {
         Months.parse((CharSequence) null);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_between() {
+        assertEquals(Months.of(24), Months.between(LocalDate.of(2019, 1, 1), LocalDate.of(2021, 1, 1)));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_between_date_null() {
+        Months.between(LocalDate.now(), (Temporal) null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_between_null_date() {
+        Months.between((Temporal) null, LocalDate.now());
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_get() {
+        assertEquals(6, Months.of(6).get(ChronoUnit.MONTHS));
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_get_invalidType() {
+        Months.of(6).get(IsoFields.QUARTER_YEARS);
     }
 
     //-----------------------------------------------------------------------
@@ -453,6 +484,19 @@ public class TestMonths {
 
     //-----------------------------------------------------------------------
     @Test
+    public void test_addTo() {
+        assertEquals(LocalDate.of(2019, 1, 10), Months.of(0).addTo(LocalDate.of(2019, 1, 10)));
+        assertEquals(LocalDate.of(2019, 6, 10), Months.of(5).addTo(LocalDate.of(2019, 1, 10)));
+    }
+
+    @Test
+    public void test_subtractFrom() {
+        assertEquals(LocalDate.of(2019, 1, 10), Months.of(0).subtractFrom(LocalDate.of(2019, 1, 10)));
+        assertEquals(LocalDate.of(2018, 8, 10), Months.of(5).subtractFrom(LocalDate.of(2019, 1, 10)));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
     public void test_toPeriod() {
         for (int i = -20; i < 20; i++) {
             assertEquals(Period.ofMonths(i), Months.of(i).toPeriod());
@@ -494,7 +538,8 @@ public class TestMonths {
     @Test
     public void test_equals_otherClass() {
         Months test5 = Months.of(5);
-        assertEquals(false, test5.equals(""));
+        Object obj = "";
+        assertEquals(false, test5.equals(obj));
     }
 
     //-----------------------------------------------------------------------

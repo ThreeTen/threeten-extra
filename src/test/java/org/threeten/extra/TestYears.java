@@ -42,8 +42,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
 import org.junit.Test;
@@ -183,6 +187,33 @@ public class TestYears {
     @Test(expected = NullPointerException.class)
     public void test_parse_CharSequence_null() {
         Years.parse((CharSequence) null);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_between() {
+        assertEquals(Years.of(2), Years.between(LocalDate.of(2019, 1, 1), LocalDate.of(2021, 1, 1)));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_between_date_null() {
+        Years.between(LocalDate.now(), (Temporal) null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_between_null_date() {
+        Years.between((Temporal) null, LocalDate.now());
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_get() {
+        assertEquals(6, Years.of(6).get(ChronoUnit.YEARS));
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_get_invalidType() {
+        Years.of(6).get(IsoFields.QUARTER_YEARS);
     }
 
     //-----------------------------------------------------------------------
@@ -401,6 +432,19 @@ public class TestYears {
 
     //-----------------------------------------------------------------------
     @Test
+    public void test_addTo() {
+        assertEquals(LocalDate.of(2019, 1, 10), Years.of(0).addTo(LocalDate.of(2019, 1, 10)));
+        assertEquals(LocalDate.of(2024, 1, 10), Years.of(5).addTo(LocalDate.of(2019, 1, 10)));
+    }
+
+    @Test
+    public void test_subtractFrom() {
+        assertEquals(LocalDate.of(2019, 1, 10), Years.of(0).subtractFrom(LocalDate.of(2019, 1, 10)));
+        assertEquals(LocalDate.of(2014, 1, 10), Years.of(5).subtractFrom(LocalDate.of(2019, 1, 10)));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
     public void test_toPeriod() {
         for (int i = -20; i < 20; i++) {
             assertEquals(Period.ofYears(i), Years.of(i).toPeriod());
@@ -442,7 +486,8 @@ public class TestYears {
     @Test
     public void test_equals_otherClass() {
         Years test5 = Years.of(5);
-        assertEquals(false, test5.equals(""));
+        Object obj = "";
+        assertEquals(false, test5.equals(obj));
     }
 
     //-----------------------------------------------------------------------

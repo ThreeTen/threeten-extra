@@ -74,6 +74,7 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -93,13 +94,18 @@ import java.time.MonthDay;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
+import java.time.chrono.JapaneseDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 
 import org.junit.Test;
 
@@ -111,6 +117,57 @@ public class TestDayOfMonth {
     private static final int MAX_LENGTH = 31;
     private static final DayOfMonth TEST = DayOfMonth.of(12);
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
+
+    private static class TestingField implements TemporalField {
+
+        public static final TestingField INSTANCE = new TestingField();
+
+        @Override
+        public TemporalUnit getBaseUnit() {
+            return ChronoUnit.DAYS;
+        }
+
+        @Override
+        public TemporalUnit getRangeUnit() {
+            return ChronoUnit.MONTHS;
+        }
+
+        @Override
+        public ValueRange range() {
+            return ValueRange.of(1, 28, 31);
+        }
+
+        @Override
+        public boolean isDateBased() {
+            return true;
+        }
+
+        @Override
+        public boolean isTimeBased() {
+            return false;
+        }
+
+        @Override
+        public boolean isSupportedBy(TemporalAccessor temporal) {
+            return temporal.isSupported(DAY_OF_MONTH);
+        }
+
+        @Override
+        public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
+            return range();
+        }
+
+        @Override
+        public long getFrom(TemporalAccessor temporal) {
+            return temporal.getLong(DAY_OF_MONTH);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+            return (R) temporal.with(DAY_OF_MONTH, newValue);
+        }
+    }
 
     //-----------------------------------------------------------------------
     @Test
@@ -131,6 +188,31 @@ public class TestDayOfMonth {
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
             assertEquals(test, ois.readObject());
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // now()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_now() {
+        DayOfMonth test = DayOfMonth.now();
+        if (LocalDate.now().getDayOfMonth() != test.getValue()) {
+            test = DayOfMonth.now();
+        }
+        assertEquals(LocalDate.now().getDayOfMonth(), test.getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    // now(ZoneId)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_now_ZoneId() {
+        ZoneId zone = ZoneId.of("Asia/Tokyo");
+        DayOfMonth test = DayOfMonth.now(zone);
+        if (LocalDate.now(zone).getDayOfMonth() != test.getValue()) {
+            test = DayOfMonth.now(zone);
+        }
+        assertEquals(LocalDate.now(zone).getDayOfMonth(), test.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -228,6 +310,18 @@ public class TestDayOfMonth {
         }
     }
 
+    @Test
+    public void test_from_TemporalAccessor_DayOfMonth() {
+        DayOfMonth dom = DayOfMonth.of(6);
+        assertEquals(dom, DayOfMonth.from(dom));
+    }
+
+    @Test
+    public void test_from_TemporalAccessor_nonIso() {
+        LocalDate date = LocalDate.now();
+        assertEquals(date.getDayOfMonth(), DayOfMonth.from(JapaneseDate.from(date)).getValue());
+    }
+
     @Test(expected = DateTimeException.class)
     public void test_from_TemporalAccessor_noDerive() {
         DayOfMonth.from(LocalTime.NOON);
@@ -280,6 +374,8 @@ public class TestDayOfMonth {
         assertEquals(false, TEST.isSupported(ERA));
         assertEquals(false, TEST.isSupported(INSTANT_SECONDS));
         assertEquals(false, TEST.isSupported(OFFSET_SECONDS));
+        assertEquals(false, TEST.isSupported(IsoFields.DAY_OF_QUARTER));
+        assertEquals(true, TEST.isSupported(TestingField.INSTANCE));
     }
 
     //-----------------------------------------------------------------------
@@ -326,9 +422,19 @@ public class TestDayOfMonth {
         assertEquals(12L, TEST.getLong(DAY_OF_MONTH));
     }
 
+    @Test
+    public void test_getLong_derivedField() {
+        assertEquals(12L, TEST.getLong(TestingField.INSTANCE));
+    }
+
     @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_getLong_invalidField() {
         TEST.getLong(MONTH_OF_YEAR);
+    }
+
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_getLong_invalidField2() {
+        TEST.getLong(IsoFields.DAY_OF_QUARTER);
     }
 
     @Test(expected = NullPointerException.class)
@@ -408,6 +514,11 @@ public class TestDayOfMonth {
         assertEquals(true, test.isValidYearMonth(YearMonth.of(2012, 12)));
     }
 
+    @Test
+    public void test_isValidYearMonth_null() {
+        assertFalse(TEST.isValidYearMonth((YearMonth) null));
+    }
+
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
@@ -448,6 +559,11 @@ public class TestDayOfMonth {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);
         test.adjustInto(base);
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_adjustInto_nonIso() {
+        TEST.adjustInto(JapaneseDate.now());
     }
 
     @Test(expected = NullPointerException.class)
@@ -642,7 +758,8 @@ public class TestDayOfMonth {
     @Test
     public void test_equals_incorrectType() {
         DayOfMonth test = DayOfMonth.of(1);
-        assertEquals(false, test.equals("Incorrect type"));
+        Object obj = "Incorrect type";
+        assertEquals(false, test.equals(obj));
     }
 
     //-----------------------------------------------------------------------

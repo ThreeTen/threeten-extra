@@ -78,13 +78,18 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
+import java.time.chrono.JapaneseDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 
 import org.junit.Test;
 
@@ -99,6 +104,57 @@ public class TestDayOfYear {
     private static final int LEAP_YEAR_LENGTH = 366;
     private static final DayOfYear TEST = DayOfYear.of(12);
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
+
+    private static class TestingField implements TemporalField {
+
+        public static final TestingField INSTANCE = new TestingField();
+
+        @Override
+        public TemporalUnit getBaseUnit() {
+            return ChronoUnit.DAYS;
+        }
+
+        @Override
+        public TemporalUnit getRangeUnit() {
+            return ChronoUnit.YEARS;
+        }
+
+        @Override
+        public ValueRange range() {
+            return ValueRange.of(1, 365, 366);
+        }
+
+        @Override
+        public boolean isDateBased() {
+            return true;
+        }
+
+        @Override
+        public boolean isTimeBased() {
+            return false;
+        }
+
+        @Override
+        public boolean isSupportedBy(TemporalAccessor temporal) {
+            return temporal.isSupported(DAY_OF_YEAR);
+        }
+
+        @Override
+        public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
+            return range();
+        }
+
+        @Override
+        public long getFrom(TemporalAccessor temporal) {
+            return temporal.getLong(DAY_OF_YEAR);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+            return (R) temporal.with(DAY_OF_YEAR, newValue);
+        }
+    }
 
     //-----------------------------------------------------------------------
     @Test
@@ -119,6 +175,31 @@ public class TestDayOfYear {
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
             assertEquals(test, ois.readObject());
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // now()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_now() {
+        DayOfYear test = DayOfYear.now();
+        if (LocalDate.now().getDayOfYear() != test.getValue()) {
+            test = DayOfYear.now();
+        }
+        assertEquals(LocalDate.now().getDayOfYear(), test.getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    // now(ZoneId)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_now_ZoneId() {
+        ZoneId zone = ZoneId.of("Asia/Tokyo");
+        DayOfYear test = DayOfYear.now(zone);
+        if (LocalDate.now(zone).getDayOfYear() != test.getValue()) {
+            test = DayOfYear.now(zone);
+        }
+        assertEquals(LocalDate.now(zone).getDayOfYear(), test.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -166,6 +247,18 @@ public class TestDayOfYear {
             assertEquals(i, test.getValue());
             date = date.plusDays(1);
         }
+    }
+
+    @Test
+    public void test_from_TemporalAccessor_DayOfYear() {
+        DayOfYear dom = DayOfYear.of(6);
+        assertEquals(dom, DayOfYear.from(dom));
+    }
+
+    @Test
+    public void test_from_TemporalAccessor_nonIso() {
+        LocalDate date = LocalDate.now();
+        assertEquals(date.getDayOfYear(), DayOfYear.from(JapaneseDate.from(date)).getValue());
     }
 
     @Test(expected = DateTimeException.class)
@@ -220,6 +313,7 @@ public class TestDayOfYear {
         assertEquals(false, TEST.isSupported(ERA));
         assertEquals(false, TEST.isSupported(INSTANT_SECONDS));
         assertEquals(false, TEST.isSupported(OFFSET_SECONDS));
+        assertEquals(true, TEST.isSupported(TestingField.INSTANCE));
     }
 
     //-----------------------------------------------------------------------
@@ -266,9 +360,19 @@ public class TestDayOfYear {
         assertEquals(12L, TEST.getLong(DAY_OF_YEAR));
     }
 
+    @Test
+    public void test_getLong_derivedField() {
+        assertEquals(12L, TEST.getLong(TestingField.INSTANCE));
+    }
+
     @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_getLong_invalidField() {
         TEST.getLong(MONTH_OF_YEAR);
+    }
+
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_getLong_invalidField2() {
+        TEST.getLong(IsoFields.DAY_OF_QUARTER);
     }
 
     @Test(expected = NullPointerException.class)
@@ -280,7 +384,7 @@ public class TestDayOfYear {
     // isValidYear(int)
     //-----------------------------------------------------------------------
     @Test
-    public void test_isValidYearMonth_366() {
+    public void test_isValidYear_366() {
         DayOfYear test = DayOfYear.of(366);
         assertEquals(false, test.isValidYear(2011));
         assertEquals(true, test.isValidYear(2012));
@@ -288,7 +392,7 @@ public class TestDayOfYear {
     }
 
     @Test
-    public void test_isValidYearMonth_365() {
+    public void test_isValidYear_365() {
         DayOfYear test = DayOfYear.of(365);
         assertEquals(true, test.isValidYear(2011));
         assertEquals(true, test.isValidYear(2012));
@@ -368,6 +472,11 @@ public class TestDayOfYear {
             assertEquals(expected, test.adjustInto(base));
             expected = expected.plusDays(1);
         }
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_adjustInto_nonIso() {
+        TEST.adjustInto(JapaneseDate.now());
     }
 
     @Test(expected = NullPointerException.class)
@@ -498,7 +607,8 @@ public class TestDayOfYear {
     @Test
     public void test_equals_incorrectType() {
         DayOfYear test = DayOfYear.of(1);
-        assertEquals(false, test.equals("Incorrect type"));
+        Object obj = "Incorrect type";
+        assertEquals(false, test.equals(obj));
     }
 
     //-----------------------------------------------------------------------

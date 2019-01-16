@@ -215,7 +215,7 @@ public final class Minutes
         Objects.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
-            int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
+            int negate = "-".equals(matcher.group(1)) ? -1 : 1;
             String daysStr = matcher.group(2);
             String hoursStr = matcher.group(3);
             String minutesStr = matcher.group(4);
