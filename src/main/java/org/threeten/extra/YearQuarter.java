@@ -1089,7 +1089,7 @@ public final class YearQuarter
 
     /**
      * Returns a sequential ordered stream of year-quarter. The returned stream starts from this year-quarter
-     * (inclusive) and goes to {@code endExclusive} (exclusive) by an incremental step of 1  {@code QUARTER_YEARS}.
+     * (inclusive) and goes to {@code endExclusive} (exclusive) by an incremental step of 1 {@code QUARTER_YEARS}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      * 
@@ -1098,13 +1098,13 @@ public final class YearQuarter
      * @throws IllegalArgumentException if end year-quarter is before this year-quarter
      */
     public Stream<YearQuarter> quartersUntil(YearQuarter endExclusive) {
-    	if (endExclusive.isBefore(this)) {
-    		throw new IllegalArgumentException(endExclusive + " < " + this);
-    	}
-    	long intervalLength = until(endExclusive, QUARTER_YEARS);
-    	return LongStream.range(0,intervalLength).mapToObj(n -> plusQuarters(n));
+        if (endExclusive.isBefore(this)) {
+            throw new IllegalArgumentException(endExclusive + " < " + this);
+        }
+        long intervalLength = until(endExclusive, QUARTER_YEARS);
+        return LongStream.range(0,intervalLength).mapToObj(n -> plusQuarters(n));
     }
-    
+
     /**
      * Formats this year-quarter using the specified formatter.
      * <p>

@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.5" date="SNAPSHOT" description="v1.5">
+      <action dev="monicagg" type="add">
+        Add stream-returning method YearQuarter.quartersUntil(YearQuarter).
+        Fixes #122.
+      </action>
       <action dev="ofornes" type="add">
         Add Catalan translation.
         Fixes #123.
