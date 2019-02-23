@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.5" date="SNAPSHOT" description="v1.5">
+      <action dev="ofornes" type="add">
+        Add Catalan translation.
+        Fixes #123.
+      </action>
       <action dev="monicagg" type="add">
         Add word-based period formatting.
         Note that textual data can only be altered by PRs to ThreeTen-Extra.
