@@ -71,6 +71,8 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
@@ -1085,6 +1087,24 @@ public final class YearQuarter
         return unit.between(this, end);
     }
 
+    /**
+     * Returns a sequential ordered stream of year-quarter. The returned stream starts from this year-quarter
+     * (inclusive) and goes to {@code endExclusive} (exclusive) by an incremental step of 1  {@code QUARTER_YEARS}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     * 
+     * @param endExclusive  the end year-quarter, exclusive, not null
+     * @return a sequential {@code Stream} for the range of {@code YearQuarter} values
+     * @throws IllegalArgumentException if end year-quarter is before this year-quarter
+     */
+    public Stream<YearQuarter> quartersUntil(YearQuarter endExclusive) {
+    	if (endExclusive.isBefore(this)) {
+    		throw new IllegalArgumentException(endExclusive + " < " + this);
+    	}
+    	long intervalLength = until(endExclusive, QUARTER_YEARS);
+    	return LongStream.range(0,intervalLength).mapToObj(n -> plusQuarters(n));
+    }
+    
     /**
      * Formats this year-quarter using the specified formatter.
      * <p>

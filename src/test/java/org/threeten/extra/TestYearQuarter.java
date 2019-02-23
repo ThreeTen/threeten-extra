@@ -106,6 +106,10 @@ import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -738,6 +742,37 @@ public class TestYearQuarter {
         YearQuarter.of(2012, Q2).until(YearQuarter.of(2012, Q3), null);
     }
 
+    //-----------------------------------------------------------------------
+    // quartersUntil(YearQuarter)
+    //-----------------------------------------------------------------------
+    @Test(expected = NullPointerException.class)
+    public void test_quartersUntil_null() {
+        YearQuarter.of(2012, Q2).quartersUntil(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void test_quartersUntil_IllegalArgument() {
+        YearQuarter.of(2012, Q2).quartersUntil(YearQuarter.of(2012, Q1));
+    }
+    
+    @Test
+    public void test_quartersUntil() {
+    	assertEquals(2, YearQuarter.of(2012, Q2).quartersUntil(YearQuarter.of(2012, Q4)).count());
+    	assertEquals(10, YearQuarter.of(2012, Q2).quartersUntil(YearQuarter.of(2014, Q4)).count());
+    	
+    	YearQuarter start = YearQuarter.of(2012, Q1);
+    	YearQuarter end = YearQuarter.of(2013, Q3);
+    	Stream<YearQuarter> stream = start.quartersUntil(end);
+    	
+    	List<YearQuarter> expects = Arrays.asList(YearQuarter.of(start.getYear(), Q1),
+    									YearQuarter.of(start.getYear(), Q2),
+    									YearQuarter.of(start.getYear(), Q3),
+    									YearQuarter.of(start.getYear(), Q4),
+    									YearQuarter.of(end.getYear(), Q1),
+    									YearQuarter.of(end.getYear(), Q2));
+    	assertEquals(expects, stream.collect(Collectors.toList()));
+    }
+        
     //-----------------------------------------------------------------------
     // format(DateTimeFormatter)
     //-----------------------------------------------------------------------
