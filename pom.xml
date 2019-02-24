@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!-- ==================================================================== -->
-  <!-- Build requires Java SE 11 -->
-  <!-- Releases require Java SE 11 -->
+  <!-- Build requires Java SE 9 -->
+  <!-- Releases require Java SE 9 -->
   <!-- Resulting jar file is compatible with Java 8 -->
   <!-- ==================================================================== -->
   <modelVersion>4.0.0</modelVersion>
@@ -120,7 +120,7 @@
     </resources>
     <!-- define build -->
     <plugins>
-      <!-- Enforce Maven 3.5.0 and Java 11 -->
+      <!-- Enforce Maven 3.3.9 and Java 9 (3.3.9 is version supported by Apache NetBeans) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -132,10 +132,10 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.5.0</version>
+                  <version>3.3.9</version>
               </requireMavenVersion>
               <requireJavaVersion>
-                <version>[11,)</version>
+                <version>[9,)</version>
               </requireJavaVersion>
               </rules>
             </configuration>
@@ -151,36 +151,6 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
-      <!-- Compile twice -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <!-- compile first with module-info for Java 9 -->
-          <execution>
-            <id>default-compile</id>
-            <configuration>
-              <release>9</release>
-            </configuration>
-          </execution>
-          <!-- then compile without module-info for Java 8 -->
-          <execution>
-            <id>base-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-        <!-- setup defaults for compile and testCompile -->
-        <configuration>
-          <release>8</release>
-        </configuration>
       </plugin>
       <!-- Hack to extract dependencies for Surefire and Javadoc plugin -->
       <plugin>
@@ -681,6 +651,33 @@
       </activation>
       <build>
         <plugins>
+          <!-- Compile twice -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <!-- compile first with module-info for Java 9 -->
+              <execution>
+                <id>default-compile</id>
+                <configuration>
+                  <release>9</release>
+                </configuration>
+              </execution>
+              <!-- then compile without module-info for Java 8 -->
+              <execution>
+                <id>base-compile</id>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <exclude>module-info.java</exclude>
+                  </excludes>
+                  <release>8</release>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <!-- Sign artifacts -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -771,9 +768,7 @@
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.release>9</maven.compiler.release>
     <maven.compiler.fork>true</maven.compiler.fork>
     <!-- Properties for maven-javadoc-plugin -->
     <author>false</author>
