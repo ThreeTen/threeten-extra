@@ -2,8 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!-- ==================================================================== -->
-  <!-- Build requires Java SE 8 or later -->
-  <!-- Releases require Java SE 9 or later -->
+  <!-- Build requires Java SE 9 -->
+  <!-- Releases require Java SE 9 -->
+  <!-- Resulting jar file is compatible with Java 8 -->
   <!-- ==================================================================== -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.threeten</groupId>
@@ -123,6 +124,28 @@
     </resources>
     <!-- define build -->
     <plugins>
+      <!-- Enforce Maven 3.3.9 and Java 9 (3.3.9 is version supported by Apache NetBeans) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.3.9</version>
+              </requireMavenVersion>
+              <requireJavaVersion>
+                <version>[9,)</version>
+              </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Turn on Checkstyle -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -133,22 +156,45 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
-      <!-- Enforce Maven 3.5.0 -->
+      <!-- Hack to extract dependencies for Surefire and Javadoc plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>enforce-maven</id>
+            <id>copy-dependencies</id>
+            <phase>compile</phase>
             <goals>
-              <goal>enforce</goal>
+              <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>3.5.0</version>
-                </requireMavenVersion>
-              </rules>
+              <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Surefire plugin is broken, https://issues.apache.org/jira/browse/SUREFIRE-1501 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <configuration>
+              <useModulePath>true</useModulePath>
+              <argLine>--add-modules org.joda.convert --module-path ${project.build.directory}/dependencies ${argLine}</argLine>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-without-modules</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <useModulePath>false</useModulePath>
             </configuration>
           </execution>
         </executions>
@@ -208,6 +254,23 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <!-- Setup Javadoc jar, v3.0.1 of the plugin does not work with Java 8 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <additionalparam>--module-path ${project.build.directory}/dependencies</additionalparam>
+        </configuration>
       </plugin>
     </plugins>
     <!-- Manage plugin versions -->
@@ -582,134 +645,6 @@
 
   <!-- ==================================================================== -->
   <profiles>
-    <!-- Skip module-info.java on Java 8 -->
-    <profile>
-      <id>java8</id>
-      <activation>
-        <jdk>[1.6,9)</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <!-- Don't compile module-info.java, see java 9 profile -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-            </configuration>
-          </plugin>
-          <!-- Avoid errors from module-info -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <sourceFileExcludes>
-                <sourceFileExclude>module-info.java</sourceFileExclude>
-              </sourceFileExcludes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <reporting>
-        <plugins>
-          <!-- Avoid errors from module-info -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </plugin>
-        </plugins>
-      </reporting>
-    </profile>
-    <!-- Setup for Java 9 -->
-    <profile>
-      <id>java9plus</id>
-      <activation>
-        <jdk>[9,)</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <!-- Hack to extract dependencies for Surefire and Javadoc plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-dependencies</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>copy-dependencies</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
-                  <overWriteReleases>true</overWriteReleases>
-                  <overWriteIfNewer>true</overWriteIfNewer>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <!-- Surefire plugin is broken, https://issues.apache.org/jira/browse/SUREFIRE-1501 -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <argLine>--add-modules org.joda.convert --module-path ${project.build.directory}/dependencies ${argLine}</argLine>
-            </configuration>
-          </plugin>
-          <!-- Setup Javadoc jar, v3.0.1 of the plugin does not work with Java 8 -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <additionalparam>--module-path ${project.build.directory}/dependencies</additionalparam>
-            </configuration>
-          </plugin>
-          <!-- Compile twice -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <executions>
-              <!-- compile first with module-info for Java 9 -->
-              <execution>
-                <id>default-compile</id>
-                <configuration>
-                  <release>9</release>
-                </configuration>
-              </execution>
-              <!-- then compile without module-info for Java 6 -->
-              <execution>
-                <id>base-compile</id>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <excludes>
-                    <exclude>module-info.java</exclude>
-                  </excludes>
-                </configuration>
-              </execution>
-            </executions>
-            <!-- setup defaults for compile and testCompile -->
-            <configuration>
-              <release>8</release>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <!-- Deployment profile, activated by -Doss.repo -->
     <profile>
       <id>release-artifacts</id>
@@ -720,22 +655,22 @@
       </activation>
       <build>
         <plugins>
-          <!-- Enforce release is on Java 9 or later -->
+          <!-- Compile twice -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
+            <artifactId>maven-compiler-plugin</artifactId>
             <executions>
+              <!-- recompile without module-info for Java 8 -->
               <execution>
-                <id>enforce-java</id>
+                <id>base-compile</id>
                 <goals>
-                  <goal>enforce</goal>
+                  <goal>compile</goal>
                 </goals>
                 <configuration>
-                  <rules>
-                    <requireJavaVersion>
-                      <version>[9,)</version>
-                    </requireJavaVersion>
-                  </rules>
+                  <excludes>
+                    <exclude>module-info.java</exclude>
+                  </excludes>
+                  <release>8</release>
                 </configuration>
               </execution>
             </executions>
@@ -799,47 +734,45 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Plugin version numbers -->
-    <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+    <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>4.1.0</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <!-- v3.0.0 does not work with Eclipse -->
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+    <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
     <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
     <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
+    <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
-    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
-    <maven-plugin-plugin.version>3.5.2</maven-plugin-plugin.version>
-    <maven-pmd-plugin.version>3.10.0</maven-pmd-plugin.version>
+    <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
+    <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
+    <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.0.0-M3</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
     <bndlib.version>4.1.0</bndlib.version>
-    <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-    <spotbugs-maven-plugin.version>3.1.9</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.release>9</maven.compiler.release>
     <maven.compiler.fork>true</maven.compiler.fork>
     <!-- Properties for maven-javadoc-plugin -->
     <author>false</author>
     <notimestamp>true</notimestamp>
     <doclint>none</doclint>
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>8.12</checkstyle.version>
+    <checkstyle.version>8.17</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
     <!-- Other properties -->
