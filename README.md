@@ -17,7 +17,7 @@ Various documentation is available:
 
 
 ### Releases
-Release 1.4 is the current release.
+Release 1.5.0 is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
 ThreeTen-Extra requires Java SE 8 or later and has no dependencies.

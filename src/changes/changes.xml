@@ -7,20 +7,20 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.5" date="SNAPSHOT" description="v1.5">
+    <release version="1.5.0" date="2019-02-24" description="v1.5.0">
       <action dev="monicagg" type="add">
         Add stream-returning method YearQuarter.quartersUntil(YearQuarter).
         Fixes #122.
-      </action>
-      <action dev="ofornes" type="add">
-        Add Catalan translation.
-        Fixes #123.
       </action>
       <action dev="monicagg" type="add">
         Add word-based period formatting.
         Note that textual data can only be altered by PRs to ThreeTen-Extra.
         Based on original code from Joda-Time.
         Fixes #113, #41.
+      </action>
+      <action dev="ofornes" type="add">
+        Add Catalan translation for word-based formatting.
+        Fixes #123.
       </action>
       <action dev="jodastephen" type="add">
         Add Joda-Convert annotations.
