@@ -7,6 +7,12 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.5.1" date="SNAPSHOT" description="v1.5.1">
+      <action dev="ofornes" type="add">
+        Add Norwegian Bokmål and Norwegian Nynorsk translations for word-based formatting.
+        Fixes #125.
+      </action>
+    </release>
     <release version="1.5.0" date="2019-02-24" description="v1.5.0">
       <action dev="monicagg" type="add">
         Add stream-returning method YearQuarter.quartersUntil(YearQuarter).
