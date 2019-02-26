@@ -8,6 +8,22 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.5.1" date="SNAPSHOT" description="v1.5.1">
+      <action dev="MichelSchudel" type="add">
+        Add Farsi translations for word-based formatting.
+        Fixes #131.
+      </action>
+      <action dev="dimovelev" type="add">
+        Add Bulgarian translations for word-based formatting.
+        Fixes #129.
+      </action>
+      <action dev="slovdahl" type="add">
+        Add Finnish translations for word-based formatting.
+        Fixes #127.
+      </action>
+      <action dev="slovdahl" type="add">
+        Add Swedish translations for word-based formatting.
+        Fixes #126.
+      </action>
       <action dev="ofornes" type="add">
         Add Norwegian Bokmål and Norwegian Nynorsk translations for word-based formatting.
         Fixes #125.

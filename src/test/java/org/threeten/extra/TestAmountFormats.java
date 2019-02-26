@@ -37,12 +37,12 @@ import java.time.Duration;
 import java.time.Period;
 import java.util.Locale;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Test AmountFormats.
@@ -126,10 +126,10 @@ public class TestAmountFormats {
             {Duration.ofNanos(1000_000_000 + 2_000_000), new Locale("ro"), "1 secundă și 2 milisecunde"},
 
             {Duration.ofHours(5).plusMinutes(6).plusSeconds(7).plusNanos(8_000_000L), PL,
-                "5 godzin, 6 minut, 7 sekund i 8 milisekund"}, 
-                
-            {Duration.ofMinutes(60 + 1), new Locale("fa"), "1 \u0633\u0627\u0639\u062A \u0648 1 \u062f\u0642\u06cc\u0642\u0647"}
+                "5 godzin, 6 minut, 7 sekund i 8 milisekund"},
 
+            {Duration.ofMinutes(60 + 1), new Locale("fa"),
+                "1 \u0633\u0627\u0639\u062A \u0648 1 \u062f\u0642\u06cc\u0642\u0647"}
         };
     }
 
