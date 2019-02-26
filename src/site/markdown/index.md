@@ -40,6 +40,7 @@ The following features are included:
 Various documentation is available:
 
 * The helpful [user guide](userguide.html)
+* The list of [related projects](related.html)
 * The [Javadoc](apidocs/org.threeten.extra/module-summary.html)
 * The [change notes](changes-report.html) for each release
 * The [GitHub](https://github.com/ThreeTen/threeten-extra) source repository
