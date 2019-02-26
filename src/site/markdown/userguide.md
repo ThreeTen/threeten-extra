@@ -34,7 +34,7 @@ A simple mechanism is provided here in [`AmountFormats`](apidocs/org.threeten.ex
  // output: "1 year, 6 months and 5 days"
 ```
 
-Translations are provided for ca, cs, da, de, en, es, fr, it, ja, nl, pl, pt, ro, ru, tr.
+Translations are provided for ca, cs, da, de, en, es, fr, it, ja, nl, pl, pt, ro, ru, sv, tr.
 Feel free to raise PRs for other languages.
 
 
