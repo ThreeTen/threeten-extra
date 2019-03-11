@@ -37,13 +37,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjuster;
-import java.util.Comparator;
 import java.util.Objects;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.Consumer;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
@@ -601,37 +597,9 @@ public final class LocalDateRange
      * @return the stream of dates from the start to the end
      */
     public Stream<LocalDate> stream() {
-        long count = end.toEpochDay() - start.toEpochDay() + (isUnboundedEnd() ? 1 : 0);
-        Spliterator<LocalDate> spliterator = new Spliterators.AbstractSpliterator<LocalDate>(
-                count,
-                Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT | Spliterator.ORDERED |
-                        Spliterator.SORTED | Spliterator.SIZED | Spliterator.SUBSIZED) {
-
-            private LocalDate current = start;
-            
-            @Override
-            public boolean tryAdvance(Consumer<? super LocalDate> action) {
-                if (current != null) {
-                    if (current.isBefore(end)) {
-                        action.accept(current);
-                        current = current.plusDays(1);
-                        return true;
-                    }
-                    if (current.equals(LocalDate.MAX)) {
-                        action.accept(LocalDate.MAX);
-                        current = null;
-                        return true;
-                    }
-                }
-                return false;
-            }
-            
-            @Override
-            public Comparator<? super LocalDate> getComparator() {
-                return null;
-            }
-        };
-        return StreamSupport.stream(spliterator, false);
+        long startInclusive = getStart().toEpochDay();
+        long endInclusive = getEndInclusive().toEpochDay();
+        return LongStream.rangeClosed(startInclusive, endInclusive).mapToObj(LocalDate::ofEpochDay);
     }
 
     //-----------------------------------------------------------------------
