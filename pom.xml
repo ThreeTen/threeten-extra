@@ -871,7 +871,7 @@
     <notimestamp>true</notimestamp>
     <doclint>none</doclint>
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>8.17</checkstyle.version>
+    <checkstyle.version>8.18</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
     <!-- Other properties -->
