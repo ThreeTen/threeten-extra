@@ -313,13 +313,13 @@ public final class Weeks
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount to add, not null
+     * @param amountToSubtract  the amount to subtract, not null
      * @return a {@code Weeks} based on this instance with the requested amount subtracted, not null
      * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Weeks minus(TemporalAmount amountToAdd) {
-        return minus(Weeks.from(amountToAdd).getAmount());
+    public Weeks minus(TemporalAmount amountToSubtract) {
+        return minus(Weeks.from(amountToSubtract).getAmount());
     }
 
     /**

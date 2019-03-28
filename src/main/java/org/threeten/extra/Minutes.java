@@ -373,13 +373,13 @@ public final class Minutes
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount to add, not null
+     * @param amountToSubtract  the amount to subtract, not null
      * @return a {@code Minutes} based on this instance with the requested amount subtracted, not null
      * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Minutes minus(TemporalAmount amountToAdd) {
-        return minus(Minutes.from(amountToAdd).getAmount());
+    public Minutes minus(TemporalAmount amountToSubtract) {
+        return minus(Minutes.from(amountToSubtract).getAmount());
     }
 
     /**
