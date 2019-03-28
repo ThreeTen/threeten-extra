@@ -339,13 +339,13 @@ public final class Hours
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount to add, not null
+     * @param amountToSubtract  the amount to subtract, not null
      * @return a {@code Hours} based on this instance with the requested amount subtracted, not null
      * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Hours minus(TemporalAmount amountToAdd) {
-        return minus(Hours.from(amountToAdd).getAmount());
+    public Hours minus(TemporalAmount amountToSubtract) {
+        return minus(Hours.from(amountToSubtract).getAmount());
     }
 
     /**

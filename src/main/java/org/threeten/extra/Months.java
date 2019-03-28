@@ -357,13 +357,13 @@ public final class Months
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount to add, not null
+     * @param amountToSubtract  the amount to subtract, not null
      * @return a {@code Months} based on this instance with the requested amount subtracted, not null
      * @throws DateTimeException if the specified amount contains an invalid unit
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Months minus(TemporalAmount amountToAdd) {
-        return minus(Months.from(amountToAdd).getAmount());
+    public Months minus(TemporalAmount amountToSubtract) {
+        return minus(Months.from(amountToSubtract).getAmount());
     }
 
     /**
