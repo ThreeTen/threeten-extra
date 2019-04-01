@@ -29,41 +29,42 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp;
+package org.threeten.extra;
 
-import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
-import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.OFFSET_SECONDS;
+import static java.time.temporal.ChronoUnit.DAYS;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.InvalidObjectException;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.time.Clock;
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
+import java.time.temporal.TemporalUnit;
+import java.time.temporal.ValueRange;
+import java.time.zone.ZoneRules;
 import java.util.Objects;
-
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
-import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
-import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.ISOChrono;
-import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
-import org.threeten.bp.temporal.TemporalAdjuster;
-import org.threeten.bp.temporal.TemporalAdjusters;
-import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalQueries;
-import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
-import org.threeten.bp.temporal.TemporalUnit;
-import org.threeten.bp.temporal.ValueRange;
-import org.threeten.bp.zone.ZoneRules;
 
 /**
  * A date with an offset from UTC/Greenwich in the ISO-8601 calendar system,
@@ -81,7 +82,6 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class OffsetDate
-        extends DefaultInterfaceTemporalAccessor
         implements Temporal, TemporalAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
@@ -91,7 +91,7 @@ public final class OffsetDate
      * This combines {@link LocalDate#MIN} and {@link ZoneOffset#MAX}.
      * This could be used by an application as a "far past" date.
      */
-    public static final OffsetDate MIN = LocalDate.MIN.atOffset(ZoneOffset.MAX);
+    public static final OffsetDate MIN = new OffsetDate(LocalDate.MIN, ZoneOffset.MAX);
     /**
      * The maximum supported {@code OffsetDate}, '+999999999-12-31-18:00'.
      * This is the maximum local date in the minimum offset
@@ -99,12 +99,17 @@ public final class OffsetDate
      * This combines {@link LocalDate#MAX} and {@link ZoneOffset#MIN}.
      * This could be used by an application as a "far future" date.
      */
-    public static final OffsetDate MAX = LocalDate.MAX.atOffset(ZoneOffset.MIN);
+    public static final OffsetDate MAX = new OffsetDate(LocalDate.MAX, ZoneOffset.MIN);
 
     /**
      * Serialization version.
      */
     private static final long serialVersionUID = -4382054179074397774L;
+
+    /**
+     * The number of seconds per day.
+     */
+    private static final long SECONDS_PER_DAY = 86400;
 
     /**
      * The local date.
@@ -198,7 +203,7 @@ public final class OffsetDate
         ZoneRules rules = zone.getRules();
         ZoneOffset offset = rules.getOffset(instant);
         long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
+        long epochDay = Math.floorDiv(epochSec, SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofEpochDay(epochDay);
         return new OffsetDate(date, offset);
     }
@@ -237,14 +242,14 @@ public final class OffsetDate
      * Obtains an instance of {@code OffsetDate} from a text string such as {@code 2007-12-03+01:00}.
      * <p>
      * The string must represent a valid date and is parsed using
-     * {@link org.threeten.bp.format.DateTimeFormatters#isoOffsetDate()}.
+     * {@link DateTimeFormatter#ISO_OFFSET_DATE}.
      *
      * @param text  the text to parse such as "2007-12-03+01:00", not null
      * @return the parsed offset date, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetDate parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoOffsetDate());
+        return parse(text, DateTimeFormatter.ISO_OFFSET_DATE);
     }
 
     /**
@@ -259,7 +264,7 @@ public final class OffsetDate
      */
     public static OffsetDate parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, OffsetDate.class);
+        return formatter.parse(text, OffsetDate::from);
     }
 
     //-----------------------------------------------------------------------
@@ -328,9 +333,45 @@ public final class OffsetDate
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateField() || field == OFFSET_SECONDS;
+            return ((ChronoField) field).isDateBased() || field == OFFSET_SECONDS;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
+    }
+
+    /**
+     * Checks if the specified unit is supported.
+     * <p>
+     * This checks if the specified unit can be added to, or subtracted from, this date.
+     * If false, then calling the {@link #plus(long, TemporalUnit)} and
+     * {@link #minus(long, TemporalUnit) minus} methods will throw an exception.
+     * <p>
+     * If the unit is a {@link ChronoUnit} then the query is implemented here.
+     * The supported units are:
+     * <ul>
+     * <li>{@code DAYS}
+     * <li>{@code WEEKS}
+     * <li>{@code MONTHS}
+     * <li>{@code YEARS}
+     * <li>{@code DECADES}
+     * <li>{@code CENTURIES}
+     * <li>{@code MILLENNIA}
+     * <li>{@code ERAS}
+     * </ul>
+     * All other {@code ChronoUnit} instances will return false.
+     * <p>
+     * If the unit is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.isSupportedBy(Temporal)}
+     * passing {@code this} as the argument.
+     * Whether the unit is supported is determined by the unit.
+     *
+     * @param unit  the unit to check, null returns false
+     * @return true if the unit can be added/subtracted, false if not
+     */
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return ((ChronoUnit) unit).isDateBased();
+        }
+        return unit != null && unit.isSupportedBy(this);
     }
 
     /**
@@ -363,7 +404,7 @@ public final class OffsetDate
             }
             return date.range(field);
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     /**
@@ -392,7 +433,7 @@ public final class OffsetDate
      */
     @Override  // override for Javadoc
     public int get(TemporalField field) {
-        return super.get(field);
+        return Temporal.super.get(field);
     }
 
     /**
@@ -425,7 +466,7 @@ public final class OffsetDate
             }
             return date.getLong(field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -658,7 +699,7 @@ public final class OffsetDate
             }
             return with(date.with(field, newValue), offset);
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -729,21 +770,21 @@ public final class OffsetDate
      * <p>
      * This method returns a new date based on this date with the specified period added.
      * The adder is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface.
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adder  the adder to use, not null
+     * @param amountToAdd  the adder to use, not null
      * @return an {@code OffsetDate} based on this date with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public OffsetDate plus(TemporalAdder adder) {
-        return (OffsetDate) adder.addTo(this);
+    public OffsetDate plus(TemporalAmount amountToAdd) {
+        return (OffsetDate) amountToAdd.addTo(this);
     }
 
     /**
@@ -767,7 +808,7 @@ public final class OffsetDate
         if (unit instanceof ChronoUnit) {
             return with(date.plus(amountToAdd, unit), offset);
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -863,21 +904,21 @@ public final class OffsetDate
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
      * The subtractor is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface.
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amountToSubtract  the subtractor to use, not null
      * @return an {@code OffsetDate} based on this date with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public OffsetDate minus(TemporalSubtractor subtractor) {
-        return (OffsetDate) subtractor.subtractFrom(this);
+    public OffsetDate minus(TemporalAmount amountToSubtract) {
+        return (OffsetDate) amountToSubtract.subtractFrom(this);
     }
 
     /**
@@ -1010,14 +1051,14 @@ public final class OffsetDate
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) ISOChrono.INSTANCE;
+        if (query == TemporalQueries.chronology()) {
+            return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
             return (R) DAYS;
         } else if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
             return (R) getOffset();
         }
-        return super.query(query);
+        return Temporal.super.query(query);
     }
 
     /**
@@ -1100,7 +1141,7 @@ public final class OffsetDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endDate, TemporalUnit unit) {
+    public long until(Temporal endDate, TemporalUnit unit) {
         if (endDate instanceof OffsetDate == false) {
             Objects.requireNonNull(endDate, "endDate");
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -1108,10 +1149,10 @@ public final class OffsetDate
         if (unit instanceof ChronoUnit) {
             OffsetDate end = (OffsetDate) endDate;
             long offsetDiff = end.offset.getTotalSeconds() - offset.getTotalSeconds();
-            LocalDate endLocal = end.date.plusDays(Jdk8Methods.floorDiv(-offsetDiff, SECONDS_PER_DAY));
-            return date.periodUntil(endLocal, unit);
+            LocalDate endLocal = end.date.plusDays(Math.floorDiv(-offsetDiff, SECONDS_PER_DAY));
+            return date.until(endLocal, unit);
         }
-        return unit.between(this, endDate).getAmount();
+        return unit.between(this, endDate);
     }
 
     //-----------------------------------------------------------------------
@@ -1278,7 +1319,7 @@ public final class OffsetDate
      * Outputs this date as a {@code String} using the formatter.
      * <p>
      * This date will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted date string, not null
@@ -1286,32 +1327,7 @@ public final class OffsetDate
      */
     public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    private Object writeReplace() {
-        return new Ser(Ser.OFFSET_DATE_TYPE, this);
-    }
-
-    /**
-     * Defend against malicious streams.
-     * @return never
-     * @throws InvalidObjectException always
-     */
-    private Object readResolve() throws ObjectStreamException {
-        throw new InvalidObjectException("Deserialization via serialization delegate");
-    }
-
-    void writeExternal(DataOutput out) throws IOException {
-        date.writeExternal(out);
-        offset.writeExternal(out);
-    }
-
-    static OffsetDate readExternal(DataInput in) throws IOException {
-        LocalDate date = LocalDate.readExternal(in);
-        ZoneOffset offset = ZoneOffset.readExternal(in);
-        return OffsetDate.of(date, offset);
+        return formatter.format(this);
     }
 
 }
