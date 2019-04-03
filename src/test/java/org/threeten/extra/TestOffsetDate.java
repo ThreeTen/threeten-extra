@@ -49,7 +49,6 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Clock;
@@ -140,19 +139,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
-    }
-
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_serialization() throws ClassNotFoundException, IOException {
-        assertSerializable(TEST_2007_07_15_PONE);
-        assertSerializable(OffsetDate.MIN);
-        assertSerializable(OffsetDate.MAX);
-    }
-
-    @Test
-    public void test_serialization_format() throws ClassNotFoundException, IOException {
-        assertEqualsSerialisedForm(OffsetDate.of(LocalDate.of(2012, 9, 16), ZoneOffset.of("+01:00")));
     }
 
     //-----------------------------------------------------------------------

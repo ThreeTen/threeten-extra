@@ -45,7 +45,7 @@ import org.junit.Test;
 /**
  * Base test class for {@code DateTime}.
  */
-public abstract class AbstractDateTimeTest extends AbstractTest {
+public abstract class AbstractDateTimeTest {
 
     /**
      * Sample {@code DateTime} objects.
