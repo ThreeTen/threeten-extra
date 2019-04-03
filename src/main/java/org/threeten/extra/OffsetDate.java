@@ -66,6 +66,9 @@ import java.time.temporal.ValueRange;
 import java.time.zone.ZoneRules;
 import java.util.Objects;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * A date with an offset from UTC/Greenwich in the ISO-8601 calendar system,
  * such as {@code 2007-12-03+01:00}.
@@ -248,6 +251,7 @@ public final class OffsetDate
      * @return the parsed offset date, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
+    @FromString
     public static OffsetDate parse(CharSequence text) {
         return parse(text, DateTimeFormatter.ISO_OFFSET_DATE);
     }
@@ -1311,6 +1315,7 @@ public final class OffsetDate
      * @return a string representation of this date, not null
      */
     @Override
+    @ToString
     public String toString() {
         return date.toString() + offset.toString();
     }
