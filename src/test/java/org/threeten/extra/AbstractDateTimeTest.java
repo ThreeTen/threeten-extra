@@ -32,12 +32,13 @@
 package org.threeten.extra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.time.DateTimeException;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalQuery;
 import java.util.List;
 
 import org.junit.Test;
@@ -72,7 +73,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_isSupported_DateTimeField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
-                assertEquals("Failed on " + sample + " " + field, true, sample.isSupported(field));
+                assertTrue("Failed on " + sample + " " + field, sample.isSupported(field));
             }
         }
     }
@@ -81,7 +82,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_isSupported_DateTimeField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
-                assertEquals("Failed on " + sample + " " + field, false, sample.isSupported(field));
+                assertFalse("Failed on " + sample + " " + field, sample.isSupported(field));
             }
         }
     }
@@ -89,7 +90,7 @@ public abstract class AbstractDateTimeTest {
     @Test
     public void basicTest_isSupported_DateTimeField_null() {
         for (TemporalAccessor sample : samples()) {
-            assertEquals("Failed on " + sample, false, sample.isSupported(null));
+            assertFalse("Failed on " + sample, sample.isSupported(null));
         }
     }
 
@@ -223,12 +224,7 @@ public abstract class AbstractDateTimeTest {
     @Test
     public void basicTest_query() {
         for (TemporalAccessor sample : samples()) {
-            assertEquals("foo", sample.query(new TemporalQuery<String>() {
-                @Override
-                public String queryFrom(TemporalAccessor dateTime) {
-                    return "foo";
-                }
-            }));
+            assertEquals("foo", sample.query(dateTime -> "foo"));
         }
     }
 
