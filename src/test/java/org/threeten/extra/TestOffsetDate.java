@@ -47,7 +47,10 @@ import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -70,7 +73,6 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.JulianFields;
-import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
@@ -526,8 +528,8 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_query_zoneId() {
-        assertEquals(null, TEST_2007_07_15_PONE.query(TemporalQueries.zoneId()));
-        assertEquals(null, TemporalQueries.zoneId().queryFrom(TEST_2007_07_15_PONE));
+        assertNull(TEST_2007_07_15_PONE.query(TemporalQueries.zoneId()));
+        assertNull(TemporalQueries.zoneId().queryFrom(TEST_2007_07_15_PONE));
     }
 
     @Test
@@ -582,12 +584,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     @Test
     public void test_with_adjustment() {
         final OffsetDate sample = OffsetDate.of(LocalDate.of(2012, 3, 4), OFFSET_PONE);
-        TemporalAdjuster adjuster = new TemporalAdjuster() {
-            @Override
-            public Temporal adjustInto(Temporal dateTime) {
-                return sample;
-            }
-        };
+        TemporalAdjuster adjuster = dateTime -> sample;
         assertEquals(sample, TEST_2007_07_15_PONE.with(adjuster));
     }
 
@@ -1647,44 +1644,44 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_compareTo_date() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 29), OFFSET_PONE);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b due to date
-        assertEquals(true, a.compareTo(b) < 0);
-        assertEquals(true, b.compareTo(a) > 0);
-        assertEquals(true, a.compareTo(a) == 0);
-        assertEquals(true, b.compareTo(b) == 0);
-        assertEquals(true, a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0);
+        assertTrue(a.compareTo(b) < 0);
+        assertTrue(b.compareTo(a) > 0);
+        assertTrue(a.compareTo(a) == 0);
+        assertTrue(b.compareTo(b) == 0);
+        assertTrue(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0);
     }
 
     @Test
     public void test_compareTo_offset() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PTWO);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b due to offset
-        assertEquals(true, a.compareTo(b) < 0);
-        assertEquals(true, b.compareTo(a) > 0);
-        assertEquals(true, a.compareTo(a) == 0);
-        assertEquals(true, b.compareTo(b) == 0);
-        assertEquals(true, a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0);
+        assertTrue(a.compareTo(b) < 0);
+        assertTrue(b.compareTo(a) > 0);
+        assertTrue(a.compareTo(a) == 0);
+        assertTrue(b.compareTo(b) == 0);
+        assertTrue(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0);
     }
 
     @Test
     public void test_compareTo_both() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 29), OFFSET_PTWO);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b on instant scale
-        assertEquals(true, a.compareTo(b) < 0);
-        assertEquals(true, b.compareTo(a) > 0);
-        assertEquals(true, a.compareTo(a) == 0);
-        assertEquals(true, b.compareTo(b) == 0);
-        assertEquals(true, a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0);
+        assertTrue(a.compareTo(b) < 0);
+        assertTrue(b.compareTo(a) > 0);
+        assertTrue(a.compareTo(a) == 0);
+        assertTrue(b.compareTo(b) == 0);
+        assertTrue(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0);
     }
 
     @Test
     public void test_compareTo_24hourDifference() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 29), ZoneOffset.ofHours(-12));
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), ZoneOffset.ofHours(12));  // a is before b despite being same time-line time
-        assertEquals(true, a.compareTo(b) < 0);
-        assertEquals(true, b.compareTo(a) > 0);
-        assertEquals(true, a.compareTo(a) == 0);
-        assertEquals(true, b.compareTo(b) == 0);
-        assertEquals(true, a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) == 0);
+        assertTrue(a.compareTo(b) < 0);
+        assertTrue(b.compareTo(a) > 0);
+        assertTrue(a.compareTo(a) == 0);
+        assertTrue(b.compareTo(b) == 0);
+        assertTrue(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) == 0);
     }
 
     @Test(expected=NullPointerException.class)
@@ -1707,66 +1704,66 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_isBeforeIsAfterIsEqual1() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 29), OFFSET_PONE);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b due to time
-        assertEquals(true, a.isBefore(b));
-        assertEquals(false, a.isEqual(b));
-        assertEquals(false, a.isAfter(b));
+        assertTrue(a.isBefore(b));
+        assertFalse(a.isEqual(b));
+        assertFalse(a.isAfter(b));
 
-        assertEquals(false, b.isBefore(a));
-        assertEquals(false, b.isEqual(a));
-        assertEquals(true, b.isAfter(a));
+        assertFalse(b.isBefore(a));
+        assertFalse(b.isEqual(a));
+        assertTrue(b.isAfter(a));
 
-        assertEquals(false, a.isBefore(a));
-        assertEquals(false, b.isBefore(b));
+        assertFalse(a.isBefore(a));
+        assertFalse(b.isBefore(b));
 
-        assertEquals(true, a.isEqual(a));
-        assertEquals(true, b.isEqual(b));
+        assertTrue(a.isEqual(a));
+        assertTrue(b.isEqual(b));
 
-        assertEquals(false, a.isAfter(a));
-        assertEquals(false, b.isAfter(b));
+        assertFalse(a.isAfter(a));
+        assertFalse(b.isAfter(b));
     }
 
     @Test
     public void test_isBeforeIsAfterIsEqual2() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PTWO);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b due to offset
-        assertEquals(true, a.isBefore(b));
-        assertEquals(false, a.isEqual(b));
-        assertEquals(false, a.isAfter(b));
+        assertTrue(a.isBefore(b));
+        assertFalse(a.isEqual(b));
+        assertFalse(a.isAfter(b));
 
-        assertEquals(false, b.isBefore(a));
-        assertEquals(false, b.isEqual(a));
-        assertEquals(true, b.isAfter(a));
+        assertFalse(b.isBefore(a));
+        assertFalse(b.isEqual(a));
+        assertTrue(b.isAfter(a));
 
-        assertEquals(false, a.isBefore(a));
-        assertEquals(false, b.isBefore(b));
+        assertFalse(a.isBefore(a));
+        assertFalse(b.isBefore(b));
 
-        assertEquals(true, a.isEqual(a));
-        assertEquals(true, b.isEqual(b));
+        assertTrue(a.isEqual(a));
+        assertTrue(b.isEqual(b));
 
-        assertEquals(false, a.isAfter(a));
-        assertEquals(false, b.isAfter(b));
+        assertFalse(a.isAfter(a));
+        assertFalse(b.isAfter(b));
     }
 
     @Test
     public void test_isBeforeIsAfterIsEqual_instantComparison() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), ZoneOffset.ofHours(12));
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 29), ZoneOffset.ofHours(-12));  // a is same instant as b
-        assertEquals(false, a.isBefore(b));
-        assertEquals(true, a.isEqual(b));
-        assertEquals(false, a.isAfter(b));
+        assertFalse(a.isBefore(b));
+        assertTrue(a.isEqual(b));
+        assertFalse(a.isAfter(b));
 
-        assertEquals(false, b.isBefore(a));
-        assertEquals(true, b.isEqual(a));
-        assertEquals(false, b.isAfter(a));
+        assertFalse(b.isBefore(a));
+        assertTrue(b.isEqual(a));
+        assertFalse(b.isAfter(a));
 
-        assertEquals(false, a.isBefore(a));
-        assertEquals(false, b.isBefore(b));
+        assertFalse(a.isBefore(a));
+        assertFalse(b.isBefore(b));
 
-        assertEquals(true, a.isEqual(a));
-        assertEquals(true, b.isEqual(b));
+        assertTrue(a.isEqual(a));
+        assertTrue(b.isEqual(b));
 
-        assertEquals(false, a.isAfter(a));
-        assertEquals(false, b.isAfter(b));
+        assertFalse(a.isAfter(a));
+        assertFalse(b.isAfter(b));
     }
 
     @Test(expected=NullPointerException.class)
@@ -1795,15 +1792,15 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_equals_true(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), offset);
         OffsetDate b = OffsetDate.of(LocalDate.of(y, m, d), offset);
-        assertEquals(true, a.equals(b));
-        assertEquals(true, a.hashCode() == b.hashCode());
+        assertTrue(a.equals(b));
+        assertTrue(a.hashCode() == b.hashCode());
     }
     @Test
     @UseDataProvider("provider_sampleDates")
     public void test_equals_false_year_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), offset);
         OffsetDate b = OffsetDate.of(LocalDate.of(y + 1, m, d), offset);
-        assertEquals(false, a.equals(b));
+        assertFalse(a.equals(b));
     }
 
     @Test
@@ -1811,7 +1808,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_equals_false_month_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), offset);
         OffsetDate b = OffsetDate.of(LocalDate.of(y, m + 1, d), offset);
-        assertEquals(false, a.equals(b));
+        assertFalse(a.equals(b));
     }
 
     @Test
@@ -1819,7 +1816,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_equals_false_day_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), offset);
         OffsetDate b = OffsetDate.of(LocalDate.of(y, m, d + 1), offset);
-        assertEquals(false, a.equals(b));
+        assertFalse(a.equals(b));
     }
 
     @Test
@@ -1827,17 +1824,17 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_equals_false_offset_differs(int y, int m, int d, ZoneOffset ignored) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), OFFSET_PONE);
         OffsetDate b = OffsetDate.of(LocalDate.of(y, m, d), OFFSET_PTWO);
-        assertEquals(false, a.equals(b));
+        assertFalse(a.equals(b));
     }
 
     @Test
     public void test_equals_itself_true() {
-        assertEquals(true, TEST_2007_07_15_PONE.equals(TEST_2007_07_15_PONE));
+        assertTrue(TEST_2007_07_15_PONE.equals(TEST_2007_07_15_PONE));
     }
 
     @Test
     public void test_equals_string_false() {
-        assertEquals(false, TEST_2007_07_15_PONE.equals("2007-07-15"));
+        assertFalse(TEST_2007_07_15_PONE.equals("2007-07-15"));
     }
 
     //-----------------------------------------------------------------------
