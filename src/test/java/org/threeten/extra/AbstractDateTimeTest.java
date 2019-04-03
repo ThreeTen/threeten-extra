@@ -29,17 +29,18 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp;
+package org.threeten.extra;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.time.DateTimeException;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQuery;
 import java.util.List;
 
-import org.testng.annotations.Test;
-import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalQuery;
+import org.junit.Test;
 
 /**
  * Base test class for {@code DateTime}.
@@ -71,7 +72,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     public void basicTest_isSupported_DateTimeField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
-                assertEquals(sample.isSupported(field), true, "Failed on " + sample + " " + field);
+                assertEquals("Failed on " + sample + " " + field, true, sample.isSupported(field));
             }
         }
     }
@@ -80,7 +81,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     public void basicTest_isSupported_DateTimeField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
-                assertEquals(sample.isSupported(field), false, "Failed on " + sample + " " + field);
+                assertEquals("Failed on " + sample + " " + field, false, sample.isSupported(field));
             }
         }
     }
@@ -88,7 +89,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     @Test
     public void basicTest_isSupported_DateTimeField_null() {
         for (TemporalAccessor sample : samples()) {
-            assertEquals(sample.isSupported(null), false, "Failed on " + sample);
+            assertEquals("Failed on " + sample, false, sample.isSupported(null));
         }
     }
 
@@ -222,13 +223,14 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     @Test
     public void basicTest_query() {
         for (TemporalAccessor sample : samples()) {
-            assertEquals(sample.query(new TemporalQuery<String>() {
+            assertEquals("foo", sample.query(new TemporalQuery<String>() {
                 @Override
                 public String queryFrom(TemporalAccessor dateTime) {
                     return "foo";
                 }
-            }), "foo");
+            }));
         }
     }
 
 }
+

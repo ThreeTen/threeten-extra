@@ -29,11 +29,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp;
+package org.threeten.extra;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -66,12 +66,12 @@ public abstract class AbstractTest {
 
     protected static void assertSerializable(Object o) throws IOException, ClassNotFoundException {
         Object deserialisedObject = writeThenRead(o);
-        assertEquals(deserialisedObject, o);
+        assertEquals(o, deserialisedObject);
     }
 
     protected static void assertSerializableAndSame(Object o) throws IOException, ClassNotFoundException {
         Object deserialisedObject = writeThenRead(o);
-        assertSame(deserialisedObject, o);
+        assertSame(o, deserialisedObject);
     }
 
     protected static Object writeThenRead(Object o) throws IOException, ClassNotFoundException {
@@ -98,10 +98,10 @@ public abstract class AbstractTest {
     }
 
     protected static void assertEqualsSerialisedForm(Object objectSerialised) throws IOException, ClassNotFoundException {
-        assertEqualsSerialisedForm(objectSerialised, objectSerialised.getClass());
+        assertEqualsSerialisedForm(objectSerialised.getClass(), objectSerialised);
     }
 
-    protected static void assertEqualsSerialisedForm(Object objectSerialised, Class<?> cls) throws IOException, ClassNotFoundException {
+    protected static void assertEqualsSerialisedForm(Class<?> cls, Object objectSerialised) throws IOException, ClassNotFoundException {
         String className = cls.getSimpleName();
 //        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(SERIALISATION_DATA_FOLDER + className + ".bin"))) {
 //            out.writeObject(objectSerialised);
@@ -111,7 +111,7 @@ public abstract class AbstractTest {
         try {
             in = new ObjectInputStream(new FileInputStream(SERIALISATION_DATA_FOLDER + className + ".bin"));
             Object objectFromFile = in.readObject();
-            assertEquals(objectFromFile, objectSerialised);
+            assertEquals(objectSerialised, objectFromFile);
         } finally {
             if (in != null) {
                 in.close();
@@ -126,10 +126,10 @@ public abstract class AbstractTest {
         for (Field field : fields) {
             if (field.getName().contains("$") == false) {
                 if (Modifier.isStatic(field.getModifiers())) {
-                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+                    assertTrue("Field:" + field.getName(), Modifier.isFinal(field.getModifiers()));
                 } else {
-                    assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
-                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+                    assertTrue("Field:" + field.getName(), Modifier.isPrivate(field.getModifiers()));
+                    assertTrue("Field:" + field.getName(), Modifier.isFinal(field.getModifiers()));
                 }
             }
         }
@@ -139,7 +139,7 @@ public abstract class AbstractTest {
         }
     }
 
-    protected static void assertSerializedBySer(Object object, byte[] expectedBytes, byte[]... matches) throws Exception {
+    protected static void assertSerializedBySer(byte[] expectedBytes, Object object, byte[]... matches) throws Exception {
         String serClass = object.getClass().getPackage().getName() + ".Ser";
         Class<?> serCls = Class.forName(serClass);
         Field field = serCls.getDeclaredField("serialVersionUID");
@@ -160,26 +160,26 @@ public abstract class AbstractTest {
         DataInputStream dis = null;
         try {
             dis = new DataInputStream(bais);
-            assertEquals(dis.readShort(), ObjectStreamConstants.STREAM_MAGIC);
-            assertEquals(dis.readShort(), ObjectStreamConstants.STREAM_VERSION);
-            assertEquals(dis.readByte(), ObjectStreamConstants.TC_OBJECT);
-            assertEquals(dis.readByte(), ObjectStreamConstants.TC_CLASSDESC);
-            assertEquals(dis.readUTF(), serClass);
-            assertEquals(dis.readLong(), serVer);
-            assertEquals(dis.readByte(), ObjectStreamConstants.SC_EXTERNALIZABLE | ObjectStreamConstants.SC_BLOCK_DATA);
-            assertEquals(dis.readShort(), 0);  // number of fields
-            assertEquals(dis.readByte(), ObjectStreamConstants.TC_ENDBLOCKDATA);  // end of classdesc
-            assertEquals(dis.readByte(), ObjectStreamConstants.TC_NULL);  // no superclasses
+            assertEquals(ObjectStreamConstants.STREAM_MAGIC, dis.readShort());
+            assertEquals(ObjectStreamConstants.STREAM_VERSION, dis.readShort());
+            assertEquals(ObjectStreamConstants.TC_OBJECT, dis.readByte());
+            assertEquals(ObjectStreamConstants.TC_CLASSDESC, dis.readByte());
+            assertEquals(serClass, dis.readUTF());
+            assertEquals(serVer, dis.readLong());
+            assertEquals(ObjectStreamConstants.SC_EXTERNALIZABLE | ObjectStreamConstants.SC_BLOCK_DATA, dis.readByte());
+            assertEquals(0, dis.readShort());  // number of fields
+            assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, dis.readByte());  // end of classdesc
+            assertEquals(ObjectStreamConstants.TC_NULL, dis.readByte());  // no superclasses
             if (expectedBytes.length < 256) {
-                assertEquals(dis.readByte(), ObjectStreamConstants.TC_BLOCKDATA);
-                assertEquals(dis.readUnsignedByte(), expectedBytes.length);
+                assertEquals(ObjectStreamConstants.TC_BLOCKDATA, dis.readByte());
+                assertEquals(expectedBytes.length, dis.readUnsignedByte());
             } else {
-                assertEquals(dis.readByte(), ObjectStreamConstants.TC_BLOCKDATALONG);
-                assertEquals(dis.readInt(), expectedBytes.length);
+                assertEquals(ObjectStreamConstants.TC_BLOCKDATALONG, dis.readByte());
+                assertEquals(expectedBytes.length, dis.readInt());
             }
             byte[] input = new byte[expectedBytes.length];
             dis.readFully(input);
-            assertEquals(input, expectedBytes);
+            assertEquals(expectedBytes, input);
             if (matches.length > 0) {
                 for (byte[] match : matches) {
                     boolean matched = false;
@@ -188,7 +188,7 @@ public abstract class AbstractTest {
                             dis.mark(1000);
                             byte[] possible = new byte[match.length];
                             dis.readFully(possible);
-                            assertEquals(possible, match);
+                            assertEquals(match, possible);
                             matched = true;
                         } catch (AssertionError ex) {
                             dis.reset();
@@ -197,8 +197,8 @@ public abstract class AbstractTest {
                     }
                 }
             } else {
-                assertEquals(dis.readByte(), ObjectStreamConstants.TC_ENDBLOCKDATA);  // end of blockdata
-                assertEquals(dis.read(), -1);
+                assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, dis.readByte());  // end of blockdata
+                assertEquals(-1, dis.read());
             }
         } finally {
             if (dis != null) {
@@ -208,3 +208,4 @@ public abstract class AbstractTest {
     }
 
 }
+
