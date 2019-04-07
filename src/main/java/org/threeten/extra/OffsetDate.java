@@ -1159,6 +1159,20 @@ public final class OffsetDate
         return unit.between(this, endDate);
     }
 
+    /**
+     * Formats this date using the specified formatter.
+     * <p>
+     * This date-time will be passed to the formatter to produce a string.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted date string, not null
+     * @throws DateTimeException if an error occurs during printing
+     */
+    public String format(DateTimeFormatter formatter) {
+        Objects.requireNonNull(formatter, "formatter");
+        return formatter.format(this);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns an offset date-time formed from this date at the specified time.
@@ -1318,21 +1332,6 @@ public final class OffsetDate
     @ToString
     public String toString() {
         return date.toString() + offset.toString();
-    }
-
-    /**
-     * Outputs this date as a {@code String} using the formatter.
-     * <p>
-     * This date will be passed to the formatter
-     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date string, not null
-     * @throws DateTimeException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
-        return formatter.format(this);
     }
 
 }
