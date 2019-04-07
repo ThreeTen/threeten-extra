@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.5.1" date="SNAPSHOT" description="v1.5.1">
+      <action dev="mwkroening" type="add">
+        Add OffsetDate.
+        Fixes #137.
+      </action>
       <action dev="MichelSchudel" type="add">
         Add Farsi translations for word-based formatting.
         Fixes #131.
