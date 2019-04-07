@@ -556,26 +556,26 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // withOffset()
+    // withOffsetSameLocal()
     //-----------------------------------------------------------------------
     @Test
-    public void test_withOffset() {
+    public void test_withOffsetSameLocal() {
         OffsetDate base = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
-        OffsetDate test = base.withOffset(OFFSET_PTWO);
+        OffsetDate test = base.withOffsetSameLocal(OFFSET_PTWO);
         assertEquals(base.toLocalDate(), test.toLocalDate());
         assertEquals(OFFSET_PTWO, test.getOffset());
     }
 
     @Test
-    public void test_withOffset_noChange() {
+    public void test_withOffsetSameLocal_noChange() {
         OffsetDate base = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
-        OffsetDate test = base.withOffset(OFFSET_PONE);
+        OffsetDate test = base.withOffsetSameLocal(OFFSET_PONE);
         assertEquals(base, test);
     }
 
     @Test(expected=NullPointerException.class)
-    public void test_withOffset_null() {
-        TEST_2007_07_15_PONE.withOffset(null);
+    public void test_withOffsetSameLocal_null() {
+        TEST_2007_07_15_PONE.withOffsetSameLocal(null);
     }
 
     //-----------------------------------------------------------------------

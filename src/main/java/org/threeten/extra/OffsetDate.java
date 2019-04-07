@@ -511,7 +511,8 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified offset.
+     * Returns a copy of this {@code OffsetDate} with the specified offset ensuring
+     * that the result has the same local date.
      * <p>
      * This method returns an object with the same {@code LocalDate} and the specified {@code ZoneOffset}.
      * No calculation is needed or performed.
@@ -523,7 +524,7 @@ public final class OffsetDate
      * @param offset  the zone offset to change to, not null
      * @return an {@code OffsetDate} based on this date with the requested offset, not null
      */
-    public OffsetDate withOffset(ZoneOffset offset) {
+    public OffsetDate withOffsetSameLocal(ZoneOffset offset) {
         Objects.requireNonNull(offset, "offset");
         return with(date, offset);
     }
