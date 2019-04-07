@@ -97,15 +97,14 @@ public abstract class AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // range(DateTimeField)
     //-----------------------------------------------------------------------
-// TODO needs implementations of week fields
-//    @Test
-//    public void basicTest_range_DateTimeField_supported() {
-//        for (DateTimeAccessor sample : samples()) {
-//            for (DateTimeField field : validFields()) {
-//                sample.range(field);  // no exception
-//            }
-//        }
-//    }
+    @Test
+    public void basicTest_range_DateTimeField_supported() {
+        for (TemporalAccessor sample : samples()) {
+            for (TemporalField field : validFields()) {
+                sample.range(field);  // no exception
+            }
+        }
+    }
 
     @Test
     public void basicTest_range_DateTimeField_unsupported() {
@@ -136,24 +135,23 @@ public abstract class AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // get(DateTimeField)
     //-----------------------------------------------------------------------
-// TODO needs implementations of week fields
-//    @Test
-//    public void basicTest_get_DateTimeField_supported() {
-//        for (DateTimeAccessor sample : samples()) {
-//            for (DateTimeField field : validFields()) {
-//                if (sample.range(field).isIntValue()) {
-//                    sample.get(field);  // no exception
-//                } else {
-//                    try {
-//                        sample.get(field);
-//                        fail("Failed on " + sample + " " + field);
-//                    } catch (DateTimeException ex) {
-//                        // expected
-//                    }
-//                }
-//            }
-//        }
-//    }
+    @Test
+    public void basicTest_get_DateTimeField_supported() {
+        for (TemporalAccessor sample : samples()) {
+            for (TemporalField field : validFields()) {
+                if (sample.range(field).isIntValue()) {
+                    sample.get(field);  // no exception
+                } else {
+                    try {
+                        sample.get(field);
+                        fail("Failed on " + sample + " " + field);
+                    } catch (DateTimeException ex) {
+                        // expected
+                    }
+                }
+            }
+        }
+    }
 
     @Test
     public void basicTest_get_DateTimeField_unsupported() {
@@ -184,15 +182,14 @@ public abstract class AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // getLong(DateTimeField)
     //-----------------------------------------------------------------------
-// TODO needs implementations of week fields
-//    @Test
-//    public void basicTest_getLong_DateTimeField_supported() {
-//        for (DateTimeAccessor sample : samples()) {
-//            for (DateTimeField field : validFields()) {
-//                sample.getLong(field);  // no exception
-//            }
-//        }
-//    }
+    @Test
+    public void basicTest_getLong_DateTimeField_supported() {
+        for (TemporalAccessor sample : samples()) {
+            for (TemporalField field : validFields()) {
+                sample.getLong(field);  // no exception
+            }
+        }
+    }
 
     @Test
     public void basicTest_getLong_DateTimeField_unsupported() {
