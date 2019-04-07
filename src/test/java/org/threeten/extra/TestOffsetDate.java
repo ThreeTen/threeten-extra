@@ -1612,6 +1612,21 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    // format(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_format_formatter() {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d");
+        String t = OffsetDate.of(LocalDate.of(2010, 12, 3), OFFSET_PONE).format(f);
+        assertEquals("2010 12 3", t);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void test_format_formatter_null() {
+        OffsetDate.of(LocalDate.of(2010, 12, 3), OFFSET_PONE).format(null);
+    }
+
+    //-----------------------------------------------------------------------
     // atTime()
     //-----------------------------------------------------------------------
     @Test
@@ -1874,21 +1889,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         OffsetDate t = OffsetDate.of(LocalDate.of(y, m, d), ZoneOffset.of(offsetId));
         String str = t.toString();
         assertEquals(expected, str);
-    }
-
-    //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d");
-        String t = OffsetDate.of(LocalDate.of(2010, 12, 3), OFFSET_PONE).toString(f);
-        assertEquals("2010 12 3", t);
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        OffsetDate.of(LocalDate.of(2010, 12, 3), OFFSET_PONE).toString(null);
     }
 
 }
