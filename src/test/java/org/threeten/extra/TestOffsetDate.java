@@ -78,6 +78,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -491,6 +492,30 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    // isSupported(TemporalUnit)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_isSupported_TemporalUnit() {
+        assertFalse(TEST_2007_07_15_PONE.isSupported((TemporalUnit) null));
+        assertFalse(TEST_2007_07_15_PONE.isSupported(ChronoUnit.NANOS));
+        assertFalse(TEST_2007_07_15_PONE.isSupported(ChronoUnit.MICROS));
+        assertFalse(TEST_2007_07_15_PONE.isSupported(ChronoUnit.MILLIS));
+        assertFalse(TEST_2007_07_15_PONE.isSupported(ChronoUnit.SECONDS));
+        assertFalse(TEST_2007_07_15_PONE.isSupported(ChronoUnit.MINUTES));
+        assertFalse(TEST_2007_07_15_PONE.isSupported(ChronoUnit.HOURS));
+        assertFalse(TEST_2007_07_15_PONE.isSupported(ChronoUnit.HALF_DAYS));
+        assertTrue(TEST_2007_07_15_PONE.isSupported(ChronoUnit.DAYS));
+        assertTrue(TEST_2007_07_15_PONE.isSupported(ChronoUnit.WEEKS));
+        assertTrue(TEST_2007_07_15_PONE.isSupported(ChronoUnit.MONTHS));
+        assertTrue(TEST_2007_07_15_PONE.isSupported(ChronoUnit.YEARS));
+        assertTrue(TEST_2007_07_15_PONE.isSupported(ChronoUnit.DECADES));
+        assertTrue(TEST_2007_07_15_PONE.isSupported(ChronoUnit.CENTURIES));
+        assertTrue(TEST_2007_07_15_PONE.isSupported(ChronoUnit.MILLENNIA));
+        assertTrue(TEST_2007_07_15_PONE.isSupported(ChronoUnit.ERAS));
+        assertFalse(TEST_2007_07_15_PONE.isSupported(ChronoUnit.FOREVER));
+    }
+
+    //-----------------------------------------------------------------------
     // get(TemporalField)
     //-----------------------------------------------------------------------
     @Test
@@ -553,6 +578,43 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     @Test(expected=NullPointerException.class)
     public void test_query_null() {
         TEST_2007_07_15_PONE.query(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // adjustInto(Temporal)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_adjustInto() {
+        OffsetDateTime odt = OffsetDateTime.of(2007, 12, 3, 10, 15, 30, 0, ZoneOffset.UTC);
+        OffsetDate od = OffsetDate.of(2008, 1, 4, OFFSET_PONE);
+        OffsetDateTime expected = OffsetDateTime.of(2008, 1, 4, 10, 15, 30, 0, OFFSET_PONE);
+        assertEquals(expected, od.adjustInto(odt));
+    }
+
+    //-----------------------------------------------------------------------
+    // until(Temporal, TemporalUnit)
+    //-----------------------------------------------------------------------
+    @DataProvider
+    public static Object[][] data_until() {
+        return new Object[][] {
+                {1, OffsetDate.of(2007, 6, 30, OFFSET_PONE), OffsetDate.of(2007, 7, 1, OFFSET_PONE), ChronoUnit.DAYS},
+                {1, OffsetDate.of(2007, 6, 30, OFFSET_PONE), OffsetDate.of(2007, 8, 29, OFFSET_PONE), ChronoUnit.MONTHS},
+                {2, OffsetDate.of(2007, 6, 30, OFFSET_PONE), OffsetDate.of(2007, 8, 30, OFFSET_PONE), ChronoUnit.MONTHS},
+                {2, OffsetDate.of(2007, 6, 30, OFFSET_PONE), OffsetDate.of(2007, 8, 31, OFFSET_PONE), ChronoUnit.MONTHS}
+        };
+    }
+
+    @Test
+    @UseDataProvider("data_until")
+    public void test_until(long expected, OffsetDate od1, OffsetDate od2, TemporalUnit unit) {
+        assertEquals(expected, od1.until(od2, unit));
+        assertEquals(-expected, od2.until(od1, unit));
+    }
+
+    @Test(expected=DateTimeException.class)
+    public void test_until_invalidType() {
+        OffsetDate od1 = OffsetDate.of(2012, 6, 30, OFFSET_PONE);
+        od1.until(Instant.ofEpochSecond(7), ChronoUnit.SECONDS);
     }
 
     //-----------------------------------------------------------------------
@@ -1650,6 +1712,16 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_toLocalDate(int year, int month, int day, ZoneOffset offset) {
         LocalDate t = LocalDate.of(year, month, day);
         assertEquals(t, OffsetDate.of(LocalDate.of(year, month, day), offset).toLocalDate());
+    }
+
+    //-----------------------------------------------------------------------
+    // toEpochSecond(LocalTime)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_toEpochSecond() {
+        OffsetDate od = OffsetDate.of(1970, 1, 1, ZoneOffset.UTC);
+        assertEquals(0, od.toEpochSecond(LocalTime.MIDNIGHT));
+        assertEquals(12 * 60 * 60, od.toEpochSecond(LocalTime.MIDNIGHT.plusSeconds(12 * 60 * 60)));
     }
 
     //-----------------------------------------------------------------------
