@@ -187,6 +187,31 @@ public final class OffsetDate
         return new OffsetDate(date, offset);
     }
 
+    /**
+     * Obtains an instance of {@code OffsetDate} from a year, month, day
+     * and offset.
+     * <p>
+     * This creates an offset date with the four specified fields.
+     * <p>
+     * This method exists primarily for writing test cases.
+     * Non test-code will typically use other methods to create an offset time.
+     * {@code LocalDate} has one additional convenience variant of the
+     * equivalent factory method taking fewer arguments.
+     * They are not provided here to reduce the footprint of the API.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param offset  the zone offset, not null
+     * @return the offset date, not null
+     * @throws DateTimeException if the value of any field is out of range, or
+     *  if the day-of-month is invalid for the month-year
+     */
+    public static OffsetDate of(int year, int month, int dayOfMonth, ZoneOffset offset) {
+        LocalDate d = LocalDate.of(year, month, dayOfMonth);
+        return new OffsetDate(d, offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetDate} from an {@code Instant} and zone ID.
