@@ -505,14 +505,14 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code LocalDate} part of this date-time.
+     * Gets the {@code LocalDate} part of this date.
      * <p>
      * This returns a {@code LocalDate} with the same year, month and day
-     * as this date-time.
+     * as this date.
      *
-     * @return the date part of this date-time, not null
+     * @return the date part of this date, not null
      */
-    public LocalDate getDate() {
+    public LocalDate toLocalDate() {
         return date;
     }
 
@@ -1095,7 +1095,7 @@ public final class OffsetDate
     public Temporal adjustInto(Temporal temporal) {
         return temporal
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, getDate().toEpochDay());
+                .with(EPOCH_DAY, toLocalDate().toEpochDay());
     }
 
     /**
