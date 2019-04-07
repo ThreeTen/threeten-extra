@@ -1226,6 +1226,24 @@ public final class OffsetDate
         return secs - offset.getTotalSeconds();
     }
 
+    /**
+     * Converts this {@code OffsetDate} to the number of seconds since the epoch
+     * of 1970-01-01T00:00:00Z.
+     * <p>
+     * This combines this offset date with the specified time
+     * to calculate the epoch-second value, which is the
+     * number of elapsed seconds from 1970-01-01T00:00:00Z.
+     * Instants on the time-line after the epoch are positive, earlier
+     * are negative.
+     *
+     * @param time the local time, not null
+     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z, may be negative
+     */
+    public long toEpochSecond(LocalTime time) {
+        Objects.requireNonNull(time, "time");
+        return toEpochSecond() + time.toSecondOfDay();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this {@code OffsetDate} to another date.
