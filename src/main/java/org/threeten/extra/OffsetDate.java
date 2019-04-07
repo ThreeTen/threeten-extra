@@ -94,7 +94,7 @@ public final class OffsetDate
      * This combines {@link LocalDate#MIN} and {@link ZoneOffset#MAX}.
      * This could be used by an application as a "far past" date.
      */
-    public static final OffsetDate MIN = new OffsetDate(LocalDate.MIN, ZoneOffset.MAX);
+    public static final OffsetDate MIN = OffsetDate.of(LocalDate.MIN, ZoneOffset.MAX);
     /**
      * The maximum supported {@code OffsetDate}, '+999999999-12-31-18:00'.
      * This is the maximum local date in the minimum offset
@@ -102,7 +102,7 @@ public final class OffsetDate
      * This combines {@link LocalDate#MAX} and {@link ZoneOffset#MIN}.
      * This could be used by an application as a "far future" date.
      */
-    public static final OffsetDate MAX = new OffsetDate(LocalDate.MAX, ZoneOffset.MIN);
+    public static final OffsetDate MAX = OffsetDate.of(LocalDate.MAX, ZoneOffset.MIN);
 
     /**
      * Serialization version.
