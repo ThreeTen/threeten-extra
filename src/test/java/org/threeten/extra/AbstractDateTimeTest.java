@@ -67,10 +67,10 @@ public abstract class AbstractDateTimeTest {
     protected abstract List<TemporalField> invalidFields();
 
     //-----------------------------------------------------------------------
-    // isSupported(DateTimeField)
+    // isSupported(TemporalField)
     //-----------------------------------------------------------------------
     @Test
-    public void basicTest_isSupported_DateTimeField_supported() {
+    public void basicTest_isSupported_TemporalField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
                 assertTrue("Failed on " + sample + " " + field, sample.isSupported(field));
@@ -79,7 +79,7 @@ public abstract class AbstractDateTimeTest {
     }
 
     @Test
-    public void basicTest_isSupported_DateTimeField_unsupported() {
+    public void basicTest_isSupported_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
                 assertFalse("Failed on " + sample + " " + field, sample.isSupported(field));
@@ -88,17 +88,17 @@ public abstract class AbstractDateTimeTest {
     }
 
     @Test
-    public void basicTest_isSupported_DateTimeField_null() {
+    public void basicTest_isSupported_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
             assertFalse("Failed on " + sample, sample.isSupported(null));
         }
     }
 
     //-----------------------------------------------------------------------
-    // range(DateTimeField)
+    // range(TemporalField)
     //-----------------------------------------------------------------------
     @Test
-    public void basicTest_range_DateTimeField_supported() {
+    public void basicTest_range_TemporalField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
                 sample.range(field);  // no exception
@@ -107,7 +107,7 @@ public abstract class AbstractDateTimeTest {
     }
 
     @Test
-    public void basicTest_range_DateTimeField_unsupported() {
+    public void basicTest_range_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
                 try {
@@ -121,7 +121,7 @@ public abstract class AbstractDateTimeTest {
     }
 
     @Test
-    public void basicTest_range_DateTimeField_null() {
+    public void basicTest_range_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
             try {
                 sample.range(null);
@@ -133,10 +133,10 @@ public abstract class AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // get(DateTimeField)
+    // get(TemporalField)
     //-----------------------------------------------------------------------
     @Test
-    public void basicTest_get_DateTimeField_supported() {
+    public void basicTest_get_TemporalField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
                 if (sample.range(field).isIntValue()) {
@@ -154,7 +154,7 @@ public abstract class AbstractDateTimeTest {
     }
 
     @Test
-    public void basicTest_get_DateTimeField_unsupported() {
+    public void basicTest_get_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
                 try {
@@ -168,7 +168,7 @@ public abstract class AbstractDateTimeTest {
     }
 
     @Test
-    public void basicTest_get_DateTimeField_null() {
+    public void basicTest_get_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
             try {
                 sample.get(null);
@@ -180,10 +180,10 @@ public abstract class AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // getLong(DateTimeField)
+    // getLong(TemporalField)
     //-----------------------------------------------------------------------
     @Test
-    public void basicTest_getLong_DateTimeField_supported() {
+    public void basicTest_getLong_TemporalField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
                 sample.getLong(field);  // no exception
@@ -192,7 +192,7 @@ public abstract class AbstractDateTimeTest {
     }
 
     @Test
-    public void basicTest_getLong_DateTimeField_unsupported() {
+    public void basicTest_getLong_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
                 try {
@@ -206,7 +206,7 @@ public abstract class AbstractDateTimeTest {
     }
 
     @Test
-    public void basicTest_getLong_DateTimeField_null() {
+    public void basicTest_getLong_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
             try {
                 sample.getLong(null);
