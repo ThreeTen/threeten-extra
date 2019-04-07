@@ -218,7 +218,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     // factories
     //-----------------------------------------------------------------------
     private void check(OffsetDate test, int y, int mo, int d, ZoneOffset offset) {
-        assertEquals(LocalDate.of(y, mo, d), test.getDate());
+        assertEquals(LocalDate.of(y, mo, d), test.toLocalDate());
         assertEquals(offset, test.getOffset());
 
         assertEquals(y, test.getYear());
@@ -480,7 +480,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         LocalDate localDate = LocalDate.of(y, m, d);
         OffsetDate a = OffsetDate.of(localDate, offset);
 
-        assertEquals(localDate, a.getDate());
+        assertEquals(localDate, a.toLocalDate());
         assertEquals(offset, a.getOffset());
         assertEquals(localDate.toString() + offset.toString(), a.toString());
         assertEquals(localDate.getYear(), a.getYear());
@@ -562,7 +562,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_withOffset() {
         OffsetDate base = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         OffsetDate test = base.withOffset(OFFSET_PTWO);
-        assertEquals(base.getDate(), test.getDate());
+        assertEquals(base.toLocalDate(), test.toLocalDate());
         assertEquals(OFFSET_PTWO, test.getOffset());
     }
 
@@ -1643,13 +1643,13 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // getDate()
+    // toLocalDate()
     //-----------------------------------------------------------------------
     @Test
     @UseDataProvider("provider_sampleDates")
-    public void test_getDate(int year, int month, int day, ZoneOffset offset) {
+    public void test_toLocalDate(int year, int month, int day, ZoneOffset offset) {
         LocalDate t = LocalDate.of(year, month, day);
-        assertEquals(t, OffsetDate.of(LocalDate.of(year, month, day), offset).getDate());
+        assertEquals(t, OffsetDate.of(LocalDate.of(year, month, day), offset).toLocalDate());
     }
 
     //-----------------------------------------------------------------------
