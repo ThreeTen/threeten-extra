@@ -340,7 +340,10 @@ public class TestAmountFormats {
         assertEquals("14 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(14), RU));
         assertEquals("15 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(15), RU));
         assertEquals("21 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(21), RU));
+        assertEquals("22 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(22), RU));
         assertEquals("24 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(24), RU));
         assertEquals("25 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(25), RU));
+        assertEquals("31 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(31), RU));
+        assertEquals("32 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(32), RU));
     }
 }
