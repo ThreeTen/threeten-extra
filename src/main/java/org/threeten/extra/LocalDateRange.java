@@ -503,7 +503,7 @@ public final class LocalDateRange
     /**
      * Checks if this range overlaps the specified range.
      * <p>
-     * The result is true if the the two ranges share some part of the time-line.
+     * The result is true if the two ranges share some part of the time-line.
      * An empty range overlaps itself.
      * <p>
      * This is equivalent to {@code (isConnected(other) && !abuts(other))}.

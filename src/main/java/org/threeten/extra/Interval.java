@@ -389,7 +389,7 @@ public final class Interval
     /**
      * Checks if this interval overlaps the specified interval.
      * <p>
-     * The result is true if the the two intervals share some part of the time-line.
+     * The result is true if the two intervals share some part of the time-line.
      * An empty interval overlaps itself.
      * <p>
      * This is equivalent to {@code (isConnected(other) && !abuts(other))}.
