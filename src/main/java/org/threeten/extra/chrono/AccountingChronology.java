@@ -170,7 +170,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
                     + " not set.");
         }
         if (!division.getMonthsInYearRange().isValidValue(leapWeekInMonth)) {
-            throw new IllegalStateException("Leap week cannot not be placed in non-existant month " + leapWeekInMonth
+            throw new IllegalStateException("Leap week cannot not be placed in non-existent month " + leapWeekInMonth
                     + ", range is [" + division.getMonthsInYearRange() + "].");
         }
 
