@@ -326,7 +326,7 @@ public final class DiscordianDate
 
         if (month == 0 || dayOfMonth == 0) {
             if (month != 0 || dayOfMonth != 0) {
-                throw new DateTimeException("Invalid date '" + month + " " + dayOfMonth + "' as St. Tib's Day is the only special day inserted in a nonexistent month.");
+                throw new DateTimeException("Invalid date '" + month + " " + dayOfMonth + "' as St. Tib's Day is the only special day inserted in a non-existent month.");
             } else if (!DiscordianChronology.INSTANCE.isLeapYear(prolepticYear)) {
                 throw new DateTimeException("Invalid date 'St. Tibs Day' as '" + prolepticYear + "' is not a leap year");
             }
