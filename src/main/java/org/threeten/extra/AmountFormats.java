@@ -163,6 +163,7 @@ public final class AmountFormats {
      * Formats a period to a string in a localized word-based format.
      * <p>
      * This returns a word-based format for the period.
+     * The year and month are printed as supplied unless the signs differ, in which case they are normalized.
      * The words are configured in a resource bundle text file -
      * {@code org.threeten.extra.wordbased.properties} - with overrides per language.
      *
@@ -180,8 +181,8 @@ public final class AmountFormats {
             UnitFormat.of(bundle, WORDBASED_WEEK),
             UnitFormat.of(bundle, WORDBASED_DAY)};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
-        
-        Period normPeriod = period.normalized();
+
+        Period normPeriod = oppositeSigns(period.getMonths(), period.getYears()) ? period.normalized() : period;
         int weeks = 0, days = 0;
         if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
             weeks = normPeriod.getDays() / DAYS_PER_WEEK;
@@ -213,7 +214,7 @@ public final class AmountFormats {
             UnitFormat.of(bundle, WORDBASED_SECOND),
             UnitFormat.of(bundle, WORDBASED_MILLISECOND)};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
-        
+
         long hours = duration.toHours();
         long mins = duration.toMinutes() % MINUTES_PER_HOUR;
         long secs = duration.getSeconds() % SECONDS_PER_MINUTE;
@@ -226,6 +227,7 @@ public final class AmountFormats {
      * Formats a period and duration to a string in a localized word-based format.
      * <p>
      * This returns a word-based format for the period.
+     * The year and month are printed as supplied unless the signs differ, in which case they are normalized.
      * The words are configured in a resource bundle text file -
      * {@code org.threeten.extra.wordbased.properties} - with overrides per language.
      *
@@ -249,8 +251,8 @@ public final class AmountFormats {
             UnitFormat.of(bundle, WORDBASED_SECOND),
             UnitFormat.of(bundle, WORDBASED_MILLISECOND)};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
-        
-        Period normPeriod = period.normalized();
+
+        Period normPeriod = oppositeSigns(period.getMonths(), period.getYears()) ? period.normalized() : period;
         int weeks = 0, days = 0;
         if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
             weeks = normPeriod.getDays() / DAYS_PER_WEEK;
@@ -267,6 +269,11 @@ public final class AmountFormats {
             normPeriod.getYears(), normPeriod.getMonths(), weeks, days,
             (int) hours, mins, secs, millis};
         return wb.format(values);
+    }
+
+    // are the signs opposite
+    private static boolean oppositeSigns(int a, int b) {
+        return a < 0 ? (b >= 0) : (b < 0);
     }
 
     private AmountFormats() {

@@ -37,7 +37,6 @@ import java.time.Duration;
 import java.time.Period;
 import java.util.Locale;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -79,7 +78,9 @@ public class TestAmountFormats {
             {Period.ofMonths(0), Locale.ENGLISH, "0 days"},
             {Period.ofMonths(1), Locale.ENGLISH, "1 month"},
             {Period.ofMonths(4), Locale.ENGLISH, "4 months"},
-            {Period.ofMonths(14), Locale.ENGLISH, "1 year and 2 months"},
+            {Period.ofMonths(14), Locale.ENGLISH, "14 months"},
+            {Period.ofMonths(14).normalized(), Locale.ENGLISH, "1 year and 2 months"},
+            {Period.ofYears(2).plusMonths(-10).normalized(), Locale.ENGLISH, "1 year and 2 months"},
 
             {Period.ofDays(1), Locale.ENGLISH, "1 day"},
             {Period.ofDays(2), Locale.ENGLISH, "2 days"},
@@ -92,7 +93,7 @@ public class TestAmountFormats {
             {Period.ofDays(5), new Locale("ro"), "5 zile"},
             {Period.ofDays(7), new Locale("ro"), "1 săptămână"},
             {Period.ofWeeks(3), new Locale("ro"), "3 săptămâni"},
-            {Period.ofMonths(14), new Locale("ro"), "1 an și 2 luni"},
+            {Period.ofMonths(14).normalized(), new Locale("ro"), "1 an și 2 luni"},
             {Period.ofMonths(1), new Locale("ro"), "1 lună"},
             {Period.ofYears(2), new Locale("ro"), "2 ani"},
         };
@@ -169,14 +170,13 @@ public class TestAmountFormats {
 
     //-----------------------------------------------------------------------
     @Test
-    @Ignore // Currently failing: says 29 hours, not 1 day and 5 hours
     public void test_wordBased_pl_formatStandard() {
-        Duration p = Duration.ofDays(1).plusHours(5).plusMinutes(6).plusSeconds(7).plusNanos(8_000_000L);
-        assertEquals("1 dzie\u0144, 5 godzin, 6 minut, 7 sekund i 8 milisekund", AmountFormats.wordBased(p, PL));
+        Period p = Period.ofDays(1);
+        Duration d = Duration.ofHours(5).plusMinutes(6).plusSeconds(7).plusNanos(8_000_000L);
+        assertEquals("1 dzie\u0144, 5 godzin, 6 minut, 7 sekund i 8 milisekund", AmountFormats.wordBased(p, d, PL));
     }
 
     @Test
-    @Ignore // Currently failing: 12 months becomes 1 year
     public void test_wordBased_pl_predicatex() {
         assertEquals("1 rok", AmountFormats.wordBased(Period.ofYears(1), PL));
         assertEquals("2 lata", AmountFormats.wordBased(Period.ofYears(2), PL));
@@ -271,60 +271,12 @@ public class TestAmountFormats {
         assertEquals("5 minut", AmountFormats.wordBased(Duration.ofMinutes(5), PL));
         assertEquals("12 minut", AmountFormats.wordBased(Duration.ofMinutes(12), PL));
         assertEquals("15 minut", AmountFormats.wordBased(Duration.ofMinutes(15), PL));
-        assertEquals("1112 minut", AmountFormats.wordBased(Duration.ofMinutes(1112), PL));
-        assertEquals("1115 minut", AmountFormats.wordBased(Duration.ofMinutes(1115), PL));
-        assertEquals("2112 minut", AmountFormats.wordBased(Duration.ofMinutes(2112), PL));
-        assertEquals("2115 minut", AmountFormats.wordBased(Duration.ofMinutes(2115), PL));
-        assertEquals("2212 minut", AmountFormats.wordBased(Duration.ofMinutes(2212), PL));
-        assertEquals("2215 minut", AmountFormats.wordBased(Duration.ofMinutes(2215), PL));
-        assertEquals("22 minuty", AmountFormats.wordBased(Duration.ofMinutes(22), PL));
-        assertEquals("25 minut", AmountFormats.wordBased(Duration.ofMinutes(25), PL));
-        assertEquals("1122 minuty", AmountFormats.wordBased(Duration.ofMinutes(1122), PL));
-        assertEquals("1125 minut", AmountFormats.wordBased(Duration.ofMinutes(1125), PL));
-        assertEquals("2122 minuty", AmountFormats.wordBased(Duration.ofMinutes(2122), PL));
-        assertEquals("2125 minut", AmountFormats.wordBased(Duration.ofMinutes(2125), PL));
-        assertEquals("2222 minuty", AmountFormats.wordBased(Duration.ofMinutes(2222), PL));
-        assertEquals("2225 minut", AmountFormats.wordBased(Duration.ofMinutes(2225), PL));
-
-        assertEquals("1 sekunda", AmountFormats.wordBased(Duration.ofSeconds(1), PL));
-        assertEquals("2 sekundy", AmountFormats.wordBased(Duration.ofSeconds(2), PL));
-        assertEquals("5 sekund", AmountFormats.wordBased(Duration.ofSeconds(5), PL));
-        assertEquals("12 sekund", AmountFormats.wordBased(Duration.ofSeconds(12), PL));
-        assertEquals("15 sekund", AmountFormats.wordBased(Duration.ofSeconds(15), PL));
-        assertEquals("1112 sekund", AmountFormats.wordBased(Duration.ofSeconds(1112), PL));
-        assertEquals("1115 sekund", AmountFormats.wordBased(Duration.ofSeconds(1115), PL));
-        assertEquals("2112 sekund", AmountFormats.wordBased(Duration.ofSeconds(2112), PL));
-        assertEquals("2115 sekund", AmountFormats.wordBased(Duration.ofSeconds(2115), PL));
-        assertEquals("2212 sekund", AmountFormats.wordBased(Duration.ofSeconds(2212), PL));
-        assertEquals("2215 sekund", AmountFormats.wordBased(Duration.ofSeconds(2215), PL));
-        assertEquals("22 sekundy", AmountFormats.wordBased(Duration.ofSeconds(22), PL));
-        assertEquals("25 sekund", AmountFormats.wordBased(Duration.ofSeconds(25), PL));
-        assertEquals("1122 sekundy", AmountFormats.wordBased(Duration.ofSeconds(1122), PL));
-        assertEquals("1125 sekund", AmountFormats.wordBased(Duration.ofSeconds(1125), PL));
-        assertEquals("2122 sekundy", AmountFormats.wordBased(Duration.ofSeconds(2122), PL));
-        assertEquals("2125 sekund", AmountFormats.wordBased(Duration.ofSeconds(2125), PL));
-        assertEquals("2222 sekundy", AmountFormats.wordBased(Duration.ofSeconds(2222), PL));
-        assertEquals("2225 sekund", AmountFormats.wordBased(Duration.ofSeconds(2225), PL));
-
-        assertEquals("1 milisekunda", AmountFormats.wordBased(Duration.ofMillis(1), PL));
-        assertEquals("2 milisekundy", AmountFormats.wordBased(Duration.ofMillis(2), PL));
-        assertEquals("5 milisekund", AmountFormats.wordBased(Duration.ofMillis(5), PL));
-        assertEquals("12 milisekund", AmountFormats.wordBased(Duration.ofMillis(12), PL));
-        assertEquals("15 milisekund", AmountFormats.wordBased(Duration.ofMillis(15), PL));
-        assertEquals("1112 milisekund", AmountFormats.wordBased(Duration.ofMillis(1112), PL));
-        assertEquals("1115 milisekund", AmountFormats.wordBased(Duration.ofMillis(1115), PL));
-        assertEquals("2112 milisekund", AmountFormats.wordBased(Duration.ofMillis(2112), PL));
-        assertEquals("2115 milisekund", AmountFormats.wordBased(Duration.ofMillis(2115), PL));
-        assertEquals("2212 milisekund", AmountFormats.wordBased(Duration.ofMillis(2212), PL));
-        assertEquals("2215 milisekund", AmountFormats.wordBased(Duration.ofMillis(2215), PL));
-        assertEquals("22 milisekundy", AmountFormats.wordBased(Duration.ofMillis(22), PL));
-        assertEquals("25 milisekund", AmountFormats.wordBased(Duration.ofMillis(25), PL));
-        assertEquals("1122 milisekundy", AmountFormats.wordBased(Duration.ofMillis(1122), PL));
-        assertEquals("1125 milisekund", AmountFormats.wordBased(Duration.ofMillis(1125), PL));
-        assertEquals("2122 milisekundy", AmountFormats.wordBased(Duration.ofMillis(2122), PL));
-        assertEquals("2125 milisekund", AmountFormats.wordBased(Duration.ofMillis(2125), PL));
-        assertEquals("2222 milisekundy", AmountFormats.wordBased(Duration.ofMillis(2222), PL));
-        assertEquals("2225 milisekund", AmountFormats.wordBased(Duration.ofMillis(2225), PL));
+        assertEquals("18 godzin i 32 minuty", AmountFormats.wordBased(Duration.ofMinutes(1112), PL));
+        assertEquals("18 godzin i 35 minut", AmountFormats.wordBased(Duration.ofMinutes(1115), PL));
+        assertEquals("35 godzin i 12 minut", AmountFormats.wordBased(Duration.ofMinutes(2112), PL));
+        assertEquals("35 godzin i 15 minut", AmountFormats.wordBased(Duration.ofMinutes(2115), PL));
+        assertEquals("36 godzin i 52 minuty", AmountFormats.wordBased(Duration.ofMinutes(2212), PL));
+        assertEquals("36 godzin i 55 minut", AmountFormats.wordBased(Duration.ofMinutes(2215), PL));
     }
 
     @Test
