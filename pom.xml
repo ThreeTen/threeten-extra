@@ -10,7 +10,7 @@
   <artifactId>threeten-extra</artifactId>
   <packaging>jar</packaging>
   <name>ThreeTen-Extra</name>
-  <version>1.5.1-SNAPSHOT</version>
+  <version>1.6.0-SNAPSHOT</version>
   <description>Additional functionality that enhances JSR-310 dates and times in Java SE 8 and later</description>
   <url>https://www.threeten.org/threeten-extra</url>
 
