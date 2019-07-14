@@ -352,7 +352,7 @@ public final class YearQuarter
     /**
      * Checks if the specified unit is supported.
      * <p>
-     * This checks if the specified unit can be added to, or subtracted from, this date-time.
+     * This checks if the specified unit can be added to, or subtracted from, this year-quarter.
      * If false, then calling the {@link #plus(long, TemporalUnit)} and
      * {@link #minus(long, TemporalUnit) minus} methods will throw an exception.
      * <p>
@@ -617,7 +617,7 @@ public final class YearQuarter
     /**
      * Returns an adjusted copy of this year-quarter.
      * <p>
-     * This returns a {@code YearQuarter}, based on this one, with the year-quarter adjusted.
+     * This returns a {@code YearQuarter} based on this one, with the year-quarter adjusted.
      * The adjustment takes place using the specified adjuster strategy object.
      * Read the documentation of the adjuster to understand what adjustment will be made.
      * <p>
@@ -644,7 +644,7 @@ public final class YearQuarter
     /**
      * Returns a copy of this year-quarter with the specified field set to a new value.
      * <p>
-     * This returns a {@code YearQuarter}, based on this one, with the value
+     * This returns a {@code YearQuarter} based on this one, with the value
      * for the specified field changed.
      * This can be used to change any supported field, such as the year or quarter.
      * If it is not possible to set the value, because the field is not supported or for
@@ -740,7 +740,7 @@ public final class YearQuarter
     /**
      * Returns a copy of this year-quarter with the specified amount added.
      * <p>
-     * This returns a {@code YearQuarter}, based on this one, with the specified amount added.
+     * This returns a {@code YearQuarter} based on this one, with the specified amount added.
      * The amount is typically {@link Period} but may be any other type implementing
      * the {@link TemporalAmount} interface.
      * <p>
@@ -765,7 +765,7 @@ public final class YearQuarter
     /**
      * Returns a copy of this year-quarter with the specified amount added.
      * <p>
-     * This returns a {@code YearQuarter}, based on this one, with the amount
+     * This returns a {@code YearQuarter} based on this one, with the amount
      * in terms of the unit added. If it is not possible to add the amount, because the
      * unit is not supported or for some other reason, an exception is thrown.
      * <p>
@@ -877,7 +877,7 @@ public final class YearQuarter
     /**
      * Returns a copy of this year-quarter with the specified amount subtracted.
      * <p>
-     * This returns a {@code YearQuarter}, based on this one, with the specified amount subtracted.
+     * This returns a {@code YearQuarter} based on this one, with the specified amount subtracted.
      * The amount is typically {@link Period} but may be any other type implementing
      * the {@link TemporalAmount} interface.
      * <p>
@@ -902,7 +902,7 @@ public final class YearQuarter
     /**
      * Returns a copy of this year-quarter with the specified amount subtracted.
      * <p>
-     * This returns a {@code YearQuarter}, based on this one, with the amount
+     * This returns a {@code YearQuarter} based on this one, with the amount
      * in terms of the unit subtracted. If it is not possible to subtract the amount,
      * because the unit is not supported or for some other reason, an exception is thrown.
      * <p>
@@ -1102,7 +1102,7 @@ public final class YearQuarter
             throw new IllegalArgumentException(endExclusive + " < " + this);
         }
         long intervalLength = until(endExclusive, QUARTER_YEARS);
-        return LongStream.range(0,intervalLength).mapToObj(n -> plusQuarters(n));
+        return LongStream.range(0, intervalLength).mapToObj(n -> plusQuarters(n));
     }
 
     /**
