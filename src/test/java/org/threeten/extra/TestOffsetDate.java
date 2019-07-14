@@ -73,6 +73,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.JulianFields;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
@@ -609,6 +610,13 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     public void test_until(long expected, OffsetDate od1, OffsetDate od2, TemporalUnit unit) {
         assertEquals(expected, od1.until(od2, unit));
         assertEquals(-expected, od2.until(od1, unit));
+    }
+
+    @Test
+    public void test_until_otherType() {
+        OffsetDate start = OffsetDate.of(2007, 6, 30, OFFSET_PONE);
+        Temporal end = OffsetDateTime.of(2007, 8, 31, 12, 0, 0, 0, OFFSET_PONE);
+        assertEquals(2, start.until(end, ChronoUnit.MONTHS));
     }
 
     @Test(expected=DateTimeException.class)

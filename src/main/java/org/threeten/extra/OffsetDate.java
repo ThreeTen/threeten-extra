@@ -62,6 +62,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.time.zone.ZoneRules;
 import java.util.Objects;
@@ -81,8 +82,11 @@ import org.joda.convert.ToString;
  * For example, the value "2nd October 2007 +02:00" can be stored
  * in an {@code OffsetDate}.
  *
- * <h3>Specification for implementors</h3>
+ * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class OffsetDate
         implements Temporal, TemporalAdjuster, Comparable<OffsetDate>, Serializable {
@@ -195,9 +199,6 @@ public final class OffsetDate
      * <p>
      * This method exists primarily for writing test cases.
      * Non test-code will typically use other methods to create an offset time.
-     * {@code LocalDate} has one additional convenience variant of the
-     * equivalent factory method taking fewer arguments.
-     * They are not provided here to reduce the footprint of the API.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -309,6 +310,15 @@ public final class OffsetDate
     }
 
     /**
+     * Validates the input.
+     *
+     * @return the valid object, not null
+     */
+    private Object readResolve() {
+        return of(date, offset);
+    }
+
+    /**
      * Returns a new date based on this one, returning {@code this} where possible.
      *
      * @param date  the date to create with, not null
@@ -326,12 +336,11 @@ public final class OffsetDate
      * Checks if the specified field is supported.
      * <p>
      * This checks if this date can be queried for the specified field.
-     * If false, then calling the {@link #range(TemporalField) range} and
-     * {@link #get(TemporalField) get} methods will throw an exception.
+     * If false, then calling the {@link #range(TemporalField) range},
+     * {@link #get(TemporalField) get} and {@link #with(TemporalField, long)}
+     * methods will throw an exception.
      * <p>
      * If the field is a {@link ChronoField} then the query is implemented here.
-     * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this date-time.
      * The supported fields are:
      * <ul>
      * <li>{@code DAY_OF_WEEK}
@@ -343,7 +352,7 @@ public final class OffsetDate
      * <li>{@code ALIGNED_WEEK_OF_MONTH}
      * <li>{@code ALIGNED_WEEK_OF_YEAR}
      * <li>{@code MONTH_OF_YEAR}
-     * <li>{@code EPOCH_MONTH}
+     * <li>{@code PROLEPTIC_MONTH}
      * <li>{@code YEAR_OF_ERA}
      * <li>{@code YEAR}
      * <li>{@code ERA}
@@ -352,7 +361,7 @@ public final class OffsetDate
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -362,7 +371,7 @@ public final class OffsetDate
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateBased() || field == OFFSET_SECONDS;
+            return field.isDateBased() || field == OFFSET_SECONDS;
         }
         return field != null && field.isSupportedBy(this);
     }
@@ -398,11 +407,12 @@ public final class OffsetDate
      */
     public boolean isSupported(TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
-            return ((ChronoUnit) unit).isDateBased();
+            return unit.isDateBased();
         }
         return unit != null && unit.isSupportedBy(this);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the range of valid values for the specified field.
      * <p>
@@ -414,16 +424,17 @@ public final class OffsetDate
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The {@link #isSupported(TemporalField) supported fields} will return
      * appropriate range instances.
-     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
      * @param field  the field to query the range for, not null
      * @return the range of valid values for the field, not null
      * @throws DateTimeException if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException if the field is not supported
      */
     @Override
     public ValueRange range(TemporalField field) {
@@ -446,18 +457,21 @@ public final class OffsetDate
      * <p>
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this date, except {@code EPOCH_DAY} and {@code EPOCH_MONTH}
+     * values based on this date, except {@code EPOCH_DAY} and {@code PROLEPTIC_MONTH}
      * which are too large to fit in an {@code int} and throw a {@code DateTimeException}.
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
      * @param field  the field to get, not null
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws DateTimeException if a value for the field cannot be obtained or
+     *  the value is outside the range of valid values for the field
+     * @throws UnsupportedTemporalTypeException if the field is not supported or
+     *  the range of values exceeds an {@code int}
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override  // override for Javadoc
@@ -475,16 +489,17 @@ public final class OffsetDate
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The {@link #isSupported(TemporalField) supported fields} will return valid
      * values based on this date.
-     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
      * @param field  the field to get, not null
      * @return the value for the field
      * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException if the field is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
@@ -549,7 +564,7 @@ public final class OffsetDate
      * This method returns the primitive {@code int} value for the year.
      * <p>
      * The year returned by this method is proleptic as per {@code get(YEAR)}.
-     * To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
+     * To obtain the year-of-era, use {@code get(YEAR_OF_ERA)}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -629,7 +644,7 @@ public final class OffsetDate
     /**
      * Returns an adjusted copy of this date.
      * <p>
-     * This returns a new {@code OffsetDate}, based on this one, with the date adjusted.
+     * This returns an {@code OffsetDate} based on this one, with the date adjusted.
      * The adjustment takes place using the specified adjuster strategy object.
      * Read the documentation of the adjuster to understand what adjustment will be made.
      * <p>
@@ -644,8 +659,8 @@ public final class OffsetDate
      * <p>
      * For example this code returns a date on the last day of July:
      * <pre>
-     *  import static org.threeten.bp.Month.*;
-     *  import static org.threeten.bp.temporal.Adjusters.*;
+     *  import static java.time.Month.*;
+     *  import static java.time.temporal.TemporalAdjusters.*;
      *
      *  result = offsetDate.with(JULY).with(lastDayOfMonth());
      * </pre>
@@ -684,7 +699,7 @@ public final class OffsetDate
     /**
      * Returns a copy of this date with the specified field set to a new value.
      * <p>
-     * This returns a new {@code OffsetDate}, based on this one, with the value
+     * This returns an {@code OffsetDate} based on this one, with the value
      * for the specified field changed.
      * This can be used to change any supported field, such as the year, month or day-of-month.
      * If it is not possible to set the value, because the field is not supported or for
@@ -705,10 +720,10 @@ public final class OffsetDate
      * the matching method on {@link LocalDate#with(TemporalField, long)} LocalDate}.
      * In this case, the offset is not part of the calculation and will be unchanged.
      * <p>
-     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -718,6 +733,7 @@ public final class OffsetDate
      * @param newValue  the new value of the field in the result
      * @return an {@code OffsetDate} based on {@code this} with the specified field set, not null
      * @throws DateTimeException if the field cannot be set
+     * @throws UnsupportedTemporalTypeException if the field is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
@@ -735,6 +751,7 @@ public final class OffsetDate
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code OffsetDate} with the year altered.
+     * <p>
      * The offset does not affect the calculation and will be the same in the result.
      * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
@@ -750,6 +767,7 @@ public final class OffsetDate
 
     /**
      * Returns a copy of this {@code OffsetDate} with the month-of-year altered.
+     * <p>
      * The offset does not affect the calculation and will be the same in the result.
      * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
      * <p>
@@ -765,6 +783,7 @@ public final class OffsetDate
 
     /**
      * Returns a copy of this {@code OffsetDate} with the day-of-month altered.
+     * <p>
      * If the resulting date is invalid, an exception is thrown.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
@@ -772,8 +791,8 @@ public final class OffsetDate
      *
      * @param dayOfMonth  the day-of-month to set in the result, from 1 to 28-31
      * @return an {@code OffsetDate} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-month value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
+     * @throws DateTimeException if the day-of-month value is invalid,
+     *  or if the day-of-month is invalid for the month-year
      */
     public OffsetDate withDayOfMonth(int dayOfMonth) {
         return with(date.withDayOfMonth(dayOfMonth), offset);
@@ -781,14 +800,15 @@ public final class OffsetDate
 
     /**
      * Returns a copy of this {@code OffsetDate} with the day-of-year altered.
+     * <p>
      * If the resulting date is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
      * @return an {@code OffsetDate} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-year value is invalid
-     * @throws DateTimeException if the day-of-year is invalid for the year
+     * @throws DateTimeException if the day-of-year value is invalid,
+     *  or if the day-of-year is invalid for the year
      */
     public OffsetDate withDayOfYear(int dayOfYear) {
         return with(date.withDayOfYear(dayOfYear), offset);
@@ -798,16 +818,15 @@ public final class OffsetDate
     /**
      * Returns a copy of this date with the specified period added.
      * <p>
-     * This method returns a new date based on this date with the specified period added.
-     * The adder is typically {@link Period} but may be any other type implementing
+     * This returns an {@code OffsetDate} based on this one, with the specified amount added.
+     * The amount is typically {@link Period} but may be any other type implementing
      * the {@link TemporalAmount} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #plus(long, TemporalUnit)}.
-     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This uses {@link TemporalAmount#addTo(Temporal)} to perform the calculation.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the adder to use, not null
+     * @param amountToAdd  the amount to add, not null
      * @return an {@code OffsetDate} based on this date with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
@@ -818,20 +837,29 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this date with the specified period added.
+     * Returns a copy of this date with the specified amount added.
      * <p>
-     * This method returns a new date based on this date with the specified period added.
-     * This can be used to add any period that is defined by a unit, for example to add years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
+     * This returns an {@code OffsetDate} based on this one, with the amount
+     * in terms of the unit added. If it is not possible to add the amount, because the
+     * unit is not supported or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoUnit} then the addition is implemented by
+     * {@link LocalDate#plus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * If the field is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.addTo(Temporal, long)}
+     * passing {@code this} as the argument. In this case, the unit determines
+     * whether and how to perform the addition.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the amount of the unit to add to the result, may be negative
-     * @param unit  the unit of the period to add, not null
-     * @return an {@code OffsetDate} based on this date with the specified period added, not null
-     * @throws DateTimeException if the unit cannot be added to this type
+     * @param unit  the unit of the amount to add, not null
+     * @return an {@code OffsetDate} based on this date with the specified amount added, not null
+     * @throws DateTimeException if the addition cannot be made
+     * @throws UnsupportedTemporalTypeException if the unit is not supported
+     * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public OffsetDate plus(long amountToAdd, TemporalUnit unit) {
@@ -843,18 +871,10 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in years added.
+     * Returns a copy of this {@code OffsetDate} with the specified number of years added.
      * <p>
-     * This method adds the specified amount to the years field in three steps:
-     * <ol>
-     * <li>Add the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) plus one year would result in the
-     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2009-02-28, is selected instead.
+     * This uses {@link LocalDate#plusYears(long)} to add the years.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -867,18 +887,10 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in months added.
+     * Returns a copy of this {@code OffsetDate} with the specified number of months added.
      * <p>
-     * This method adds the specified amount to the months field in three steps:
-     * <ol>
-     * <li>Add the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 plus one month would result in the invalid date
-     * 2007-04-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-04-30, is selected instead.
+     * This uses {@link LocalDate#plusMonths(long)} to add the months.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -891,13 +903,10 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in weeks added.
+     * Returns a copy of this {@code OffsetDate} with the specified number of weeks added.
      * <p>
-     * This method adds the specified amount in weeks to the days field incrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one week would result in 2009-01-07.
+     * This uses {@link LocalDate#plusWeeks(long)} to add the weeks.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -910,13 +919,10 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in days added.
+     * Returns a copy of this {@code OffsetDate} with the specified number of days added.
      * <p>
-     * This method adds the specified amount to the days field incrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one day would result in 2009-01-01.
+     * This uses {@link LocalDate#plusDays(long)} to add the days.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -930,18 +936,17 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this date with the specified period subtracted.
+     * Returns a copy of this date with the specified amount subtracted.
      * <p>
-     * This method returns a new date based on this date with the specified period subtracted.
-     * The subtractor is typically {@link Period} but may be any other type implementing
+     * This returns am {@code OffsetDate} based on this one, with the specified amount subtracted.
+     * The amount is typically {@link Period} but may be any other type implementing
      * the {@link TemporalAmount} interface.
-     * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #minus(long, TemporalUnit)}.
-     * The offset is not part of the calculation and will be unchanged in the result.
+     * <p>
+     * This uses {@link TemporalAmount#subtractFrom(Temporal)} to perform the calculation.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the subtractor to use, not null
+     * @param amountToSubtract  the amount to subtract, not null
      * @return an {@code OffsetDate} based on this date with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
@@ -952,20 +957,23 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this date with the specified period subtracted.
+     * Returns a copy of this date with the specified amount subtracted.
      * <p>
-     * This method returns a new date based on this date with the specified period subtracted.
-     * This can be used to subtract any period that is defined by a unit, for example to subtract years, months or days.
-     * The unit is responsible for the details of the calculation, including the resolution
-     * of any edge cases in the calculation.
-     * The offset is not part of the calculation and will be unchanged in the result.
+     * This returns an {@code OffsetDate} based on this one, with the amount
+     * in terms of the unit subtracted. If it is not possible to subtract the amount,
+     * because the unit is not supported or for some other reason, an exception is thrown.
+     * <p>
+     * This method is equivalent to {@link #plus(long, TemporalUnit)} with the amount negated.
+     * See that method for a full description of how addition, and thus subtraction, works.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
-     * @param unit  the unit of the period to subtract, not null
-     * @return an {@code OffsetDate} based on this date with the specified period subtracted, not null
-     * @throws DateTimeException if the unit cannot be added to this type
+     * @param unit  the unit of the amount to subtract, not null
+     * @return an {@code OffsetDate} based on this date with the specified amount subtracted, not null
+     * @throws DateTimeException if the subtraction cannot be made
+     * @throws UnsupportedTemporalTypeException if the unit is not supported
+     * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public OffsetDate minus(long amountToSubtract, TemporalUnit unit) {
@@ -974,18 +982,10 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in years subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified number of years subtracted.
      * <p>
-     * This method subtracts the specified amount from the years field in three steps:
-     * <ol>
-     * <li>Subtract the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) minus one year would result in the
-     * invalid date 2007-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2007-02-28, is selected instead.
+     * This uses {@link LocalDate#minusYears(long)} to subtract the years.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -998,18 +998,10 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in months subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified number of months subtracted.
      * <p>
-     * This method subtracts the specified amount from the months field in three steps:
-     * <ol>
-     * <li>Subtract the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 minus one month would result in the invalid date
-     * 2007-02-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-02-28, is selected instead.
+     * This uses {@link LocalDate#minusMonths(long)} to subtract the months.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1022,13 +1014,10 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in weeks subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified number of weeks subtracted.
      * <p>
-     * This method subtracts the specified amount in weeks from the days field decrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2009-01-07 minus one week would result in 2008-12-31.
+     * This uses {@link LocalDate#minusWeeks(long)} to subtract the weeks.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1043,11 +1032,8 @@ public final class OffsetDate
     /**
      * Returns a copy of this {@code OffsetDate} with the specified number of days subtracted.
      * <p>
-     * This method subtracts the specified amount from the days field decrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2009-01-01 minus one day would result in 2008-12-31.
+     * This uses {@link LocalDate#minusDays(long)} to subtract the days.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1132,9 +1118,10 @@ public final class OffsetDate
      * The start and end points are {@code this} and the specified date.
      * The result will be negative if the end is before the start.
      * For example, the period in days between two dates can be calculated
-     * using {@code startDate.periodUntil(endDate, DAYS)}.
+     * using {@code startDate.until(endDate, DAYS)}.
      * <p>
-     * The {@code Temporal} passed to this method must be an {@code OffsetDate}.
+     * The {@code Temporal} passed to this method is converted to a
+     * {@code OffsetDate} using {@link #from(TemporalAccessor)}.
      * If the offset differs between the two times, then the specified
      * end time is normalized to have the same offset as this time.
      * <p>
@@ -1143,14 +1130,15 @@ public final class OffsetDate
      * For example, the period in months between 2012-06-15Z and 2012-08-14Z
      * will only be one month as it is one day short of two months.
      * <p>
-     * This method operates in association with {@link TemporalUnit#between}.
-     * The result of this method is a {@code long} representing the amount of
-     * the specified unit. By contrast, the result of {@code between} is an
-     * object that can be used directly in addition/subtraction:
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method.
+     * The second is to use {@link TemporalUnit#between(Temporal, Temporal)}:
      * <pre>
-     *   long period = start.periodUntil(end, MONTHS);   // this method
-     *   dateTime.plus(MONTHS.between(start, end));      // use in plus/minus
+     *   // these two lines are equivalent
+     *   amount = start.until(end, DAYS);
+     *   amount = DAYS.between(start, end);
      * </pre>
+     * The choice should be made based on which makes the code more readable.
      * <p>
      * The calculation is implemented in this method for {@link ChronoUnit}.
      * The units {@code DAYS}, {@code WEEKS}, {@code MONTHS}, {@code YEARS},
@@ -1159,36 +1147,34 @@ public final class OffsetDate
      * <p>
      * If the unit is not a {@code ChronoUnit}, then the result of this method
      * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
-     * passing {@code this} as the first argument and the input temporal as
-     * the second argument.
+     * passing {@code this} as the first argument and the converted input temporal
+     * as the second argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endDate  the end date, which must be an {@code OffsetDate}, not null
-     * @param unit  the unit to measure the period in, not null
-     * @return the amount of the period between this date and the end date
-     * @throws DateTimeException if the period cannot be calculated
+     * @param endExclusive  the end time, exclusive, which is converted to an {@code OffsetDate}, not null
+     * @param unit  the unit to measure the amount in, not null
+     * @return the amount of time between this date and the end date
+     * @throws DateTimeException if the amount cannot be calculated, or the end
+     *  temporal cannot be converted to an {@code OffsetDate}
+     * @throws UnsupportedTemporalTypeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long until(Temporal endDate, TemporalUnit unit) {
-        if (endDate instanceof OffsetDate == false) {
-            Objects.requireNonNull(endDate, "endDate");
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        OffsetDate end = OffsetDate.from(endExclusive);
         if (unit instanceof ChronoUnit) {
-            OffsetDate end = (OffsetDate) endDate;
             long offsetDiff = end.offset.getTotalSeconds() - offset.getTotalSeconds();
             LocalDate endLocal = end.date.plusDays(Math.floorDiv(-offsetDiff, SECONDS_PER_DAY));
             return date.until(endLocal, unit);
         }
-        return unit.between(this, endDate);
+        return unit.between(this, end);
     }
 
     /**
      * Formats this date using the specified formatter.
      * <p>
-     * This date-time will be passed to the formatter to produce a string.
+     * This date will be passed to the formatter to produce a string.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted date string, not null
