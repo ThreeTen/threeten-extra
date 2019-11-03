@@ -32,9 +32,16 @@ The following features are included:
 * [`LocalDateRange`](apidocs/org.threeten.extra/org/threeten/extra/LocalDateRange.html) - a range between two dates
 * [`PeriodDuration`](apidocs/org.threeten.extra/org/threeten/extra/PeriodDuration.html) - combines `Period` and `Duration`
 * Weekend adjusters
-* [Coptic](apidocs/org.threeten.extra/org/threeten/extra/chrono/CopticChronology.html) calendar system
-* [Ethiopic](apidocs/org.threeten.extra/org/threeten/extra/chrono/EthiopicChronology.html) calendar system
-* [Julian](apidocs/org.threeten.extra/org/threeten/extra/chrono/JulianChronology.html) calendar system
+* [Accounting](apidocs/org.threeten.extra/org/threeten/extra/chrono/AccountingChronology.html),
+[British Cutover](apidocs/org.threeten.extra/org/threeten/extra/chrono/BritishCutoverChronology.html),
+[Coptic](apidocs/org.threeten.extra/org/threeten/extra/chrono/CopticChronology.html),
+[Discordian](apidocs/org.threeten.extra/org/threeten/extra/chrono/DiscordianChronology.html),
+[Ethiopic](apidocs/org.threeten.extra/org/threeten/extra/chrono/EthiopicChronology.html),
+[International Fixed](apidocs/org.threeten.extra/org/threeten/extra/chrono/InternationalFixedChronology.html),
+[Julian](apidocs/org.threeten.extra/org/threeten/extra/chrono/JulianChronology.html),
+[Pax](apidocs/org.threeten.extra/org/threeten/extra/chrono/PaxChronology.html),
+[Symmetry010](apidocs/org.threeten.extra/org/threeten/extra/chrono/Symmetry010Chronology.html) and
+[Symmetry454](apidocs/org.threeten.extra/org/threeten/extra/chrono/Symmetry454Chronology.html) calendar systems
 * [Word-based](apidocs/org.threeten.extra/org/threeten/extra/AmountFormats.html) period and duration formatting
 * Support for the TAI and UTC [time-scales](apidocs/org.threeten.extra/org/threeten/extra/scale/package-summary.html)
 
