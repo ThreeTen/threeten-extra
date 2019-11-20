@@ -64,7 +64,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -668,6 +670,73 @@ public class TestTemporals {
     @UseDataProvider("data_convertAmountInvalidUnsupported")
     public void test_convertAmountInvalidUnsupported(TemporalUnit fromUnit, TemporalUnit resultUnit) {
         assertThrows(UnsupportedTemporalTypeException.class, () -> Temporals.convertAmount(1, fromUnit, resultUnit));
+    }
+
+    //-----------------------------------------------------------------------
+    // duration to/from BigDecimal/double
+    //-------------------------------------------------------------------------
+    @DataProvider
+    public static Object[][] data_durationConversions() {
+        return new Object[][] {
+            {Duration.ZERO, BigDecimal.valueOf(0, 9), 0d},
+            {Duration.ofSeconds(1, 0), new BigDecimal("1.000000000"), 1d},
+            {Duration.ofSeconds(1, 500_000_000), new BigDecimal("1.500000000"), 1.5d},
+            {Duration.ofSeconds(0, -400_000_000), new BigDecimal("-0.400000000"), -0.4d},
+        };
+    }
+
+    @Test
+    @UseDataProvider("data_durationConversions")
+    public void test_durationToBigDecimalSeconds(Duration input, BigDecimal expected, double ignored) {
+        BigDecimal test = Temporals.durationToBigDecimalSeconds(input);
+        assertEquals(test, expected);
+        assertEquals(test.scale(), 9);
+    }
+
+    @Test
+    @UseDataProvider("data_durationConversions")
+    public void test_durationFromBigDecimalSeconds(Duration expected, BigDecimal input, double ignored) {
+        Duration test = Temporals.durationFromBigDecimalSeconds(input);
+        assertEquals(test, expected);
+    }
+
+    @Test
+    @UseDataProvider("data_durationConversions")
+    public void test_durationToDoubleSeconds(Duration input, BigDecimal ignored, double expected) {
+        double test = Temporals.durationToDoubleSeconds(input);
+        assertEquals(test, expected, 0d);
+    }
+
+    @Test
+    @UseDataProvider("data_durationConversions")
+    public void test_durationFromDoubleSeconds(Duration expected, BigDecimal ignored, double input) {
+        Duration test = Temporals.durationFromDoubleSeconds(input);
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // duration multiply
+    //-------------------------------------------------------------------------
+    @DataProvider
+    public static Object[][] data_durationMultiply() {
+        return new Object[][] {
+            {Duration.ZERO, 0d, Duration.ZERO},
+            {Duration.ZERO, 1d, Duration.ZERO},
+            {Duration.ZERO, 2d, Duration.ZERO},
+            {Duration.ofSeconds(1, 0), 0d, Duration.ZERO},
+            {Duration.ofSeconds(1, 0), 1d, Duration.ofSeconds(1, 0)},
+            {Duration.ofSeconds(1, 0), 2d, Duration.ofSeconds(2, 0)},
+            {Duration.ofSeconds(1, 500_000_000), 2d, Duration.ofSeconds(3, 0)},
+            {Duration.ofSeconds(1, 0), 1e-12, Duration.ofNanos(1)},
+            {Duration.ofNanos(1), 1e-12, Duration.ofNanos(1)},
+        };
+    }
+
+    @Test
+    @UseDataProvider("data_durationMultiply")
+    public void test_durationMultiply(Duration input, double multiplicand, Duration expected) {
+        Duration test = Temporals.multiply(input, multiplicand);
+        assertEquals(test, expected);
     }
 
 }
