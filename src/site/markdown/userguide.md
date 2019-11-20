@@ -15,11 +15,15 @@ These include:
 * [`Quarter`](apidocs/org.threeten.extra/org/threeten/extra/Quarter.html) - the four quarters, Q1, Q2, Q3 and Q4
 * [`YearQuarter`](apidocs/org.threeten.extra/org/threeten/extra/YearQuarter.html) - combines a year and quarter, 2014-Q4
 * [`YearWeek`](apidocs/org.threeten.extra/org/threeten/extra/YearWeek.html) - combines a week-based-year and a week, 2014-W06
+* [`Seconds`](apidocs/org.threeten.extra/org/threeten/extra/Seconds.html) - an amount of time measured in seconds
+* [`Minutes`](apidocs/org.threeten.extra/org/threeten/extra/Minutes.html) - an amount of time measured in minutes
+* [`Hours`](apidocs/org.threeten.extra/org/threeten/extra/Hours.html) - an amount of time measured in hours
 * [`Days`](apidocs/org.threeten.extra/org/threeten/extra/Days.html) - an amount of time measured in days
 * [`Weeks`](apidocs/org.threeten.extra/org/threeten/extra/Weeks.html) - an amount of time measured in weeks
 * [`Months`](apidocs/org.threeten.extra/org/threeten/extra/Months.html) - an amount of time measured in months
 * [`Years`](apidocs/org.threeten.extra/org/threeten/extra/Years.html) - an amount of time measured in years
 * [`Interval`](apidocs/org.threeten.extra/org/threeten/extra/Interval.html) - an interval between two instants
+* [`LocalDateRange`](apidocs/org.threeten.extra/org/threeten/extra/LocalDateRange.html) - a range between two dates
 * [`PeriodDuration`](apidocs/org.threeten.extra/org/threeten/extra/PeriodDuration.html) - combines a `Period` and a `Duration`
 
 
