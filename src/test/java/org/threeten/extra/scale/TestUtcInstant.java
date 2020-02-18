@@ -32,6 +32,7 @@
 package org.threeten.extra.scale;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -105,10 +106,21 @@ public class TestUtcInstant {
     }
 
     @Test
+    public void factory_ofModifiedJulianDay_long_long_endNormal() {
+        UtcInstant t = UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1);
+        assertEquals(MJD_1972_12_31_LEAP, t.getModifiedJulianDay());
+        assertEquals(NANOS_PER_DAY - 1, t.getNanoOfDay());
+        assertFalse(t.isLeapSecond());
+        assertEquals("1972-12-31T23:59:59.999999999Z", t.toString());
+    }
+
+    @Test
     public void factory_ofModifiedJulianDay_long_long_startLeap() {
         UtcInstant t = UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_DAY);
         assertEquals(MJD_1972_12_31_LEAP, t.getModifiedJulianDay());
         assertEquals(NANOS_PER_DAY, t.getNanoOfDay());
+        assertTrue(t.isLeapSecond());
+        assertEquals("1972-12-31T23:59:60Z", t.toString());
     }
 
     @Test
@@ -116,6 +128,8 @@ public class TestUtcInstant {
         UtcInstant t = UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_LEAP_DAY - 1);
         assertEquals(MJD_1972_12_31_LEAP, t.getModifiedJulianDay());
         assertEquals(NANOS_PER_LEAP_DAY - 1, t.getNanoOfDay());
+        assertTrue(t.isLeapSecond());
+        assertEquals("1972-12-31T23:59:60.999999999Z", t.toString());
     }
 
     @Test(expected = DateTimeException.class)

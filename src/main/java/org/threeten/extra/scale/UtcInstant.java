@@ -306,7 +306,7 @@ public final class UtcInstant
      * @return true if this instant is within a leap second
      */
     public boolean isLeapSecond() {
-        return nanoOfDay > SECS_PER_DAY * NANOS_PER_SECOND;
+        return nanoOfDay >= SECS_PER_DAY * NANOS_PER_SECOND;
     }
 
     //-----------------------------------------------------------------------
