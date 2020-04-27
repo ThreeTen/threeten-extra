@@ -152,8 +152,6 @@ public final class Symmetry010Chronology
      * There are 6 full 293-year cycles from CE 1 to 1758, with 6 * 52 leap years, i.e. 312.
      * There are 37 leap years from CE 1758 to 1970.
      */
-    //public static final long DAYS_0001_TO_1970 = (DAYS_PER_CYCLE * 6L) + 211L * DAYS_IN_YEAR + 37 * DAYS_IN_WEEK;
-    //public static final long DAYS_0001_TO_1970_ISO = IsoChronology.INSTANCE.date(1,1,1).toEpochDay() * -1;
     public static final long DAYS_0001_TO_1970 = (146097 * 5L) - (31L * 365L + 7L) - 1;
     /**
      * Highest year in the range.

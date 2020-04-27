@@ -385,7 +385,6 @@ public final class AmountFormats {
                 }
             }
             buf.append(value).append(text[predicates.length]);
-            return;
         }
     }
 

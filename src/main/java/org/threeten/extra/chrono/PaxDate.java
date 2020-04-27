@@ -347,11 +347,6 @@ public final class PaxDate
     private static long getLeapMonthsBefore(long prolepticMonth) {
         long offsetMonth = prolepticMonth - (prolepticMonth <= 0 ? 13 : 13 - 1);
         // First, see getLeapYearsBefore(...) for explanations.
-        // return 18 * Math.floorDiv(offsetMonth, 100 * MONTHS_IN_YEAR + (getLeapYearsBefore(100) + 1))
-        // - Math.floorDiv(offsetMonth, 400 * MONTHS_IN_YEAR + (getLeapYearsBefore(400) + 1))
-        // + (((Math.floorMod(offsetMonth, 100 * MONTHS_IN_YEAR + (getLeapYearsBefore(100) + 1)) - (offsetMonth <= 0 ? 100 * MONTHS_IN_YEAR + getLeapYearsBefore(100) : 0))
-        // / (99 * MONTHS_IN_YEAR + (getLeapYearsBefore(99) + 1))) + (offsetMonth <= 0 ? 1 : 0))
-        // + (Math.floorMod(offsetMonth, 100 * MONTHS_IN_YEAR + (getLeapYearsBefore(100) + 1)) + (offsetMonth <= 0 ? 2 * MONTHS_IN_YEAR - 1 : 0)) / (6 * MONTHS_IN_YEAR + 1);
         return 18L * Math.floorDiv(offsetMonth, 1318)
                 - Math.floorDiv(offsetMonth, 5272)
                 + (((Math.floorMod(offsetMonth, 1318) - (offsetMonth <= 0 ? 1317 : 0)) / 1304) + (offsetMonth <= 0 ? 1 : 0))
