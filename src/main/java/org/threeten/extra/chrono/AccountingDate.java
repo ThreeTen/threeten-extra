@@ -407,7 +407,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     @Override
     public int lengthOfYear() {
         return (WEEKS_IN_YEAR + (isLeapYear() ? 1 : 0)) * DAYS_IN_WEEK;
-    };
+    }
 
     //-------------------------------------------------------------------------
     @Override
