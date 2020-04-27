@@ -42,6 +42,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.ValueRange;
 import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 import org.junit.Test;
@@ -95,7 +96,7 @@ public class TestAccountingChronologyBuilder {
         IntFunction<LocalDate> getYearEnd = year -> {
             return LocalDate.of(year, ending, 1).with(TemporalAdjusters.lastDayOfMonth()).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
             LocalDate prevYearEnd = getYearEnd.apply(year - 1);
             return prevYearEnd.until(currentYearEnd, DAYS) == 371;
@@ -116,7 +117,7 @@ public class TestAccountingChronologyBuilder {
         IntFunction<LocalDate> getYearEnd = year -> {
             return LocalDate.of(year, ending, 3).plusMonths(1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
             LocalDate prevYearEnd = getYearEnd.apply(year - 1);
             return prevYearEnd.until(currentYearEnd, DAYS) == 371;
@@ -137,7 +138,7 @@ public class TestAccountingChronologyBuilder {
         IntFunction<LocalDate> getYearEnd = year -> {
             return LocalDate.of(year, ending, 1).with(TemporalAdjusters.lastDayOfMonth()).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
             LocalDate prevYearEnd = getYearEnd.apply(year - 1);
             return prevYearEnd.until(currentYearEnd, DAYS) == 371;
@@ -167,7 +168,7 @@ public class TestAccountingChronologyBuilder {
         IntFunction<LocalDate> getYearEnd = year -> {
             return LocalDate.of(year, ending, 3).plusMonths(1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
             LocalDate prevYearEnd = getYearEnd.apply(year - 1);
             return prevYearEnd.until(currentYearEnd, DAYS) == 371;
@@ -309,7 +310,7 @@ public class TestAccountingChronologyBuilder {
         IntFunction<LocalDate> getYearEnd = year -> {
             return LocalDate.of(year, ending, 1).with(TemporalAdjusters.lastDayOfMonth()).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
             LocalDate prevYearEnd = getYearEnd.apply(year - 1);
             return prevYearEnd.until(currentYearEnd, DAYS) == 371;
@@ -330,7 +331,7 @@ public class TestAccountingChronologyBuilder {
         IntFunction<LocalDate> getYearEnd = year -> {
             return LocalDate.of(year, ending, 3).plusMonths(1).with(TemporalAdjusters.previousOrSame(dayOfWeek));
         };
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             LocalDate currentYearEnd = getYearEnd.apply(year);
             LocalDate prevYearEnd = getYearEnd.apply(year - 1);
             return prevYearEnd.until(currentYearEnd, DAYS) == 371;

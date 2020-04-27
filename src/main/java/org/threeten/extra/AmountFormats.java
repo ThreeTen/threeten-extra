@@ -254,7 +254,8 @@ public final class AmountFormats {
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
 
         Period normPeriod = oppositeSigns(period.getMonths(), period.getYears()) ? period.normalized() : period;
-        int weeks = 0, days = 0;
+        int weeks = 0;
+        int days = 0;
         if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
             weeks = normPeriod.getDays() / DAYS_PER_WEEK;
         } else {

@@ -85,15 +85,15 @@ public class TestDays {
     //-----------------------------------------------------------------------
     @Test
     public void test_ZERO() {
-        assertSame(Days.ZERO, Days.of(0) );
-        assertEquals(Days.ZERO, Days.of(0));
+        assertSame(Days.of(0), Days.ZERO);
+        assertEquals(Days.of(0), Days.ZERO);
         assertEquals(0, Days.ZERO.getAmount());
     }
 
     @Test
     public void test_ONE() {
-        assertSame(Days.ONE, Days.of(1));
-        assertEquals(Days.ONE, Days.of(1));
+        assertSame(Days.of(1), Days.ONE);
+        assertEquals(Days.of(1), Days.ONE);
         assertEquals(1, Days.ONE.getAmount());
     }
 

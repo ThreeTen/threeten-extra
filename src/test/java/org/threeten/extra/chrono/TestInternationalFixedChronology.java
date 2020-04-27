@@ -74,7 +74,7 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.IntPredicate;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -310,7 +310,7 @@ public class TestInternationalFixedChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_isLeapYear_loop() {
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
         };
 

@@ -72,7 +72,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.IntPredicate;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -318,7 +318,7 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_isLeapYear_loop() {
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             int lastTwoDigits = Math.abs(year % 100);
             return (year % 400 != 0 && (lastTwoDigits == 0 || lastTwoDigits % 6 == 0)) || lastTwoDigits == 99;
         };

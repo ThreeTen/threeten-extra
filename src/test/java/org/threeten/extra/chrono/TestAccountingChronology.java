@@ -71,6 +71,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 import org.junit.Assert;
@@ -308,7 +309,7 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_isLeapYear_loop() {
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             LocalDate currentYearEnd = LocalDate.of(year, 9, 3).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
             LocalDate prevYearEnd = LocalDate.of(year - 1, 9, 3).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
             return prevYearEnd.until(currentYearEnd, DAYS) == 371;
