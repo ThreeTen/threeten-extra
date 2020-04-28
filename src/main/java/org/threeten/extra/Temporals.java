@@ -130,7 +130,7 @@ public final class Temporals {
     /**
      * Enum implementing the adjusters.
      */
-    private enum Adjuster implements TemporalAdjuster {
+    private static enum Adjuster implements TemporalAdjuster {
         /** Next working day adjuster. */
         NEXT_WORKING {
             @Override
