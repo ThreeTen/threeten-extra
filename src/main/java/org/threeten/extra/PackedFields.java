@@ -115,7 +115,7 @@ public final class PackedFields {
     /**
      * Implementation of packed date.
      */
-    private enum PackedDate implements TemporalField {
+    private static enum PackedDate implements TemporalField {
         INSTANCE;
 
         private static final ValueRange RANGE = ValueRange.of(10000101, 99991231);
@@ -220,7 +220,7 @@ public final class PackedFields {
     /**
      * Implementation of packed hour-min.
      */
-    private enum PackedHourMin implements TemporalField {
+    private static enum PackedHourMin implements TemporalField {
         INSTANCE;
 
         private static final ValueRange RANGE = ValueRange.of(0, 2359);
@@ -311,7 +311,7 @@ public final class PackedFields {
     /**
      * Implementation of packed hour-min-sec.
      */
-    private enum PackedTime implements TemporalField {
+    private static enum PackedTime implements TemporalField {
         INSTANCE;
 
         private static final ValueRange RANGE = ValueRange.of(0, 235959);
