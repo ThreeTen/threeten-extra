@@ -634,7 +634,6 @@ public final class InternationalFixedDate
         int newYear = Math.toIntExact(Math.floorDiv(calcEm, WEEKS_IN_YEAR));
         int newWeek = Math.toIntExact(Math.floorMod(calcEm, WEEKS_IN_YEAR));
         int newMonth = 1 + Math.floorDiv(newWeek, WEEKS_IN_MONTH);
-        //int newDay = 1 + ((newWeek * DAYS_IN_WEEK + ((day - 1) % DAYS_IN_WEEK)) % DAYS_IN_MONTH);
         int newDay = 1 + ((newWeek * DAYS_IN_WEEK + 8 +
                 (isLeapDay ? 0 : isYearDay ? -1 : (day - 1) % DAYS_IN_WEEK) - 1) % DAYS_IN_MONTH);
         return create(newYear, newMonth, newDay);

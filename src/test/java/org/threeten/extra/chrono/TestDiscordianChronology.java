@@ -72,6 +72,7 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.List;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 import org.junit.Assert;
@@ -272,7 +273,7 @@ public class TestDiscordianChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_isLeapYear_loop() {
-        Predicate<Integer> isLeapYear = year -> {
+        IntPredicate isLeapYear = year -> {
             int offsetYear = year - 1166;
             return offsetYear % 4 == 0 && (offsetYear % 400 == 0 || offsetYear % 100 != 0);
         };
