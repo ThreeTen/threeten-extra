@@ -188,16 +188,6 @@ public class TestYearQuarter {
         }
     }
 
-    @Test(expected = DateTimeException.class)
-    public void test_of_Year_int_yearTooLow() {
-        YearQuarter.of(Year.of(Year.MIN_VALUE - 1), 2);
-    }
-
-    @Test(expected = DateTimeException.class)
-    public void test_of_Year_int_yearTooHigh() {
-        YearQuarter.of(Year.of(Year.MAX_VALUE + 1), 2);
-    }
-
     @Test(expected = NullPointerException.class)
     public void test_of_Year_int_null() {
         YearQuarter.of((Year) null, 2);
