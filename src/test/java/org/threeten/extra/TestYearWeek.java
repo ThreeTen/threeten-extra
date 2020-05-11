@@ -89,6 +89,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
@@ -365,6 +366,22 @@ public class TestYearWeek {
     @Test(expected = NullPointerException.class)
     public void now_Clock_nullClock() {
         YearWeek.now((Clock) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // of(Year, int)
+    //-----------------------------------------------------------------------
+    @Test
+    @UseDataProvider("data_sampleYearWeeks")
+    public void test_of_Year_int(int year, int week) {
+        YearWeek yearWeek = YearWeek.of(Year.of(year), week);
+        assertEquals(year, yearWeek.getYear());
+        assertEquals(week, yearWeek.getWeek());
+    }
+
+    @Test
+    public void test_carry_Year_int() {
+        assertTrue(YearWeek.of(Year.of(2014), 53).equals(TEST));
     }
 
     //-----------------------------------------------------------------------
