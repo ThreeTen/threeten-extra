@@ -173,7 +173,7 @@ public final class YearWeek
      * If the week is 53 and the year does not have 53 weeks, week one of the following
      * year is selected.
      *
-     * @param year  the week-based-year to represent, from MIN_YEAR to MAX_YEAR, not null
+     * @param year  the week-based-year to represent, not null
      * @param week  the week-of-week-based-year to represent, from 1 to 53
      * @return the year-week, not null
      * @throws DateTimeException if the week value is invalid
