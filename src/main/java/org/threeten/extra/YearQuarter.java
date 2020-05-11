@@ -192,7 +192,7 @@ public final class YearQuarter
     /**
      * Obtains an instance of {@code YearQuarter} from a year and quarter.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR, not null
+     * @param year  the year to represent, not null
      * @param quarter  the quarter-of-year to represent, from 1 to 4
      * @return the year-quarter, not null
      * @throws DateTimeException if the quarter value is invalid
