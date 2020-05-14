@@ -177,7 +177,7 @@ public class TestAmountFormats {
     }
 
     @Test
-    public void test_wordBased_pl_predicatex() {
+    public void test_wordBased_pl_predicate() {
         assertEquals("1 rok", AmountFormats.wordBased(Period.ofYears(1), PL));
         assertEquals("2 lata", AmountFormats.wordBased(Period.ofYears(2), PL));
         assertEquals("5 lat", AmountFormats.wordBased(Period.ofYears(5), PL));
@@ -279,23 +279,266 @@ public class TestAmountFormats {
         assertEquals("36 godzin i 55 minut", AmountFormats.wordBased(Duration.ofMinutes(2215), PL));
     }
 
+    // -----------------------------------------------------------------------
+    // wordBased "ru" locale
+    // -----------------------------------------------------------------------
     @Test
-    public void test_wordBased_ru_predicate() {
-        assertEquals("1 \u0433\u043E\u0434", AmountFormats.wordBased(Period.ofYears(1), RU));
-        assertEquals("2 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(2), RU));
-        assertEquals("3 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(3), RU));
-        assertEquals("4 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(4), RU));
-        assertEquals("5 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(5), RU));
-        assertEquals("11 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(11), RU));
-        assertEquals("12 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(12), RU));
-        assertEquals("13 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(13), RU));
-        assertEquals("14 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(14), RU));
-        assertEquals("15 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(15), RU));
-        assertEquals("21 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(21), RU));
-        assertEquals("22 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(22), RU));
-        assertEquals("24 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(24), RU));
-        assertEquals("25 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(25), RU));
-        assertEquals("31 \u043B\u0435\u0442", AmountFormats.wordBased(Period.ofYears(31), RU));
-        assertEquals("32 \u0433\u043E\u0434\u0430", AmountFormats.wordBased(Period.ofYears(32), RU));
+    public void test_wordBased_ru_formatStandard() {
+        Period period = Period.ofYears(1).plusMonths(2).plusDays(3);
+        Duration duration = Duration.ofHours(5).plusMinutes(6).plusSeconds(7).plusNanos(8_000_000L);
+
+        String expected = "1 \u0433\u043E\u0434, 2 \u043C\u0435\u0441\u044F\u0446\u0430,"
+            + " 3 \u0434\u043D\u044F, 5 \u0447\u0430\u0441\u043e\u0432, 6 \u043c\u0438\u043d\u0443\u0442,"
+            + " 7 \u0441\u0435\u043A\u0443\u043D\u0434 \u0438 8 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434";
+
+        assertEquals(expected, AmountFormats.wordBased(period, duration, RU));
+    }
+
+    // -----------------------------------------------------------------------
+    @Test
+    @UseDataProvider("wordBased_ru_formatSeparator")
+    public void test_wordBased_ru_formatSeparator(String expected, Duration duration) {
+        assertEquals(expected, AmountFormats.wordBased(duration, RU));
+    }
+
+    @DataProvider
+    public static Object[][] wordBased_ru_formatSeparator() {
+        return new Object[][]{
+            {"18 \u0447\u0430\u0441\u043E\u0432 \u0438 32 \u043C\u0438\u043D\u0443\u0442\u044B", Duration.ofMinutes(1112)},
+            {"1 \u0441\u0435\u043A\u0443\u043D\u0434\u0430 \u0438 112 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(1112)},
+        };
+    }
+
+    // -----------------------------------------------------------------------
+    @Test
+    @UseDataProvider("wordBased_ru_period_predicate")
+    public void test_wordBased_ru_period_predicate(String expected, Period period) {
+        assertEquals(expected, AmountFormats.wordBased(period, RU));
+    }
+
+    @DataProvider
+    public static Object[][] wordBased_ru_period_predicate() {
+        return new Object[][]{
+
+//       год  \u0433\u043E\u0434
+//       года \u0433\u043E\u0434\u0430
+//       лет  \u043B\u0435\u0442
+            {"1 \u0433\u043E\u0434", Period.ofYears(1)},
+            {"11 \u043B\u0435\u0442", Period.ofYears(11)},
+            {"101 \u0433\u043E\u0434", Period.ofYears(101)},
+            {"111 \u043B\u0435\u0442", Period.ofYears(111)},
+            {"121 \u0433\u043E\u0434", Period.ofYears(121)},
+            {"2001 \u0433\u043E\u0434", Period.ofYears(2001)},
+            {"2 \u0433\u043E\u0434\u0430", Period.ofYears(2)},
+            {"3 \u0433\u043E\u0434\u0430", Period.ofYears(3)},
+            {"4 \u0433\u043E\u0434\u0430", Period.ofYears(4)},
+            {"12 \u043B\u0435\u0442", Period.ofYears(12)},
+            {"13 \u043B\u0435\u0442", Period.ofYears(13)},
+            {"14 \u043B\u0435\u0442", Period.ofYears(14)},
+            {"21 \u0433\u043E\u0434", Period.ofYears(21)},
+            {"22 \u0433\u043E\u0434\u0430", Period.ofYears(22)},
+            {"23 \u0433\u043E\u0434\u0430", Period.ofYears(23)},
+            {"24 \u0433\u043E\u0434\u0430", Period.ofYears(24)},
+            {"102 \u0433\u043E\u0434\u0430", Period.ofYears(102)},
+            {"105 \u043B\u0435\u0442", Period.ofYears(105)},
+            {"112 \u043B\u0435\u0442", Period.ofYears(112)},
+            {"113 \u043B\u0435\u0442", Period.ofYears(113)},
+            {"124 \u0433\u043E\u0434\u0430", Period.ofYears(124)},
+            {"5 \u043B\u0435\u0442", Period.ofYears(5)},
+            {"15 \u043B\u0435\u0442", Period.ofYears(15)},
+            {"25 \u043B\u0435\u0442", Period.ofYears(25)},
+            {"106 \u043B\u0435\u0442", Period.ofYears(106)},
+            {"1005 \u043B\u0435\u0442", Period.ofYears(1005)},
+            {"31 \u0433\u043E\u0434", Period.ofYears(31)},
+            {"32 \u0433\u043E\u0434\u0430", Period.ofYears(32)},
+
+//       месяц   \u043C\u0435\u0441\u044F\u0446
+//       месяца  \u043C\u0435\u0441\u044F\u0446\u0430
+//       месяцев \u043C\u0435\u0441\u044F\u0446\u0435\u0432
+            {"1 \u043C\u0435\u0441\u044F\u0446", Period.ofMonths(1)},
+            {"11 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(11)},
+            {"21 \u043C\u0435\u0441\u044F\u0446", Period.ofMonths(21)},
+            {"101 \u043C\u0435\u0441\u044F\u0446", Period.ofMonths(101)},
+            {"111 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(111)},
+            {"121 \u043C\u0435\u0441\u044F\u0446", Period.ofMonths(121)},
+            {"2001 \u043C\u0435\u0441\u044F\u0446", Period.ofMonths(2001)},
+            {"2 \u043C\u0435\u0441\u044F\u0446\u0430", Period.ofMonths(2)},
+            {"3 \u043C\u0435\u0441\u044F\u0446\u0430", Period.ofMonths(3)},
+            {"4 \u043C\u0435\u0441\u044F\u0446\u0430", Period.ofMonths(4)},
+            {"12 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(12)},
+            {"13 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(13)},
+            {"14 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(14)},
+            {"22 \u043C\u0435\u0441\u044F\u0446\u0430", Period.ofMonths(22)},
+            {"23 \u043C\u0435\u0441\u044F\u0446\u0430", Period.ofMonths(23)},
+            {"24 \u043C\u0435\u0441\u044F\u0446\u0430", Period.ofMonths(24)},
+            {"102 \u043C\u0435\u0441\u044F\u0446\u0430", Period.ofMonths(102)},
+            {"112 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(112)},
+            {"124 \u043C\u0435\u0441\u044F\u0446\u0430", Period.ofMonths(124)},
+            {"5 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(5)},
+            {"15 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(15)},
+            {"25 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(25)},
+            {"105 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(105)},
+            {"1005 \u043C\u0435\u0441\u044F\u0446\u0435\u0432", Period.ofMonths(1005)},
+
+//       неделя \u043D\u0435\u0434\u0435\u043B\u044F
+//       недели \u043D\u0435\u0434\u0435\u043B\u0438
+//       недель \u043D\u0435\u0434\u0435\u043B\u044C
+            {"1 \u043D\u0435\u0434\u0435\u043B\u044F", Period.ofWeeks(1)},
+            {"11 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(11)},
+            {"21 \u043D\u0435\u0434\u0435\u043B\u044F", Period.ofWeeks(21)},
+            {"101 \u043D\u0435\u0434\u0435\u043B\u044F", Period.ofWeeks(101)},
+            {"111 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(111)},
+            {"121 \u043D\u0435\u0434\u0435\u043B\u044F", Period.ofWeeks(121)},
+            {"2001 \u043D\u0435\u0434\u0435\u043B\u044F", Period.ofWeeks(2001)},
+            {"2 \u043D\u0435\u0434\u0435\u043B\u0438", Period.ofWeeks(2)},
+            {"3 \u043D\u0435\u0434\u0435\u043B\u0438", Period.ofWeeks(3)},
+            {"4 \u043D\u0435\u0434\u0435\u043B\u0438", Period.ofWeeks(4)},
+            {"12 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(12)},
+            {"13 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(13)},
+            {"14 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(14)},
+            {"22 \u043D\u0435\u0434\u0435\u043B\u0438", Period.ofWeeks(22)},
+            {"23 \u043D\u0435\u0434\u0435\u043B\u0438", Period.ofWeeks(23)},
+            {"24 \u043D\u0435\u0434\u0435\u043B\u0438", Period.ofWeeks(24)},
+            {"102 \u043D\u0435\u0434\u0435\u043B\u0438", Period.ofWeeks(102)},
+            {"112 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(112)},
+            {"124 \u043D\u0435\u0434\u0435\u043B\u0438", Period.ofWeeks(124)},
+            {"5 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(5)},
+            {"15 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(15)},
+            {"25 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(25)},
+            {"105 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(105)},
+            {"1005 \u043D\u0435\u0434\u0435\u043B\u044C", Period.ofWeeks(1005)},
+
+//       день \u0434\u0435\u043D\u044C
+//       дня  \u0434\u043D\u044F
+//       дней \u0434\u043D\u0435\u0439
+            {"1 \u0434\u0435\u043D\u044C", Period.ofDays(1)},
+            {"11 \u0434\u043D\u0435\u0439", Period.ofDays(11)},
+            {"101 \u0434\u0435\u043D\u044C", Period.ofDays(101)},
+            {"111 \u0434\u043D\u0435\u0439", Period.ofDays(111)},
+            {"121 \u0434\u0435\u043D\u044C", Period.ofDays(121)},
+            {"31 \u0434\u0435\u043D\u044C", Period.ofDays(31)},
+            {"2001 \u0434\u0435\u043D\u044C", Period.ofDays(2001)},
+            {"2 \u0434\u043D\u044F", Period.ofDays(2)},
+            {"3 \u0434\u043D\u044F", Period.ofDays(3)},
+            {"4 \u0434\u043D\u044F", Period.ofDays(4)},
+            {"12 \u0434\u043D\u0435\u0439", Period.ofDays(12)},
+            {"13 \u0434\u043D\u0435\u0439", Period.ofDays(13)},
+            {"22 \u0434\u043D\u044F", Period.ofDays(22)},
+            {"23 \u0434\u043D\u044F", Period.ofDays(23)},
+            {"24 \u0434\u043D\u044F", Period.ofDays(24)},
+            {"102 \u0434\u043D\u044F", Period.ofDays(102)},
+            {"113 \u0434\u043D\u0435\u0439", Period.ofDays(113)},
+            {"124 \u0434\u043D\u044F", Period.ofDays(124)},
+            {"5 \u0434\u043D\u0435\u0439", Period.ofDays(5)},
+            {"15 \u0434\u043D\u0435\u0439", Period.ofDays(15)},
+            {"25 \u0434\u043D\u0435\u0439", Period.ofDays(25)},
+            {"106 \u0434\u043D\u0435\u0439", Period.ofDays(106)},
+            {"1005 \u0434\u043D\u0435\u0439", Period.ofDays(1005)}
+        };
+    }
+
+    // -----------------------------------------------------------------------
+    @Test
+    @UseDataProvider("wordBased_ru_duration_predicate")
+    public void test_wordBased_ru_duration_predicate(String expected, Duration duration) {
+        assertEquals(expected, AmountFormats.wordBased(duration, RU));
+    }
+
+    @DataProvider
+    public static Object[][] wordBased_ru_duration_predicate() {
+        return new Object[][]{
+
+//       час   \u0447\u0430\u0441
+//       часа  \u0447\u0430\u0441\u0430
+//       часов \u0447\u0430\u0441\u043E\u0432
+            {"1 \u0447\u0430\u0441", Duration.ofHours(1)},
+            {"11 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(11)},
+            {"21 \u0447\u0430\u0441", Duration.ofHours(21)},
+            {"101 \u0447\u0430\u0441", Duration.ofHours(101)},
+            {"111 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(111)},
+            {"121 \u0447\u0430\u0441", Duration.ofHours(121)},
+            {"2001 \u0447\u0430\u0441", Duration.ofHours(2001)},
+            {"2 \u0447\u0430\u0441\u0430", Duration.ofHours(2)},
+            {"3 \u0447\u0430\u0441\u0430", Duration.ofHours(3)},
+            {"4 \u0447\u0430\u0441\u0430", Duration.ofHours(4)},
+            {"12 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(12)},
+            {"13 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(13)},
+            {"14 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(14)},
+            {"22 \u0447\u0430\u0441\u0430", Duration.ofHours(22)},
+            {"23 \u0447\u0430\u0441\u0430", Duration.ofHours(23)},
+            {"24 \u0447\u0430\u0441\u0430", Duration.ofHours(24)},
+            {"102 \u0447\u0430\u0441\u0430", Duration.ofHours(102)},
+            {"112 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(112)},
+            {"124 \u0447\u0430\u0441\u0430", Duration.ofHours(124)},
+            {"5 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(5)},
+            {"15 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(15)},
+            {"25 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(25)},
+            {"105 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(105)},
+            {"1005 \u0447\u0430\u0441\u043e\u0432", Duration.ofHours(1005)},
+
+//       минута \u043C\u0438\u043D\u0443\u0442\u0430
+//       минуты \u043C\u0438\u043D\u0443\u0442\u044B
+//       минут  \u043C\u0438\u043D\u0443\u0442
+            {"1 \u043c\u0438\u043d\u0443\u0442\u0430", Duration.ofMinutes(1)},
+            {"11 \u043c\u0438\u043d\u0443\u0442", Duration.ofMinutes(11)},
+            {"21 \u043c\u0438\u043d\u0443\u0442\u0430", Duration.ofMinutes(21)},
+            {"2 \u043c\u0438\u043d\u0443\u0442\u044b", Duration.ofMinutes(2)},
+            {"3 \u043c\u0438\u043d\u0443\u0442\u044b", Duration.ofMinutes(3)},
+            {"4 \u043c\u0438\u043d\u0443\u0442\u044b", Duration.ofMinutes(4)},
+            {"12 \u043c\u0438\u043d\u0443\u0442", Duration.ofMinutes(12)},
+            {"13 \u043c\u0438\u043d\u0443\u0442", Duration.ofMinutes(13)},
+            {"14 \u043c\u0438\u043d\u0443\u0442", Duration.ofMinutes(14)},
+            {"22 \u043c\u0438\u043d\u0443\u0442\u044b", Duration.ofMinutes(22)},
+            {"23 \u043c\u0438\u043d\u0443\u0442\u044b", Duration.ofMinutes(23)},
+            {"24 \u043c\u0438\u043d\u0443\u0442\u044b", Duration.ofMinutes(24)},
+            {"5 \u043c\u0438\u043d\u0443\u0442", Duration.ofMinutes(5)},
+            {"15 \u043c\u0438\u043d\u0443\u0442", Duration.ofMinutes(15)},
+            {"25 \u043c\u0438\u043d\u0443\u0442", Duration.ofMinutes(25)},
+
+//       секунда \u0441\u0435\u043A\u0443\u043D\u0434\u0430
+//       секунды \u0441\u0435\u043A\u0443\u043D\u0434\u044B
+//       секунд  \u0441\u0435\u043A\u0443\u043D\u0434
+            {"1 \u0441\u0435\u043A\u0443\u043D\u0434\u0430", Duration.ofSeconds(1)},
+            {"11 \u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofSeconds(11)},
+            {"21 \u0441\u0435\u043A\u0443\u043D\u0434\u0430", Duration.ofSeconds(21)},
+            {"2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofSeconds(2)},
+            {"3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofSeconds(3)},
+            {"4 \u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofSeconds(4)},
+            {"12 \u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofSeconds(12)},
+            {"13 \u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofSeconds(13)},
+            {"14 \u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofSeconds(14)},
+            {"22 \u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofSeconds(22)},
+            {"23 \u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofSeconds(23)},
+            {"24 \u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofSeconds(24)},
+            {"5 \u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofSeconds(5)},
+            {"15 \u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofSeconds(15)},
+            {"25 \u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofSeconds(25)},
+
+//       миллисекунда \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u0430
+//       миллисекунды \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B
+//       миллисекунд  \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434
+            {"1 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u0430", Duration.ofMillis(1)},
+            {"11 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(11)},
+            {"21 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u0430", Duration.ofMillis(21)},
+            {"101 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u0430", Duration.ofMillis(101)},
+            {"111 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(111)},
+            {"121 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u0430", Duration.ofMillis(121)},
+            {"2 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofMillis(2)},
+            {"3 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofMillis(3)},
+            {"4 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofMillis(4)},
+            {"12 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(12)},
+            {"13 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(13)},
+            {"14 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(14)},
+            {"22 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofMillis(22)},
+            {"23 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofMillis(23)},
+            {"24 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofMillis(24)},
+            {"102 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofMillis(102)},
+            {"112 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(112)},
+            {"124 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434\u044B", Duration.ofMillis(124)},
+            {"5 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(5)},
+            {"15 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(15)},
+            {"25 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(25)},
+            {"105 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(105)}
+        };
     }
 }
