@@ -125,6 +125,15 @@ public final class AmountFormats {
      */
     private static final IntPredicate PREDICATE_1 = value -> value == 1 || value == -1;
     /**
+     * The predicate that matches numbers ending 1 but not ending 11.
+     */
+    private static final IntPredicate PREDICATE_END1_NOT11 = value -> {
+        int abs = Math.abs(value);
+        int last = abs % 10;
+        int secondLast = (abs % 100) / 10;
+        return (last == 1 && secondLast != 1);
+    };
+    /**
      * The predicate that matches numbers ending 2, 3 or 4, but not ending 12, 13 or 14.
      */
     private static final IntPredicate PREDICATE_END234_NOTTEENS = value -> {
@@ -373,6 +382,7 @@ public final class AmountFormats {
             switch (predicateStr) {
                 case "One": return PREDICATE_1;
                 case "End234NotTeens": return PREDICATE_END234_NOTTEENS;
+                case "End1Not11": return PREDICATE_END1_NOT11;
                 default: throw new IllegalStateException("Invalid word-based resource");
             }
         }
