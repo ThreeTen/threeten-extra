@@ -260,7 +260,7 @@ public final class Interval
         return start;
     }
 
-    /** 
+    /**
      * Gets the end of this time interval, exclusive.
      * <p>
      * This will return {@link Instant#MAX} if the range is unbounded at the end.
@@ -277,7 +277,7 @@ public final class Interval
      * Checks if the range is empty.
      * <p>
      * An empty range occurs when the start date equals the inclusive end date.
-     * 
+     *
      * @return true if the range is empty
      */
     public boolean isEmpty() {
@@ -286,7 +286,7 @@ public final class Interval
 
     /**
      * Checks if the start of the interval is unbounded.
-     * 
+     *
      * @return true if start is unbounded
      */
     public boolean isUnboundedStart() {
@@ -295,7 +295,7 @@ public final class Interval
 
     /**
      * Checks if the end of the interval is unbounded.
-     * 
+     *
      * @return true if end is unbounded
      */
     public boolean isUnboundedEnd() {
@@ -408,7 +408,7 @@ public final class Interval
      * <p>
      * This finds the intersection of two intervals.
      * This throws an exception if the two intervals are not {@linkplain #isConnected(Interval) connected}.
-     * 
+     *
      * @param other  the other interval to check for, not null
      * @return the interval that is the intersection of the two intervals
      * @throws DateTimeException if the intervals do not connect
@@ -436,7 +436,7 @@ public final class Interval
      * <p>
      * This finds the union of two intervals.
      * This throws an exception if the two intervals are not {@linkplain #isConnected(Interval) connected}.
-     * 
+     *
      * @param other  the other interval to check for, not null
      * @return the interval that is the union of the two intervals
      * @throws DateTimeException if the intervals do not connect
@@ -464,7 +464,7 @@ public final class Interval
      * <p>
      * The result of this method will {@linkplain #encloses(Interval) enclose}
      * this interval and the specified interval.
-     * 
+     *
      * @param other  the other interval to check for, not null
      * @return the interval that spans the two intervals
      */
@@ -481,7 +481,7 @@ public final class Interval
     /**
      * Checks if this interval is after the specified instant.
      * <p>
-     * The result is true if this instant starts after the specified instant.
+     * The result is true if this interval starts after the specified instant.
      * An empty interval behaves as though it is an instant for comparison purposes.
      *
      * @param instant  the other instant to compare to, not null
@@ -494,13 +494,13 @@ public final class Interval
     /**
      * Checks if this interval is before the specified instant.
      * <p>
-     * The result is true if this instant ends before the specified instant.
+     * The result is true if this interval ends before the specified instant.
      * Since intervals do not include their end points, this will return true if the
      * instant equals the end of the interval.
      * An empty interval behaves as though it is an instant for comparison purposes.
      *
      * @param instant  the other instant to compare to, not null
-     * @return true if the start of this interval is before the specified instant
+     * @return true if the end of this interval is before or equal to the specified instant
      */
     public boolean isBefore(Instant instant) {
         return end.compareTo(instant) <= 0 && start.compareTo(instant) < 0;
@@ -510,13 +510,13 @@ public final class Interval
     /**
      * Checks if this interval is after the specified interval.
      * <p>
-     * The result is true if this instant starts after the end of the specified interval.
+     * The result is true if this interval starts after the end of the specified interval.
      * Since intervals do not include their end points, this will return true if the
-     * instant equals the end of the interval.
+     * two intervals abut.
      * An empty interval behaves as though it is an instant for comparison purposes.
      *
      * @param interval  the other interval to compare to, not null
-     * @return true if this instant is after the specified instant
+     * @return true if this interval is after the specified interval
      */
     public boolean isAfter(Interval interval) {
         return start.compareTo(interval.end) >= 0 && !interval.equals(this);
@@ -525,13 +525,13 @@ public final class Interval
     /**
      * Checks if this interval is before the specified interval.
      * <p>
-     * The result is true if this instant ends before the start of the specified interval.
+     * The result is true if this interval ends before the start of the specified interval.
      * Since intervals do not include their end points, this will return true if the
      * two intervals abut.
      * An empty interval behaves as though it is an instant for comparison purposes.
      *
      * @param interval  the other interval to compare to, not null
-     * @return true if this instant is before the specified instant
+     * @return true if this interval is before the specified interval
      */
     public boolean isBefore(Interval interval) {
         return end.compareTo(interval.start) <= 0 && !interval.equals(this);
