@@ -33,7 +33,6 @@ package org.threeten.extra;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.threeten.extra.DayTime;
 
 import java.time.*;
 import java.time.temporal.ChronoField;
@@ -64,33 +63,13 @@ public class DayTimeTest {
     }
 
     @Test
-    public void testGetHour() {
-        assertEquals(LOCAL_TIME.getHour(), dayTime.getHour());
-    }
-
-    @Test
-    public void testGetMinute() {
-        assertEquals(LOCAL_TIME.getMinute(), dayTime.getMinute());
-    }
-
-    @Test
-    public void testGetSecond() {
-        assertEquals(LOCAL_TIME.getSecond(), dayTime.getSecond());
-    }
-
-    @Test
-    public void testGetNano() {
-        assertEquals(LOCAL_TIME.getNano(), dayTime.getNano());
-    }
-
-    @Test
     public void testFrom() {
         final DayTime dayTime = DayTime.from(LocalDateTime.parse("2017-11-17T10:15:30"));
 
         assertEquals(DayOfWeek.FRIDAY, dayTime.getDayOfWeek());
-        assertEquals(10, dayTime.getHour());
-        assertEquals(15, dayTime.getMinute());
-        assertEquals(30, dayTime.getSecond());
+        assertEquals(10, dayTime.toLocalTime().getHour());
+        assertEquals(15, dayTime.toLocalTime().getMinute());
+        assertEquals(30, dayTime.toLocalTime().getSecond());
     }
 
     @Test
@@ -114,12 +93,12 @@ public class DayTimeTest {
         final DayTime lateMondayEvening = DayTime.of(DayOfWeek.MONDAY, LocalTime.of(23, 0));
 
         assertEquals(DayOfWeek.WEDNESDAY, earlyTuesdayMorning.plus(1, ChronoUnit.DAYS).getDayOfWeek());
-        assertEquals(1, earlyTuesdayMorning.plus(1, ChronoUnit.DAYS).getHour());
-        assertEquals(0, earlyTuesdayMorning.plus(1, ChronoUnit.DAYS).getMinute());
+        assertEquals(1, earlyTuesdayMorning.plus(1, ChronoUnit.DAYS).toLocalTime().getHour());
+        assertEquals(0, earlyTuesdayMorning.plus(1, ChronoUnit.DAYS).toLocalTime().getMinute());
 
         assertEquals(DayOfWeek.TUESDAY, earlyTuesdayMorning.plus(77, ChronoUnit.MINUTES).getDayOfWeek());
-        assertEquals(2, earlyTuesdayMorning.plus(77, ChronoUnit.MINUTES).getHour());
-        assertEquals(17, earlyTuesdayMorning.plus(77, ChronoUnit.MINUTES).getMinute());
+        assertEquals(2, earlyTuesdayMorning.plus(77, ChronoUnit.MINUTES).toLocalTime().getHour());
+        assertEquals(17, earlyTuesdayMorning.plus(77, ChronoUnit.MINUTES).toLocalTime().getMinute());
 
         assertEquals(DayOfWeek.TUESDAY, lateMondayEvening.plus(97, ChronoUnit.MINUTES).getDayOfWeek());
     }
@@ -129,12 +108,12 @@ public class DayTimeTest {
         final DayTime earlyTuesdayMorning = DayTime.of(DayOfWeek.TUESDAY, LocalTime.of(1, 0));
 
         assertEquals(DayOfWeek.MONDAY, earlyTuesdayMorning.minus(1, ChronoUnit.DAYS).getDayOfWeek());
-        assertEquals(1, earlyTuesdayMorning.minus(1, ChronoUnit.DAYS).getHour());
-        assertEquals(0, earlyTuesdayMorning.minus(1, ChronoUnit.DAYS).getMinute());
+        assertEquals(1, earlyTuesdayMorning.minus(1, ChronoUnit.DAYS).toLocalTime().getHour());
+        assertEquals(0, earlyTuesdayMorning.minus(1, ChronoUnit.DAYS).toLocalTime().getMinute());
 
         assertEquals(DayOfWeek.MONDAY, earlyTuesdayMorning.minus(77, ChronoUnit.MINUTES).getDayOfWeek());
-        assertEquals(23, earlyTuesdayMorning.minus(77, ChronoUnit.MINUTES).getHour());
-        assertEquals(43, earlyTuesdayMorning.minus(77, ChronoUnit.MINUTES).getMinute());
+        assertEquals(23, earlyTuesdayMorning.minus(77, ChronoUnit.MINUTES).toLocalTime().getHour());
+        assertEquals(43, earlyTuesdayMorning.minus(77, ChronoUnit.MINUTES).toLocalTime().getMinute());
     }
 
     @Test(expected = UnsupportedTemporalTypeException.class)

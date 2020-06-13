@@ -33,6 +33,7 @@ package org.threeten.extra;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.*;
 import java.util.Objects;
@@ -122,49 +123,10 @@ public final class DayTime
     }
 
     /**
-     * Gets the hour-of-day field.
+     * Gets the {@code LocalTime} part of this day-time.
      *
-     * @return the hour of the day, from 0 to 23
-     *
-     * @see LocalTime#getHour()
+     * @return the time part of this day-time, not null
      */
-    public int getHour() {
-        return localTime.getHour();
-    }
-
-    /**
-     * Gets the minute-of-hour field.
-     *
-     * @return the minute of the hour, from 0 to 59
-     *
-     * @see LocalTime#getMinute()
-     */
-    public int getMinute() {
-        return localTime.getMinute();
-    }
-
-    /**
-     * Returns the second-of-minute field.
-     *
-     * @return the second of the minute, from 0 to 59
-     *
-     * @see LocalTime#getSecond()
-     */
-    public int getSecond() {
-        return localTime.getSecond();
-    }
-
-    /**
-     * Returns the nano-of-second field.
-     *
-     * @return the nano-of-second, from 0 to 999,999,999
-     *
-     * @see LocalTime#getNano()
-     */
-    public int getNano() {
-        return localTime.getNano();
-    }
-
     public LocalTime toLocalTime() {
         return localTime;
     }
