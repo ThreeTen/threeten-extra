@@ -63,7 +63,7 @@ import java.util.Objects;
  * identity hash code or use the distinction between equals() and ==.
  */
 public final class DayTime
-        implements Temporal, TemporalAccessor, TemporalAdjuster, Comparable<DayTime>, Serializable {
+        implements Temporal, TemporalAdjuster, Comparable<DayTime>, Serializable {
 
     /**
      * Serialization version.
