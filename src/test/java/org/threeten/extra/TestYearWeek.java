@@ -749,6 +749,30 @@ public class TestYearWeek {
     }
 
     //-----------------------------------------------------------------------
+    // until(Temporal, TemporalUnit)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_until_weeks() {
+        assertEquals(1, TEST.until(YearWeek.of(2015, 2), ChronoUnit.WEEKS));
+        assertEquals(2, TEST.until(YearWeek.of(2015, 3), ChronoUnit.WEEKS));
+        assertEquals(52, TEST_NON_LEAP.until(TEST, ChronoUnit.WEEKS));
+        assertEquals(53, TEST.until(YearWeek.of(2016, 1), ChronoUnit.WEEKS));
+    }
+
+    @Test
+    public void test_until_years() {
+        assertEquals(1, TEST.until(YearWeek.of(2016, 1), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(0, TEST.until(YearWeek.of(2015, 53), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(0, TEST.until(YearWeek.of(2014, 2), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(-1, TEST.until(YearWeek.of(2013, 2), IsoFields.WEEK_BASED_YEARS));
+    }
+
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_until_unsupportedType() {
+        TEST.until(YearWeek.of(2016, 1), ChronoUnit.MONTHS);
+    }
+
+    //-----------------------------------------------------------------------
     // range(TemporalField)
     //-----------------------------------------------------------------------
     @Test
