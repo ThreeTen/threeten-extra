@@ -97,10 +97,12 @@ import java.time.chrono.ThaiBuddhistDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalUnit;
@@ -291,6 +293,16 @@ public class TestYearWeek {
             {2017,  1, SUNDAY,    2017,  1,  8},
             {2025,  1, MONDAY,    2024, 12, 30},
         };
+    }
+
+    @DataProvider
+    public static Object[][] data_outOfBounds() {
+    	return new Object[][] {
+    		{IsoFields.WEEK_OF_WEEK_BASED_YEAR, 54},
+    		{IsoFields.WEEK_OF_WEEK_BASED_YEAR, 0},
+    		{IsoFields.WEEK_BASED_YEAR, 1000000000},
+    		{IsoFields.WEEK_BASED_YEAR, -1000000000},
+    	};
     }
 
     //-----------------------------------------------------------------------
@@ -619,6 +631,34 @@ public class TestYearWeek {
     public void test_lengthOfYear() {
         assertEquals(364, YearWeek.of(2014, 1).lengthOfYear());
         assertEquals(371, YearWeek.of(2015, 1).lengthOfYear());
+    }
+
+    //-----------------------------------------------------------------------
+    // with(TemporalField, long)
+    //-----------------------------------------------------------------------
+    @Test()
+    public void test_with() {
+        assertEquals(YearWeek.of(2015, 10), TEST.with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, 10));
+        assertEquals(YearWeek.of(2016, 1), TEST.with(IsoFields.WEEK_BASED_YEAR, 2016));
+    }
+
+    @Test(expected = DateTimeException.class)
+    @UseDataProvider("data_outOfBounds")
+    public void test_with_outOfBounds(TemporalField field, long newValue) {
+        TEST.with(field, newValue);
+    }
+
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_with_TemporalAdjuster_unsupportedType() {
+        TEST.with(ChronoField.MONTH_OF_YEAR, 5);
+    }
+
+    //-----------------------------------------------------------------------
+    // with(TemporalAdjuster)
+    //-----------------------------------------------------------------------
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_with_unsupportedType() {
+        TEST.with(TemporalAdjusters.firstDayOfMonth());
     }
 
     //-----------------------------------------------------------------------
