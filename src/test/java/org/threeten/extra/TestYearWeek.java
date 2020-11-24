@@ -89,6 +89,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
@@ -96,10 +97,13 @@ import java.time.chrono.ThaiBuddhistDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
@@ -753,6 +757,28 @@ public class TestYearWeek {
     @Test(expected = DateTimeException.class)
     public void test_withYear_int_min() {
         TEST.withYear(Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(int, TemporalUnit)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plus() {
+        assertEquals(YearWeek.of(2015, 2), TEST.plus(1, ChronoUnit.WEEKS));
+        assertEquals(YearWeek.of(2016, 1), TEST.plus(1, IsoFields.WEEK_BASED_YEARS));
+    }
+
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_plus_unsupportedType() {
+        YearWeek.of(2014, 1).plus(1, ChronoUnit.DAYS);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(TemporalAmount)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plus_TemporalAmount() {
+        assertEquals(YearWeek.of(2015, 2), TEST.plus(Weeks.of(1)));
     }
 
     //-----------------------------------------------------------------------
