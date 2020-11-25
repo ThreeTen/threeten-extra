@@ -935,6 +935,27 @@ public class TestYearWeek {
     }
 
     //-----------------------------------------------------------------------
+    // minus(int, TemporalUnit)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_minus() {
+        assertEquals(YearWeek.of(2014, 1), YearWeek.of(2014, 2).minus(1, ChronoUnit.WEEKS));
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void test_minus_overflow() {
+        TEST.minus(Long.MIN_VALUE, ChronoUnit.WEEKS);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(TemporalAmount)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_minus_TemporalAmount() {
+        assertEquals(YearWeek.of(2014, 1), YearWeek.of(2014, 2).minus(Weeks.of(1)));
+    }
+
+    //-----------------------------------------------------------------------
     // minusYears(long)
     //-----------------------------------------------------------------------
     @Test
