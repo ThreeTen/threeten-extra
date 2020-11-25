@@ -762,7 +762,10 @@ public class TestYearWeek {
     @Test
     public void test_until_years() {
         assertEquals(1, TEST.until(YearWeek.of(2016, 1), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(-1, TEST.until(YearWeek.of(2014, 1), IsoFields.WEEK_BASED_YEARS));
         assertEquals(0, TEST.until(YearWeek.of(2015, 53), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(0, YearWeek.of(2015, 10).until(YearWeek.of(2015, 5), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(0, YearWeek.of(2015, 10).until(YearWeek.of(2016, 5), IsoFields.WEEK_BASED_YEARS));
         assertEquals(0, TEST.until(YearWeek.of(2014, 2), IsoFields.WEEK_BASED_YEARS));
         assertEquals(-1, TEST.until(YearWeek.of(2013, 2), IsoFields.WEEK_BASED_YEARS));
     }
