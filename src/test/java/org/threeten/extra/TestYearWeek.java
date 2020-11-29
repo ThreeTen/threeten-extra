@@ -89,6 +89,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
@@ -96,10 +97,15 @@ import java.time.chrono.ThaiBuddhistDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
@@ -287,6 +293,16 @@ public class TestYearWeek {
             {2017,  1, SUNDAY,    2017,  1,  8},
             {2025,  1, MONDAY,    2024, 12, 30},
         };
+    }
+
+    @DataProvider
+    public static Object[][] data_outOfBounds() {
+    	return new Object[][] {
+    		{IsoFields.WEEK_OF_WEEK_BASED_YEAR, 54},
+    		{IsoFields.WEEK_OF_WEEK_BASED_YEAR, 0},
+    		{IsoFields.WEEK_BASED_YEAR, 1000000000},
+    		{IsoFields.WEEK_BASED_YEAR, -1000000000},
+    	};
     }
 
     //-----------------------------------------------------------------------
@@ -618,6 +634,34 @@ public class TestYearWeek {
     }
 
     //-----------------------------------------------------------------------
+    // with(TemporalField, long)
+    //-----------------------------------------------------------------------
+    @Test()
+    public void test_with() {
+        assertEquals(YearWeek.of(2015, 10), TEST.with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, 10));
+        assertEquals(YearWeek.of(2016, 1), TEST.with(IsoFields.WEEK_BASED_YEAR, 2016));
+    }
+
+    @Test(expected = DateTimeException.class)
+    @UseDataProvider("data_outOfBounds")
+    public void test_with_outOfBounds(TemporalField field, long newValue) {
+        TEST.with(field, newValue);
+    }
+
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_with_TemporalAdjuster_unsupportedType() {
+        TEST.with(ChronoField.MONTH_OF_YEAR, 5);
+    }
+
+    //-----------------------------------------------------------------------
+    // with(TemporalAdjuster)
+    //-----------------------------------------------------------------------
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_with_unsupportedType() {
+        TEST.with(TemporalAdjusters.firstDayOfMonth());
+    }
+
+    //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     @Test
@@ -705,6 +749,33 @@ public class TestYearWeek {
     }
 
     //-----------------------------------------------------------------------
+    // until(Temporal, TemporalUnit)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_until_weeks() {
+        assertEquals(1, TEST.until(YearWeek.of(2015, 2), ChronoUnit.WEEKS));
+        assertEquals(2, TEST.until(YearWeek.of(2015, 3), ChronoUnit.WEEKS));
+        assertEquals(52, TEST_NON_LEAP.until(TEST, ChronoUnit.WEEKS));
+        assertEquals(53, TEST.until(YearWeek.of(2016, 1), ChronoUnit.WEEKS));
+    }
+
+    @Test
+    public void test_until_years() {
+        assertEquals(1, TEST.until(YearWeek.of(2016, 1), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(-1, TEST.until(YearWeek.of(2014, 1), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(0, TEST.until(YearWeek.of(2015, 53), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(0, YearWeek.of(2015, 10).until(YearWeek.of(2015, 5), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(0, YearWeek.of(2015, 10).until(YearWeek.of(2016, 5), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(0, TEST.until(YearWeek.of(2014, 2), IsoFields.WEEK_BASED_YEARS));
+        assertEquals(-1, TEST.until(YearWeek.of(2013, 2), IsoFields.WEEK_BASED_YEARS));
+    }
+
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_until_unsupportedType() {
+        TEST.until(YearWeek.of(2016, 1), ChronoUnit.MONTHS);
+    }
+
+    //-----------------------------------------------------------------------
     // range(TemporalField)
     //-----------------------------------------------------------------------
     @Test
@@ -753,6 +824,28 @@ public class TestYearWeek {
     @Test(expected = DateTimeException.class)
     public void test_withYear_int_min() {
         TEST.withYear(Integer.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(int, TemporalUnit)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plus() {
+        assertEquals(YearWeek.of(2015, 2), TEST.plus(1, ChronoUnit.WEEKS));
+        assertEquals(YearWeek.of(2016, 1), TEST.plus(1, IsoFields.WEEK_BASED_YEARS));
+    }
+
+    @Test(expected = UnsupportedTemporalTypeException.class)
+    public void test_plus_unsupportedType() {
+        YearWeek.of(2014, 1).plus(1, ChronoUnit.DAYS);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(TemporalAmount)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plus_TemporalAmount() {
+        assertEquals(YearWeek.of(2015, 2), TEST.plus(Weeks.of(1)));
     }
 
     //-----------------------------------------------------------------------
@@ -842,6 +935,27 @@ public class TestYearWeek {
     @Test(expected = ArithmeticException.class)
     public void test_plusWeeks_min_long() {
         TEST.plusWeeks(Long.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(int, TemporalUnit)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_minus() {
+        assertEquals(YearWeek.of(2014, 1), YearWeek.of(2014, 2).minus(1, ChronoUnit.WEEKS));
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void test_minus_overflow() {
+        TEST.minus(Long.MIN_VALUE, ChronoUnit.WEEKS);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(TemporalAmount)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_minus_TemporalAmount() {
+        assertEquals(YearWeek.of(2014, 1), YearWeek.of(2014, 2).minus(Weeks.of(1)));
     }
 
     //-----------------------------------------------------------------------

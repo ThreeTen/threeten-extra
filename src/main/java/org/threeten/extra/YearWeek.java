@@ -925,15 +925,27 @@ public final class YearWeek
     public long until(Temporal endExclusive, TemporalUnit unit) {
         YearWeek end = YearWeek.from(endExclusive);
         if (unit == WEEKS) {
-            LocalDate startDate = this.atDay(MONDAY);
-            LocalDate endDate = end.atDay(MONDAY);
-            return endDate.toEpochDay() - startDate.toEpochDay();
+            return daysUntil(end);
         } else if (unit == WEEK_BASED_YEARS) {
-            return end.year - this.year + (end.week < this.week ? -1 : 0);
+            return yearsUntil(end);
         } else if (unit instanceof ChronoUnit) {
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
         return unit.between(this, end);
+    }
+
+    private long daysUntil(YearWeek end) {
+        LocalDate startDate = this.atDay(MONDAY);
+        LocalDate endDate = end.atDay(MONDAY);
+        long days = endDate.toEpochDay() - startDate.toEpochDay();
+        return days / 7;
+    }
+
+    private long yearsUntil(YearWeek end) {
+        long yearsDiff = end.year - this.year;
+        if (yearsDiff > 0 && end.week < this.week) return yearsDiff - 1;
+        if (yearsDiff < 0 && end.week > this.week) return yearsDiff + 1;
+        return yearsDiff;
     }
 
     /**
