@@ -12,6 +12,10 @@
         Add OffsetDate.
         Fixes #137.
       </action>
+      <action dev="kluever" type="add">
+        Add factory methods taking Year and Quarter objects.
+        Fixes #155, #156.
+      </action>
       <action dev="jodastephen" type="add">
         Add isZero(), isPositive(), isNegative() to temporal amount classes.
         Fixes #148.
