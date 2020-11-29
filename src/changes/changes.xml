@@ -8,13 +8,17 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.6.0" date="SNAPSHOT" description="v1.6.0">
-      <action dev="jodastephen" type="add">
-        Make YearWeek implement Temporal.
-        Fixes #165, #163, #115.
-      </action>
       <action dev="mwkroening" type="add">
         Add OffsetDate.
         Fixes #137.
+      </action>
+      <action dev="jodastephen" type="add">
+        Add isZero(), isPositive(), isNegative() to temporal amount classes.
+        Fixes #148.
+      </action>
+      <action dev="jodastephen" type="add">
+        Make YearWeek implement Temporal.
+        Fixes #165, #163, #115.
       </action>
       <action dev="mwkroening" type="fix">
         Fix UtcInstant.isLeapSecond().

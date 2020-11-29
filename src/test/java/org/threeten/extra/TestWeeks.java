@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -88,6 +89,9 @@ public class TestWeeks {
         assertSame(Weeks.of(0), Weeks.ZERO);
         assertEquals(Weeks.of(0), Weeks.ZERO);
         assertEquals(0, Weeks.ZERO.getAmount());
+        assertFalse(Weeks.ZERO.isNegative());
+        assertTrue(Weeks.ZERO.isZero());
+        assertFalse(Weeks.ZERO.isPositive());
     }
 
     @Test
@@ -95,6 +99,9 @@ public class TestWeeks {
         assertSame(Weeks.of(1), Weeks.ONE);
         assertEquals(Weeks.of(1), Weeks.ONE);
         assertEquals(1, Weeks.ONE.getAmount());
+        assertFalse(Weeks.ONE.isNegative());
+        assertFalse(Weeks.ONE.isZero());
+        assertTrue(Weeks.ONE.isPositive());
     }
 
     //-----------------------------------------------------------------------
@@ -106,6 +113,14 @@ public class TestWeeks {
         assertEquals(-1, Weeks.of(-1).getAmount());
         assertEquals(-2, Weeks.of(-2).getAmount());
         assertEquals(Integer.MIN_VALUE, Weeks.of(Integer.MIN_VALUE).getAmount());
+    }
+
+    @Test
+    public void test_ofMinusOne() {
+        assertEquals(-1, Weeks.of(-1).getAmount());
+        assertTrue(Weeks.of(-1).isNegative());
+        assertFalse(Weeks.of(-1).isZero());
+        assertFalse(Weeks.of(-1).isPositive());
     }
 
     //-----------------------------------------------------------------------

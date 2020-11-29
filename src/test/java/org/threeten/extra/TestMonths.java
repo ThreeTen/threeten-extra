@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -88,6 +89,9 @@ public class TestMonths {
         assertSame(Months.of(0), Months.ZERO);
         assertEquals(Months.of(0), Months.ZERO);
         assertEquals(0, Months.ZERO.getAmount());
+        assertFalse(Months.ZERO.isNegative());
+        assertTrue(Months.ZERO.isZero());
+        assertFalse(Months.ZERO.isPositive());
     }
 
     @Test
@@ -95,6 +99,9 @@ public class TestMonths {
         assertSame(Months.of(1), Months.ONE);
         assertEquals(Months.of(1), Months.ONE);
         assertEquals(1, Months.ONE.getAmount());
+        assertFalse(Months.ONE.isNegative());
+        assertFalse(Months.ONE.isZero());
+        assertTrue(Months.ONE.isPositive());
     }
 
     //-----------------------------------------------------------------------
@@ -107,6 +114,14 @@ public class TestMonths {
         assertEquals(-1, Months.of(-1).getAmount());
         assertEquals(-2, Months.of(-2).getAmount());
         assertEquals(Integer.MIN_VALUE, Months.of(Integer.MIN_VALUE).getAmount());
+    }
+
+    @Test
+    public void test_ofMinusOne() {
+        assertEquals(-1, Months.of(-1).getAmount());
+        assertTrue(Months.of(-1).isNegative());
+        assertFalse(Months.of(-1).isZero());
+        assertFalse(Months.of(-1).isPositive());
     }
 
     //-----------------------------------------------------------------------

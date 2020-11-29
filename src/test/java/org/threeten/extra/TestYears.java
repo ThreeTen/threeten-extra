@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -88,6 +89,9 @@ public class TestYears {
         assertSame(Years.of(0), Years.ZERO);
         assertEquals(Years.of(0), Years.ZERO);
         assertEquals(0, Years.ZERO.getAmount());
+        assertFalse(Years.ZERO.isNegative());
+        assertTrue(Years.ZERO.isZero());
+        assertFalse(Years.ZERO.isPositive());
     }
 
     @Test
@@ -95,6 +99,9 @@ public class TestYears {
         assertSame(Years.of(1), Years.ONE);
         assertEquals(Years.of(1), Years.ONE);
         assertEquals(1, Years.ONE.getAmount());
+        assertFalse(Years.ONE.isNegative());
+        assertFalse(Years.ONE.isZero());
+        assertTrue(Years.ONE.isPositive());
     }
 
     //-----------------------------------------------------------------------
@@ -106,6 +113,14 @@ public class TestYears {
         assertEquals(-1, Years.of(-1).getAmount());
         assertEquals(-2, Years.of(-2).getAmount());
         assertEquals(Integer.MIN_VALUE, Years.of(Integer.MIN_VALUE).getAmount());
+    }
+
+    @Test
+    public void test_ofMinusOne() {
+        assertEquals(-1, Years.of(-1).getAmount());
+        assertTrue(Years.of(-1).isNegative());
+        assertFalse(Years.of(-1).isZero());
+        assertFalse(Years.of(-1).isPositive());
     }
 
     //-----------------------------------------------------------------------

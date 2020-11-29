@@ -298,6 +298,33 @@ public final class Hours
         return hours;
     }
 
+    /**
+     * Checks if the amount is negative.
+     *
+     * @return true if the amount is negative, false if the amount is zero or positive
+     */
+    public boolean isNegative() {
+        return getAmount() < 0;
+    }
+
+    /**
+     * Checks if the amount is zero.
+     *
+     * @return true if the amount is zero, false if not
+     */
+    public boolean isZero() {
+        return getAmount() == 0;
+    }
+
+    /**
+     * Checks if the amount is positive.
+     *
+     * @return true if the amount is positive, false if the amount is zero or negative
+     */
+    public boolean isPositive() {
+        return getAmount() > 0;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this amount with the specified amount added.

@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -82,6 +83,9 @@ public class TestMinutes {
         assertSame(Minutes.of(0), Minutes.ZERO);
         assertEquals(Minutes.of(0), Minutes.ZERO);
         assertEquals(0, Minutes.ZERO.getAmount());
+        assertFalse(Minutes.ZERO.isNegative());
+        assertTrue(Minutes.ZERO.isZero());
+        assertFalse(Minutes.ZERO.isPositive());
     }
     
     //-----------------------------------------------------------------------
@@ -95,7 +99,23 @@ public class TestMinutes {
         assertEquals(-2, Minutes.of(-2).getAmount());
         assertEquals(Integer.MIN_VALUE, Minutes.of(Integer.MIN_VALUE).getAmount());
     }
-    
+
+    @Test
+    public void test_ofMinusOne() {
+        assertEquals(-1, Hours.of(-1).getAmount());
+        assertTrue(Minutes.of(-1).isNegative());
+        assertFalse(Minutes.of(-1).isZero());
+        assertFalse(Minutes.of(-1).isPositive());
+    }
+
+    @Test
+    public void test_ofPlusOne() {
+        assertEquals(1, Hours.of(1).getAmount());
+        assertFalse(Minutes.of(1).isNegative());
+        assertFalse(Minutes.of(1).isZero());
+        assertTrue(Minutes.of(1).isPositive());
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void test_ofHours() {

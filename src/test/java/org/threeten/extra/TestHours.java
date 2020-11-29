@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -75,15 +76,18 @@ public class TestHours {
             assertSame(test, ois.readObject());
         }
     }
-    
+
     //-----------------------------------------------------------------------
     @Test
     public void test_ZERO() {
         assertSame(Hours.of(0), Hours.ZERO);
         assertEquals(Hours.of(0), Hours.ZERO);
         assertEquals(0, Hours.ZERO.getAmount());
+        assertFalse(Hours.ZERO.isNegative());
+        assertTrue(Hours.ZERO.isZero());
+        assertFalse(Hours.ZERO.isPositive());
     }
-    
+
     //-----------------------------------------------------------------------
     @Test
     public void test_of() {
@@ -95,7 +99,23 @@ public class TestHours {
         assertEquals(-2, Hours.of(-2).getAmount());
         assertEquals(Integer.MIN_VALUE, Hours.of(Integer.MIN_VALUE).getAmount());
     }
-    
+
+    @Test
+    public void test_ofMinusOne() {
+        assertEquals(-1, Hours.of(-1).getAmount());
+        assertTrue(Hours.of(-1).isNegative());
+        assertFalse(Hours.of(-1).isZero());
+        assertFalse(Hours.of(-1).isPositive());
+    }
+
+    @Test
+    public void test_ofPlusOne() {
+        assertEquals(1, Hours.of(1).getAmount());
+        assertFalse(Hours.of(1).isNegative());
+        assertFalse(Hours.of(1).isZero());
+        assertTrue(Hours.of(1).isPositive());
+    }
+
     //-----------------------------------------------------------------------
     @DataProvider
     public static Object[][] data_valid() {

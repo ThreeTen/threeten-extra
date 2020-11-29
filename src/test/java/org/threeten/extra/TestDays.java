@@ -32,6 +32,7 @@
 package org.threeten.extra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -88,6 +89,9 @@ public class TestDays {
         assertSame(Days.of(0), Days.ZERO);
         assertEquals(Days.of(0), Days.ZERO);
         assertEquals(0, Days.ZERO.getAmount());
+        assertFalse(Days.ZERO.isNegative());
+        assertTrue(Days.ZERO.isZero());
+        assertFalse(Days.ZERO.isPositive());
     }
 
     @Test
@@ -95,6 +99,9 @@ public class TestDays {
         assertSame(Days.of(1), Days.ONE);
         assertEquals(Days.of(1), Days.ONE);
         assertEquals(1, Days.ONE.getAmount());
+        assertFalse(Days.ONE.isNegative());
+        assertFalse(Days.ONE.isZero());
+        assertTrue(Days.ONE.isPositive());
     }
 
     //-----------------------------------------------------------------------
@@ -107,6 +114,14 @@ public class TestDays {
         assertEquals(-1, Days.of(-1).getAmount());
         assertEquals(-2, Days.of(-2).getAmount());
         assertEquals(Integer.MIN_VALUE, Days.of(Integer.MIN_VALUE).getAmount());
+    }
+
+    @Test
+    public void test_ofMinusOne() {
+        assertEquals(-1, Days.of(-1).getAmount());
+        assertTrue(Days.of(-1).isNegative());
+        assertFalse(Days.of(-1).isZero());
+        assertFalse(Days.of(-1).isPositive());
     }
 
     //-----------------------------------------------------------------------
