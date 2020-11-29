@@ -181,6 +181,29 @@ public final class YearQuarter
     /**
      * Obtains an instance of {@code YearQuarter} from a year and quarter.
      *
+     * @param year  the year to represent, not null
+     * @param quarter  the quarter-of-year to represent, not null
+     * @return the year-quarter, not null
+     */
+    public static YearQuarter of(Year year, Quarter quarter) {
+        return of(year.getValue(), quarter);
+    }
+
+    /**
+     * Obtains an instance of {@code YearQuarter} from a year and quarter.
+     *
+     * @param year  the year to represent, not null
+     * @param quarter  the quarter-of-year to represent, from 1 to 4
+     * @return the year-quarter, not null
+     * @throws DateTimeException if the quarter value is invalid
+     */
+    public static YearQuarter of(Year year, int quarter) {
+        return of(year.getValue(), Quarter.of(quarter));
+    }
+
+    /**
+     * Obtains an instance of {@code YearQuarter} from a year and quarter.
+     *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param quarter  the quarter-of-year to represent, not null
      * @return the year-quarter, not null

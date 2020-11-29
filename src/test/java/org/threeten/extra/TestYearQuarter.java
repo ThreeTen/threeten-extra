@@ -144,6 +144,56 @@ public class TestYearQuarter {
     }
 
     //-----------------------------------------------------------------------
+    // of(Year,Quarter)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_of_Year_Quarter() {
+        for (int year = -100; year <= 100; year++) {
+            for (Quarter quarter : Quarter.values()) {
+                YearQuarter test = YearQuarter.of(Year.of(year), quarter);
+                assertEquals(year, test.getYear());
+                assertEquals(quarter.getValue(), test.getQuarterValue());
+                assertEquals(quarter, test.getQuarter());
+            }
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_of_Year_Quarter_nullQuarter() {
+        YearQuarter.of(Year.of(2012), (Quarter) null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_of_Year_Quarter_nullYear() {
+        YearQuarter.of((Year) null, Quarter.Q2);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_of_Year_Quarter_nullBoth() {
+        YearQuarter.of((Year) null, (Quarter) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // of(Year,int)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_of_Year_int() {
+        for (int year = -100; year <= 100; year++) {
+            for (Quarter quarter : Quarter.values()) {
+                YearQuarter test = YearQuarter.of(Year.of(year), quarter.getValue());
+                assertEquals(year, test.getYear());
+                assertEquals(quarter.getValue(), test.getQuarterValue());
+                assertEquals(quarter, test.getQuarter());
+            }
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_of_Year_int_null() {
+        YearQuarter.of((Year) null, 2);
+    }
+
+    //-----------------------------------------------------------------------
     // of(int,Quarter)
     //-----------------------------------------------------------------------
     @Test

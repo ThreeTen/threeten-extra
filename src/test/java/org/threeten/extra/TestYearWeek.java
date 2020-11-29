@@ -384,6 +384,22 @@ public class TestYearWeek {
     }
 
     //-----------------------------------------------------------------------
+    // of(Year, int)
+    //-----------------------------------------------------------------------
+    @Test
+    @UseDataProvider("data_sampleYearWeeks")
+    public void test_of_Year_int(int year, int week) {
+        YearWeek yearWeek = YearWeek.of(Year.of(year), week);
+        assertEquals(year, yearWeek.getYear());
+        assertEquals(week, yearWeek.getWeek());
+    }
+
+    @Test
+    public void test_carry_Year_int() {
+        assertTrue(YearWeek.of(Year.of(2014), 53).equals(TEST));
+    }
+
+    //-----------------------------------------------------------------------
     // of(int, int)
     //-----------------------------------------------------------------------
     @Test
