@@ -48,6 +48,10 @@
         Add Norwegian Bokmål and Norwegian Nynorsk translations for word-based formatting.
         Fixes #125.
       </action>
+      <action dev="spand" type="fix">
+        Fix Interval Javadoc.
+        Fixes #171.
+      </action>
       <action dev="jnizet" type="fix">
         Fix Interval Javadoc.
         Fixes #159.
