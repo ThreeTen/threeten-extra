@@ -93,8 +93,8 @@ public final class Interval
      * <p>
      * The end instant must not be before the start instant.
      *
-     * @param startInclusive  the start instant, inclusive, MIN_DATE treated as unbounded, not null
-     * @param endExclusive  the end instant, exclusive, MAX_DATE treated as unbounded, not null
+     * @param startInclusive  the start instant, inclusive, {@link Instant#MIN} treated as unbounded, not null
+     * @param endExclusive  the end instant, exclusive, {@link Instant#MAX} treated as unbounded, not null
      * @return the half-open interval, not null
      * @throws DateTimeException if the end is before the start
      */
