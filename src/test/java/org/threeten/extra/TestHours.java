@@ -447,7 +447,7 @@ public class TestHours {
     @Test
     public void test_equals_otherClass() {
         Hours test5 = Hours.of(5);
-        assertEquals(false, test5.equals(""));
+        assertEquals(false, test5.equals((Object) ""));
     }
 
     //-----------------------------------------------------------------------

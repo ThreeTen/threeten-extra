@@ -405,6 +405,7 @@ public final class OffsetDate
      * @param unit  the unit to check, null returns false
      * @return true if the unit can be added/subtracted, false if not
      */
+    @Override
     public boolean isSupported(TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             return unit.isDateBased();

@@ -54,6 +54,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
@@ -72,7 +73,6 @@ import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.function.IntPredicate;
-import java.util.function.Predicate;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -775,8 +775,8 @@ public class TestAccountingChronology {
         assertEquals(false, a1.equals(c));
         assertEquals(false, a1.equals(d));
 
-        assertEquals(false, a1.equals(null));
-        assertEquals(false, a1.equals(""));
+        assertFalse(a1.equals(null));
+        assertFalse(a1.equals((Object) ""));
         assertEquals(false, a1.getChronology().equals(other.getChronology()));
         assertEquals(false, a1.equals(other));
 

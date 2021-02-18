@@ -54,6 +54,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
@@ -736,8 +737,8 @@ public class TestJulianChronology {
         assertEquals(false, a1.equals(c));
         assertEquals(false, a1.equals(d));
 
-        assertEquals(false, a1.equals(null));
-        assertEquals(false, a1.equals(""));
+        assertFalse(a1.equals(null));
+        assertFalse(a1.equals((Object) ""));
 
         assertTrue(a1.hashCode() == a2.hashCode());
     }

@@ -1929,7 +1929,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_equals_string_false() {
-        assertFalse(TEST_2007_07_15_PONE.equals("2007-07-15"));
+        assertFalse(TEST_2007_07_15_PONE.equals((Object) "2007-07-15"));
     }
 
     //-----------------------------------------------------------------------

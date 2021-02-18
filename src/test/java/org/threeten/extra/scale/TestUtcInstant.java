@@ -570,7 +570,7 @@ public class TestUtcInstant {
     @Test
     public void test_equals_otherClass() {
         UtcInstant test5 = UtcInstant.ofModifiedJulianDay(5L, 20);
-        assertEquals(false, test5.equals(""));
+        assertEquals(false, test5.equals((Object) ""));
     }
 
     //-----------------------------------------------------------------------

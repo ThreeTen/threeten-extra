@@ -402,7 +402,7 @@ public class TestPeriodDuration {
     @Test
     public void test_equals_otherClass() {
         PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
-        assertEquals(false, test.equals(""));
+        assertEquals(false, test.equals((Object) ""));
     }
 
     //-----------------------------------------------------------------------

@@ -1350,7 +1350,7 @@ public class TestInternationalFixedChronology {
         assertFalse(a1.equals(d));
 
         assertFalse(a1.equals(null));
-        assertFalse("".equals(a1));
+        assertFalse(a1.equals((Object) ""));
     }
 
     //-----------------------------------------------------------------------

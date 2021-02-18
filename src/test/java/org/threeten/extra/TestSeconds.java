@@ -493,7 +493,7 @@ public class TestSeconds {
     @Test
     public void test_equals_otherClass() {
         Seconds test5 = Seconds.of(5);
-        assertEquals(false, test5.equals(""));
+        assertEquals(false, test5.equals((Object) ""));
     }
 
     //-----------------------------------------------------------------------

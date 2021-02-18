@@ -43,7 +43,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.ValueRange;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
-import java.util.function.Predicate;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -720,7 +720,7 @@ public class TestInterval {
         assertEquals(false, a.equals(b));
         assertEquals(false, a.equals(c));
         assertEquals(false, a.equals(null));
-        assertEquals(false, a.equals(""));
+        assertEquals(false, a.equals((Object) ""));
         assertEquals(true, a.hashCode() == a2.hashCode());
     }
 

@@ -995,7 +995,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_equals_incorrectType() {
-        assertEquals(false, TEST.equals("Incorrect type"));
+        assertEquals(false, TEST.equals((Object) "Incorrect type"));
     }
 
     //-----------------------------------------------------------------------

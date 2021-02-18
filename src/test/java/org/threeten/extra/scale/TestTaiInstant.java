@@ -811,7 +811,7 @@ public class TestTaiInstant {
     @Test
     public void test_equals_otherClass() {
         TaiInstant test5 = TaiInstant.ofTaiSeconds(5L, 20);
-        assertEquals(false, test5.equals(""));
+        assertEquals(false, test5.equals((Object) ""));
     }
 
     //-----------------------------------------------------------------------

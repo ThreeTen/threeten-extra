@@ -105,7 +105,6 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
-import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
@@ -1082,7 +1081,7 @@ public class TestYearWeek {
     @Test
     public void test_equals_incorrectType() {
         assertTrue(TEST.equals(null) == false);
-        assertEquals(false, TEST.equals("Incorrect type"));
+        assertEquals(false, TEST.equals((Object) "Incorrect type"));
     }
 
     //-----------------------------------------------------------------------
