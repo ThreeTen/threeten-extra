@@ -53,7 +53,7 @@ Various documentation is available:
 ## <i></i> Releases
 
 Release 1.5.0 is the current release.
-This release is considered stable and worthy of the 1.x tag.
+This release is considered stable and worthy of the 1.x tag as per [SemVer](https://semver.org/spec/v2.0.0.html).
 
 ThreeTen-Extra requires Java SE 8 or later and has no [dependencies](dependencies.html).
 
