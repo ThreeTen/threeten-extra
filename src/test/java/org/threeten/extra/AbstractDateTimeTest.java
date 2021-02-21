@@ -33,8 +33,8 @@ package org.threeten.extra;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.DateTimeException;
 import java.time.temporal.TemporalAccessor;
@@ -110,12 +110,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_range_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
-                try {
-                    sample.range(field);
-                    fail("Failed on " + sample + " " + field);
-                } catch (DateTimeException ex) {
-                    // expected
-                }
+                assertThrows(DateTimeException.class, () -> sample.range(field), "Failed on " + sample + " " + field);
             }
         }
     }
@@ -123,12 +118,7 @@ public abstract class AbstractDateTimeTest {
     @Test
     public void basicTest_range_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
-            try {
-                sample.range(null);
-                fail("Failed on " + sample);
-            } catch (NullPointerException ex) {
-                // expected
-            }
+            assertThrows(NullPointerException.class, () -> sample.range(null), "Failed on " + sample);
         }
     }
 
@@ -142,12 +132,7 @@ public abstract class AbstractDateTimeTest {
                 if (sample.range(field).isIntValue()) {
                     sample.get(field);  // no exception
                 } else {
-                    try {
-                        sample.get(field);
-                        fail("Failed on " + sample + " " + field);
-                    } catch (DateTimeException ex) {
-                        // expected
-                    }
+                    assertThrows(DateTimeException.class, () -> sample.get(field), "Failed on " + sample + " " + field);
                 }
             }
         }
@@ -157,12 +142,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_get_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
-                try {
-                    sample.get(field);
-                    fail("Failed on " + sample + " " + field);
-                } catch (DateTimeException ex) {
-                    // expected
-                }
+                assertThrows(DateTimeException.class, () -> sample.get(field), "Failed on " + sample + " " + field);
             }
         }
     }
@@ -170,12 +150,7 @@ public abstract class AbstractDateTimeTest {
     @Test
     public void basicTest_get_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
-            try {
-                sample.get(null);
-                fail("Failed on " + sample);
-            } catch (NullPointerException ex) {
-                // expected
-            }
+            assertThrows(NullPointerException.class, () -> sample.get(null), "Failed on " + sample);
         }
     }
 
@@ -195,12 +170,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_getLong_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
-                try {
-                    sample.getLong(field);
-                    fail("Failed on " + sample + " " + field);
-                } catch (DateTimeException ex) {
-                    // expected
-                }
+                assertThrows(DateTimeException.class, () -> sample.getLong(field), "Failed on " + sample + " " + field);
             }
         }
     }
@@ -208,12 +178,7 @@ public abstract class AbstractDateTimeTest {
     @Test
     public void basicTest_getLong_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
-            try {
-                sample.getLong(null);
-                fail("Failed on " + sample);
-            } catch (NullPointerException ex) {
-                // expected
-            }
+            assertThrows(NullPointerException.class, () -> sample.getLong(null), "Failed on " + sample);
         }
     }
 

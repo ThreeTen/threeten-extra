@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -238,16 +237,11 @@ public class TestUtcInstant {
     public void test_withModifiedJulianDay(long mjd, long nanos, long newMjd, Long expectedMjd, Long expectedNanos) {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos);
         if (expectedMjd != null) {
-            i = i.withModifiedJulianDay(newMjd);
-            assertEquals(expectedMjd.longValue(), i.getModifiedJulianDay());
-            assertEquals(expectedNanos.longValue(), i.getNanoOfDay());
+            UtcInstant withModifiedJulianDay = i.withModifiedJulianDay(newMjd);
+            assertEquals(expectedMjd.longValue(), withModifiedJulianDay.getModifiedJulianDay());
+            assertEquals(expectedNanos.longValue(), withModifiedJulianDay.getNanoOfDay());
         } else {
-            try {
-                i = i.withModifiedJulianDay(newMjd);
-                fail();
-            } catch (DateTimeException ex) {
-                // expected
-            }
+            assertThrows(DateTimeException.class, () -> i.withModifiedJulianDay(newMjd));
         }
     }
 
@@ -281,16 +275,11 @@ public class TestUtcInstant {
     public void test_withNanoOfDay(long mjd, long nanos, long newNanoOfDay, Long expectedMjd, Long expectedNanos) {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos);
         if (expectedMjd != null) {
-            i = i.withNanoOfDay(newNanoOfDay);
-            assertEquals(expectedMjd.longValue(), i.getModifiedJulianDay());
-            assertEquals(expectedNanos.longValue(), i.getNanoOfDay());
+            UtcInstant withNanoOfDay = i.withNanoOfDay(newNanoOfDay);
+            assertEquals(expectedMjd.longValue(), withNanoOfDay.getModifiedJulianDay());
+            assertEquals(expectedNanos.longValue(), withNanoOfDay.getNanoOfDay());
         } else {
-            try {
-                i = i.withNanoOfDay(newNanoOfDay);
-                fail();
-            } catch (DateTimeException ex) {
-                // expected
-            }
+            assertThrows(DateTimeException.class, () -> i.withNanoOfDay(newNanoOfDay));
         }
     }
 

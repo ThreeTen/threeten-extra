@@ -34,7 +34,6 @@ package org.threeten.extra.scale;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -229,16 +228,11 @@ public class TestTaiInstant {
     public void test_withNano(long tai, long nanos, int newNano, Long expectedTai, Long expectedNanos) {
         TaiInstant i = TaiInstant.ofTaiSeconds(tai, nanos);
         if (expectedTai != null) {
-            i = i.withNano(newNano);
-            assertEquals(expectedTai.longValue(), i.getTaiSeconds());
-            assertEquals(expectedNanos.longValue(), i.getNano());
+            TaiInstant withNano = i.withNano(newNano);
+            assertEquals(expectedTai.longValue(), withNano.getTaiSeconds());
+            assertEquals(expectedNanos.longValue(), withNano.getNano());
         } else {
-            try {
-                i = i.withNano(newNano);
-                fail();
-            } catch (IllegalArgumentException ex) {
-                // expected
-            }
+            assertThrows(IllegalArgumentException.class, () -> i.withNano(newNano));
         }
     }
 
