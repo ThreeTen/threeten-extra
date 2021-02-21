@@ -31,9 +31,10 @@
  */
 package org.threeten.extra;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,18 +51,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
 import com.google.common.collect.Range;
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test date range.
  */
-@RunWith(DataProviderRunner.class)
 public class TestLocalDateRange {
 
     private static final LocalDate MINP1 = LocalDate.MIN.plusDays(1);
@@ -144,19 +143,19 @@ public class TestLocalDateRange {
         assertEquals("-999999999-01-01/+999999999-12-31", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_MIN_MIN() {
-        LocalDateRange.of(LocalDate.MIN, LocalDate.MIN);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(LocalDate.MIN, LocalDate.MIN));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_MIN_MINP1() {
-        LocalDateRange.of(LocalDate.MIN, MINP1);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(LocalDate.MIN, MINP1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_MINP1_MINP1() {
-        LocalDateRange.of(MINP1, MINP1);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(MINP1, MINP1));
     }
 
     @Test
@@ -198,19 +197,19 @@ public class TestLocalDateRange {
         assertEquals("-999999999-01-03/-999999999-01-03", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_MAX_MAX() {
-        LocalDateRange.of(LocalDate.MAX, LocalDate.MAX);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(LocalDate.MAX, LocalDate.MAX));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_MAXM1_MAX() {
-        LocalDateRange.of(MAXM1, LocalDate.MAX);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(MAXM1, LocalDate.MAX));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_MAXM1_MAXM1() {
-        LocalDateRange.of(MAXM1, MAXM1);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(MAXM1, MAXM1));
     }
 
     @Test
@@ -226,9 +225,9 @@ public class TestLocalDateRange {
         assertEquals("2012-07-30/2012-07-30", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_badOrder() {
-        LocalDateRange.of(DATE_2012_07_31, DATE_2012_07_30);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(DATE_2012_07_31, DATE_2012_07_30));
     }
 
     //-----------------------------------------------------------------------
@@ -284,9 +283,9 @@ public class TestLocalDateRange {
         assertEquals("-999999999-01-01/+999999999-12-31", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofClosed_MIN_MIN() {
-        LocalDateRange.ofClosed(LocalDate.MIN, LocalDate.MIN);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofClosed(LocalDate.MIN, LocalDate.MIN));
     }
 
     @Test
@@ -354,24 +353,24 @@ public class TestLocalDateRange {
         assertEquals("-999999999-01-03/-999999999-01-04", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofClosed_MAX_MAX() {
-        LocalDateRange.ofClosed(LocalDate.MAX, LocalDate.MAX);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofClosed(LocalDate.MAX, LocalDate.MAX));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofClosed_MAXM1_MAX() {
-        LocalDateRange.ofClosed(MAXM1, LocalDate.MAX);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofClosed(MAXM1, LocalDate.MAX));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofClosed_MAXM1_MAXM1() {
-        LocalDateRange.ofClosed(MAXM1, MAXM1);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofClosed(MAXM1, MAXM1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofClosed_badOrder() {
-        LocalDateRange.ofClosed(DATE_2012_07_31, DATE_2012_07_30);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofClosed(DATE_2012_07_31, DATE_2012_07_30));
     }
 
     //-----------------------------------------------------------------------
@@ -387,24 +386,24 @@ public class TestLocalDateRange {
         assertEquals("2012-07-30/2012-07-30", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofEmpty_MIN() {
-        LocalDateRange.ofEmpty(LocalDate.MIN);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofEmpty(LocalDate.MIN));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofEmpty_MINP1() {
-        LocalDateRange.ofEmpty(MINP1);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofEmpty(MINP1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofEmpty_MAX() {
-        LocalDateRange.ofEmpty(LocalDate.MAX);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofEmpty(LocalDate.MAX));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofEmpty_MAXM1() {
-        LocalDateRange.ofEmpty(MAXM1);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofEmpty(MAXM1));
     }
 
     //-----------------------------------------------------------------------
@@ -433,14 +432,14 @@ public class TestLocalDateRange {
         assertEquals("-999999999-01-01/2012-07-30", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofUnboundedStart_MIN() {
-        LocalDateRange.ofUnboundedStart(LocalDate.MIN);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofUnboundedStart(LocalDate.MIN));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofUnboundedStart_MINP1() {
-        LocalDateRange.ofUnboundedStart(MINP1);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofUnboundedStart(MINP1));
     }
 
     //-----------------------------------------------------------------------
@@ -456,14 +455,14 @@ public class TestLocalDateRange {
         assertEquals("2012-07-30/+999999999-12-31", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofUnboundedEnd_MAX() {
-        LocalDateRange.ofUnboundedEnd(LocalDate.MAX);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofUnboundedEnd(LocalDate.MAX));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofUnboundedEnd_MAXM1() {
-        LocalDateRange.ofUnboundedEnd(MAXM1);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofUnboundedEnd(MAXM1));
     }
 
     //-----------------------------------------------------------------------
@@ -478,29 +477,29 @@ public class TestLocalDateRange {
         assertEquals("2012-07-28/2012-07-31", test.toString());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_period_negative() {
-        LocalDateRange.of(DATE_2012_07_31, Period.ofDays(-1));
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(DATE_2012_07_31, Period.ofDays(-1)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_period_atMIN() {
-        LocalDateRange.of(LocalDate.MIN, Period.ofDays(0));
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(LocalDate.MIN, Period.ofDays(0)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_period_atMAX() {
-        LocalDateRange.of(LocalDate.MAX, Period.ofDays(0));
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(LocalDate.MAX, Period.ofDays(0)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_period_atMAXM1_0D() {
-        LocalDateRange.of(MAXM1, Period.ofDays(0));
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(MAXM1, Period.ofDays(0)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_period_atMAXM1_1D() {
-        LocalDateRange.of(MAXM1, Period.ofDays(1));
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(MAXM1, Period.ofDays(1)));
     }
 
     //-----------------------------------------------------------------------
@@ -546,19 +545,19 @@ public class TestLocalDateRange {
         assertEquals(DATE_2012_07_27, test.getEnd());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_parse_CharSequence_badOrder() {
-        LocalDateRange.parse(DATE_2012_07_29 + "/" + DATE_2012_07_27);
+        assertThrows(DateTimeException.class, () -> LocalDateRange.parse(DATE_2012_07_29 + "/" + DATE_2012_07_27));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parse_CharSequence_badFormat() {
-        LocalDateRange.parse(DATE_2012_07_29 + "-" + DATE_2012_07_27);
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse(DATE_2012_07_29 + "-" + DATE_2012_07_27));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequence_null() {
-        LocalDateRange.parse(null);
+        assertThrows(NullPointerException.class, () -> LocalDateRange.parse(null));
     }
 
     //-----------------------------------------------------------------------
@@ -616,10 +615,11 @@ public class TestLocalDateRange {
         assertEquals(DATE_2012_07_31, test.getEnd());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withStart_invalid() {
         LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_30);
-        base.withStart(DATE_2012_07_31);
+        assertThrows(DateTimeException.class, () ->
+                base.withStart(DATE_2012_07_31));
     }
 
     //-----------------------------------------------------------------------
@@ -659,10 +659,11 @@ public class TestLocalDateRange {
         assertEquals(DATE_2012_07_30, test.getEnd());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withEnd_invalid() {
         LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
-        base.withEnd(DATE_2012_07_27);
+        assertThrows(DateTimeException.class, () ->
+                base.withEnd(DATE_2012_07_27));
     }
 
     //-----------------------------------------------------------------------
@@ -752,7 +753,7 @@ public class TestLocalDateRange {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_queries")
     public void test_encloses(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
@@ -760,7 +761,7 @@ public class TestLocalDateRange {
         assertEquals(isEnclosedBy, test.encloses(LocalDateRange.of(start, end)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_queries")
     public void test_abuts(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
@@ -768,7 +769,7 @@ public class TestLocalDateRange {
         assertEquals(abuts, test.abuts(LocalDateRange.of(start, end)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_queries")
     public void test_isConnected(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
@@ -776,7 +777,7 @@ public class TestLocalDateRange {
         assertEquals(isConnected, test.isConnected(LocalDateRange.of(start, end)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_queries")
     public void test_overlaps(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
@@ -784,7 +785,7 @@ public class TestLocalDateRange {
         assertEquals(overlaps, test.overlaps(LocalDateRange.of(start, end)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_queries")
     public void test_crossCheck(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
@@ -861,7 +862,7 @@ public class TestLocalDateRange {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_intersection")
     public void test_intersection(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
@@ -873,7 +874,7 @@ public class TestLocalDateRange {
         assertEquals(expected, test1.intersection(test2));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_intersection")
     public void test_intersection_reverse(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
@@ -885,12 +886,13 @@ public class TestLocalDateRange {
         assertEquals(expected, test2.intersection(test1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_intersectionBad() {
         LocalDateRange test1 = LocalDateRange.of(DATE_2012_07_01, DATE_2012_07_28);
         LocalDateRange test2 = LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_30);
         assertEquals(false, test1.isConnected(test2));
-        test1.intersection(test2);
+        assertThrows(DateTimeException.class, () ->
+                test1.intersection(test2));
     }
 
     @Test
@@ -916,7 +918,7 @@ public class TestLocalDateRange {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_union")
     public void test_unionAndSpan(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
@@ -929,7 +931,7 @@ public class TestLocalDateRange {
         assertEquals(expected, test1.span(test2));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_union")
     public void test_unionAndSpan_reverse(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
@@ -942,7 +944,7 @@ public class TestLocalDateRange {
         assertEquals(expected, test2.span(test1));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_union")
     public void test_span_enclosesInputs(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
@@ -954,12 +956,13 @@ public class TestLocalDateRange {
         assertEquals(true, expected.encloses(test2));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_union_disconnected() {
         LocalDateRange test1 = LocalDateRange.of(DATE_2012_07_01, DATE_2012_07_28);
         LocalDateRange test2 = LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_30);
         assertFalse(test1.isConnected(test2));
-        test1.union(test2);
+        assertThrows(DateTimeException.class, () ->
+                test1.union(test2));
     }
 
     @Test
@@ -1052,14 +1055,14 @@ public class TestLocalDateRange {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_isBefore")
     public void test_isBefore_range(LocalDate start, LocalDate end, boolean before) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         assertEquals(before, test.isBefore(LocalDateRange.of(start, end)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_isBefore")
     public void test_isBefore_date(LocalDate start, LocalDate end, boolean before) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
@@ -1132,14 +1135,14 @@ public class TestLocalDateRange {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_isAfter")
     public void test_isAfter_range(LocalDate start, LocalDate end, boolean before) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         assertEquals(before, test.isAfter(LocalDateRange.of(start, end)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_isAfter")
     public void test_isAfter_date(LocalDate start, LocalDate end, boolean before) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
@@ -1184,14 +1187,14 @@ public class TestLocalDateRange {
         assertEquals(Period.ofDays(0), LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_29).toPeriod());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_toPeriod_unbounded_MIN() {
-        LocalDateRange.of(LocalDate.MIN, DATE_2012_07_29).toPeriod();
+        assertThrows(ArithmeticException.class, () -> LocalDateRange.of(LocalDate.MIN, DATE_2012_07_29).toPeriod());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_toPeriod_unbounded_MAX() {
-        LocalDateRange.of(DATE_2012_07_29, LocalDate.MAX).toPeriod();
+        assertThrows(ArithmeticException.class, () -> LocalDateRange.of(DATE_2012_07_29, LocalDate.MAX).toPeriod());
     }
 
     //-----------------------------------------------------------------------
@@ -1234,7 +1237,7 @@ public class TestLocalDateRange {
         return list;
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_crossCheckGuava")
     public void crossCheckGuava_encloses(
             LocalDateRange extraRange1,
@@ -1247,7 +1250,7 @@ public class TestLocalDateRange {
         assertEquals(guava, extra);
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_crossCheckGuava")
     public void crossCheckGuava_isConnected(
             LocalDateRange extraRange1,
@@ -1260,7 +1263,7 @@ public class TestLocalDateRange {
         assertEquals(guava, extra);
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_crossCheckGuava")
     public void crossCheckGuava_intersection(
             LocalDateRange extraRange1,
@@ -1288,7 +1291,7 @@ public class TestLocalDateRange {
         }
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_crossCheckGuava")
     public void crossCheckGuava_span(
             LocalDateRange extraRange1,

@@ -31,9 +31,10 @@
  */
 package org.threeten.extra.scale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,23 +50,21 @@ import java.time.ZoneOffset;
 import java.time.temporal.JulianFields;
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test SystemLeapSecondRules.
  */
-@RunWith(DataProviderRunner.class)
 public class TestUtcRules {
 
     SystemUtcRules rules;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Constructor<SystemUtcRules> con = SystemUtcRules.class.getDeclaredConstructor();
         con.setAccessible(true);
@@ -237,7 +236,7 @@ public class TestUtcRules {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_leapSeconds")
     public void test_leapSeconds(long mjd, int adjust, int offset, String checkDate) {
         assertEquals(LocalDate.parse(checkDate).getLong(JulianFields.MODIFIED_JULIAN_DAY), mjd);
@@ -349,14 +348,14 @@ public class TestUtcRules {
         assertEquals(tai, rules.convertToTai(expected)); // check reverse
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_convertToUtc_TaiInstant_null() {
-        rules.convertToUtc((TaiInstant) null);
+        assertThrows(NullPointerException.class, () -> rules.convertToUtc((TaiInstant) null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_convertToTai_UtcInstant_null() {
-        rules.convertToTai((UtcInstant) null);
+        assertThrows(NullPointerException.class, () -> rules.convertToTai((UtcInstant) null));
     }
 
     //-------------------------------------------------------------------------
@@ -518,42 +517,42 @@ public class TestUtcRules {
         assertEquals(adj, rules.getLeapSecondAdjustment(mjd));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_registerLeapSecond_equalLastDate_differentLeap() {
         long[] dates = rules.getLeapSecondDates();
         long mjd = dates[dates.length - 1];
         int adj = rules.getLeapSecondAdjustment(mjd);
-        rules.register(mjd, -adj);
+        assertThrows(IllegalArgumentException.class, () -> rules.register(mjd, -adj));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_registerLeapSecond_equalEarlierDate_differentLeap() {
         long[] dates = rules.getLeapSecondDates();
         long mjd = dates[dates.length - 2];
         int adj = rules.getLeapSecondAdjustment(mjd);
-        rules.register(mjd, -adj);
+        assertThrows(IllegalArgumentException.class, () -> rules.register(mjd, -adj));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_registerLeapSecond_beforeLastDate() {
         long[] dates = rules.getLeapSecondDates();
         long mjd = dates[dates.length - 1] - 1;
-        rules.register(mjd, 1);
+        assertThrows(IllegalArgumentException.class, () -> rules.register(mjd, 1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_registerLeapSecond_invalidAdjustment_zero() {
-        rules.register(MJD_2100, 0);
+        assertThrows(IllegalArgumentException.class, () -> rules.register(MJD_2100, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_registerLeapSecond_invalidAdjustment_minusTwo() {
-        rules.register(MJD_2100, -2);
+        assertThrows(IllegalArgumentException.class, () -> rules.register(MJD_2100, -2));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_registerLeapSecond_invalidAdjustment_three() {
-        rules.register(MJD_2100, 3);
+        assertThrows(IllegalArgumentException.class, () -> rules.register(MJD_2100, 3));
     }
 
     //-----------------------------------------------------------------------

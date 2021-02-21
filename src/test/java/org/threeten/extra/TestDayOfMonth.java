@@ -73,10 +73,11 @@ import static java.time.temporal.ChronoField.SECOND_OF_DAY;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -107,7 +108,7 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test DayOfMonth.
@@ -227,14 +228,14 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_tooLow() {
-        DayOfMonth.of(0);
+        assertThrows(DateTimeException.class, () -> DayOfMonth.of(0));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_tooHigh() {
-        DayOfMonth.of(32);
+        assertThrows(DateTimeException.class, () -> DayOfMonth.of(32));
     }
 
     //-----------------------------------------------------------------------
@@ -322,14 +323,14 @@ public class TestDayOfMonth {
         assertEquals(date.getDayOfMonth(), DayOfMonth.from(JapaneseDate.from(date)).getValue());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_from_TemporalAccessor_noDerive() {
-        DayOfMonth.from(LocalTime.NOON);
+        assertThrows(DateTimeException.class, () -> DayOfMonth.from(LocalTime.NOON));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_from_TemporalAccessor_null() {
-        DayOfMonth.from((TemporalAccessor) null);
+        assertThrows(NullPointerException.class, () -> DayOfMonth.from((TemporalAccessor) null));
     }
 
     @Test
@@ -386,14 +387,14 @@ public class TestDayOfMonth {
         assertEquals(DAY_OF_MONTH.range(), TEST.range(DAY_OF_MONTH));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_range_invalidField() {
-        TEST.range(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.range(MONTH_OF_YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_range_null() {
-        TEST.range((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.range((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -404,14 +405,14 @@ public class TestDayOfMonth {
         assertEquals(12, TEST.get(DAY_OF_MONTH));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_get_invalidField() {
-        TEST.get(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.get(MONTH_OF_YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_get_null() {
-        TEST.get((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.get((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -427,19 +428,19 @@ public class TestDayOfMonth {
         assertEquals(12L, TEST.getLong(TestingField.INSTANCE));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_getLong_invalidField() {
-        TEST.getLong(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.getLong(MONTH_OF_YEAR));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_getLong_invalidField2() {
-        TEST.getLong(IsoFields.DAY_OF_QUARTER);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.getLong(IsoFields.DAY_OF_QUARTER));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_getLong_null() {
-        TEST.getLong((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.getLong((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -547,28 +548,28 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_adjustInto_april31() {
         LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.of(31);
-        test.adjustInto(base);
+        assertThrows(DateTimeException.class, () -> test.adjustInto(base));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_adjustInto_february29_notLeapYear() {
         LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.of(29);
-        test.adjustInto(base);
+        assertThrows(DateTimeException.class, () -> test.adjustInto(base));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_adjustInto_nonIso() {
-        TEST.adjustInto(JapaneseDate.now());
+        assertThrows(DateTimeException.class, () -> TEST.adjustInto(JapaneseDate.now()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_adjustInto_null() {
-        TEST.adjustInto((Temporal) null);
+        assertThrows(NullPointerException.class, () -> TEST.adjustInto((Temporal) null));
     }
 
     //-----------------------------------------------------------------------
@@ -608,9 +609,9 @@ public class TestDayOfMonth {
         assertEquals(MonthDay.of(12, 28), test.atMonth(DECEMBER));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_atMonth_null() {
-        TEST.atMonth((Month) null);
+        assertThrows(NullPointerException.class, () -> TEST.atMonth((Month) null));
     }
 
     //-----------------------------------------------------------------------
@@ -650,14 +651,14 @@ public class TestDayOfMonth {
         assertEquals(MonthDay.of(12, 28), test.atMonth(12));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_atMonth_tooLow() {
-        TEST.atMonth(0);
+        assertThrows(DateTimeException.class, () -> TEST.atMonth(0));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_atMonth_tooHigh() {
-        TEST.atMonth(13);
+        assertThrows(DateTimeException.class, () -> TEST.atMonth(13));
     }
 
     //-----------------------------------------------------------------------
@@ -698,9 +699,9 @@ public class TestDayOfMonth {
         assertEquals(LocalDate.of(2012, 12, 28), test.atYearMonth(YearMonth.of(2012, 12)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_atYearMonth_null() {
-        TEST.atYearMonth((YearMonth) null);
+        assertThrows(NullPointerException.class, () -> TEST.atYearMonth((YearMonth) null));
     }
 
     //-----------------------------------------------------------------------
@@ -726,11 +727,12 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_compareTo_nullDayOfMonth() {
         DayOfMonth doy = null;
         DayOfMonth test = DayOfMonth.of(1);
-        test.compareTo(doy);
+        assertThrows(NullPointerException.class, () ->
+                test.compareTo(doy));
     }
 
     //-----------------------------------------------------------------------

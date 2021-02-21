@@ -52,10 +52,11 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -75,17 +76,15 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test Temporals.
  */
-@RunWith(DataProviderRunner.class)
 public class TestTemporals {
 
     //-----------------------------------------------------------------------
@@ -366,15 +365,15 @@ public class TestTemporals {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_parseFirstMatching")
     public void test_parseFirstMatching(String text, DateTimeFormatter fmt1, DateTimeFormatter fmt2) {
         assertEquals(LocalDate.of(2016, 9, 6), Temporals.parseFirstMatching(text, LocalDate::from, fmt1, fmt2));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parseFirstMatching_zero() {
-        Temporals.parseFirstMatching("2016-09-06", LocalDate::from);
+        assertThrows(DateTimeParseException.class, () -> Temporals.parseFirstMatching("2016-09-06", LocalDate::from));
     }
 
     @Test
@@ -382,9 +381,9 @@ public class TestTemporals {
         assertEquals(LocalDate.of(2016, 9, 6), Temporals.parseFirstMatching("2016-09-06", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parseFirstMatching_twoNoMatch() {
-        Temporals.parseFirstMatching("2016", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE);
+        assertThrows(DateTimeParseException.class, () -> Temporals.parseFirstMatching("2016", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE));
     }
 
     //-----------------------------------------------------------------------
@@ -403,31 +402,31 @@ public class TestTemporals {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_timeUnitConversion")
     public void test_timeUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
         assertEquals(timeUnit, Temporals.timeUnit(chronoUnit));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_timeUnit_unknown() {
-        Temporals.timeUnit(ChronoUnit.MONTHS);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void test_timeUnit_null() {
-        Temporals.timeUnit(null);
+        assertThrows(IllegalArgumentException.class, () -> Temporals.timeUnit(ChronoUnit.MONTHS));
     }
 
     @Test
+    public void test_timeUnit_null() {
+        assertThrows(NullPointerException.class, () -> Temporals.timeUnit(null));
+    }
+
+    @ParameterizedTest
     @UseDataProvider("data_timeUnitConversion")
     public void test_chronoUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
         assertEquals(chronoUnit, Temporals.chronoUnit(timeUnit));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_chronoUnit_null() {
-        Temporals.chronoUnit(null);
+        assertThrows(NullPointerException.class, () -> Temporals.chronoUnit(null));
     }
 
     //-----------------------------------------------------------------------
@@ -580,7 +579,7 @@ public class TestTemporals {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_convertAmount")
     public void test_convertAmount(
             long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
@@ -590,7 +589,7 @@ public class TestTemporals {
         assertEquals(resultRemainder, result[1]);
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_convertAmount")
     public void test_convertAmount_negative(
             long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
@@ -641,10 +640,10 @@ public class TestTemporals {
         };
     }
 
-    @Test(expected = DateTimeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_convertAmountInvalid")
     public void test_convertAmountInvalid(TemporalUnit fromUnit, TemporalUnit resultUnit) {
-        Temporals.convertAmount(1, fromUnit, resultUnit);
+        assertThrows(DateTimeException.class, () -> Temporals.convertAmount(1, fromUnit, resultUnit));
     }
 
     @DataProvider
@@ -665,10 +664,10 @@ public class TestTemporals {
         };
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_convertAmountInvalidUnsupported")
     public void test_convertAmountInvalidUnsupported(TemporalUnit fromUnit, TemporalUnit resultUnit) {
-        Temporals.convertAmount(1, fromUnit, resultUnit);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> Temporals.convertAmount(1, fromUnit, resultUnit));
     }
 
 }

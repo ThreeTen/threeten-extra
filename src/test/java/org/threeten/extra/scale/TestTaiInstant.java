@@ -31,9 +31,10 @@
  */
 package org.threeten.extra.scale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,17 +45,15 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test TaiInstant.
  */
-@RunWith(DataProviderRunner.class)
 public class TestTaiInstant {
 
     //-----------------------------------------------------------------------
@@ -110,9 +109,9 @@ public class TestTaiInstant {
         assertEquals(999999999, test.getNano());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void factory_ofTaiSeconds_long_long_tooBig() {
-        TaiInstant.ofTaiSeconds(Long.MAX_VALUE, 1000000000);
+        assertThrows(ArithmeticException.class, () -> TaiInstant.ofTaiSeconds(Long.MAX_VALUE, 1000000000));
     }
 
     //-----------------------------------------------------------------------
@@ -125,9 +124,9 @@ public class TestTaiInstant {
         assertEquals(2, test.getNano());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void factory_of_Instant_null() {
-        TaiInstant.of((Instant) null);
+        assertThrows(NullPointerException.class, () -> TaiInstant.of((Instant) null));
     }
 
     //-----------------------------------------------------------------------
@@ -144,9 +143,9 @@ public class TestTaiInstant {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void factory_of_UtcInstant_null() {
-        TaiInstant.of((UtcInstant) null);
+        assertThrows(NullPointerException.class, () -> TaiInstant.of((UtcInstant) null));
     }
 
     //-----------------------------------------------------------------------
@@ -176,15 +175,15 @@ public class TestTaiInstant {
         };
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @ParameterizedTest
     @UseDataProvider("data_badParse")
     public void factory_parse_CharSequence_invalid(String str) {
-        TaiInstant.parse(str);
+        assertThrows(DateTimeParseException.class, () -> TaiInstant.parse(str));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void factory_parse_CharSequence_null() {
-        TaiInstant.parse((String) null);
+        assertThrows(NullPointerException.class, () -> TaiInstant.parse((String) null));
     }
 
     //-----------------------------------------------------------------------
@@ -202,7 +201,7 @@ public class TestTaiInstant {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_withTAISeconds")
     public void test_withTAISeconds(long tai, long nanos, long newTai, Long expectedTai, Long expectedNanos) {
         TaiInstant i = TaiInstant.ofTaiSeconds(tai, nanos).withTaiSeconds(newTai);
@@ -225,7 +224,7 @@ public class TestTaiInstant {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_withNano")
     public void test_withNano(long tai, long nanos, int newNano, Long expectedTai, Long expectedNanos) {
         TaiInstant i = TaiInstant.ofTaiSeconds(tai, nanos);
@@ -431,7 +430,7 @@ public class TestTaiInstant {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus")
     public void test_plus(long seconds, int nanos, long plusSeconds, int plusNanos, long expectedSeconds, int expectedNanoOfSecond) {
         TaiInstant i = TaiInstant.ofTaiSeconds(seconds, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
@@ -439,16 +438,18 @@ public class TestTaiInstant {
         assertEquals(expectedNanoOfSecond, i.getNano());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plus_overflowTooBig() {
         TaiInstant i = TaiInstant.ofTaiSeconds(Long.MAX_VALUE, 999999999);
-        i.plus(Duration.ofSeconds(0, 1));
+        assertThrows(ArithmeticException.class, () ->
+                i.plus(Duration.ofSeconds(0, 1)));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plus_overflowTooSmall() {
         TaiInstant i = TaiInstant.ofTaiSeconds(Long.MIN_VALUE, 0);
-        i.plus(Duration.ofSeconds(-1, 999999999));
+        assertThrows(ArithmeticException.class, () ->
+                i.plus(Duration.ofSeconds(-1, 999999999)));
     }
 
     //-----------------------------------------------------------------------
@@ -639,7 +640,7 @@ public class TestTaiInstant {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_minus")
     public void test_minus(long seconds, int nanos, long minusSeconds, int minusNanos, long expectedSeconds, int expectedNanoOfSecond) {
         TaiInstant i = TaiInstant.ofTaiSeconds(seconds, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
@@ -647,16 +648,18 @@ public class TestTaiInstant {
         assertEquals(expectedNanoOfSecond, i.getNano());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_overflowTooSmall() {
         TaiInstant i = TaiInstant.ofTaiSeconds(Long.MIN_VALUE, 0);
-        i.minus(Duration.ofSeconds(0, 1));
+        assertThrows(ArithmeticException.class, () ->
+                i.minus(Duration.ofSeconds(0, 1)));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_overflowTooBig() {
         TaiInstant i = TaiInstant.ofTaiSeconds(Long.MAX_VALUE, 999999999);
-        i.minus(Duration.ofSeconds(-1, 999999999));
+        assertThrows(ArithmeticException.class, () ->
+                i.minus(Duration.ofSeconds(-1, 999999999)));
     }
 
     //-----------------------------------------------------------------------
@@ -758,17 +761,19 @@ public class TestTaiInstant {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_compareTo_ObjectNull() {
         TaiInstant a = TaiInstant.ofTaiSeconds(0L, 0);
-        a.compareTo(null);
+        assertThrows(NullPointerException.class, () ->
+                a.compareTo(null));
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareToNonTaiInstant() {
         Comparable c = TaiInstant.ofTaiSeconds(0L, 2);
-        c.compareTo(new Object());
+        assertThrows(ClassCastException.class, () ->
+                c.compareTo(new Object()));
     }
 
     //-----------------------------------------------------------------------

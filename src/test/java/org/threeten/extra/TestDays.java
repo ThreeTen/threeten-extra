@@ -31,10 +31,11 @@
  */
 package org.threeten.extra;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,17 +52,15 @@ import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test class.
  */
-@RunWith(DataProviderRunner.class)
 public class TestDays {
 
     //-----------------------------------------------------------------------
@@ -136,9 +135,9 @@ public class TestDays {
         assertEquals((Integer.MIN_VALUE / 7) * 7, Days.ofWeeks(Integer.MIN_VALUE / 7).getAmount());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_ofWeeks_overflow() {
-        Days.ofWeeks((Integer.MAX_VALUE / 7) + 7);
+        assertThrows(ArithmeticException.class, () -> Days.ofWeeks((Integer.MAX_VALUE / 7) + 7));
     }
 
     //-----------------------------------------------------------------------
@@ -167,19 +166,19 @@ public class TestDays {
         assertEquals(Days.of(2), Days.from(Duration.ofDays(2)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_from_wrongUnit_remainder() {
-        Days.from(Duration.ofHours(3));
+        assertThrows(DateTimeException.class, () -> Days.from(Duration.ofHours(3)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_from_wrongUnit_noConversion() {
-        Days.from(Period.ofMonths(2));
+        assertThrows(DateTimeException.class, () -> Days.from(Period.ofMonths(2)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_from_null() {
-        Days.from((TemporalAmount) null);
+        assertThrows(NullPointerException.class, () -> Days.from((TemporalAmount) null));
     }
 
     //-----------------------------------------------------------------------
@@ -214,19 +213,19 @@ public class TestDays {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedDays) {
         assertEquals(Days.of(expectedDays), Days.parse(str));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedDays) {
         assertEquals(Days.of(expectedDays), Days.parse("+" + str));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedDays) {
         assertEquals(Days.of(-expectedDays), Days.parse("-" + str));
@@ -252,15 +251,15 @@ public class TestDays {
         };
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @ParameterizedTest
     @UseDataProvider("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
-        Days.parse(str);
+        assertThrows(DateTimeParseException.class, () -> Days.parse(str));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequence_null() {
-        Days.parse((CharSequence) null);
+        assertThrows(NullPointerException.class, () -> Days.parse((CharSequence) null));
     }
 
     //-----------------------------------------------------------------------
@@ -269,9 +268,9 @@ public class TestDays {
         assertEquals(6, Days.of(6).get(ChronoUnit.DAYS));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_get_invalidType() {
-        Days.of(6).get(IsoFields.QUARTER_YEARS);
+        assertThrows(DateTimeException.class, () -> Days.of(6).get(IsoFields.QUARTER_YEARS));
     }
 
     //-----------------------------------------------------------------------
@@ -280,14 +279,14 @@ public class TestDays {
         assertEquals(Days.of(365 + 366), Days.between(LocalDate.of(2019, 1, 1), LocalDate.of(2021, 1, 1)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_between_date_null() {
-        Days.between(LocalDate.now(), (Temporal) null);
+        assertThrows(NullPointerException.class, () -> Days.between(LocalDate.now(), (Temporal) null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_between_null_date() {
-        Days.between((Temporal) null, LocalDate.now());
+        assertThrows(NullPointerException.class, () -> Days.between((Temporal) null, LocalDate.now()));
     }
 
     //-----------------------------------------------------------------------
@@ -311,29 +310,29 @@ public class TestDays {
         assertEquals(Days.of(Integer.MIN_VALUE), Days.of(Integer.MIN_VALUE + 1).plus(Period.ofDays(-1)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_plus_TemporalAmount_PeriodYears() {
-        Days.of(1).plus(Period.ofYears(2));
+        assertThrows(DateTimeException.class, () -> Days.of(1).plus(Period.ofYears(2)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_plus_TemporalAmount_Duration() {
-        Days.of(1).plus(Duration.ofHours(2));
+        assertThrows(DateTimeException.class, () -> Days.of(1).plus(Duration.ofHours(2)));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plus_TemporalAmount_overflowTooBig() {
-        Days.of(Integer.MAX_VALUE - 1).plus(Days.of(2));
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MAX_VALUE - 1).plus(Days.of(2)));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plus_TemporalAmount_overflowTooSmall() {
-        Days.of(Integer.MIN_VALUE + 1).plus(Days.of(-2));
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MIN_VALUE + 1).plus(Days.of(-2)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_plus_TemporalAmount_null() {
-        Days.of(Integer.MIN_VALUE + 1).plus(null);
+        assertThrows(NullPointerException.class, () -> Days.of(Integer.MIN_VALUE + 1).plus(null));
     }
 
     //-----------------------------------------------------------------------
@@ -347,14 +346,14 @@ public class TestDays {
         assertEquals(Days.of(Integer.MIN_VALUE), Days.of(Integer.MIN_VALUE + 1).plus(-1));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plus_int_overflowTooBig() {
-        Days.of(Integer.MAX_VALUE - 1).plus(2);
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MAX_VALUE - 1).plus(2));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plus_int_overflowTooSmall() {
-        Days.of(Integer.MIN_VALUE + 1).plus(-2);
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MIN_VALUE + 1).plus(-2));
     }
 
     //-----------------------------------------------------------------------
@@ -378,29 +377,29 @@ public class TestDays {
         assertEquals(Days.of(Integer.MIN_VALUE), Days.of(Integer.MIN_VALUE + 1).minus(Period.ofDays(1)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_minus_TemporalAmount_PeriodYears() {
-        Days.of(1).minus(Period.ofYears(2));
+        assertThrows(DateTimeException.class, () -> Days.of(1).minus(Period.ofYears(2)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_minus_TemporalAmount_Duration() {
-        Days.of(1).minus(Duration.ofHours(2));
+        assertThrows(DateTimeException.class, () -> Days.of(1).minus(Duration.ofHours(2)));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_TemporalAmount_overflowTooBig() {
-        Days.of(Integer.MAX_VALUE - 1).minus(Days.of(-2));
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MAX_VALUE - 1).minus(Days.of(-2)));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_TemporalAmount_overflowTooSmall() {
-        Days.of(Integer.MIN_VALUE + 1).minus(Days.of(2));
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MIN_VALUE + 1).minus(Days.of(2)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_minus_TemporalAmount_null() {
-        Days.of(Integer.MIN_VALUE + 1).minus(null);
+        assertThrows(NullPointerException.class, () -> Days.of(Integer.MIN_VALUE + 1).minus(null));
     }
 
     //-----------------------------------------------------------------------
@@ -414,14 +413,14 @@ public class TestDays {
         assertEquals(Days.of(Integer.MIN_VALUE), Days.of(Integer.MIN_VALUE + 1).minus(1));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_int_overflowTooBig() {
-        Days.of(Integer.MAX_VALUE - 1).minus(-2);
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MAX_VALUE - 1).minus(-2));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_int_overflowTooSmall() {
-        Days.of(Integer.MIN_VALUE + 1).minus(2);
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MIN_VALUE + 1).minus(2));
     }
 
     //-----------------------------------------------------------------------
@@ -441,14 +440,14 @@ public class TestDays {
         assertEquals(Days.of(-15), test5.multipliedBy(-3));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_multipliedBy_overflowTooBig() {
-        Days.of(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MAX_VALUE / 2 + 1).multipliedBy(2));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_multipliedBy_overflowTooSmall() {
-        Days.of(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MIN_VALUE / 2 - 1).multipliedBy(2));
     }
 
     //-----------------------------------------------------------------------
@@ -470,9 +469,9 @@ public class TestDays {
         assertEquals(Days.of(-4), test12.dividedBy(-3));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_dividedBy_divideByZero() {
-        Days.of(1).dividedBy(0);
+        assertThrows(ArithmeticException.class, () -> Days.of(1).dividedBy(0));
     }
 
     //-----------------------------------------------------------------------
@@ -484,9 +483,9 @@ public class TestDays {
         assertEquals(Days.of(-Integer.MAX_VALUE), Days.of(Integer.MAX_VALUE).negated());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_negated_overflow() {
-        Days.of(Integer.MIN_VALUE).negated();
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MIN_VALUE).negated());
     }
 
     //-----------------------------------------------------------------------
@@ -499,9 +498,9 @@ public class TestDays {
         assertEquals(Days.of(Integer.MAX_VALUE), Days.of(-Integer.MAX_VALUE).abs());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_abs_overflow() {
-        Days.of(Integer.MIN_VALUE).abs();
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MIN_VALUE).abs());
     }
 
     //-----------------------------------------------------------------------
@@ -535,10 +534,11 @@ public class TestDays {
         assertEquals(1, test6.compareTo(test5));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_compareTo_null() {
         Days test5 = Days.of(5);
-        test5.compareTo(null);
+        assertThrows(NullPointerException.class, () ->
+                test5.compareTo(null));
     }
 
     //-----------------------------------------------------------------------

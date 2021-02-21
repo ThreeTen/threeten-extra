@@ -33,9 +33,10 @@ package org.threeten.extra;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MONTHS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,17 +51,15 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test class.
  */
-@RunWith(DataProviderRunner.class)
 public class TestInterval {
 
     static Instant NOW1 = ZonedDateTime.of(2014, 12, 1, 1, 0, 0, 0, ZoneOffset.UTC).toInstant();
@@ -119,19 +118,19 @@ public class TestInterval {
         assertEquals(false, test.isUnboundedEnd());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_Instant_Instant_badOrder() {
-        Interval.of(NOW2, NOW1);
+        assertThrows(DateTimeException.class, () -> Interval.of(NOW2, NOW1));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_Instant_Instant_nullStart() {
-        Interval.of(null, NOW2);
+        assertThrows(NullPointerException.class, () -> Interval.of(null, NOW2));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_Instant_Instant_nullEnd() {
-        Interval.of(NOW1, (Instant) null);
+        assertThrows(NullPointerException.class, () -> Interval.of(NOW1, (Instant) null));
     }
 
     //-----------------------------------------------------------------------
@@ -149,19 +148,19 @@ public class TestInterval {
         assertEquals(NOW1, test.getEnd());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_Instant_Duration_negative() {
-        Interval.of(NOW2, Duration.ofSeconds(-1));
+        assertThrows(DateTimeException.class, () -> Interval.of(NOW2, Duration.ofSeconds(-1)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_Instant_Duration_nullInstant() {
-        Interval.of(null, Duration.ZERO);
+        assertThrows(NullPointerException.class, () -> Interval.of(null, Duration.ZERO));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_Instant_Duration_nullDuration() {
-        Interval.of(NOW1, (Duration) null);
+        assertThrows(NullPointerException.class, () -> Interval.of(NOW1, (Duration) null));
     }
 
     /* Lower and upper bound for Intervals */
@@ -194,8 +193,8 @@ public class TestInterval {
             {Instant.MIN.toString() + "/" + Instant.MAX, Instant.MIN, Instant.MAX}
         };
     }
-    
-    @Test
+
+    @ParameterizedTest
     @UseDataProvider("data_parseValid")
     public void test_parse_CharSequence(String input, Instant start, Instant end) {
         Interval test = Interval.parse(input);
@@ -203,19 +202,19 @@ public class TestInterval {
         assertEquals(end, test.getEnd());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_parse_CharSequence_badOrder() {
-        Interval.parse(NOW2 + "/" + NOW1);
+        assertThrows(DateTimeException.class, () -> Interval.parse(NOW2 + "/" + NOW1));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parse_CharSequence_badFormat() {
-        Interval.parse(NOW2 + "-" + NOW1);
+        assertThrows(DateTimeParseException.class, () -> Interval.parse(NOW2 + "-" + NOW1));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequence_null() {
-        Interval.parse(null);
+        assertThrows(NullPointerException.class, () -> Interval.parse(null));
     }
 
     //-----------------------------------------------------------------------
@@ -227,16 +226,18 @@ public class TestInterval {
         assertEquals(NOW3, test.getEnd());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withStart_badOrder() {
         Interval base = Interval.of(NOW1, NOW2);
-        base.withStart(NOW3);
+        assertThrows(DateTimeException.class, () ->
+                base.withStart(NOW3));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_withStart_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        base.withStart(null);
+        assertThrows(NullPointerException.class, () ->
+                base.withStart(null));
     }
 
     //-----------------------------------------------------------------------
@@ -248,16 +249,16 @@ public class TestInterval {
         assertEquals(NOW2, test.getEnd());
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withEnd_badOrder() {
         Interval base = Interval.of(NOW2, NOW3);
-        base.withEnd(NOW1);
+        assertThrows(DateTimeException.class, () -> base.withEnd(NOW1));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_withEnd_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        base.withEnd(null);
+        assertThrows(NullPointerException.class, () -> base.withEnd(null));
     }
 
     //-----------------------------------------------------------------------
@@ -289,10 +290,11 @@ public class TestInterval {
         assertEquals(true, test.contains(Instant.MAX));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_contains_Instant_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        base.contains((Instant) null);
+        assertThrows(NullPointerException.class, () ->
+                base.contains((Instant) null));
     }
 
     //-----------------------------------------------------------------------
@@ -331,10 +333,11 @@ public class TestInterval {
         assertEquals(false, test.encloses(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_encloses_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        base.encloses((Interval) null);
+        assertThrows(NullPointerException.class, () ->
+                base.encloses((Interval) null));
     }
 
     //-----------------------------------------------------------------------
@@ -372,10 +375,11 @@ public class TestInterval {
         assertEquals(false, test.abuts(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_abuts_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        base.abuts((Interval) null);
+        assertThrows(NullPointerException.class, () ->
+                base.abuts((Interval) null));
     }
 
     //-----------------------------------------------------------------------
@@ -413,10 +417,11 @@ public class TestInterval {
         assertEquals(false, test.isConnected(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_isConnected_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        base.isConnected((Interval) null);
+        assertThrows(NullPointerException.class, () ->
+                base.isConnected((Interval) null));
     }
 
     //-----------------------------------------------------------------------
@@ -454,10 +459,11 @@ public class TestInterval {
         assertEquals(false, test.overlaps(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(2))));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_overlaps_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        base.overlaps((Interval) null);
+        assertThrows(NullPointerException.class, () ->
+                base.overlaps((Interval) null));
     }
 
     //-----------------------------------------------------------------------
@@ -477,7 +483,7 @@ public class TestInterval {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_intersection")
     public void test_intersection(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
@@ -489,7 +495,7 @@ public class TestInterval {
         assertEquals(expected, test1.intersection(test2));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_intersection")
     public void test_intersection_reverse(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
@@ -501,12 +507,13 @@ public class TestInterval {
         assertEquals(expected, test2.intersection(test1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_intersectionBad() {
         Interval test1 = Interval.of(NOW1, NOW2);
         Interval test2 = Interval.of(NOW3, NOW4);
         assertEquals(false, test1.isConnected(test2));
-        test1.intersection(test2);
+        assertThrows(DateTimeException.class, () ->
+                test1.intersection(test2));
     }
 
     @Test
@@ -532,7 +539,7 @@ public class TestInterval {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_union")
     public void test_unionAndSpan(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
@@ -545,7 +552,7 @@ public class TestInterval {
         assertEquals(expected, test1.span(test2));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_union")
     public void test_unionAndSpan_reverse(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
@@ -558,7 +565,7 @@ public class TestInterval {
         assertEquals(expected, test2.span(test1));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_union")
     public void test_span_enclosesInputs(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
@@ -570,12 +577,13 @@ public class TestInterval {
         assertEquals(true, expected.encloses(test2));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_union_disconnected() {
         Interval test1 = Interval.of(NOW1, NOW2);
         Interval test2 = Interval.of(NOW3, NOW4);
         assertFalse(test1.isConnected(test2));
-        test1.union(test2);
+        assertThrows(DateTimeException.class, () ->
+                test1.union(test2));
     }
 
     @Test

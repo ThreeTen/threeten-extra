@@ -31,17 +31,17 @@
  */
 package org.threeten.extra;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.DateTimeException;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base test class for {@code DateTime}.
@@ -73,7 +73,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_isSupported_TemporalField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
-                assertTrue("Failed on " + sample + " " + field, sample.isSupported(field));
+                assertTrue(sample.isSupported(field), "Failed on " + sample + " " + field);
             }
         }
     }
@@ -82,7 +82,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_isSupported_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
-                assertFalse("Failed on " + sample + " " + field, sample.isSupported(field));
+                assertFalse(sample.isSupported(field), "Failed on " + sample + " " + field);
             }
         }
     }
@@ -90,7 +90,7 @@ public abstract class AbstractDateTimeTest {
     @Test
     public void basicTest_isSupported_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
-            assertFalse("Failed on " + sample, sample.isSupported(null));
+            assertFalse(sample.isSupported(null), "Failed on " + sample);
         }
     }
 

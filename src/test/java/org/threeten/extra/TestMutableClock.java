@@ -31,9 +31,10 @@
  */
 package org.threeten.extra;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -60,7 +61,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class.
@@ -89,14 +90,14 @@ public class TestMutableClock {
                 MutableClock.of(Instant.EPOCH, ZoneOffset.MAX).getZone());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_nullInstant() {
-        MutableClock.of(null, ZoneOffset.UTC);
+        assertThrows(NullPointerException.class, () -> MutableClock.of(null, ZoneOffset.UTC));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_nullZone() {
-        MutableClock.of(Instant.EPOCH, null);
+        assertThrows(NullPointerException.class, () -> MutableClock.of(Instant.EPOCH, null));
     }
 
     @Test
@@ -117,9 +118,9 @@ public class TestMutableClock {
         assertEquals(Instant.EPOCH.plusSeconds(10), clock.instant());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_setInstant_null() {
-        MutableClock.epochUTC().setInstant(null);
+        assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().setInstant(null));
     }
 
     @Test
@@ -141,9 +142,9 @@ public class TestMutableClock {
                 clock.instant());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_add_amountOnly_null() {
-        MutableClock.epochUTC().add(null);
+        assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().add(null));
     }
 
     @Test
@@ -165,9 +166,9 @@ public class TestMutableClock {
                 clock.instant());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_add_amountAndUnit_nullUnit() {
-        MutableClock.epochUTC().add(0, null);
+        assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().add(0, null));
     }
 
     @Test
@@ -188,9 +189,9 @@ public class TestMutableClock {
         assertEquals(Instant.EPOCH, clock.instant());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_set_adjuster_null() {
-        MutableClock.epochUTC().set(null);
+        assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().set(null));
     }
 
     @Test
@@ -209,9 +210,9 @@ public class TestMutableClock {
                 clock.instant());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_set_fieldAndValue_nullField() {
-        MutableClock.epochUTC().set(null, 0);
+        assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().set(null, 0));
     }
 
     @Test
@@ -238,9 +239,9 @@ public class TestMutableClock {
         assertEquals(clock, withSameZone);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_withZone_null() {
-        MutableClock.epochUTC().withZone(null);
+        assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().withZone(null));
     }
 
     @Test

@@ -53,9 +53,11 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -83,18 +85,15 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test.
  */
-@RunWith(DataProviderRunner.class)
 public class TestBritishCutoverChronology {
 
     //-----------------------------------------------------------------------
@@ -103,10 +102,10 @@ public class TestBritishCutoverChronology {
     @Test
     public void test_chronology_of_name() {
         Chronology chrono = Chronology.of("BritishCutover");
-        Assert.assertNotNull(chrono);
-        Assert.assertEquals(BritishCutoverChronology.INSTANCE, chrono);
-        Assert.assertEquals("BritishCutover", chrono.getId());
-        Assert.assertEquals(null, chrono.getCalendarType());
+        assertNotNull(chrono);
+        assertEquals(BritishCutoverChronology.INSTANCE, chrono);
+        assertEquals("BritishCutover", chrono.getId());
+        assertEquals(null, chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -157,55 +156,55 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_LocalDate_from_BritishCutoverDate(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(iso, LocalDate.from(cutover));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_BritishCutoverDate_from_LocalDate(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(cutover, BritishCutoverDate.from(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_BritishCutoverDate_chronology_dateEpochDay(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(cutover, BritishCutoverChronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_BritishCutoverDate_toEpochDay(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(iso.toEpochDay(), cutover.toEpochDay());
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_BritishCutoverDate_until_BritishCutoverDate(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(BritishCutoverChronology.INSTANCE.period(0, 0, 0), cutover.until(cutover));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_BritishCutoverDate_until_LocalDate(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(BritishCutoverChronology.INSTANCE.period(0, 0, 0), cutover.until(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_LocalDate_until_BritishCutoverDate(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(Period.ZERO, iso.until(cutover));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(cutover, BritishCutoverChronology.INSTANCE.date(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_plusDays(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(iso, LocalDate.from(cutover.plus(0, DAYS)));
@@ -215,7 +214,7 @@ public class TestBritishCutoverChronology {
         assertEquals(iso.plusDays(-60), LocalDate.from(cutover.plus(-60, DAYS)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_minusDays(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(iso, LocalDate.from(cutover.minus(0, DAYS)));
@@ -225,7 +224,7 @@ public class TestBritishCutoverChronology {
         assertEquals(iso.minusDays(-60), LocalDate.from(cutover.minus(-60, DAYS)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_until_DAYS(BritishCutoverDate cutover, LocalDate iso) {
         assertEquals(0, cutover.until(iso.plusDays(0), DAYS));
@@ -277,15 +276,15 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test(expected = DateTimeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_badDates")
     public void test_badDates(int year, int month, int dom) {
-        BritishCutoverDate.of(year, month, dom);
+        assertThrows(DateTimeException.class, () -> BritishCutoverDate.of(year, month, dom));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_Chronology_dateYearDay_badDate() {
-        BritishCutoverChronology.INSTANCE.dateYearDay(2001, 366);
+        assertThrows(DateTimeException.class, () -> BritishCutoverChronology.INSTANCE.dateYearDay(2001, 366));
     }
 
     //-----------------------------------------------------------------------
@@ -399,7 +398,7 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(length, BritishCutoverDate.of(year, month, 1).lengthOfMonth());
@@ -440,13 +439,13 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_lengthOfYear")
     public void test_lengthOfYear_atStart(int year, int length) {
         assertEquals(length, BritishCutoverDate.of(year, 1, 1).lengthOfYear());
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_lengthOfYear")
     public void test_lengthOfYear_atEnd(int year, int length) {
         assertEquals(length, BritishCutoverDate.of(year, 12, 31).lengthOfYear());
@@ -507,9 +506,9 @@ public class TestBritishCutoverChronology {
         assertEquals(-3, BritishCutoverChronology.INSTANCE.prolepticYear(JulianEra.BC, 4));
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void test_prolepticYear_badEra() {
-        BritishCutoverChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
+        assertThrows(ClassCastException.class, () -> BritishCutoverChronology.INSTANCE.prolepticYear(IsoEra.CE, 4));
     }
 
     @Test
@@ -518,9 +517,9 @@ public class TestBritishCutoverChronology {
         assertEquals(JulianEra.BC, BritishCutoverChronology.INSTANCE.eraOf(0));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_Chronology_eraOf_invalid() {
-        BritishCutoverChronology.INSTANCE.eraOf(2);
+        assertThrows(DateTimeException.class, () -> BritishCutoverChronology.INSTANCE.eraOf(2));
     }
 
     @Test
@@ -633,15 +632,15 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
         assertEquals(ValueRange.of(expectedMin, expectedMax), BritishCutoverDate.of(year, month, dom).range(field));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_range_unsupported() {
-        BritishCutoverDate.of(2012, 6, 30).range(MINUTE_OF_DAY);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> BritishCutoverDate.of(2012, 6, 30).range(MINUTE_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -695,15 +694,15 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
         assertEquals(expected, BritishCutoverDate.of(year, month, dom).getLong(field));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_getLong_unsupported() {
-        BritishCutoverDate.of(2012, 6, 30).getLong(MINUTE_OF_DAY);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> BritishCutoverDate.of(2012, 6, 30).getLong(MINUTE_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -807,7 +806,7 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_with")
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
@@ -815,9 +814,9 @@ public class TestBritishCutoverChronology {
         assertEquals(BritishCutoverDate.of(expectedYear, expectedMonth, expectedDom), BritishCutoverDate.of(year, month, dom).with(field, value));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_with_TemporalField_unsupported() {
-        BritishCutoverDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> BritishCutoverDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -835,7 +834,7 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_lastDayOfMonth")
     public void test_adjust_lastDayOfMonth(BritishCutoverDate input, BritishCutoverDate expected) {
         BritishCutoverDate test = input.with(TemporalAdjusters.lastDayOfMonth());
@@ -856,17 +855,17 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_withLocalDate")
     public void test_adjust_LocalDate(BritishCutoverDate input, LocalDate local, BritishCutoverDate expected) {
         BritishCutoverDate test = input.with(local);
         assertEquals(expected, test);
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_adjust_toMonth() {
         BritishCutoverDate cutover = BritishCutoverDate.of(2000, 1, 4);
-        cutover.with(Month.APRIL);
+        assertThrows(DateTimeException.class, () -> cutover.with(Month.APRIL));
     }
 
     //-----------------------------------------------------------------------
@@ -941,7 +940,7 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus")
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
@@ -949,7 +948,7 @@ public class TestBritishCutoverChronology {
         assertEquals(BritishCutoverDate.of(expectedYear, expectedMonth, expectedDom), BritishCutoverDate.of(year, month, dom).plus(amount, unit));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus")
     public void test_minus_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
@@ -960,9 +959,9 @@ public class TestBritishCutoverChronology {
         }
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_plus_TemporalUnit_unsupported() {
-        BritishCutoverDate.of(2012, 6, 30).plus(0, MINUTES);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> BritishCutoverDate.of(2012, 6, 30).plus(0, MINUTES));
     }
 
     //-----------------------------------------------------------------------
@@ -1021,7 +1020,7 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_until")
     public void test_until_TemporalUnit(
             int year1, int month1, int dom1,
@@ -1032,11 +1031,12 @@ public class TestBritishCutoverChronology {
         assertEquals(expected, start.until(end, unit));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_until_TemporalUnit_unsupported() {
         BritishCutoverDate start = BritishCutoverDate.of(2012, 6, 30);
         BritishCutoverDate end = BritishCutoverDate.of(2012, 7, 1);
-        start.until(end, MINUTES);
+        assertThrows(UnsupportedTemporalTypeException.class, () ->
+                start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------
@@ -1053,10 +1053,9 @@ public class TestBritishCutoverChronology {
             BritishCutoverDate.of(2014, 5, 26).plus(BritishCutoverChronology.INSTANCE.period(0, 2, 3)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_plus_Period_ISO() {
-        assertEquals(
-            BritishCutoverDate.of(2014, 7, 26),
+        assertThrows(DateTimeException.class, () ->
             BritishCutoverDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
@@ -1070,10 +1069,9 @@ public class TestBritishCutoverChronology {
             BritishCutoverDate.of(2014, 5, 26).minus(BritishCutoverChronology.INSTANCE.period(0, 2, 3)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_minus_Period_ISO() {
-        assertEquals(
-            BritishCutoverDate.of(2014, 3, 26),
+        assertThrows(DateTimeException.class, () ->
             BritishCutoverDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
@@ -1224,7 +1222,7 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_untilCLD")
     public void test_until_CLD(
             int year1, int month1, int dom1,
@@ -1238,7 +1236,7 @@ public class TestBritishCutoverChronology {
             c);
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_untilCLD")
     public void test_until_CLD_plus(
             int year1, int month1, int dom1,
@@ -1264,9 +1262,9 @@ public class TestBritishCutoverChronology {
         assertEquals(test, test2);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_atTime_null() {
-        BritishCutoverDate.of(2014, 5, 26).atTime(null);
+        assertThrows(NullPointerException.class, () -> BritishCutoverDate.of(2014, 5, 26).atTime(null));
     }
 
     //-----------------------------------------------------------------------
@@ -1325,7 +1323,7 @@ public class TestBritishCutoverChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_toString")
     public void test_toString(BritishCutoverDate cutover, String expected) {
         assertEquals(expected, cutover.toString());

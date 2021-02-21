@@ -31,7 +31,7 @@
  */
 package org.threeten.extra;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -39,16 +39,14 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import org.joda.convert.StringConvert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.params.ParameterizedTest;
+
 import org.threeten.extra.scale.TaiInstant;
 import org.threeten.extra.scale.UtcInstant;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
-@RunWith(DataProviderRunner.class)
 public class TestConvert {
 
     @DataProvider
@@ -71,13 +69,13 @@ public class TestConvert {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_inputs")
     public void test_convertToString(Object obj, String str) {
         assertEquals(str, StringConvert.INSTANCE.convertToString(obj));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_inputs")
     public void test_convertFromString(Object obj, String str) {
         assertEquals(obj, StringConvert.INSTANCE.convertFromString(obj.getClass(), str));
