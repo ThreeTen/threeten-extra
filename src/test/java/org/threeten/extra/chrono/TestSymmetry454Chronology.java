@@ -972,8 +972,7 @@ public class TestSymmetry454Chronology {
 
     @Test
     public void test_plus_Period_ISO() {
-        assertThrows(DateTimeException.class, () ->
-                Symmetry454Date.of(2014, 5, 26).plus(Period.ofMonths(2)));
+        assertThrows(DateTimeException.class, () -> Symmetry454Date.of(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
@@ -984,8 +983,7 @@ public class TestSymmetry454Chronology {
 
     @Test
     public void test_minus_Period_ISO() {
-        assertThrows(DateTimeException.class, () ->
-                Symmetry454Date.of(2014, 5, 26).minus(Period.ofMonths(2)));
+        assertThrows(DateTimeException.class, () -> Symmetry454Date.of(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------

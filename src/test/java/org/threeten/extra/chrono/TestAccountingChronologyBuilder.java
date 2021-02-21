@@ -419,8 +419,7 @@ public class TestAccountingChronologyBuilder {
     @UseDataProvider("data_weeksInMonth")
     public void test_negativeWeeks_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
         assertEquals(1, division.getMonthFromElapsedWeeks(0));
-        assertThrows(DateTimeException.class, () ->
-                division.getMonthFromElapsedWeeks(-1));
+        assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(-1));
     }
 
     @ParameterizedTest

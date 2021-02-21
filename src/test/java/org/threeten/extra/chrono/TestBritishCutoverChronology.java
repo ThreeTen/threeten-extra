@@ -1055,8 +1055,7 @@ public class TestBritishCutoverChronology {
 
     @Test
     public void test_plus_Period_ISO() {
-        assertThrows(DateTimeException.class, () ->
-            BritishCutoverDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
+        assertThrows(DateTimeException.class, () -> BritishCutoverDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
@@ -1071,8 +1070,7 @@ public class TestBritishCutoverChronology {
 
     @Test
     public void test_minus_Period_ISO() {
-        assertThrows(DateTimeException.class, () ->
-            BritishCutoverDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
+        assertThrows(DateTimeException.class, () -> BritishCutoverDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------

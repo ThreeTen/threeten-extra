@@ -618,8 +618,7 @@ public class TestLocalDateRange {
     @Test
     public void test_withStart_invalid() {
         LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_30);
-        assertThrows(DateTimeException.class, () ->
-                base.withStart(DATE_2012_07_31));
+        assertThrows(DateTimeException.class, () -> base.withStart(DATE_2012_07_31));
     }
 
     //-----------------------------------------------------------------------
@@ -662,8 +661,7 @@ public class TestLocalDateRange {
     @Test
     public void test_withEnd_invalid() {
         LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
-        assertThrows(DateTimeException.class, () ->
-                base.withEnd(DATE_2012_07_27));
+        assertThrows(DateTimeException.class, () -> base.withEnd(DATE_2012_07_27));
     }
 
     //-----------------------------------------------------------------------
@@ -891,8 +889,7 @@ public class TestLocalDateRange {
         LocalDateRange test1 = LocalDateRange.of(DATE_2012_07_01, DATE_2012_07_28);
         LocalDateRange test2 = LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_30);
         assertEquals(false, test1.isConnected(test2));
-        assertThrows(DateTimeException.class, () ->
-                test1.intersection(test2));
+        assertThrows(DateTimeException.class, () -> test1.intersection(test2));
     }
 
     @Test
@@ -961,8 +958,7 @@ public class TestLocalDateRange {
         LocalDateRange test1 = LocalDateRange.of(DATE_2012_07_01, DATE_2012_07_28);
         LocalDateRange test2 = LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_30);
         assertFalse(test1.isConnected(test2));
-        assertThrows(DateTimeException.class, () ->
-                test1.union(test2));
+        assertThrows(DateTimeException.class, () -> test1.union(test2));
     }
 
     @Test

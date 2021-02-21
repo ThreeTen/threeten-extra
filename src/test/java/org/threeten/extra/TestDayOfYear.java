@@ -477,8 +477,7 @@ public class TestDayOfYear {
 
     @Test
     public void test_adjustInto_nonIso() {
-        assertThrows(DateTimeException.class, () ->
-                TEST.adjustInto(JapaneseDate.now()));
+        assertThrows(DateTimeException.class, () -> TEST.adjustInto(JapaneseDate.now()));
     }
 
     @Test
@@ -503,8 +502,7 @@ public class TestDayOfYear {
     @Test
     public void test_atYear_fromStartOfYear_notLeapYear_day366() {
         DayOfYear test = DayOfYear.of(LEAP_YEAR_LENGTH);
-        assertThrows(DateTimeException.class, () ->
-                test.atYear(YEAR_STANDARD));
+        assertThrows(DateTimeException.class, () -> test.atYear(YEAR_STANDARD));
     }
 
     @Test

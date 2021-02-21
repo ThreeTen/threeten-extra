@@ -229,15 +229,13 @@ public class TestInterval {
     @Test
     public void test_withStart_badOrder() {
         Interval base = Interval.of(NOW1, NOW2);
-        assertThrows(DateTimeException.class, () ->
-                base.withStart(NOW3));
+        assertThrows(DateTimeException.class, () -> base.withStart(NOW3));
     }
 
     @Test
     public void test_withStart_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        assertThrows(NullPointerException.class, () ->
-                base.withStart(null));
+        assertThrows(NullPointerException.class, () -> base.withStart(null));
     }
 
     //-----------------------------------------------------------------------
@@ -512,8 +510,7 @@ public class TestInterval {
         Interval test1 = Interval.of(NOW1, NOW2);
         Interval test2 = Interval.of(NOW3, NOW4);
         assertEquals(false, test1.isConnected(test2));
-        assertThrows(DateTimeException.class, () ->
-                test1.intersection(test2));
+        assertThrows(DateTimeException.class, () -> test1.intersection(test2));
     }
 
     @Test
@@ -582,8 +579,7 @@ public class TestInterval {
         Interval test1 = Interval.of(NOW1, NOW2);
         Interval test2 = Interval.of(NOW3, NOW4);
         assertFalse(test1.isConnected(test2));
-        assertThrows(DateTimeException.class, () ->
-                test1.union(test2));
+        assertThrows(DateTimeException.class, () -> test1.union(test2));
     }
 
     @Test
