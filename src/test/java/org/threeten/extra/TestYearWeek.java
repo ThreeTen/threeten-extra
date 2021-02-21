@@ -718,15 +718,13 @@ public class TestYearWeek {
     @Test
     public void test_parse_CharSequenceDateDateTimeFormatter_invalidWeek() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY").withLocale(Locale.ENGLISH);
-        assertThrows(DateTimeParseException.class, () ->
-                YearWeek.parse("Mon W99 2015", f));
+        assertThrows(DateTimeParseException.class, () -> YearWeek.parse("Mon W99 2015", f));
     }
 
     @Test
     public void test_parse_CharSequenceDateTimeFormatter_nullCharSequence() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY").withLocale(Locale.ENGLISH);
-        assertThrows(NullPointerException.class, () ->
-                YearWeek.parse((CharSequence) null, f));
+        assertThrows(NullPointerException.class, () -> YearWeek.parse((CharSequence) null, f));
     }
 
     @Test

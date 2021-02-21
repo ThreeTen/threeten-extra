@@ -468,19 +468,17 @@ public class TestAccountingChronologyBuilder {
     @ParameterizedTest
     @UseDataProvider("data_badChronology")
     public void test_badChronology_nearestEndOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
-        assertThrows(IllegalStateException.class, () ->
-        new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
+        assertThrows(IllegalStateException.class, () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
                 .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                        .toChronology());
+                .toChronology());
     }
 
     @ParameterizedTest
     @UseDataProvider("data_badChronology")
     public void test_badChronology_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
-        assertThrows(IllegalStateException.class, () ->
-        new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
+        assertThrows(IllegalStateException.class, () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
                 .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                        .toChronology());
+                .toChronology());
     }
 
 }

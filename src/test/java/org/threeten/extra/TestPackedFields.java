@@ -110,8 +110,7 @@ public class TestPackedFields {
     @Test
     public void test_date_resolve_invalid_smart() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_DATE).toFormatter();
-        assertThrows(DateTimeParseException.class, () ->
-                LocalDate.parse("20151403", f.withResolverStyle(ResolverStyle.SMART)));
+        assertThrows(DateTimeParseException.class, () -> LocalDate.parse("20151403", f.withResolverStyle(ResolverStyle.SMART)));
     }
 
     @Test
@@ -222,8 +221,7 @@ public class TestPackedFields {
     @Test
     public void test_time_resolve_invalid_smart() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(PackedFields.PACKED_TIME).toFormatter();
-        assertThrows(DateTimeParseException.class, () ->
-                LocalTime.parse("117361", f.withResolverStyle(ResolverStyle.SMART)));
+        assertThrows(DateTimeParseException.class, () -> LocalTime.parse("117361", f.withResolverStyle(ResolverStyle.SMART)));
     }
 
     @Test

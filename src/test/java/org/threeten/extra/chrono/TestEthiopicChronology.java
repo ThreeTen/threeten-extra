@@ -711,8 +711,7 @@ public class TestEthiopicChronology {
     public void test_until_TemporalUnit_unsupported() {
         EthiopicDate start = EthiopicDate.of(2006, 6, 30);
         EthiopicDate end = EthiopicDate.of(2006, 7, 1);
-        assertThrows(UnsupportedTemporalTypeException.class, () ->
-                start.until(end, MINUTES));
+        assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------

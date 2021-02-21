@@ -435,15 +435,13 @@ public class TestTaiInstant {
     @Test
     public void test_plus_overflowTooBig() {
         TaiInstant i = TaiInstant.ofTaiSeconds(Long.MAX_VALUE, 999999999);
-        assertThrows(ArithmeticException.class, () ->
-                i.plus(Duration.ofSeconds(0, 1)));
+        assertThrows(ArithmeticException.class, () -> i.plus(Duration.ofSeconds(0, 1)));
     }
 
     @Test
     public void test_plus_overflowTooSmall() {
         TaiInstant i = TaiInstant.ofTaiSeconds(Long.MIN_VALUE, 0);
-        assertThrows(ArithmeticException.class, () ->
-                i.plus(Duration.ofSeconds(-1, 999999999)));
+        assertThrows(ArithmeticException.class, () -> i.plus(Duration.ofSeconds(-1, 999999999)));
     }
 
     //-----------------------------------------------------------------------
@@ -645,15 +643,13 @@ public class TestTaiInstant {
     @Test
     public void test_minus_overflowTooSmall() {
         TaiInstant i = TaiInstant.ofTaiSeconds(Long.MIN_VALUE, 0);
-        assertThrows(ArithmeticException.class, () ->
-                i.minus(Duration.ofSeconds(0, 1)));
+        assertThrows(ArithmeticException.class, () -> i.minus(Duration.ofSeconds(0, 1)));
     }
 
     @Test
     public void test_minus_overflowTooBig() {
         TaiInstant i = TaiInstant.ofTaiSeconds(Long.MAX_VALUE, 999999999);
-        assertThrows(ArithmeticException.class, () ->
-                i.minus(Duration.ofSeconds(-1, 999999999)));
+        assertThrows(ArithmeticException.class, () -> i.minus(Duration.ofSeconds(-1, 999999999)));
     }
 
     //-----------------------------------------------------------------------
@@ -758,16 +754,14 @@ public class TestTaiInstant {
     @Test
     public void test_compareTo_ObjectNull() {
         TaiInstant a = TaiInstant.ofTaiSeconds(0L, 0);
-        assertThrows(NullPointerException.class, () ->
-                a.compareTo(null));
+        assertThrows(NullPointerException.class, () -> a.compareTo(null));
     }
 
     @Test
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareToNonTaiInstant() {
         Comparable c = TaiInstant.ofTaiSeconds(0L, 2);
-        assertThrows(ClassCastException.class, () ->
-                c.compareTo(new Object()));
+        assertThrows(ClassCastException.class, () -> c.compareTo(new Object()));
     }
 
     //-----------------------------------------------------------------------

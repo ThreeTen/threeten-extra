@@ -438,8 +438,7 @@ public class TestMinutes {
     @Test
     public void test_compareTo_null() {
         Minutes test5 = Minutes.of(5);
-        assertThrows(NullPointerException.class, () ->
-                test5.compareTo(null));
+        assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 
     //-----------------------------------------------------------------------

@@ -478,8 +478,7 @@ public class TestYears {
     @Test
     public void test_compareTo_null() {
         Years test5 = Years.of(5);
-        assertThrows(NullPointerException.class, () ->
-                test5.compareTo(null));
+        assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 
     //-----------------------------------------------------------------------

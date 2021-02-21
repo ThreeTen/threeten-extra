@@ -695,8 +695,7 @@ public class TestJulianChronology {
     public void test_until_TemporalUnit_unsupported() {
         JulianDate start = JulianDate.of(2012, 6, 30);
         JulianDate end = JulianDate.of(2012, 7, 1);
-        assertThrows(UnsupportedTemporalTypeException.class, () ->
-                start.until(end, MINUTES));
+        assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------

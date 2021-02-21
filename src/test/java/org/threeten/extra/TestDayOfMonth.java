@@ -731,8 +731,7 @@ public class TestDayOfMonth {
     public void test_compareTo_nullDayOfMonth() {
         DayOfMonth doy = null;
         DayOfMonth test = DayOfMonth.of(1);
-        assertThrows(NullPointerException.class, () ->
-                test.compareTo(doy));
+        assertThrows(NullPointerException.class, () -> test.compareTo(doy));
     }
 
     //-----------------------------------------------------------------------

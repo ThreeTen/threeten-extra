@@ -430,8 +430,7 @@ public class TestSymmetry454Chronology {
     @ParameterizedTest
     @UseDataProvider("data_prolepticYear_badEra")
     public void test_prolepticYear_badEra(Era era) {
-        assertThrows(ClassCastException.class, () ->
-                Symmetry454Chronology.INSTANCE.prolepticYear(era, 4));
+        assertThrows(ClassCastException.class, () -> Symmetry454Chronology.INSTANCE.prolepticYear(era, 4));
     }
 
     @Test
@@ -957,8 +956,7 @@ public class TestSymmetry454Chronology {
     public void test_until_TemporalUnit_unsupported() {
         Symmetry454Date start = Symmetry454Date.of(2012, 6, 28);
         Symmetry454Date end = Symmetry454Date.of(2012, 7, 1);
-        assertThrows(UnsupportedTemporalTypeException.class, () ->
-                start.until(end, MINUTES));
+        assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------

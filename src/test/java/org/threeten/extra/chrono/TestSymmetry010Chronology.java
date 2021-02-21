@@ -948,8 +948,7 @@ public class TestSymmetry010Chronology {
     public void test_until_TemporalUnit_unsupported() {
         Symmetry010Date start = Symmetry010Date.of(2012, 6, 28);
         Symmetry010Date end = Symmetry010Date.of(2012, 7, 1);
-        assertThrows(UnsupportedTemporalTypeException.class, () ->
-                start.until(end, MINUTES));
+        assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------

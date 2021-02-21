@@ -291,8 +291,7 @@ public class TestInterval {
     @Test
     public void test_contains_Instant_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        assertThrows(NullPointerException.class, () ->
-                base.contains((Instant) null));
+        assertThrows(NullPointerException.class, () -> base.contains((Instant) null));
     }
 
     //-----------------------------------------------------------------------
@@ -334,8 +333,7 @@ public class TestInterval {
     @Test
     public void test_encloses_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        assertThrows(NullPointerException.class, () ->
-                base.encloses((Interval) null));
+        assertThrows(NullPointerException.class, () -> base.encloses((Interval) null));
     }
 
     //-----------------------------------------------------------------------
@@ -376,8 +374,7 @@ public class TestInterval {
     @Test
     public void test_abuts_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        assertThrows(NullPointerException.class, () ->
-                base.abuts((Interval) null));
+        assertThrows(NullPointerException.class, () -> base.abuts((Interval) null));
     }
 
     //-----------------------------------------------------------------------
@@ -418,8 +415,7 @@ public class TestInterval {
     @Test
     public void test_isConnected_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        assertThrows(NullPointerException.class, () ->
-                base.isConnected((Interval) null));
+        assertThrows(NullPointerException.class, () -> base.isConnected((Interval) null));
     }
 
     //-----------------------------------------------------------------------
@@ -460,8 +456,7 @@ public class TestInterval {
     @Test
     public void test_overlaps_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
-        assertThrows(NullPointerException.class, () ->
-                base.overlaps((Interval) null));
+        assertThrows(NullPointerException.class, () -> base.overlaps((Interval) null));
     }
 
     //-----------------------------------------------------------------------

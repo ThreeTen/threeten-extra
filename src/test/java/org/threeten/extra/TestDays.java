@@ -537,8 +537,7 @@ public class TestDays {
     @Test
     public void test_compareTo_null() {
         Days test5 = Days.of(5);
-        assertThrows(NullPointerException.class, () ->
-                test5.compareTo(null));
+        assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 
     //-----------------------------------------------------------------------

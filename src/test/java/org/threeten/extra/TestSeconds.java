@@ -251,8 +251,7 @@ public class TestSeconds {
     @ParameterizedTest
     @UseDataProvider("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
-        assertThrows(DateTimeParseException.class, () ->
-                Seconds.parse(str));
+        assertThrows(DateTimeParseException.class, () -> Seconds.parse(str));
     }
 
     @Test
@@ -471,8 +470,7 @@ public class TestSeconds {
     @Test
     public void test_compareTo_null() {
         Seconds test5 = Seconds.of(5);
-        assertThrows(NullPointerException.class, () ->
-                test5.compareTo(null));
+        assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 
     //-----------------------------------------------------------------------

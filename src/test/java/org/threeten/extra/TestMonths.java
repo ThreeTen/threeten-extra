@@ -532,8 +532,7 @@ public class TestMonths {
     @Test
     public void test_compareTo_null() {
         Months test5 = Months.of(5);
-        assertThrows(NullPointerException.class, () ->
-                test5.compareTo(null));
+        assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 
     //-----------------------------------------------------------------------

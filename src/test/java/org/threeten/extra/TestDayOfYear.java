@@ -482,8 +482,7 @@ public class TestDayOfYear {
 
     @Test
     public void test_adjustInto_null() {
-        assertThrows(NullPointerException.class, () ->
-                TEST.adjustInto((Temporal) null));
+        assertThrows(NullPointerException.class, () -> TEST.adjustInto((Temporal) null));
     }
 
     //-----------------------------------------------------------------------
@@ -517,8 +516,7 @@ public class TestDayOfYear {
 
     @Test
     public void test_atYear_Year_nullYear() {
-        assertThrows(NullPointerException.class, () ->
-                TEST.atYear((Year) null));
+        assertThrows(NullPointerException.class, () -> TEST.atYear((Year) null));
     }
 
     //-----------------------------------------------------------------------
@@ -582,8 +580,7 @@ public class TestDayOfYear {
     public void test_compareTo_nullDayOfYear() {
         DayOfYear doy = null;
         DayOfYear test = DayOfYear.of(1);
-        assertThrows(NullPointerException.class, () ->
-                test.compareTo(doy));
+        assertThrows(NullPointerException.class, () -> test.compareTo(doy));
     }
 
     //-----------------------------------------------------------------------

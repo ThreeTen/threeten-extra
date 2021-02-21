@@ -1035,8 +1035,7 @@ public class TestBritishCutoverChronology {
     public void test_until_TemporalUnit_unsupported() {
         BritishCutoverDate start = BritishCutoverDate.of(2012, 6, 30);
         BritishCutoverDate end = BritishCutoverDate.of(2012, 7, 1);
-        assertThrows(UnsupportedTemporalTypeException.class, () ->
-                start.until(end, MINUTES));
+        assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------

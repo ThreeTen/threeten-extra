@@ -847,8 +847,7 @@ public class TestPaxChronology {
     public void test_until_TemporalUnit_unsupported() {
         PaxDate start = PaxDate.of(2012, 6, 28);
         PaxDate end = PaxDate.of(2012, 7, 1);
-        assertThrows(UnsupportedTemporalTypeException.class, () ->
-                start.until(end, MINUTES));
+        assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------

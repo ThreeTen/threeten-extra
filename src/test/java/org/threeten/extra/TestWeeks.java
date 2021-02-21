@@ -473,8 +473,7 @@ public class TestWeeks {
     @Test
     public void test_compareTo_null() {
         Weeks test5 = Weeks.of(5);
-        assertThrows(NullPointerException.class, () ->
-                test5.compareTo(null));
+        assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 
     //-----------------------------------------------------------------------

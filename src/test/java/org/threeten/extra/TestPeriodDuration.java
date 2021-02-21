@@ -258,14 +258,12 @@ public class TestPeriodDuration {
     @ParameterizedTest
     @UseDataProvider("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
-        assertThrows(DateTimeParseException.class, () ->
-                PeriodDuration.parse(str));
+        assertThrows(DateTimeParseException.class, () -> PeriodDuration.parse(str));
     }
 
     @Test
     public void test_parse_CharSequence_null() {
-        assertThrows(NullPointerException.class, () ->
-                PeriodDuration.parse((CharSequence) null));
+        assertThrows(NullPointerException.class, () -> PeriodDuration.parse((CharSequence) null));
     }
 
     //-----------------------------------------------------------------------

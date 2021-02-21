@@ -332,15 +332,13 @@ public class TestUtcInstant {
     @Test
     public void test_plus_overflowTooBig() {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, NANOS_PER_DAY - 1);
-        assertThrows(ArithmeticException.class, () ->
-                i.plus(Duration.ofNanos(1)));
+        assertThrows(ArithmeticException.class, () -> i.plus(Duration.ofNanos(1)));
     }
 
     @Test
     public void test_plus_overflowTooSmall() {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0);
-        assertThrows(ArithmeticException.class, () ->
-                i.plus(Duration.ofNanos(-1)));
+        assertThrows(ArithmeticException.class, () -> i.plus(Duration.ofNanos(-1)));
     }
 
     //-----------------------------------------------------------------------
@@ -392,15 +390,13 @@ public class TestUtcInstant {
     @Test
     public void test_minus_overflowTooSmall() {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0);
-        assertThrows(ArithmeticException.class, () ->
-                i.minus(Duration.ofNanos(1)));
+        assertThrows(ArithmeticException.class, () -> i.minus(Duration.ofNanos(1)));
     }
 
     @Test
     public void test_minus_overflowTooBig() {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, NANOS_PER_DAY - 1);
-        assertThrows(ArithmeticException.class, () ->
-                i.minus(Duration.ofNanos(-1)));
+        assertThrows(ArithmeticException.class, () -> i.minus(Duration.ofNanos(-1)));
     }
 
     //-----------------------------------------------------------------------
@@ -451,8 +447,7 @@ public class TestUtcInstant {
     @Test
     public void test_toTaiInstant_maxInvalid() {
         UtcInstant utc = UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, 0);
-        assertThrows(ArithmeticException.class, () ->
-                utc.toTaiInstant());
+        assertThrows(ArithmeticException.class, () -> utc.toTaiInstant());
     }
 
     //-----------------------------------------------------------------------
@@ -513,16 +508,14 @@ public class TestUtcInstant {
     @Test
     public void test_compareTo_ObjectNull() {
         UtcInstant a = UtcInstant.ofModifiedJulianDay(0L, 0);
-        assertThrows(NullPointerException.class, () ->
-                a.compareTo(null));
+        assertThrows(NullPointerException.class, () -> a.compareTo(null));
     }
 
     @Test
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareToNonUtcInstant() {
         Comparable c = UtcInstant.ofModifiedJulianDay(0L, 2);
-        assertThrows(ClassCastException.class, () ->
-                c.compareTo(new Object()));
+        assertThrows(ClassCastException.class, () -> c.compareTo(new Object()));
     }
 
     //-----------------------------------------------------------------------
