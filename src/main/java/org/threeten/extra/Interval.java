@@ -343,6 +343,36 @@ public final class Interval
     }
 
     /**
+     * Checks if this intervals start contains the specified instant. In essence the start part of {@code contains(Instant)}
+     * <p>
+     * This checks if the specified instant is within the bounds of the start of this interval.
+     * If this range has an unbounded start then {@code containsFloor(Instant#MIN)} returns true.
+     * If this range has an unbounded end then {@code containsFloor(Instant#MAX)} returns true.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval start contains the instant
+     */
+    public boolean containedByStart(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return start.compareTo(instant) <= 0;
+    }
+
+    /**
+     * Checks if this intervals end contains the specified instant. In essence the end part of {@code contains(Instant)}
+     * <p>
+     * This checks if the specified instant is within the bounds of the end of this interval.
+     * If this range has an unbounded start then {@code containsHigher(Instant#MIN)} returns true.
+     * If this range has an unbounded end then {@code containsHigher(Instant#MAX)} returns true.
+     *
+     * @param instant  the instant, not null
+     * @return true if this intervals end contains the instant
+     */
+    public boolean containedByEnd(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return instant.compareTo(end) < 0 || isUnboundedEnd();
+    }
+
+    /**
      * Checks if this interval encloses the specified interval.
      * <p>
      * This checks if the bounds of the specified interval are within the bounds of this interval.

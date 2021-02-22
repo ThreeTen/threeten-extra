@@ -296,6 +296,97 @@ public class TestInterval {
 
     //-----------------------------------------------------------------------
     @Test
+    public void test_containedByStart_Instant() {
+        Interval test = Interval.of(NOW1, NOW2);
+        assertEquals(false, test.containedByStart(NOW1.minusSeconds(1)));
+        assertEquals(true, test.containedByStart(NOW1));
+        assertEquals(true, test.containedByStart(NOW1.plusSeconds(1)));
+        assertEquals(true, test.containedByStart(NOW2.minusSeconds(1)));
+        assertEquals(true, test.containedByStart(NOW2));
+    }
+
+    @Test
+    public void test_containedByStart_Instant_baseEmpty() {
+        Interval test = Interval.of(NOW1, NOW1);
+        assertEquals(false, test.containedByStart(NOW1.minusSeconds(1)));
+        assertEquals(true, test.containedByStart(NOW1));
+        assertEquals(true, test.containedByStart(NOW1.plusSeconds(1)));
+    }
+
+    @Test
+    public void test_containedByStart_min(){
+        Interval test = Interval.of(Instant.MIN, NOW2);
+        assertEquals(true, test.containedByStart(Instant.MIN));
+        assertEquals(true, test.containedByStart(NOW1));
+        assertEquals(true, test.containedByStart(NOW2));
+        assertEquals(true, test.containedByStart(NOW3));
+        assertEquals(true, test.containedByStart(Instant.MAX));
+    }
+
+    @Test
+    public void test_containedByStart_max(){
+        Interval test = Interval.of(NOW2, Instant.MAX);
+        assertEquals(false, test.containedByStart(Instant.MIN));
+        assertEquals(false, test.containedByStart(NOW1));
+        assertEquals(true, test.containedByStart(NOW2));
+        assertEquals(true, test.containedByStart(NOW3));
+        assertEquals(true, test.containedByStart(Instant.MAX));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_containedByStart_Instant_null() {
+        Interval base = Interval.of(NOW1, NOW2);
+        base.containedByStart((Instant) null);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_containedByEnd_Instant() {
+        Interval test = Interval.of(NOW1, NOW2);
+        assertEquals(true, test.containedByEnd(NOW1.minusSeconds(1)));
+        assertEquals(true, test.containedByEnd(NOW1));
+        assertEquals(true, test.containedByEnd(NOW1.plusSeconds(1)));
+        assertEquals(true, test.containedByEnd(NOW2.minusSeconds(1)));
+        assertEquals(false, test.containedByEnd(NOW2));
+        assertEquals(false, test.containedByEnd(NOW3));
+    }
+
+    @Test
+    public void test_containedByEnd_Instant_baseEmpty() {
+        Interval test = Interval.of(NOW1, NOW1);
+        assertEquals(true, test.containedByEnd(NOW1.minusSeconds(1)));
+        assertEquals(false, test.containedByEnd(NOW1));
+        assertEquals(false, test.containedByEnd(NOW1.plusSeconds(1)));
+    }
+
+    @Test
+    public void test_containedByEnd_min(){
+        Interval test = Interval.of(Instant.MIN, NOW2);
+        assertEquals(true, test.containedByEnd(Instant.MIN));
+        assertEquals(true, test.containedByEnd(NOW1));
+        assertEquals(false, test.containedByEnd(NOW2));
+        assertEquals(false, test.containedByEnd(NOW3));
+        assertEquals(false, test.containedByEnd(Instant.MAX));
+    }
+
+    @Test
+    public void test_containedByEnd_max(){
+        Interval test = Interval.of(NOW2, Instant.MAX);
+        assertEquals(true, test.containedByEnd(Instant.MIN));
+        assertEquals(true, test.containedByEnd(NOW1));
+        assertEquals(true, test.containedByEnd(NOW2));
+        assertEquals(true, test.containedByEnd(NOW3));
+        assertEquals(true, test.containedByEnd(Instant.MAX));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_containedByEnd_Instant_null() {
+        Interval base = Interval.of(NOW1, NOW2);
+        base.containedByEnd((Instant) null);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
     public void test_encloses_Interval() {
         Interval test = Interval.of(NOW1, NOW2);
         // completely before
