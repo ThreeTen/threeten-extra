@@ -54,10 +54,11 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -76,18 +77,16 @@ import java.time.temporal.ValueRange;
 import java.util.List;
 import java.util.function.IntPredicate;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test.
  */
 @SuppressWarnings({"static-method", "javadoc"})
-@RunWith(DataProviderRunner.class)
 public class TestInternationalFixedChronology {
 
     //-----------------------------------------------------------------------
@@ -152,55 +151,55 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_LocalDate_from_InternationalFixedDate(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(iso, LocalDate.from(fixed));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_InternationalFixedDate_from_LocalDate(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(fixed, InternationalFixedDate.from(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_InternationalFixedDate_chronology_dateEpochDay(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(fixed, InternationalFixedChronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_InternationalFixedDate_toEpochDay(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(iso.toEpochDay(), fixed.toEpochDay());
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_InternationalFixedDate_until_InternationalFixedDate(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(InternationalFixedChronology.INSTANCE.period(0, 0, 0), fixed.until(fixed));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_InternationalFixedDate_until_LocalDate(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(InternationalFixedChronology.INSTANCE.period(0, 0, 0), fixed.until(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_LocalDate_until_InternationalFixedDate(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(Period.ZERO, iso.until(fixed));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(fixed, InternationalFixedChronology.INSTANCE.date(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_plusDays(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(iso, LocalDate.from(fixed.plus(0, DAYS)));
@@ -212,7 +211,7 @@ public class TestInternationalFixedChronology {
         }
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_minusDays(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(iso, LocalDate.from(fixed.minus(0, DAYS)));
@@ -225,7 +224,7 @@ public class TestInternationalFixedChronology {
     }
 
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_until_DAYS(InternationalFixedDate fixed, LocalDate iso) {
         assertEquals(0, fixed.until(iso.plusDays(0), DAYS));
@@ -277,10 +276,10 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test(expected = DateTimeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_badDates")
     public void test_badDates(int year, int month, int dom) {
-        InternationalFixedDate.of(year, month, dom);
+        assertThrows(DateTimeException.class, () -> InternationalFixedDate.of(year, month, dom));
     }
 
     @DataProvider
@@ -294,15 +293,15 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test(expected = DateTimeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_badLeapDates")
     public void badLeapDayDates(int year) {
-        InternationalFixedDate.of(year, 6, 29);
+        assertThrows(DateTimeException.class, () -> InternationalFixedDate.of(year, 6, 29));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_chronology_dateYearDay_badDate() {
-        InternationalFixedChronology.INSTANCE.dateYearDay(2001, 366);
+        assertThrows(DateTimeException.class, () -> InternationalFixedChronology.INSTANCE.dateYearDay(2001, 366));
     }
 
     //-----------------------------------------------------------------------
@@ -355,13 +354,13 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int day, int length) {
         assertEquals(length, InternationalFixedDate.of(year, month, day).lengthOfMonth());
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonthFirst(int year, int month, int day, int length) {
         assertEquals(length, InternationalFixedDate.of(year, month, 1).lengthOfMonth());
@@ -422,15 +421,15 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test(expected = DateTimeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_prolepticYear_bad")
     public void test_prolepticYearBad(int year) {
-        InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE, year);
+        assertThrows(DateTimeException.class, () -> InternationalFixedChronology.INSTANCE.prolepticYear(InternationalFixedEra.CE, year));
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void test_prolepticYear_badEra() {
-        InternationalFixedChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
+        assertThrows(ClassCastException.class, () -> InternationalFixedChronology.INSTANCE.prolepticYear(IsoEra.CE, 4));
     }
 
     @Test
@@ -438,9 +437,9 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedEra.CE, InternationalFixedChronology.INSTANCE.eraOf(1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_Chronology_eraOf_invalid() {
-        InternationalFixedChronology.INSTANCE.eraOf(0);
+        assertThrows(DateTimeException.class, () -> InternationalFixedChronology.INSTANCE.eraOf(0));
     }
 
     @Test
@@ -533,15 +532,15 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, ValueRange range) {
         assertEquals(range, InternationalFixedDate.of(year, month, dom).range(field));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_range_unsupported() {
-        InternationalFixedDate.of(2012, 6, 28).range(MINUTE_OF_DAY);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> InternationalFixedDate.of(2012, 6, 28).range(MINUTE_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -615,15 +614,15 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
         assertEquals(expected, InternationalFixedDate.of(year, month, dom).getLong(field));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_getLong_unsupported() {
-        InternationalFixedDate.of(2012, 6, 28).getLong(MINUTE_OF_DAY);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> InternationalFixedDate.of(2012, 6, 28).getLong(MINUTE_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -763,7 +762,7 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_with")
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
@@ -830,15 +829,15 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test(expected = DateTimeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_with_bad")
     public void test_with_TemporalField_badValue(int year, int month, int dom, TemporalField field, long value) {
-        InternationalFixedDate.of(year, month, dom).with(field, value);
+        assertThrows(DateTimeException.class, () -> InternationalFixedDate.of(year, month, dom).with(field, value));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_with_TemporalField_unsupported() {
-        InternationalFixedDate.of(2012, 6, 28).with(MINUTE_OF_DAY, 0);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> InternationalFixedDate.of(2012, 6, 28).with(MINUTE_OF_DAY, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -855,7 +854,7 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_temporalAdjusters_lastDayOfMonth")
     public void test_temporalAdjusters_LastDayOfMonth(int year, int month, int day, int expectedYear, int expectedMonth, int expectedDay) {
         InternationalFixedDate base = InternationalFixedDate.of(year, month, day);
@@ -874,10 +873,10 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(2012, 7, 19), test);
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_adjust_toMonth() {
         InternationalFixedDate fixed = InternationalFixedDate.of(2000, 1, 4);
-        fixed.with(Month.APRIL);
+        assertThrows(DateTimeException.class, () -> fixed.with(Month.APRIL));
     }
 
     //-----------------------------------------------------------------------
@@ -1022,7 +1021,7 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus")
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
@@ -1030,7 +1029,7 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom), InternationalFixedDate.of(year, month, dom).plus(amount, unit));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus_leap_and_year_day")
     public void test_plus_leap_and_year_day_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
@@ -1038,7 +1037,7 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom), InternationalFixedDate.of(year, month, dom).plus(amount, unit));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus")
     public void test_minus_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
@@ -1047,7 +1046,7 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom), InternationalFixedDate.of(year, month, dom).minus(amount, unit));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_minus_leap_and_year_day")
     public void test_minus_leap_and_year_day_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
@@ -1056,9 +1055,9 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(expectedYear, expectedMonth, expectedDom), InternationalFixedDate.of(year, month, dom).minus(amount, unit));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_plus_TemporalUnit_unsupported() {
-        InternationalFixedDate.of(2012, 6, 28).plus(0, MINUTES);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> InternationalFixedDate.of(2012, 6, 28).plus(0, MINUTES));
     }
 
     //-----------------------------------------------------------------------
@@ -1272,7 +1271,7 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_until")
     public void test_until_TemporalUnit(
             int year1, int month1, int dom1,
@@ -1283,7 +1282,7 @@ public class TestInternationalFixedChronology {
         assertEquals(expected, start.until(end, unit));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_until_period")
     public void test_until_end(
             int year1, int month1, int dom1,
@@ -1295,11 +1294,11 @@ public class TestInternationalFixedChronology {
         assertEquals(period, start.until(end));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_until_TemporalUnit_unsupported() {
         InternationalFixedDate start = InternationalFixedDate.of(2012, 6, 28);
         InternationalFixedDate end = InternationalFixedDate.of(2012, 7, 1);
-        start.until(end, MINUTES);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------
@@ -1310,9 +1309,9 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(2014, 8, 1), InternationalFixedDate.of(2014, 5, 26).plus(InternationalFixedChronology.INSTANCE.period(0, 2, 3)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_plus_Period_ISO() {
-        assertEquals(InternationalFixedDate.of(2014, 7, 26), InternationalFixedDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
+        assertThrows(DateTimeException.class, () -> InternationalFixedDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
@@ -1320,9 +1319,9 @@ public class TestInternationalFixedChronology {
         assertEquals(InternationalFixedDate.of(2014, 3, 23), InternationalFixedDate.of(2014, 5, 26).minus(InternationalFixedChronology.INSTANCE.period(0, 2, 3)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_minus_Period_ISO() {
-        assertEquals(InternationalFixedDate.of(2014, 3, 26), InternationalFixedDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
+        assertThrows(DateTimeException.class, () -> InternationalFixedDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------
@@ -1340,7 +1339,7 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_equals")
     public void test_equals(InternationalFixedDate a1, InternationalFixedDate b, InternationalFixedDate c,
                                     InternationalFixedDate d) {
@@ -1368,7 +1367,7 @@ public class TestInternationalFixedChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_toString")
     public void test_toString(InternationalFixedDate date, String expected) {
         assertEquals(expected, date.toString());

@@ -31,23 +31,21 @@
  */
 package org.threeten.extra;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
 import java.time.Period;
 import java.util.Locale;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test AmountFormats.
  */
-@RunWith(DataProviderRunner.class)
 public class TestAmountFormats {
 
     private static final Locale PL = new Locale("pl");
@@ -99,7 +97,7 @@ public class TestAmountFormats {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_wordBased")
     public void test_wordBased(Period period, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(period, locale));
@@ -135,7 +133,7 @@ public class TestAmountFormats {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("duration_wordBased")
     public void test_wordBased(Duration duration, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(duration, locale));
@@ -162,7 +160,7 @@ public class TestAmountFormats {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("period_duration_wordBased")
     public void test_wordBased(Period period, Duration duration, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(period, duration, locale));
@@ -295,7 +293,7 @@ public class TestAmountFormats {
     }
 
     // -----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("wordBased_ru_formatSeparator")
     public void test_wordBased_ru_formatSeparator(String expected, Duration duration) {
         assertEquals(expected, AmountFormats.wordBased(duration, RU));
@@ -310,7 +308,7 @@ public class TestAmountFormats {
     }
 
     // -----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("wordBased_ru_period_predicate")
     public void test_wordBased_ru_period_predicate(String expected, Period period) {
         assertEquals(expected, AmountFormats.wordBased(period, RU));
@@ -438,7 +436,7 @@ public class TestAmountFormats {
     }
 
     // -----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("wordBased_ru_duration_predicate")
     public void test_wordBased_ru_duration_predicate(String expected, Duration duration) {
         assertEquals(expected, AmountFormats.wordBased(duration, RU));

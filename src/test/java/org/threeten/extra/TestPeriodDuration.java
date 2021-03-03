@@ -37,8 +37,9 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -54,17 +55,15 @@ import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test class.
  */
-@RunWith(DataProviderRunner.class)
 public class TestPeriodDuration {
 
     private static final Period P1Y2M3D = Period.of(1, 2, 3);
@@ -107,9 +106,9 @@ public class TestPeriodDuration {
         assertEquals(0, PeriodDuration.ZERO.get(NANOS));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ZERO_getEra() {
-        PeriodDuration.ZERO.get(ERAS);
+        assertThrows(DateTimeException.class, () -> PeriodDuration.ZERO.get(ERAS));
     }
 
     //-----------------------------------------------------------------------
@@ -220,19 +219,19 @@ public class TestPeriodDuration {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.of(period, duration), PeriodDuration.parse(str));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.of(period, duration), PeriodDuration.parse("+" + str));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.of(period, duration).negated(), PeriodDuration.parse("-" + str));
@@ -256,15 +255,15 @@ public class TestPeriodDuration {
         };
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @ParameterizedTest
     @UseDataProvider("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
-        PeriodDuration.parse(str);
+        assertThrows(DateTimeParseException.class, () -> PeriodDuration.parse(str));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequence_null() {
-        PeriodDuration.parse((CharSequence) null);
+        assertThrows(NullPointerException.class, () -> PeriodDuration.parse((CharSequence) null));
     }
 
     //-----------------------------------------------------------------------
@@ -275,19 +274,19 @@ public class TestPeriodDuration {
         assertEquals(PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(9)), test.plus(Duration.ofSeconds(4)));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plus_TemporalAmount_overflowTooBig() {
-        PeriodDuration.of(Period.of(Integer.MAX_VALUE - 1, 0, 0)).plus(PeriodDuration.of(Period.ofYears(2)));
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Period.of(Integer.MAX_VALUE - 1, 0, 0)).plus(PeriodDuration.of(Period.ofYears(2))));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plus_TemporalAmount_overflowTooSmall() {
-        PeriodDuration.of(Period.of(Integer.MIN_VALUE + 1, 0, 0)).plus(PeriodDuration.of(Period.ofYears(-2)));
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Period.of(Integer.MIN_VALUE + 1, 0, 0)).plus(PeriodDuration.of(Period.ofYears(-2))));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_plus_TemporalAmount_null() {
-        P1Y2M3D.plus(null);
+        assertThrows(NullPointerException.class, () -> P1Y2M3D.plus(null));
     }
 
     //-----------------------------------------------------------------------
@@ -298,19 +297,19 @@ public class TestPeriodDuration {
         assertEquals(PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(1)), test.minus(Duration.ofSeconds(4)));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_TemporalAmount_overflowTooBig() {
-        PeriodDuration.of(Period.of(Integer.MAX_VALUE - 1, 0, 0)).minus(PeriodDuration.of(Period.ofYears(-2)));
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Period.of(Integer.MAX_VALUE - 1, 0, 0)).minus(PeriodDuration.of(Period.ofYears(-2))));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_TemporalAmount_overflowTooSmall() {
-        PeriodDuration.of(Period.of(Integer.MIN_VALUE + 1, 0, 0)).minus(PeriodDuration.of(Period.ofYears(2)));
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Period.of(Integer.MIN_VALUE + 1, 0, 0)).minus(PeriodDuration.of(Period.ofYears(2))));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_minus_TemporalAmount_null() {
-        P1Y2M3D.minus(null);
+        assertThrows(NullPointerException.class, () -> P1Y2M3D.minus(null));
     }
 
     //-----------------------------------------------------------------------
@@ -323,14 +322,14 @@ public class TestPeriodDuration {
         assertEquals(PeriodDuration.of(Period.of(-3,  -6, -9), Duration.ofSeconds(-15)), test.multipliedBy(-3));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_multipliedBy_overflowTooBig() {
-        PeriodDuration.of(Period.ofYears(Integer.MAX_VALUE / 2 + 1)).multipliedBy(2);
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Period.ofYears(Integer.MAX_VALUE / 2 + 1)).multipliedBy(2));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_multipliedBy_overflowTooSmall() {
-        PeriodDuration.of(Period.ofYears(Integer.MIN_VALUE / 2 - 1)).multipliedBy(2);
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Period.ofYears(Integer.MIN_VALUE / 2 - 1)).multipliedBy(2));
     }
 
     //-----------------------------------------------------------------------
@@ -339,9 +338,9 @@ public class TestPeriodDuration {
         assertEquals(PeriodDuration.of(P1Y2M3D.negated(), DUR_5.negated()), PeriodDuration.of(P1Y2M3D, DUR_5).negated());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_negated_overflow() {
-        PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).negated();
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).negated());
     }
 
     //-----------------------------------------------------------------------
@@ -364,9 +363,9 @@ public class TestPeriodDuration {
                 PeriodDuration.of(P1Y2M3D, Duration.ofHours(-73)).normalizedStandardDays());
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_normalizedStandardDaysn_overflow() {
-        PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).normalizedStandardDays();
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).normalizedStandardDays());
     }
 
     //-----------------------------------------------------------------------

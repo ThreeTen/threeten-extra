@@ -72,9 +72,10 @@ import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -109,14 +110,12 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
-@RunWith(DataProviderRunner.class)
 public class TestYearWeek {
 
     private static final YearWeek TEST_NON_LEAP = YearWeek.of(2014, 1);
@@ -345,9 +344,9 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     // now(ZoneId)
     //-----------------------------------------------------------------------
-    @Test(expected = NullPointerException.class)
+    @Test
     public void now_ZoneId_nullZoneId() {
-        YearWeek.now((ZoneId) null);
+        assertThrows(NullPointerException.class, () -> YearWeek.now((ZoneId) null));
     }
 
     @Test
@@ -377,15 +376,15 @@ public class TestYearWeek {
         assertEquals(52, test.getWeek());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void now_Clock_nullClock() {
-        YearWeek.now((Clock) null);
+        assertThrows(NullPointerException.class, () -> YearWeek.now((Clock) null));
     }
 
     //-----------------------------------------------------------------------
     // of(Year, int)
     //-----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_sampleYearWeeks")
     public void test_of_Year_int(int year, int week) {
         YearWeek yearWeek = YearWeek.of(Year.of(year), week);
@@ -401,7 +400,7 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     // of(int, int)
     //-----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_sampleYearWeeks")
     public void test_of(int year, int week) {
         YearWeek yearWeek = YearWeek.of(year, week);
@@ -414,24 +413,24 @@ public class TestYearWeek {
         assertTrue(YearWeek.of(2014, 53).equals(TEST));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_year_tooLow() {
-        YearWeek.of(Integer.MIN_VALUE, 1);
+        assertThrows(DateTimeException.class, () -> YearWeek.of(Integer.MIN_VALUE, 1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_year_tooHigh() {
-        YearWeek.of(Integer.MAX_VALUE, 1);
+        assertThrows(DateTimeException.class, () -> YearWeek.of(Integer.MAX_VALUE, 1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_invalidWeekValue() {
-        YearWeek.of(2015, 54);
+        assertThrows(DateTimeException.class, () -> YearWeek.of(2015, 54));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_invalidWeekValueZero() {
-        YearWeek.of(2015, 0);
+        assertThrows(DateTimeException.class, () -> YearWeek.of(2015, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -479,7 +478,7 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     // atDay(DayOfWeek)
     //-----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_sampleAtDay")
     public void test_atDay(int weekBasedYear, int weekOfWeekBasedYear, DayOfWeek dayOfWeek, int year, int month, int dayOfMonth) {
         YearWeek yearWeek = YearWeek.of(weekBasedYear, weekOfWeekBasedYear);
@@ -503,15 +502,15 @@ public class TestYearWeek {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_atDay_null() {
-        TEST.atDay(null);
+        assertThrows(NullPointerException.class, () -> TEST.atDay(null));
     }
 
     //-----------------------------------------------------------------------
     // is53WeekYear()
     //-----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_53WeekYear")
     public void test_is53WeekYear(int year) {
         YearWeek yearWeek = YearWeek.of(year, 1);
@@ -573,15 +572,15 @@ public class TestYearWeek {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_compareTo_nullYearWeek() {
-        TEST.compareTo(null);
+        assertThrows(NullPointerException.class, () -> TEST.compareTo(null));
     }
 
     //-----------------------------------------------------------------------
     // from(TemporalAccessor)
     //-----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_sampleAtDay")
     public void test_from(int weekBasedYear, int weekOfWeekBasedYear, DayOfWeek dayOfWeek, int year, int month, int dayOfMonth) {
         YearWeek expected = YearWeek.of(weekBasedYear, weekOfWeekBasedYear);
@@ -591,14 +590,14 @@ public class TestYearWeek {
         assertEquals(expected, YearWeek.from(expected));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_from_TemporalAccessor_noDerive() {
-        YearWeek.from(LocalTime.NOON);
+        assertThrows(DateTimeException.class, () -> YearWeek.from(LocalTime.NOON));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_from_TemporalAccessor_null() {
-        YearWeek.from((TemporalAccessor) null);
+        assertThrows(NullPointerException.class, () -> YearWeek.from((TemporalAccessor) null));
     }
 
     //-----------------------------------------------------------------------
@@ -610,14 +609,14 @@ public class TestYearWeek {
         assertEquals(1, TEST.get(WEEK_OF_WEEK_BASED_YEAR));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_get_invalidField() {
-        TEST.get(YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.get(YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_get_null() {
-        TEST.get((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.get((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -629,14 +628,14 @@ public class TestYearWeek {
         assertEquals(1L, TEST.getLong(WEEK_OF_WEEK_BASED_YEAR));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_getLong_invalidField() {
-        TEST.getLong(YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.getLong(YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_getLong_null() {
-        TEST.getLong((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.getLong((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -657,23 +656,23 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2016, 1), TEST.with(IsoFields.WEEK_BASED_YEAR, 2016));
     }
 
-    @Test(expected = DateTimeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_outOfBounds")
     public void test_with_outOfBounds(TemporalField field, long newValue) {
-        TEST.with(field, newValue);
+        assertThrows(DateTimeException.class, () -> TEST.with(field, newValue));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_with_TemporalAdjuster_unsupportedType() {
-        TEST.with(ChronoField.MONTH_OF_YEAR, 5);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.with(ChronoField.MONTH_OF_YEAR, 5));
     }
 
     //-----------------------------------------------------------------------
     // with(TemporalAdjuster)
     //-----------------------------------------------------------------------
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_with_unsupportedType() {
-        TEST.with(TemporalAdjusters.firstDayOfMonth());
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.with(TemporalAdjusters.firstDayOfMonth()));
     }
 
     //-----------------------------------------------------------------------
@@ -692,19 +691,19 @@ public class TestYearWeek {
         assertEquals(TEST, YearWeek.parse("2015-W01"));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parse_CharSequenceDate_invalidYear() {
-        YearWeek.parse("12345-W7");
+        assertThrows(DateTimeParseException.class, () -> YearWeek.parse("12345-W7"));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parse_CharSequenceDate_invalidWeek() {
-        YearWeek.parse("2015-W54");
+        assertThrows(DateTimeParseException.class, () -> YearWeek.parse("2015-W54"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequenceDate_nullCharSequence() {
-        YearWeek.parse((CharSequence) null);
+        assertThrows(NullPointerException.class, () -> YearWeek.parse((CharSequence) null));
     }
 
     //-----------------------------------------------------------------------
@@ -716,21 +715,21 @@ public class TestYearWeek {
         assertEquals(TEST, YearWeek.parse("Mon W1 2015", f));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parse_CharSequenceDateDateTimeFormatter_invalidWeek() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY").withLocale(Locale.ENGLISH);
-        YearWeek.parse("Mon W99 2015", f);
+        assertThrows(DateTimeParseException.class, () -> YearWeek.parse("Mon W99 2015", f));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequenceDateTimeFormatter_nullCharSequence() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("E 'W'w YYYY").withLocale(Locale.ENGLISH);
-        YearWeek.parse((CharSequence) null, f);
+        assertThrows(NullPointerException.class, () -> YearWeek.parse((CharSequence) null, f));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequenceDateTimeFormatter_nullDateTimeFormatter() {
-        YearWeek.parse("", (DateTimeFormatter) null);
+        assertThrows(NullPointerException.class, () -> YearWeek.parse("", (DateTimeFormatter) null));
     }
 
     //-----------------------------------------------------------------------
@@ -756,11 +755,11 @@ public class TestYearWeek {
         assertEquals(LocalDate.of(2016, 1, 9), yw.adjustInto(date));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_adjustInto_badChronology() {
         YearWeek yw = YearWeek.of(2016, 1);
         ThaiBuddhistDate date = ThaiBuddhistDate.from(LocalDate.of(2015, 6, 20));
-        yw.adjustInto(date);
+        assertThrows(DateTimeException.class, () -> yw.adjustInto(date));
     }
 
     //-----------------------------------------------------------------------
@@ -785,9 +784,9 @@ public class TestYearWeek {
         assertEquals(-1, TEST.until(YearWeek.of(2013, 2), IsoFields.WEEK_BASED_YEARS));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_until_unsupportedType() {
-        TEST.until(YearWeek.of(2016, 1), ChronoUnit.MONTHS);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.until(YearWeek.of(2016, 1), ChronoUnit.MONTHS));
     }
 
     //-----------------------------------------------------------------------
@@ -802,14 +801,14 @@ public class TestYearWeek {
         assertEquals(ValueRange.of(1, 53), TEST.range(WEEK_OF_WEEK_BASED_YEAR));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_range_invalidField() {
-        TEST.range(YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.range(YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_range_null() {
-        TEST.range((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.range((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -831,14 +830,14 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2014, 52), YearWeek.of(2015, 53).withYear(2014));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withYear_int_max() {
-        TEST.withYear(Integer.MAX_VALUE);
+        assertThrows(DateTimeException.class, () -> TEST.withYear(Integer.MAX_VALUE));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withYear_int_min() {
-        TEST.withYear(Integer.MIN_VALUE);
+        assertThrows(DateTimeException.class, () -> TEST.withYear(Integer.MIN_VALUE));
     }
 
     //-----------------------------------------------------------------------
@@ -850,9 +849,9 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2016, 1), TEST.plus(1, IsoFields.WEEK_BASED_YEARS));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_plus_unsupportedType() {
-        YearWeek.of(2014, 1).plus(1, ChronoUnit.DAYS);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> YearWeek.of(2014, 1).plus(1, ChronoUnit.DAYS));
     }
 
     //-----------------------------------------------------------------------
@@ -877,14 +876,14 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2014, 2), YearWeek.of(2014, 2).withWeek(2));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withWeek_int_max() {
-        TEST.withWeek(Integer.MAX_VALUE);
+        assertThrows(DateTimeException.class, () -> TEST.withWeek(Integer.MAX_VALUE));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withWeek_int_min() {
-        TEST.withWeek(Integer.MIN_VALUE);
+        assertThrows(DateTimeException.class, () -> TEST.withWeek(Integer.MIN_VALUE));
     }
 
     //-----------------------------------------------------------------------
@@ -907,14 +906,14 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2020, 53), YearWeek.of(2015, 53).plusYears(5));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plusYears_max_long() {
-        TEST.plusYears(Long.MAX_VALUE);
+        assertThrows(ArithmeticException.class, () -> TEST.plusYears(Long.MAX_VALUE));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plusYears_min_long() {
-        TEST.plusYears(Long.MIN_VALUE);
+        assertThrows(ArithmeticException.class, () -> TEST.plusYears(Long.MIN_VALUE));
     }
 
     //-----------------------------------------------------------------------
@@ -942,14 +941,14 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2009, 53), TEST.plusWeeks(-261));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plusWeeks_max_long() {
-        TEST.plusWeeks(Long.MAX_VALUE);
+        assertThrows(ArithmeticException.class, () -> TEST.plusWeeks(Long.MAX_VALUE));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_plusWeeks_min_long() {
-        TEST.plusWeeks(Long.MIN_VALUE);
+        assertThrows(ArithmeticException.class, () -> TEST.plusWeeks(Long.MIN_VALUE));
     }
 
     //-----------------------------------------------------------------------
@@ -960,9 +959,9 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2014, 1), YearWeek.of(2014, 2).minus(1, ChronoUnit.WEEKS));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minus_overflow() {
-        TEST.minus(Long.MIN_VALUE, ChronoUnit.WEEKS);
+        assertThrows(ArithmeticException.class, () -> TEST.minus(Long.MIN_VALUE, ChronoUnit.WEEKS));
     }
 
     //-----------------------------------------------------------------------
@@ -993,14 +992,14 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2014, 52), YearWeek.of(2015, 53).minusYears(1));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minusYears_max_long() {
-        TEST.minusYears(Long.MAX_VALUE);
+        assertThrows(ArithmeticException.class, () -> TEST.minusYears(Long.MAX_VALUE));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minusYears_min_long() {
-        TEST.minusYears(Long.MIN_VALUE);
+        assertThrows(ArithmeticException.class, () -> TEST.minusYears(Long.MIN_VALUE));
     }
 
     //-----------------------------------------------------------------------
@@ -1028,14 +1027,14 @@ public class TestYearWeek {
         assertEquals(YearWeek.of(2021, 1), TEST.minusWeeks(-314));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minWeeks_max_long() {
-        TEST.plusWeeks(Long.MAX_VALUE);
+        assertThrows(ArithmeticException.class, () -> TEST.plusWeeks(Long.MAX_VALUE));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void test_minWeeks_min_long() {
-        TEST.plusWeeks(Long.MIN_VALUE);
+        assertThrows(ArithmeticException.class, () -> TEST.plusWeeks(Long.MIN_VALUE));
     }
 
     //-----------------------------------------------------------------------
@@ -1055,7 +1054,7 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_sampleYearWeeks")
     public void test_equalsAndHashCodeContract(int year, int week) {
         YearWeek a = YearWeek.of(year, week);
@@ -1098,7 +1097,7 @@ public class TestYearWeek {
             {-10000, 1, "-10000-W01"},};
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_sampleToString")
     public void test_toString(int year, int week, String expected) {
         YearWeek yearWeek = YearWeek.of(year, week);

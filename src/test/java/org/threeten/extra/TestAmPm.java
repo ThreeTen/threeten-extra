@@ -62,9 +62,10 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.HALF_DAYS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
@@ -76,7 +77,7 @@ import java.time.temporal.TemporalQueries;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test AmPm.
@@ -103,14 +104,14 @@ public class TestAmPm {
         }
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_valueTooLow() {
-        AmPm.of(-1);
+        assertThrows(DateTimeException.class, () -> AmPm.of(-1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_valueTooHigh() {
-        AmPm.of(2);
+        assertThrows(DateTimeException.class, () -> AmPm.of(2));
     }
 
     //-----------------------------------------------------------------------
@@ -126,14 +127,14 @@ public class TestAmPm {
         }
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofHour_int_valueTooLow() {
-        AmPm.ofHour(-1);
+        assertThrows(DateTimeException.class, () -> AmPm.ofHour(-1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_ofHour_int_valueTooHigh() {
-        AmPm.ofHour(24);
+        assertThrows(DateTimeException.class, () -> AmPm.ofHour(24));
     }
 
     //-----------------------------------------------------------------------
@@ -145,14 +146,14 @@ public class TestAmPm {
         assertEquals(AmPm.PM, AmPm.from(LocalTime.of(17, 30)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_from_TemporalAccessor_invalid_noDerive() {
-        AmPm.from(LocalDate.of(2007, 7, 30));
+        assertThrows(DateTimeException.class, () -> AmPm.from(LocalDate.of(2007, 7, 30)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_from_TemporalAccessor_null() {
-        AmPm.from((TemporalAccessor) null);
+        assertThrows(NullPointerException.class, () -> AmPm.from((TemporalAccessor) null));
     }
 
     //-----------------------------------------------------------------------
@@ -163,14 +164,14 @@ public class TestAmPm {
         assertEquals("AM", AmPm.AM.getDisplayName(TextStyle.SHORT, Locale.US));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_getDisplayName_nullStyle() {
-        AmPm.AM.getDisplayName(null, Locale.US);
+        assertThrows(NullPointerException.class, () -> AmPm.AM.getDisplayName(null, Locale.US));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_getDisplayName_nullLocale() {
-        AmPm.AM.getDisplayName(TextStyle.FULL, null);
+        assertThrows(NullPointerException.class, () -> AmPm.AM.getDisplayName(TextStyle.FULL, null));
     }
 
     //-----------------------------------------------------------------------
@@ -220,14 +221,14 @@ public class TestAmPm {
         assertEquals(AMPM_OF_DAY.range(), AmPm.AM.range(AMPM_OF_DAY));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_range_invalidField() {
-        AmPm.AM.range(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> AmPm.AM.range(MONTH_OF_YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_range_null() {
-        AmPm.AM.range(null);
+        assertThrows(NullPointerException.class, () -> AmPm.AM.range(null));
     }
 
     //-----------------------------------------------------------------------
@@ -239,14 +240,14 @@ public class TestAmPm {
         assertEquals(1, AmPm.PM.get(AMPM_OF_DAY));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_get_invalidField() {
-        AmPm.PM.get(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> AmPm.PM.get(MONTH_OF_YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_get_null() {
-        AmPm.PM.get(null);
+        assertThrows(NullPointerException.class, () -> AmPm.PM.get(null));
     }
 
     //-----------------------------------------------------------------------
@@ -258,14 +259,14 @@ public class TestAmPm {
         assertEquals(1, AmPm.PM.getLong(AMPM_OF_DAY));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_getLong_invalidField() {
-        AmPm.PM.getLong(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> AmPm.PM.getLong(MONTH_OF_YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_getLong_null() {
-        AmPm.PM.getLong(null);
+        assertThrows(NullPointerException.class, () -> AmPm.PM.getLong(null));
     }
 
     //-----------------------------------------------------------------------

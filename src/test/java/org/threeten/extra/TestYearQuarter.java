@@ -78,8 +78,9 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.threeten.extra.Quarter.Q1;
 import static org.threeten.extra.Quarter.Q2;
 import static org.threeten.extra.Quarter.Q3;
@@ -111,7 +112,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test YearQuarter.
@@ -158,19 +160,19 @@ public class TestYearQuarter {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_Year_Quarter_nullQuarter() {
-        YearQuarter.of(Year.of(2012), (Quarter) null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of(Year.of(2012), (Quarter) null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_Year_Quarter_nullYear() {
-        YearQuarter.of((Year) null, Quarter.Q2);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of((Year) null, Quarter.Q2));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_Year_Quarter_nullBoth() {
-        YearQuarter.of((Year) null, (Quarter) null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of((Year) null, (Quarter) null));
     }
 
     //-----------------------------------------------------------------------
@@ -188,9 +190,9 @@ public class TestYearQuarter {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_Year_int_null() {
-        YearQuarter.of((Year) null, 2);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of((Year) null, 2));
     }
 
     //-----------------------------------------------------------------------
@@ -208,19 +210,19 @@ public class TestYearQuarter {
         }
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_Quarter_yearTooLow() {
-        YearQuarter.of(Year.MIN_VALUE - 1, Quarter.Q2);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(Year.MIN_VALUE - 1, Quarter.Q2));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_Quarter_yearTooHigh() {
-        YearQuarter.of(Year.MAX_VALUE + 1, Quarter.Q2);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(Year.MAX_VALUE + 1, Quarter.Q2));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_of_int_Quarter_null() {
-        YearQuarter.of(2012, (Quarter) null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of(2012, (Quarter) null));
     }
 
     //-----------------------------------------------------------------------
@@ -240,24 +242,24 @@ public class TestYearQuarter {
         }
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_int_yearTooLow() {
-        YearQuarter.of(Year.MIN_VALUE - 1, 1);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(Year.MIN_VALUE - 1, 1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_int_yearTooHigh() {
-        YearQuarter.of(Year.MAX_VALUE + 1, 1);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(Year.MAX_VALUE + 1, 1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_int_quarterTooLow() {
-        YearQuarter.of(2012, 0);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(2012, 0));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_of_int_int_quarterTooHigh() {
-        YearQuarter.of(2012, 5);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(2012, 5));
     }
 
     //-----------------------------------------------------------------------
@@ -285,14 +287,14 @@ public class TestYearQuarter {
         }
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_from_TemporalAccessor_noDerive() {
-        YearQuarter.from(LocalTime.NOON);
+        assertThrows(DateTimeException.class, () -> YearQuarter.from(LocalTime.NOON));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_from_TemporalAccessor_null() {
-        YearQuarter.from((TemporalAccessor) null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.from((TemporalAccessor) null));
     }
 
     //-----------------------------------------------------------------------
@@ -308,19 +310,19 @@ public class TestYearQuarter {
         assertEquals(YearQuarter.of(2012, Q3), YearQuarter.parse("2012-q3"));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parse_CharSequenceDate_invalidYear() {
-        YearQuarter.parse("12345-Q3");
+        assertThrows(DateTimeParseException.class, () -> YearQuarter.parse("12345-Q3"));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parse_CharSequenceDate_invalidQuarter() {
-        YearQuarter.parse("2012-Q0");
+        assertThrows(DateTimeParseException.class, () -> YearQuarter.parse("2012-Q0"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequenceDate_nullCharSequence() {
-        YearQuarter.parse((CharSequence) null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.parse((CharSequence) null));
     }
 
     //-----------------------------------------------------------------------
@@ -332,21 +334,21 @@ public class TestYearQuarter {
         assertEquals(YearQuarter.of(2012, Q3), YearQuarter.parse("Q3 2012", f));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void test_parse_CharSequenceDateDateTimeFormatter_invalidQuarter() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("'Q'Q uuuu");
-        YearQuarter.parse("Q0 2012", f);
+        assertThrows(DateTimeParseException.class, () -> YearQuarter.parse("Q0 2012", f));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequenceDateTimeFormatter_nullCharSequence() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("'Q'Q uuuu");
-        YearQuarter.parse((CharSequence) null, f);
+        assertThrows(NullPointerException.class, () -> YearQuarter.parse((CharSequence) null, f));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_parse_CharSequenceDateTimeFormatter_nullDateTimeFormatter() {
-        YearQuarter.parse("", (DateTimeFormatter) null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.parse("", (DateTimeFormatter) null));
     }
 
     //-----------------------------------------------------------------------
@@ -424,14 +426,14 @@ public class TestYearQuarter {
         assertEquals(ERA.range(), TEST.range(ERA));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_range_invalidField() {
-        TEST.range(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.range(MONTH_OF_YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_range_null() {
-        TEST.range((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.range((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -445,14 +447,14 @@ public class TestYearQuarter {
         assertEquals(1, TEST.get(ERA));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_get_invalidField() {
-        TEST.get(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.get(MONTH_OF_YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_get_null() {
-        TEST.get((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.get((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -466,14 +468,14 @@ public class TestYearQuarter {
         assertEquals(1L, TEST.getLong(ERA));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_getLong_invalidField() {
-        TEST.getLong(MONTH_OF_YEAR);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> TEST.getLong(MONTH_OF_YEAR));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_getLong_null() {
-        TEST.getLong((TemporalField) null);
+        assertThrows(NullPointerException.class, () -> TEST.getLong((TemporalField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -574,14 +576,14 @@ public class TestYearQuarter {
         assertEquals(YearQuarter.of(2012, Q3), YearQuarter.of(2007, Q2).with(YearQuarter.of(2012, Q3)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_with_TemporalAdjuster_LocalDate() {
-        YearQuarter.of(2007, Q2).with(LocalDate.of(2012, 6, 30));
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(2007, Q2).with(LocalDate.of(2012, 6, 30)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_with_TemporalAdjuster_null() {
-        YearQuarter.of(2007, Q2).with((TemporalAdjuster) null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of(2007, Q2).with((TemporalAdjuster) null));
     }
 
     //-----------------------------------------------------------------------
@@ -592,14 +594,14 @@ public class TestYearQuarter {
         assertEquals(YearQuarter.of(2012, Q2), YearQuarter.of(2007, Q2).withYear(2012));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withYear_int_quarterTooLow() {
-        TEST.withYear(Year.MIN_VALUE - 1);
+        assertThrows(DateTimeException.class, () -> TEST.withYear(Year.MIN_VALUE - 1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withYear_int_quarterTooHigh() {
-        TEST.withYear(Year.MAX_VALUE + 1);
+        assertThrows(DateTimeException.class, () -> TEST.withYear(Year.MAX_VALUE + 1));
     }
 
     //-----------------------------------------------------------------------
@@ -610,14 +612,14 @@ public class TestYearQuarter {
         assertEquals(YearQuarter.of(2007, Q1), YearQuarter.of(2007, Q2).withQuarter(1));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withQuarter_int_quarterTooLow() {
-        TEST.withQuarter(0);
+        assertThrows(DateTimeException.class, () -> TEST.withQuarter(0));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_withQuarter_int_quarterTooHigh() {
-        TEST.withQuarter(5);
+        assertThrows(DateTimeException.class, () -> TEST.withQuarter(5));
     }
 
     //-----------------------------------------------------------------------
@@ -741,9 +743,9 @@ public class TestYearQuarter {
         assertEquals(expected, YearQuarter.of(2012, Q1).adjustInto(base));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_adjustInto_Temporal_null() {
-        TEST.adjustInto((Temporal) null);
+        assertThrows(NullPointerException.class, () -> TEST.adjustInto((Temporal) null));
     }
 
     //-----------------------------------------------------------------------
@@ -782,27 +784,27 @@ public class TestYearQuarter {
         assertEquals(2, YearQuarter.of(2012, Q2).until(YearQuarter.of(2014, Q2), YEARS));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_until_TemporalTemporalUnit_nullTemporal() {
-        YearQuarter.of(2012, Q2).until(null, QUARTER_YEARS);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of(2012, Q2).until(null, QUARTER_YEARS));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_until_TemporalTemporalUnit_nullTemporalUnit() {
-        YearQuarter.of(2012, Q2).until(YearQuarter.of(2012, Q3), null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of(2012, Q2).until(YearQuarter.of(2012, Q3), null));
     }
 
     //-----------------------------------------------------------------------
     // quartersUntil(YearQuarter)
     //-----------------------------------------------------------------------
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_quartersUntil_null() {
-        YearQuarter.of(2012, Q2).quartersUntil(null);
+        assertThrows(NullPointerException.class, () -> YearQuarter.of(2012, Q2).quartersUntil(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_quartersUntil_IllegalArgument() {
-        YearQuarter.of(2012, Q2).quartersUntil(YearQuarter.of(2012, Q1));
+        assertThrows(IllegalArgumentException.class, () -> YearQuarter.of(2012, Q2).quartersUntil(YearQuarter.of(2012, Q1)));
     }
 
     @Test
@@ -833,9 +835,9 @@ public class TestYearQuarter {
         assertEquals("Q1 2012", YearQuarter.of(2012, Q1).format(f));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_format_null() {
-        TEST.format((DateTimeFormatter) null);
+        assertThrows(NullPointerException.class, () -> TEST.format((DateTimeFormatter) null));
     }
 
     //-----------------------------------------------------------------------
@@ -866,29 +868,29 @@ public class TestYearQuarter {
         assertEquals(LocalDate.of(2012, 3, 31), YearQuarter.of(2012, Q1).atDay(91));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_atDay_Q1_91_notLeap() {
-        YearQuarter.of(2011, Q1).atDay(91);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(2011, Q1).atDay(91));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_atDay_Q1_92() {
-        YearQuarter.of(2012, Q1).atDay(92);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(2012, Q1).atDay(92));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_atDay_Q2_92() {
-        YearQuarter.of(2012, Q2).atDay(92);
+        assertThrows(DateTimeException.class, () -> YearQuarter.of(2012, Q2).atDay(92));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_atDay_tooLow() {
-        TEST.atDay(0);
+        assertThrows(DateTimeException.class, () -> TEST.atDay(0));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_atDay_tooHigh() {
-        TEST.atDay(93);
+        assertThrows(DateTimeException.class, () -> TEST.atDay(93));
     }
 
     //-----------------------------------------------------------------------
@@ -962,9 +964,9 @@ public class TestYearQuarter {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_compareTo_nullYearQuarter() {
-        TEST.compareTo(null);
+        assertThrows(NullPointerException.class, () -> TEST.compareTo(null));
     }
 
     //-----------------------------------------------------------------------

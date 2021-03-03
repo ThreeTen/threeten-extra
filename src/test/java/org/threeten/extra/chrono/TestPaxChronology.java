@@ -53,9 +53,11 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -75,19 +77,16 @@ import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.function.IntPredicate;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.tngtech.junit.dataprovider.DataProvider;
+import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test.
  */
 @SuppressWarnings({"static-method", "javadoc"})
-@RunWith(DataProviderRunner.class)
 public class TestPaxChronology {
 
     //-----------------------------------------------------------------------
@@ -96,19 +95,19 @@ public class TestPaxChronology {
     @Test
     public void test_chronology_of_name() {
         Chronology chrono = Chronology.of("Pax");
-        Assert.assertNotNull(chrono);
-        Assert.assertEquals(PaxChronology.INSTANCE, chrono);
-        Assert.assertEquals("Pax", chrono.getId());
-        Assert.assertEquals("pax", chrono.getCalendarType());
+        assertNotNull(chrono);
+        assertEquals(PaxChronology.INSTANCE, chrono);
+        assertEquals("Pax", chrono.getId());
+        assertEquals("pax", chrono.getCalendarType());
     }
 
     @Test
     public void test_chronology_of_name_id() {
         Chronology chrono = Chronology.of("pax");
-        Assert.assertNotNull(chrono);
-        Assert.assertEquals(PaxChronology.INSTANCE, chrono);
-        Assert.assertEquals("Pax", chrono.getId());
-        Assert.assertEquals("pax", chrono.getCalendarType());
+        assertNotNull(chrono);
+        assertEquals(PaxChronology.INSTANCE, chrono);
+        assertEquals("Pax", chrono.getId());
+        assertEquals("pax", chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -179,55 +178,55 @@ public class TestPaxChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_LocalDate_from_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(iso, LocalDate.from(pax));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_PaxDate_from_LocalDate(PaxDate pax, LocalDate iso) {
         assertEquals(pax, PaxDate.from(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_PaxDate_chronology_dateEpochDay(PaxDate pax, LocalDate iso) {
         assertEquals(pax, PaxChronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_PaxDate_toEpochDay(PaxDate pax, LocalDate iso) {
         assertEquals(iso.toEpochDay(), pax.toEpochDay());
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_PaxDate_until_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(PaxChronology.INSTANCE.period(0, 0, 0), pax.until(pax));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_PaxDate_until_LocalDate(PaxDate pax, LocalDate iso) {
         assertEquals(PaxChronology.INSTANCE.period(0, 0, 0), pax.until(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_LocalDate_until_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(Period.ZERO, iso.until(pax));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_Chronology_date_Temporal(PaxDate pax, LocalDate iso) {
         assertEquals(pax, PaxChronology.INSTANCE.date(iso));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_plusDays(PaxDate pax, LocalDate iso) {
         assertEquals(iso, LocalDate.from(pax.plus(0, DAYS)));
@@ -237,7 +236,7 @@ public class TestPaxChronology {
         assertEquals(iso.plusDays(-60), LocalDate.from(pax.plus(-60, DAYS)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_minusDays(PaxDate pax, LocalDate iso) {
         assertEquals(iso, LocalDate.from(pax.minus(0, DAYS)));
@@ -247,7 +246,7 @@ public class TestPaxChronology {
         assertEquals(iso.minusDays(-60), LocalDate.from(pax.minus(-60, DAYS)));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_samples")
     public void test_until_DAYS(PaxDate pax, LocalDate iso) {
         assertEquals(0, pax.until(iso.plusDays(0), DAYS));
@@ -303,15 +302,15 @@ public class TestPaxChronology {
         };
     }
 
-    @Test(expected = DateTimeException.class)
+    @ParameterizedTest
     @UseDataProvider("data_badDates")
     public void test_badDates(int year, int month, int dom) {
-        PaxDate.of(year, month, dom);
+        assertThrows(DateTimeException.class, () -> PaxDate.of(year, month, dom));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_chronology_dateYearDay_badDate() {
-        PaxChronology.INSTANCE.dateYearDay(2001, 365);
+        assertThrows(DateTimeException.class, () -> PaxChronology.INSTANCE.dateYearDay(2001, 365));
     }
 
     //-----------------------------------------------------------------------
@@ -383,7 +382,7 @@ public class TestPaxChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(length, PaxDate.of(year, month, 1).lengthOfMonth());
@@ -432,9 +431,9 @@ public class TestPaxChronology {
         assertEquals(-3, PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, 4));
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void test_prolepticYear_badEra() {
-        PaxChronology.INSTANCE.prolepticYear(IsoEra.CE, 4);
+        assertThrows(ClassCastException.class, () -> PaxChronology.INSTANCE.prolepticYear(IsoEra.CE, 4));
     }
 
     @Test
@@ -443,9 +442,9 @@ public class TestPaxChronology {
         assertEquals(PaxEra.BCE, PaxChronology.INSTANCE.eraOf(0));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_Chronology_eraOf_invalid() {
-        PaxChronology.INSTANCE.eraOf(2);
+        assertThrows(DateTimeException.class, () -> PaxChronology.INSTANCE.eraOf(2));
     }
 
     @Test
@@ -502,15 +501,15 @@ public class TestPaxChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
         assertEquals(ValueRange.of(expectedMin, expectedMax), PaxDate.of(year, month, dom).range(field));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_range_unsupported() {
-        PaxDate.of(2012, 6, 28).range(MINUTE_OF_DAY);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> PaxDate.of(2012, 6, 28).range(MINUTE_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -537,15 +536,15 @@ public class TestPaxChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
         assertEquals(expected, PaxDate.of(year, month, dom).getLong(field));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_getLong_unsupported() {
-        PaxDate.of(2012, 6, 28).getLong(MINUTE_OF_DAY);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> PaxDate.of(2012, 6, 28).getLong(MINUTE_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -588,7 +587,7 @@ public class TestPaxChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_with")
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
@@ -596,9 +595,9 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(expectedYear, expectedMonth, expectedDom), PaxDate.of(year, month, dom).with(field, value));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_with_TemporalField_unsupported() {
-        PaxDate.of(2012, 6, 28).with(MINUTE_OF_DAY, 0);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> PaxDate.of(2012, 6, 28).with(MINUTE_OF_DAY, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -628,10 +627,10 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(2012, 7, 27), test);
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_adjust_toMonth() {
         PaxDate pax = PaxDate.of(2000, 1, 4);
-        pax.with(Month.APRIL);
+        assertThrows(DateTimeException.class, () -> pax.with(Month.APRIL));
     }
 
     //-----------------------------------------------------------------------
@@ -710,7 +709,7 @@ public class TestPaxChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus")
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
@@ -718,7 +717,7 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(expectedYear, expectedMonth, expectedDom), PaxDate.of(year, month, dom).plus(amount, unit));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus_leap")
     public void test_plus_leap_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
@@ -726,7 +725,7 @@ public class TestPaxChronology {
         test_plus_TemporalUnit(year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_plus")
     public void test_minus_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
@@ -735,7 +734,7 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(expectedYear, expectedMonth, expectedDom), PaxDate.of(year, month, dom).minus(amount, unit));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_minus_leap")
     public void test_minus_leap_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
@@ -743,9 +742,9 @@ public class TestPaxChronology {
         test_minus_TemporalUnit(year, month, dom, amount, unit, expectedYear, expectedMonth, expectedDom);
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_plus_TemporalUnit_unsupported() {
-        PaxDate.of(2012, 6, 10).plus(0, MINUTES);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> PaxDate.of(2012, 6, 10).plus(0, MINUTES));
     }
 
     //-----------------------------------------------------------------------
@@ -821,7 +820,7 @@ public class TestPaxChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_until")
     public void test_until_TemporalUnit(
             int year1, int month1, int dom1,
@@ -832,7 +831,7 @@ public class TestPaxChronology {
         assertEquals(expected, start.until(end, unit));
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_until_period")
     public void test_until_end(
             int year1, int month1, int dom1,
@@ -844,11 +843,11 @@ public class TestPaxChronology {
         assertEquals(period, start.until(end));
     }
 
-    @Test(expected = UnsupportedTemporalTypeException.class)
+    @Test
     public void test_until_TemporalUnit_unsupported() {
         PaxDate start = PaxDate.of(2012, 6, 28);
         PaxDate end = PaxDate.of(2012, 7, 1);
-        start.until(end, MINUTES);
+        assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
     }
 
     //-----------------------------------------------------------------------
@@ -857,9 +856,9 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(2014, 7, 28), PaxDate.of(2014, 5, 26).plus(PaxChronology.INSTANCE.period(0, 2, 2)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_plus_Period_ISO() {
-        assertEquals(PaxDate.of(2014, 7, 26), PaxDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
+        assertThrows(DateTimeException.class, () -> PaxDate.of(2014, 5, 26).plus(Period.ofMonths(2)));
     }
 
     @Test
@@ -867,9 +866,9 @@ public class TestPaxChronology {
         assertEquals(PaxDate.of(2014, 3, 23), PaxDate.of(2014, 5, 26).minus(PaxChronology.INSTANCE.period(0, 2, 3)));
     }
 
-    @Test(expected = DateTimeException.class)
+    @Test
     public void test_minus_Period_ISO() {
-        assertEquals(PaxDate.of(2014, 3, 26), PaxDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
+        assertThrows(DateTimeException.class, () -> PaxDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
     }
 
     //-----------------------------------------------------------------------
@@ -906,7 +905,7 @@ public class TestPaxChronology {
         };
     }
 
-    @Test
+    @ParameterizedTest
     @UseDataProvider("data_toString")
     public void test_toString(PaxDate pax, String expected) {
         assertEquals(expected, pax.toString());
