@@ -57,8 +57,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 import com.tngtech.junit.dataprovider.DataProvider;
 import com.tngtech.junit.dataprovider.UseDataProvider;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test class.

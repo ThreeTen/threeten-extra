@@ -40,7 +40,6 @@ import java.time.Period;
 
 import org.joda.convert.StringConvert;
 import org.junit.jupiter.params.ParameterizedTest;
-
 import org.threeten.extra.scale.TaiInstant;
 import org.threeten.extra.scale.UtcInstant;
 
