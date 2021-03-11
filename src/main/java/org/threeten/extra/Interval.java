@@ -108,6 +108,20 @@ public final class Interval
     }
 
     /**
+     * Obtains an instance of {@code Interval} from the start and end instant with null as unbounded for either.
+     * <p>
+     * The end instant must not be before the start instant.
+     *
+     * @param startInclusive  the start instant, inclusive, {@link Instant#MIN} treated as unbounded
+     * @param endExclusive  the end instant, exclusive, {@link Instant#MAX} treated as unbounded
+     * @return the half-open interval, not null
+     * @throws DateTimeException if the end is before the start
+     */
+    public static Interval ofNullable(Instant startInclusive, Instant endExclusive) {
+        return of(startInclusive == null ? Instant.MIN : startInclusive, endExclusive == null ? Instant.MAX : endExclusive);
+    }
+
+    /**
      * Obtains an instance of {@code Interval} from the start and a duration.
      * <p>
      * The end instant is calculated as the start plus the duration.

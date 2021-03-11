@@ -136,6 +136,52 @@ public class TestInterval {
 
     //-----------------------------------------------------------------------
     @Test
+    public void test_ofNullable_Instant_Instant() {
+        Interval test = Interval.ofNullable(NOW1, NOW2);
+        assertEquals(NOW1, test.getStart());
+        assertEquals(NOW2, test.getEnd());
+        assertEquals(false, test.isEmpty());
+        assertEquals(false, test.isUnboundedStart());
+        assertEquals(false, test.isUnboundedEnd());
+    }
+
+    @Test
+    public void test_ofNullable_Instant_Instant_empty() {
+        Interval test = Interval.ofNullable(NOW1, NOW1);
+        assertEquals(NOW1, test.getStart());
+        assertEquals(NOW1, test.getEnd());
+        assertEquals(true, test.isEmpty());
+        assertEquals(false, test.isUnboundedStart());
+        assertEquals(false, test.isUnboundedEnd());
+    }
+
+    @Test
+    public void test_ofNullable_Instant_Instant_nullStart() {
+        Interval test = Interval.ofNullable(null, NOW2);
+        assertEquals(Instant.MIN, test.getStart());
+        assertEquals(NOW2, test.getEnd());
+        assertEquals(false, test.isEmpty());
+        assertEquals(true, test.isUnboundedStart());
+        assertEquals(false, test.isUnboundedEnd());
+    }
+
+    @Test
+    public void test_ofNullable_Instant_Instant_nullEnd() {
+        Interval test = Interval.ofNullable(NOW1, (Instant) null);
+        assertEquals(NOW1, test.getStart());
+        assertEquals(Instant.MAX, test.getEnd());
+        assertEquals(false, test.isEmpty());
+        assertEquals(false, test.isUnboundedStart());
+        assertEquals(true, test.isUnboundedEnd());
+    }
+
+    @Test(expected = DateTimeException.class)
+    public void test_ofNullable_Instant_Instant_badOrder() {
+        Interval.ofNullable(NOW2, NOW1);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
     public void test_of_Instant_Duration() {
         Interval test = Interval.of(NOW1, Duration.ofSeconds(60));
         assertEquals(NOW1, test.getStart());
