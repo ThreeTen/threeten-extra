@@ -196,12 +196,12 @@ public final class UtcInstant
     //-------------------------------------------------------------------------
     /**
      * Obtains an instance of {@code UtcInstant} from a text string
-     * {@code 2007-12-03T10:15:30.00Z}.
+     * (e.g. {@code 2007-12-03T10:15:30.00Z}).
      * <p>
      * The string must represent a valid instant in UTC and is parsed using
      * {@link DateTimeFormatter#ISO_INSTANT} with leap seconds handled.
      *
-     * @param text  the text to parse such as "12345.123456789s(TAI)", not null
+     * @param text  the text to parse such as "2007-12-03T10:15:30.00Z", not null
      * @return the parsed instant, not null
      * @throws DateTimeParseException if the text cannot be parsed
      * @throws DateTimeException if parsed text represents an invalid leap second
