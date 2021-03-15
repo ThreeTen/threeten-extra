@@ -121,11 +121,17 @@ public final class UtcInstant
      * The Modified Julian Day, from the epoch of 1858-11-17.
      */
     private final long mjDay;
+
     /**
      * The number of nanoseconds, later along the time-line, from the MJD field.
      * This is always positive and includes leap seconds.
      */
     private final long nanoOfDay;
+
+    /**
+     * A cache of the result from {@link #toString()} 
+     */
+    private transient String stringValue = null;
 
     //-----------------------------------------------------------------------
     /**
@@ -467,6 +473,9 @@ public final class UtcInstant
     @Override
     @ToString
     public String toString() {
+        if (stringValue != null) {
+          return stringValue;
+        }
         LocalDate date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay);  // TODO: capacity/import issues
         StringBuilder buf = new StringBuilder(30);
         int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
@@ -494,7 +503,7 @@ public final class UtcInstant
             }
         }
         buf.append('Z');
-        return buf.toString();
+        stringValue = buf.toString();
+        return stringValue;
     }
-
 }
