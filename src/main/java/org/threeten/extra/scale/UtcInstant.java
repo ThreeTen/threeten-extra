@@ -121,13 +121,11 @@ public final class UtcInstant
      * The Modified Julian Day, from the epoch of 1858-11-17.
      */
     private final long mjDay;
-
     /**
      * The number of nanoseconds, later along the time-line, from the MJD field.
      * This is always positive and includes leap seconds.
      */
     private final long nanoOfDay;
-
     /**
      * A cache of the result from {@link #toString()} 
      */
@@ -506,4 +504,5 @@ public final class UtcInstant
         stringValue = buf.toString();
         return stringValue;
     }
+
 }
