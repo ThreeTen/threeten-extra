@@ -126,6 +126,10 @@ public final class UtcInstant
      * This is always positive and includes leap seconds.
      */
     private final long nanoOfDay;
+    /**
+     * A cache of the result from {@link #toString()} 
+     */
+    private transient String stringValue = null;
 
     //-----------------------------------------------------------------------
     /**
@@ -195,13 +199,13 @@ public final class UtcInstant
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code UtcInstant} from a text string
-     * {@code 2007-12-03T10:15:30.00Z}.
+     * Obtains an instance of {@code UtcInstant} from a text string,
+     * such as {@code 2007-12-03T10:15:30.00Z}.
      * <p>
      * The string must represent a valid instant in UTC and is parsed using
      * {@link DateTimeFormatter#ISO_INSTANT} with leap seconds handled.
      *
-     * @param text  the text to parse such as "12345.123456789s(TAI)", not null
+     * @param text  the text to parse such as "2007-12-03T10:15:30.00Z", not null
      * @return the parsed instant, not null
      * @throws DateTimeParseException if the text cannot be parsed
      * @throws DateTimeException if parsed text represents an invalid leap second
@@ -467,34 +471,51 @@ public final class UtcInstant
     @Override
     @ToString
     public String toString() {
-        LocalDate date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay);  // TODO: capacity/import issues
-        StringBuilder buf = new StringBuilder(30);
-        int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
-        int hourValue = sod / (60 * 60);
-        int minuteValue = (sod / 60) % 60;
-        int secondValue = sod % 60;
-        int nanoValue = (int) (nanoOfDay % NANOS_PER_SECOND);
-        if (hourValue == 24) {
-            hourValue = 23;
-            minuteValue = 59;
-            secondValue = 60;
+        String currentStringValue = stringValue;
+        if (currentStringValue == null) {
+          stringValue = currentStringValue = calculateStringValue();
         }
-        buf.append(date).append('T')
-                .append(hourValue < 10 ? "0" : "").append(hourValue)
-                .append(minuteValue < 10 ? ":0" : ":").append(minuteValue)
-                .append(secondValue < 10 ? ":0" : ":").append(secondValue);
-        if (nanoValue > 0) {
-            buf.append('.');
-            if (nanoValue % 1000_000 == 0) {
-                buf.append(Integer.toString((nanoValue / 1000_000) + 1000).substring(1));
-            } else if (nanoValue % 1000 == 0) {
-                buf.append(Integer.toString((nanoValue / 1000) + 1000_000).substring(1));
-            } else {
-                buf.append(Integer.toString((nanoValue) + 1000_000_000).substring(1));
-            }
-        }
-        buf.append('Z');
-        return buf.toString();
+        return currentStringValue;
+    }
+
+    /**
+     * Calculates a string representation of this instant.
+     * <p>
+     * The string is formatted using ISO-8601.
+     * The output includes seconds, 9 nanosecond digits and a trailing 'Z'.
+     * The time-of-day will be 23:59:60 during a positive leap second.
+     *
+     * @return a representation of this instant, not null
+     */
+    private String calculateStringValue() {
+      LocalDate date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay);  // TODO: capacity/import issues
+      StringBuilder buf = new StringBuilder(30);
+      int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
+      int hourValue = sod / (60 * 60);
+      int minuteValue = (sod / 60) % 60;
+      int secondValue = sod % 60;
+      int nanoValue = (int) (nanoOfDay % NANOS_PER_SECOND);
+      if (hourValue == 24) {
+          hourValue = 23;
+          minuteValue = 59;
+          secondValue = 60;
+      }
+      buf.append(date).append('T')
+              .append(hourValue < 10 ? "0" : "").append(hourValue)
+              .append(minuteValue < 10 ? ":0" : ":").append(minuteValue)
+              .append(secondValue < 10 ? ":0" : ":").append(secondValue);
+      if (nanoValue > 0) {
+          buf.append('.');
+          if (nanoValue % 1000_000 == 0) {
+              buf.append(Integer.toString((nanoValue / 1000_000) + 1000).substring(1));
+          } else if (nanoValue % 1000 == 0) {
+              buf.append(Integer.toString((nanoValue / 1000) + 1000_000).substring(1));
+          } else {
+              buf.append(Integer.toString((nanoValue) + 1000_000_000).substring(1));
+          }
+      }
+      buf.append('Z');
+      return buf.toString();
     }
 
 }
