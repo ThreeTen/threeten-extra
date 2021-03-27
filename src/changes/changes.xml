@@ -7,6 +7,12 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.6.1" date="SNAPSHOT" description="v1.6.1">
+      <action dev="stevenpaligo" type="add">
+        Cache UtcInstant::toString().
+        Fixes #177.
+      </action>
+    </release>
     <release version="1.6.0" date="2020-02-18" description="v1.6.0">
       <action dev="mwkroening" type="add">
         Add OffsetDate.
