@@ -12,6 +12,10 @@
         Cache UtcInstant::toString().
         Fixes #177.
       </action>
+      <action dev="jodastephen" type="fix">
+        Enhance OffsetDate tests.
+        Fixes #181.
+      </action>
     </release>
     <release version="1.6.0" date="2020-02-18" description="v1.6.0">
       <action dev="mwkroening" type="add">
