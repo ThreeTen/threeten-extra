@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.6.1" date="SNAPSHOT" description="v1.6.1">
+      <action dev="spand" type="add">
+        Additional comparison methods on Interval.
+        Fixes #174.
+      </action>
       <action dev="stevenpaligo" type="add">
         Cache UtcInstant::toString().
         Fixes #177.

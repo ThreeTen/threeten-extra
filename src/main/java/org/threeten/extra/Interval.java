@@ -327,52 +327,6 @@ public final class Interval
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this interval contains the specified instant.
-     * <p>
-     * This checks if the specified instant is within the bounds of this interval.
-     * If this range has an unbounded start then {@code contains(Instant#MIN)} returns true.
-     * If this range has an unbounded end then {@code contains(Instant#MAX)} returns true.
-     * If this range is empty then this method always returns false.
-     *
-     * @param instant  the instant, not null
-     * @return true if this interval contains the instant
-     */
-    public boolean contains(Instant instant) {
-        Objects.requireNonNull(instant, "instant");
-        return start.compareTo(instant) <= 0 && (instant.compareTo(end) < 0 || isUnboundedEnd());
-    }
-
-    /**
-     * Checks if this intervals start contains the specified instant. In essence the start part of {@code contains(Instant)}
-     * <p>
-     * This checks if the specified instant is within the bounds of the start of this interval.
-     * If this range has an unbounded start then {@code containsFloor(Instant#MIN)} returns true.
-     * If this range has an unbounded end then {@code containsFloor(Instant#MAX)} returns true.
-     *
-     * @param instant  the instant, not null
-     * @return true if this interval start contains the instant
-     */
-    public boolean containedByStart(Instant instant) {
-        Objects.requireNonNull(instant, "instant");
-        return start.compareTo(instant) <= 0;
-    }
-
-    /**
-     * Checks if this intervals end contains the specified instant. In essence the end part of {@code contains(Instant)}
-     * <p>
-     * This checks if the specified instant is within the bounds of the end of this interval.
-     * If this range has an unbounded start then {@code containsHigher(Instant#MIN)} returns true.
-     * If this range has an unbounded end then {@code containsHigher(Instant#MAX)} returns true.
-     *
-     * @param instant  the instant, not null
-     * @return true if this intervals end contains the instant
-     */
-    public boolean containedByEnd(Instant instant) {
-        Objects.requireNonNull(instant, "instant");
-        return instant.compareTo(end) < 0 || isUnboundedEnd();
-    }
-
-    /**
      * Checks if this interval encloses the specified interval.
      * <p>
      * This checks if the bounds of the specified interval are within the bounds of this interval.
@@ -509,35 +463,6 @@ public final class Interval
 
     //-------------------------------------------------------------------------
     /**
-     * Checks if this interval is after the specified instant.
-     * <p>
-     * The result is true if this interval starts after the specified instant.
-     * An empty interval behaves as though it is an instant for comparison purposes.
-     *
-     * @param instant  the other instant to compare to, not null
-     * @return true if the start of this interval is after the specified instant
-     */
-    public boolean isAfter(Instant instant) {
-        return start.compareTo(instant) > 0;
-    }
-
-    /**
-     * Checks if this interval is before the specified instant.
-     * <p>
-     * The result is true if this interval ends before the specified instant.
-     * Since intervals do not include their end points, this will return true if the
-     * instant equals the end of the interval.
-     * An empty interval behaves as though it is an instant for comparison purposes.
-     *
-     * @param instant  the other instant to compare to, not null
-     * @return true if the end of this interval is before or equal to the specified instant
-     */
-    public boolean isBefore(Instant instant) {
-        return end.compareTo(instant) <= 0 && start.compareTo(instant) < 0;
-    }
-
-    //-------------------------------------------------------------------------
-    /**
      * Checks if this interval is after the specified interval.
      * <p>
      * The result is true if this interval starts after the end of the specified interval.
@@ -565,6 +490,170 @@ public final class Interval
      */
     public boolean isBefore(Interval interval) {
         return end.compareTo(interval.start) <= 0 && !interval.equals(this);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Checks if this interval starts on or before the specified instant.
+     * <p>
+     * This method compares the start of the interval to the instant.
+     * An interval with an unbounded start is considered to start at {@code Instant.MIN}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval starts before the instant
+     */
+    public boolean startsBefore(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return start.compareTo(instant) < 0;
+    }
+
+    /**
+     * Checks if this interval starts at or before the specified instant.
+     * <p>
+     * This method compares the start of the interval to the instant.
+     * An interval with an unbounded start is considered to start at {@code Instant.MIN}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval starts at or before the instant
+     */
+    public boolean startsAtOrBefore(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return start.compareTo(instant) <= 0;
+    }
+
+    /**
+     * Checks if this interval starts on or after the specified instant.
+     * <p>
+     * This method compares the start of the interval to the instant.
+     * An interval with an unbounded start is considered to start at {@code Instant.MIN}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval starts after the instant
+     */
+    public boolean startsAfter(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return start.compareTo(instant) > 0;
+    }
+
+    /**
+     * Checks if this interval starts at or after the specified instant.
+     * <p>
+     * This method compares the start of the interval to the instant.
+     * An interval with an unbounded start is considered to start at {@code Instant.MIN}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval starts at or after the instant
+     */
+    public boolean startsAtOrAfter(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return start.compareTo(instant) >= 0;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Checks if this interval ends before the specified instant.
+     * <p>
+     * This method compares the end of the interval to the instant.
+     * An interval with an unbounded end is considered to end after {@code Instant.MAX}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval ends before the instant
+     */
+    public boolean endsBefore(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return end.compareTo(instant) < 0 && !isUnboundedEnd();
+    }
+
+    /**
+     * Checks if this interval ends at or before the specified instant.
+     * <p>
+     * This method compares the end of the interval to the instant.
+     * An interval with an unbounded end is considered to end after {@code Instant.MAX}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval ends at or before the instant
+     */
+    public boolean endsAtOrBefore(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return end.compareTo(instant) <= 0 && !isUnboundedEnd();
+    }
+
+    /**
+     * Checks if this interval ends after the specified instant.
+     * <p>
+     * This method compares the end of the interval to the instant.
+     * An interval with an unbounded end is considered to end after {@code Instant.MAX}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval ends after the instant
+     */
+    public boolean endsAfter(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return end.compareTo(instant) > 0 || isUnboundedEnd();
+    }
+
+    /**
+     * Checks if this interval ends after the specified instant.
+     * <p>
+     * This method compares the end of the interval to the instant.
+     * An interval with an unbounded end is considered to end after {@code Instant.MAX}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval ends at or after the instant
+     */
+    public boolean endsAtOrAfter(Instant instant) {
+        Objects.requireNonNull(instant, "instant");
+        return end.compareTo(instant) >= 0 || isUnboundedEnd();
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Checks if this interval contains the specified instant.
+     * <p>
+     * This checks if the specified instant is within the bounds of this interval.
+     * If this interval has an unbounded start then {@code contains(Instant#MIN)} returns true.
+     * If this interval has an unbounded end then {@code contains(Instant#MAX)} returns true.
+     * If this interval is empty then this method always returns false.
+     * <p>
+     * This is equivalent to {@link #startsAtOrBefore(Instant)} {@code &&} {@link #endsAfter(Instant)}.
+     *
+     * @param instant  the instant, not null
+     * @return true if this interval contains the instant
+     */
+    public boolean contains(Instant instant) {
+        return startsAtOrBefore(instant) && endsAfter(instant);
+    }
+
+    /**
+     * Checks if this interval is after the specified instant.
+     * <p>
+     * The result is true if this interval starts after the specified instant.
+     * An empty interval behaves as though it is an instant for comparison purposes.
+     * <p>
+     * This is equivalent to {@link #startsAfter(Instant)}.
+     *
+     * @param instant  the other instant to compare to, not null
+     * @return true if the start of this interval is after the specified instant
+     */
+    public boolean isAfter(Instant instant) {
+        return startsAfter(instant);
+    }
+
+    /**
+     * Checks if this interval is before the specified instant.
+     * <p>
+     * The result is true if this interval ends before the specified instant.
+     * Since intervals do not include their end points, this will return true if the
+     * instant equals the end of the interval.
+     * An empty interval behaves as though it is an instant for comparison purposes.
+     * <p>
+     * This is equivalent to {@link #endsAtOrBefore(Instant)} {@code &&} {@link #startsBefore(Instant)}.
+     *
+     * @param instant  the other instant to compare to, not null
+     * @return true if the end of this interval is before or equal to the specified instant
+     */
+    public boolean isBefore(Instant instant) {
+        return endsAtOrBefore(instant) && startsBefore(instant);
     }
 
     //-----------------------------------------------------------------------
