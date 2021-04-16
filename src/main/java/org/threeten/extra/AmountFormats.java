@@ -33,6 +33,7 @@ package org.threeten.extra;
 
 import java.time.Duration;
 import java.time.Period;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.List;
@@ -309,104 +310,94 @@ public final class AmountFormats {
 
     // -------------------------------------------------------------------------
     /**
-     * Parses a unit-based duration string to a duration value.
+     * Parses formatted durations based on units.
      * <p>
-     * This is an implementation of Golang's {@link https://golang.org/pkg/time/#ParseDuration}:
-     * ParseDuration parses a duration string. A duration string is a possibly
-     * signed sequence of decimal numbers, each with optional fraction and a
-     * unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time units are
-     * "ns", "us" (or "µs"), "ms", "s", "m", "h".
-     * <p>
-     * Note, the value "0" is specially supported as {@code Duration.ZERO}, but
-     * unlike the Go implementation infinite durations are not supported.
+     * The behaviour matches the <a href="https://golang.org/pkg/time/#ParseDuration">Golang</a>
+     * duration parser; however, infinite durations are not supported.
      *
      * @param durationText the formatted unit-based duration string.
      * @return the {@code Duration} value represented by the string, if possible.
      */
-    public static Optional<Duration> parseUnitBasedDuration(CharSequence durationText) {
-        // return no duration from null input strings.
-        if (durationText == null) {
-            return Optional.empty();
-        }
+    public static Duration parseUnitBasedDuration(CharSequence durationText) {
+        Objects.requireNonNull(durationText, "durationText must not be null");
+
+        // variables for tracking error positions during parsing.
+        int offset = 0;
+        CharSequence original = durationText;
 
         // consume the leading sign - or + if one is present.
         int sign = 1;
         Optional<CharSequence> updatedText = consumePrefix(durationText, '-');
         if (updatedText.isPresent()) {
             sign = -1;
+            offset += 1;
             durationText = updatedText.get();
         } else {
-            durationText = consumePrefix(durationText, '+').orElse(durationText);
+            updatedText = consumePrefix(durationText, '+');
+            if (updatedText.isPresent()) {
+                offset += 1;
+            }
+            durationText = updatedText.orElse(durationText);
         }
         // special case for a string of "0"
         if (durationText.equals("0")) {
-            return Optional.of(Duration.ZERO);
+            return Duration.ZERO;
         }
         // special case, empty string as an invalid duration.
         if (durationText.length() == 0) {
-            return Optional.empty();
+            throw new DateTimeParseException("Not a numeric value", original, 0);
         }
 
         Duration value = Duration.ZERO;
         int durationTextLength = durationText.length();
         while (durationTextLength > 0) {
-            Optional<ParsedUnitPart> optIntegerPart =
-                consumeDurationLeadingInt(durationText);
-            // check for a missing leading integer.
-            if (!optIntegerPart.isPresent()) {
-                return Optional.empty();
-            }
-            ParsedUnitPart integerPart = optIntegerPart.get();
+            ParsedUnitPart integerPart =
+                consumeDurationLeadingInt(durationText, original, offset);
+            offset += (durationText.length() - integerPart.remainingText().length());
             durationText = integerPart.remainingText();
             DurationScalar leadingInt = integerPart;
             DurationScalar fraction = EMPTY_FRACTION;
             Optional<CharSequence> dot = consumePrefix(durationText, '.');
             if (dot.isPresent()) {
+                offset += 1;
                 durationText = dot.get();
-                Optional<ParsedUnitPart> optFractionPart =
-                    consumeDurationFraction(durationText);
-                // dot '.' present, but no fractional part, return.
-                if (!optFractionPart.isPresent()) {
-                    return Optional.empty();
-                }
+                ParsedUnitPart fractionPart =
+                    consumeDurationFraction(durationText, original, offset);
                 // update the remaining string and fraction.
-                ParsedUnitPart fractionPart = optFractionPart.get();
+                offset += (durationText.length() - fractionPart.remainingText().length());
                 durationText = fractionPart.remainingText();
                 fraction = fractionPart;
             }
 
-            Optional<DurationUnit> unitPart = findUnit(durationText);
-            // no matching unit found, return.
-            if (!unitPart.isPresent()) {
-                return Optional.empty();
+            Optional<DurationUnit> optUnit = findUnit(durationText);
+            if (!optUnit.isPresent()) {
+                throw new DateTimeParseException(
+                    "Invalid duration unit", original, offset);
             }
-            DurationUnit unit = unitPart.get();
-            Optional<Duration> optUnitValue = leadingInt.applyTo(unit);
-            if (!optUnitValue.isPresent()) {
-                return Optional.empty();
-            }
-            Duration unitValue = optUnitValue.get();
-            Optional<Duration> optFractionValue = fraction.applyTo(unit);
-            if (!optFractionValue.isPresent()) {
-                return Optional.empty();
-            }
+            DurationUnit unit = optUnit.get();
             try {
-                unitValue = unitValue.plus(optFractionValue.get());
+                Duration unitValue = leadingInt.applyTo(unit);
+                Duration fractionValue = fraction.applyTo(unit);
+                unitValue = unitValue.plus(fractionValue);
                 value = value.plus(unitValue);
             } catch (ArithmeticException e) {
-                // overflow of the valid range possible for a Duration
-                return Optional.empty();
+                throw new DateTimeParseException(
+                    "Duration string exceeds valid numeric range",
+                    original, offset, e);
             }
             // update the remaining text and text length.
-            durationText = unit.consumeDurationUnit(durationText);
+            CharSequence remainingText = unit.consumeDurationUnit(durationText);
+            offset += (durationText.length() - remainingText.length());
+            durationText = remainingText;
             durationTextLength = durationText.length();
         }
-        return sign < 0 ? Optional.of(value.negated()) : Optional.of(value);
+        return sign < 0 ? value.negated() : value;
     }
 
     // consume the fractional part of a unit-based duration, e.g.
     // <int>.<fraction><unit>.
-    private static Optional<ParsedUnitPart> consumeDurationLeadingInt(CharSequence text) {
+    private static ParsedUnitPart consumeDurationLeadingInt(CharSequence text,
+        CharSequence original, int offset) {
         long integerPart = 0;
         int i = 0;
         int valueLength = text.length();
@@ -417,27 +408,32 @@ public final class AmountFormats {
             }
             // overflow of a single numeric specifier for a duration.
             if (integerPart > Long.MAX_VALUE / 10) {
-                return Optional.empty();
+                throw new DateTimeParseException(
+                    "Duration string exceeds valid numeric range",
+                    original, i + offset);
             }
             integerPart *= 10;
             integerPart += (long) (c - '0');
             // overflow of a single numeric specifier for a duration.
             if (integerPart < 0) {
-                return Optional.empty();
+                throw new DateTimeParseException(
+                    "Duration string exceeds valid numeric range",
+                    original, i + offset);
             }
         }
         // if no text was consumed, return empty.
         if (i == 0) {
-            return Optional.empty();
+           throw new DateTimeParseException(
+               "Missing leading integer", original, offset);
         }
-        return Optional.of(
-            new ParsedUnitPart(text.subSequence(i, text.length()),
-                new IntegerScalarPart(integerPart)));
+        return new ParsedUnitPart(text.subSequence(i, text.length()),
+            new IntegerScalarPart(integerPart));
     }
 
     // consume the fractional part of a unit-based duration, e.g.
     // <int>.<fraction><unit>.
-    private static Optional<ParsedUnitPart> consumeDurationFraction(CharSequence text) {
+    private static ParsedUnitPart consumeDurationFraction(CharSequence text,
+        CharSequence original, int offset) {
         int i = 0;
         long fraction = 0;
         long scale = 1;
@@ -462,11 +458,11 @@ public final class AmountFormats {
             scale *= 10;
         }
         if (i == 0) {
-            return Optional.empty();
+            throw new DateTimeParseException(
+                "Missing numeric fraction after '.'", original, offset);
         }
-        return Optional.of(
-            new ParsedUnitPart(text.subSequence(i, text.length()),
-                new FractionScalarPart(fraction, scale)));
+        return new ParsedUnitPart(text.subSequence(i, text.length()),
+            new FractionScalarPart(fraction, scale));
     }
 
     // find the duration unit at the beginning of the input text, if present.
@@ -624,12 +620,8 @@ public final class AmountFormats {
         // scale the unit by the input scalingFunction, returning a value if
         // one is produced, or an empty result when the operation results in an
         // arithmetic overflow.
-        Optional<Duration> scaleBy(Function<Duration, Duration> scaleFunc) {
-            try {
-                return Optional.of(scaleFunc.apply(value));
-            } catch (ArithmeticException e) {
-                return Optional.empty();
-            }
+        Duration scaleBy(Function<Duration, Duration> scaleFunc) {
+            return scaleFunc.apply(value);
         }
     }
 
@@ -637,7 +629,7 @@ public final class AmountFormats {
     static interface DurationScalar {
         // returns a duration value on a successful computation, and an empty
         // result otherwise.
-        Optional<Duration> applyTo(DurationUnit unit);
+        Duration applyTo(DurationUnit unit);
     }
 
     // data holder for parsed fragments of a floating point duration scalar.
@@ -651,7 +643,7 @@ public final class AmountFormats {
         }
 
         @Override
-        public Optional<Duration> applyTo(DurationUnit unit) {
+        public Duration applyTo(DurationUnit unit) {
             return scalar.applyTo(unit);
         }
 
@@ -669,7 +661,7 @@ public final class AmountFormats {
         }
 
         @Override
-        public Optional<Duration> applyTo(DurationUnit unit) {
+        public Duration applyTo(DurationUnit unit) {
             return unit.scaleBy(d -> d.multipliedBy(value));
         }
     }
@@ -686,9 +678,9 @@ public final class AmountFormats {
         }
 
         @Override
-        public Optional<Duration> applyTo(DurationUnit unit) {
+        public Duration applyTo(DurationUnit unit) {
             if (value == 0) {
-                return Optional.of(Duration.ZERO);
+                return Duration.ZERO;
             }
             return unit.scaleBy(d -> d.multipliedBy(value).dividedBy(scale));
         }
