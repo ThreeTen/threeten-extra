@@ -470,7 +470,7 @@ public final class Interval
      * two intervals abut.
      * An empty interval behaves as though it is an instant for comparison purposes.
      *
-     * @param interval  the other interval to compare to, not null
+     * @param interval the other interval to compare to, not null
      * @return true if this interval is after the specified interval
      */
     public boolean isAfter(Interval interval) {
@@ -485,7 +485,7 @@ public final class Interval
      * two intervals abut.
      * An empty interval behaves as though it is an instant for comparison purposes.
      *
-     * @param interval  the other interval to compare to, not null
+     * @param interval the other interval to compare to, not null
      * @return true if this interval is before the specified interval
      */
     public boolean isBefore(Interval interval) {
@@ -499,7 +499,7 @@ public final class Interval
      * This method compares the start of the interval to the instant.
      * An interval with an unbounded start is considered to start at {@code Instant.MIN}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval starts before the instant
      */
     public boolean startsBefore(Instant instant) {
@@ -510,10 +510,12 @@ public final class Interval
     /**
      * Checks if this interval starts at or before the specified instant.
      * <p>
+     * This method constitutes the <b>start</b> part of {@link #contains(Instant)}.
+     * <p>
      * This method compares the start of the interval to the instant.
      * An interval with an unbounded start is considered to start at {@code Instant.MIN}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval starts at or before the instant
      */
     public boolean startsAtOrBefore(Instant instant) {
@@ -527,7 +529,7 @@ public final class Interval
      * This method compares the start of the interval to the instant.
      * An interval with an unbounded start is considered to start at {@code Instant.MIN}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval starts after the instant
      */
     public boolean startsAfter(Instant instant) {
@@ -541,7 +543,7 @@ public final class Interval
      * This method compares the start of the interval to the instant.
      * An interval with an unbounded start is considered to start at {@code Instant.MIN}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval starts at or after the instant
      */
     public boolean startsAtOrAfter(Instant instant) {
@@ -556,7 +558,7 @@ public final class Interval
      * This method compares the end of the interval to the instant.
      * An interval with an unbounded end is considered to end after {@code Instant.MAX}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval ends before the instant
      */
     public boolean endsBefore(Instant instant) {
@@ -570,7 +572,7 @@ public final class Interval
      * This method compares the end of the interval to the instant.
      * An interval with an unbounded end is considered to end after {@code Instant.MAX}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval ends at or before the instant
      */
     public boolean endsAtOrBefore(Instant instant) {
@@ -581,10 +583,12 @@ public final class Interval
     /**
      * Checks if this interval ends after the specified instant.
      * <p>
+     * This method constitutes the <b>end</b> part of {@link #contains(Instant)}.
+     * <p>
      * This method compares the end of the interval to the instant.
      * An interval with an unbounded end is considered to end after {@code Instant.MAX}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval ends after the instant
      */
     public boolean endsAfter(Instant instant) {
@@ -598,7 +602,7 @@ public final class Interval
      * This method compares the end of the interval to the instant.
      * An interval with an unbounded end is considered to end after {@code Instant.MAX}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval ends at or after the instant
      */
     public boolean endsAtOrAfter(Instant instant) {
@@ -617,7 +621,7 @@ public final class Interval
      * <p>
      * This is equivalent to {@link #startsAtOrBefore(Instant)} {@code &&} {@link #endsAfter(Instant)}.
      *
-     * @param instant  the instant, not null
+     * @param instant the instant, not null
      * @return true if this interval contains the instant
      */
     public boolean contains(Instant instant) {
@@ -632,7 +636,7 @@ public final class Interval
      * <p>
      * This is equivalent to {@link #startsAfter(Instant)}.
      *
-     * @param instant  the other instant to compare to, not null
+     * @param instant the other instant to compare to, not null
      * @return true if the start of this interval is after the specified instant
      */
     public boolean isAfter(Instant instant) {
@@ -649,7 +653,7 @@ public final class Interval
      * <p>
      * This is equivalent to {@link #endsAtOrBefore(Instant)} {@code &&} {@link #startsBefore(Instant)}.
      *
-     * @param instant  the other instant to compare to, not null
+     * @param instant the other instant to compare to, not null
      * @return true if the end of this interval is before or equal to the specified instant
      */
     public boolean isBefore(Instant instant) {
