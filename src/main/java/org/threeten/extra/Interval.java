@@ -353,7 +353,10 @@ public final class Interval
      */
     public boolean encloses(Interval other) {
         Objects.requireNonNull(other, "other");
-        return start.compareTo(other.start) <= 0 && other.end.compareTo(end) <= 0;
+        return start.compareTo(other.start) <= 0
+          // if other is empty, it must start before this ends, unless this is also empty
+          && (other.isEmpty() ? other.start.compareTo(end) < 0 || isEmpty() : true)
+          && other.end.compareTo(end) <= 0;
     }
 
     /**

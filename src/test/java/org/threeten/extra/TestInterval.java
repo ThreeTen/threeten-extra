@@ -301,6 +301,8 @@ public class TestInterval {
         // completely before
         assertEquals(false, test.encloses(Interval.of(NOW1.minusSeconds(2), NOW1.minusSeconds(1))));
         assertEquals(false, test.encloses(Interval.of(NOW1.minusSeconds(1), NOW1)));
+        // empty interval before
+        assertEquals(false, test.encloses(Interval.of(NOW1.minusSeconds(1), NOW1.minusSeconds(1))));
         // partly before
         assertEquals(false, test.encloses(Interval.of(NOW1.minusSeconds(1), NOW2)));
         assertEquals(false, test.encloses(Interval.of(NOW1.minusSeconds(1), NOW2.minusSeconds(1))));
@@ -308,12 +310,18 @@ public class TestInterval {
         assertEquals(true, test.encloses(Interval.of(NOW1, NOW2.minusSeconds(1))));
         assertEquals(true, test.encloses(Interval.of(NOW1, NOW2)));
         assertEquals(true, test.encloses(Interval.of(NOW1.plusSeconds(1), NOW2)));
+        // empty interval contained
+        assertEquals(true, test.encloses(Interval.of(NOW1.plusSeconds(1), NOW1.plusSeconds(1))));
+        assertEquals(true, test.encloses(Interval.of(NOW2.minusSeconds(1), NOW2.minusSeconds(1))));
         // partly after
         assertEquals(false, test.encloses(Interval.of(NOW1, NOW2.plusSeconds(1))));
         assertEquals(false, test.encloses(Interval.of(NOW1.plusSeconds(1), NOW2.plusSeconds(1))));
         // completely after
         assertEquals(false, test.encloses(Interval.of(NOW2, NOW2.plusSeconds(1))));
         assertEquals(false, test.encloses(Interval.of(NOW2.plusSeconds(1), NOW2.plusSeconds(2))));
+        // empty interval completely after
+        assertEquals(false, test.encloses(Interval.of(NOW2, NOW2)));
+        assertEquals(false, test.encloses(Interval.of(NOW2.plusSeconds(1), NOW2.plusSeconds(1))));
     }
 
     @Test
@@ -566,7 +574,8 @@ public class TestInterval {
         Interval test2 = Interval.of(start2, end2);
         Interval expected = Interval.of(expStart, expEnd);
         assertEquals(true, expected.encloses(test1));
-        assertEquals(true, expected.encloses(test2));
+        // if test2 is empty and starts at the end of expected, then it won't be enclosed
+        assertEquals(true, expected.encloses(test2) || test2.isEmpty() && expEnd.equals(start2));
     }
 
     @Test
