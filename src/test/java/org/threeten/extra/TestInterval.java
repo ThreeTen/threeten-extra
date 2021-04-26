@@ -699,10 +699,10 @@ public class TestInterval {
     @Test
     public void test_ends_Instant_null() {
         Interval base = Interval.of(NOW12, NOW14);
-//        assertThrows(NullPointerException.class, () -> base.endsBefore((Instant) null));
-//        assertThrows(NullPointerException.class, () -> base.endsOnOrBefore((Instant) null));
+        assertThrows(NullPointerException.class, () -> base.endsBefore((Instant) null));
+        assertThrows(NullPointerException.class, () -> base.endsAtOrBefore((Instant) null));
         assertThrows(NullPointerException.class, () -> base.endsAfter((Instant) null));
-//        assertThrows(NullPointerException.class, () -> base.endsOnOrAfter((Instant) null));
+        assertThrows(NullPointerException.class, () -> base.endsAtOrAfter((Instant) null));
     }
 
     //-----------------------------------------------------------------------

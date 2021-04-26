@@ -313,7 +313,13 @@ public final class AmountFormats {
      * Parses formatted durations based on units.
      * <p>
      * The behaviour matches the <a href="https://golang.org/pkg/time/#ParseDuration">Golang</a>
-     * duration parser; however, infinite durations are not supported.
+     * duration parser, however, infinite durations are not supported.
+     * <p>
+     * The duration format is a possibly signed sequence of decimal numbers, each with optional
+     * fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time units are
+     * "ns", "us" (or "µs"), "ms", "s", "m", "h".
+     * <p>
+     * Note, the value "0" is specially supported as {@code Duration.ZERO}.
      *
      * @param durationText the formatted unit-based duration string.
      * @return the {@code Duration} value represented by the string, if possible.
