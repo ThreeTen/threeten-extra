@@ -32,9 +32,11 @@
 package org.threeten.extra;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Duration;
 import java.time.Period;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
@@ -537,6 +539,82 @@ public class TestAmountFormats {
             {"15 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(15)},
             {"25 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(25)},
             {"105 \u043C\u0438\u043B\u043B\u0438\u0441\u0435\u043A\u0443\u043D\u0434", Duration.ofMillis(105)}
+        };
+    }
+
+    // -----------------------------------------------------------------------
+    @ParameterizedTest
+    @UseDataProvider("duration_unitBased")
+    public void test_parseUnitBasedDuration(Duration expected, String input) {
+        assertEquals(expected, AmountFormats.parseUnitBasedDuration(input));
+    }
+
+    @DataProvider
+    public static Object[][] duration_unitBased() {
+        return new Object[][] {
+            {Duration.ZERO, "0"},
+            {Duration.ofHours(1), "+1h"},
+            {Duration.ofHours(1).negated(), "-1h"},
+            {Duration.ofHours(1).plusMinutes(15).negated(), "-1.25h"},
+            {Duration.ofSeconds(15).plusMillis(110), "15.11s"},
+            {Duration.ofHours(1).plusMinutes(2).plusSeconds(3).plusMillis(400), "1h2m3.4s"},
+            {Duration.ofMinutes(1), "1m"},
+            {Duration.ofSeconds(1), "1s"},
+            {Duration.ofMillis(1), "1ms"},
+            {Duration.ofNanos(1000), "1us"},
+            {Duration.ofNanos(1000), "1µs"}, // U+00B5 = micro symbol
+            {Duration.ofNanos(1000), "1μs"}, // U+03BC = Greek letter mu
+            {Duration.ofNanos(1), "1ns"},
+            {Duration.ofHours(1).plusMinutes(1).plusSeconds(1), "1h1m1s"},
+            // Loss of precision, but still a valid duration.
+            {Duration.ofSeconds(1).plusNanos(999_999_999), "1.9999999999999999999999999999s"},
+            // Adding duration values to exactly the max duration.
+            {Duration.ofSeconds(Long.MAX_VALUE), String.format("%ds%ds", Long.MAX_VALUE - 2, 2)},
+        };
+    }
+
+    @ParameterizedTest
+    @UseDataProvider("duration_unitBasedErrors")
+    public void test_parseUnitBasedDurationErrors(Exception e, String input) {
+        Exception thrown =
+            assertThrows(e.getClass(), () -> AmountFormats.parseUnitBasedDuration(input));
+        assertEquals(e.getMessage(), thrown.getMessage());
+        if (e instanceof DateTimeParseException) {
+            DateTimeParseException expected = (DateTimeParseException) e;
+            DateTimeParseException actual = (DateTimeParseException) thrown;
+            assertEquals(expected.getParsedString(), actual.getParsedString());
+            assertEquals(expected.getErrorIndex(), actual.getErrorIndex());
+        }
+    }
+
+    @DataProvider
+    public static Object[][] duration_unitBasedErrors() {
+        return new Object[][] {
+            {new NullPointerException("durationText must not be null"), null},
+            {new DateTimeParseException("Not a numeric value", "", 0), ""},
+            {new DateTimeParseException("Not a numeric value", "+", 0), "+"},
+            {new DateTimeParseException("Not a numeric value", "-", 0), "-"},
+            {new DateTimeParseException("Missing leading integer", ".", 0), "."},
+            {new DateTimeParseException("Missing leading integer", ".1s", 0), ".1s"},
+            {new DateTimeParseException("Missing leading integer", "inf", 0), "inf"},
+            {new DateTimeParseException("Missing leading integer", "-inf", 1), "-inf"},
+            {new DateTimeParseException("Missing numeric fraction after '.'", "1.b", 2), "1.b"},
+            {new DateTimeParseException("Invalid duration unit", "1.1ps", 3), "1.1ps"},
+            {new DateTimeParseException(
+                "Duration string exceeds valid numeric range", "9223372036854775807h", 19),
+                String.format("%dh", Long.MAX_VALUE)}, // overflow in create duration
+            {new DateTimeParseException(
+                "Duration string exceeds valid numeric range", "-9223372036854775808h", 19),
+                String.format("%dh", Long.MAX_VALUE + 1)}, // overflow in leading int
+            {new DateTimeParseException(
+                "Duration string exceeds valid numeric range",
+                "9223372036854775806s2s", 21),
+                String.format("%ds2s", Long.MAX_VALUE - 1)}, // overflow on int add
+            // overflow on fraction add
+            {new DateTimeParseException(
+                "Duration string exceeds valid numeric range",
+                "9223372036854775805.1s2.999999999s", 33),
+                String.format("%d.1s2.999999999s", Long.MAX_VALUE - 2)}
         };
     }
 }
