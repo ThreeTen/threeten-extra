@@ -53,6 +53,7 @@ import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.tngtech.junit.dataprovider.DataProvider;
 import com.tngtech.junit.dataprovider.UseDataProvider;
@@ -66,6 +67,12 @@ public class TestInterval {
     static Instant NOW2 = NOW1.plusSeconds(60);
     static Instant NOW3 = NOW2.plusSeconds(60);
     static Instant NOW4 = NOW3.plusSeconds(60);
+    static Instant NOW11 = NOW1.plusSeconds(11);
+    static Instant NOW12 = NOW1.plusSeconds(12);
+    static Instant NOW13 = NOW1.plusSeconds(13);
+    static Instant NOW14 = NOW1.plusSeconds(14);
+    static Instant NOW15 = NOW1.plusSeconds(15);
+    static Instant NOW16 = NOW1.plusSeconds(16);
 
     //-----------------------------------------------------------------------
     @Test
@@ -590,6 +597,112 @@ public class TestInterval {
         Interval test = Interval.of(NOW2, NOW4);
         assertEquals(test, test.union(test));
         assertEquals(test, test.span(test));
+    }
+
+    //-----------------------------------------------------------------------
+    public static Object[][] data_starts() {
+        return new Object[][] {
+            // normal
+            {Interval.of(NOW12, NOW14), NOW11, false, false, true, true},
+            {Interval.of(NOW12, NOW14), NOW12, false, true, false, true},
+            {Interval.of(NOW12, NOW14), NOW13, true, true, false, false},
+            {Interval.of(NOW12, NOW14), NOW14, true, true, false, false},
+            {Interval.of(NOW12, NOW14), NOW15, true, true, false, false},
+            // empty interval
+            {Interval.of(NOW12, NOW12), NOW11, false, false, true, true},
+            {Interval.of(NOW12, NOW12), NOW12, false, true, false, true},
+            {Interval.of(NOW12, NOW12), NOW13, true, true, false, false},
+            // unbounded start
+            {Interval.of(Instant.MIN, NOW12), Instant.MIN, false, true, false, true},
+            {Interval.of(Instant.MIN, NOW12), NOW11, true, true, false, false},
+            {Interval.of(Instant.MIN, NOW12), NOW12, true, true, false, false},
+            {Interval.of(Instant.MIN, NOW12), NOW13, true, true, false, false},
+            {Interval.of(Instant.MIN, NOW12), Instant.MAX, true, true, false, false},
+            // unbounded end
+            {Interval.of(NOW12, Instant.MAX), Instant.MIN, false, false, true, true},
+            {Interval.of(NOW12, Instant.MAX), NOW11, false, false, true, true},
+            {Interval.of(NOW12, Instant.MAX), NOW12, false, true, false, true},
+            {Interval.of(NOW12, Instant.MAX), NOW13, true, true, false, false},
+            {Interval.of(NOW12, Instant.MAX), Instant.MAX, true, true, false, false},
+        };
+    }
+    
+    @ParameterizedTest
+    @MethodSource("data_starts")
+    public void test_starts_Instant(
+            Interval test, 
+            Instant instant, 
+            boolean expectedStartsBefore,
+            boolean expectedStartsAtOrBefore,
+            boolean expectedStartsAfter,
+            boolean expectedStartsAtOrAfter) {
+        
+        assertEquals(expectedStartsBefore, test.startsBefore(instant));
+        assertEquals(expectedStartsAtOrBefore, test.startsAtOrBefore(instant));
+        assertEquals(expectedStartsAfter, test.startsAfter(instant));
+        assertEquals(expectedStartsAtOrAfter, test.startsAtOrAfter(instant));
+    }
+
+    @Test
+    public void test_starts_Instant_null() {
+        Interval base = Interval.of(NOW12, NOW14);
+        assertThrows(NullPointerException.class, () -> base.startsBefore((Instant) null));
+        assertThrows(NullPointerException.class, () -> base.startsAtOrBefore((Instant) null));
+        assertThrows(NullPointerException.class, () -> base.startsAfter((Instant) null));
+        assertThrows(NullPointerException.class, () -> base.startsAtOrAfter((Instant) null));
+    }
+
+    //-----------------------------------------------------------------------
+    public static Object[][] data_ends() {
+        return new Object[][] {
+            // normal
+            {Interval.of(NOW12, NOW14), NOW11, false, false, true, true},
+            {Interval.of(NOW12, NOW14), NOW12, false, false, true, true},
+            {Interval.of(NOW12, NOW14), NOW13, false, false, true, true},
+            {Interval.of(NOW12, NOW14), NOW14, false, true, false, true},
+            {Interval.of(NOW12, NOW14), NOW15, true, true, false, false},
+            // empty interval
+            {Interval.of(NOW12, NOW12), NOW11, false, false, true, true},
+            {Interval.of(NOW12, NOW12), NOW12, false, true, false, true},
+            {Interval.of(NOW12, NOW12), NOW13, true, true, false, false},
+            // unbounded start
+            {Interval.of(Instant.MIN, NOW12), Instant.MIN, false, false, true, true},
+            {Interval.of(Instant.MIN, NOW12), NOW11, false, false, true, true},
+            {Interval.of(Instant.MIN, NOW12), NOW12, false, true, false, true},
+            {Interval.of(Instant.MIN, NOW12), NOW13, true, true, false, false},
+            {Interval.of(Instant.MIN, NOW12), Instant.MAX, true, true, false, false},
+            // unbounded end
+            {Interval.of(NOW12, Instant.MAX), Instant.MIN, false, false, true, true},
+            {Interval.of(NOW12, Instant.MAX), NOW11, false, false, true, true},
+            {Interval.of(NOW12, Instant.MAX), NOW12, false, false, true, true},
+            {Interval.of(NOW12, Instant.MAX), NOW13, false, false, true, true},
+            {Interval.of(NOW12, Instant.MAX), Instant.MAX, false, false, true, true},
+        };
+    }
+    
+    @ParameterizedTest
+    @MethodSource("data_ends")
+    public void test_ends_Instant(
+            Interval test, 
+            Instant instant, 
+            boolean expectedEndsBefore,
+            boolean expectedEndsAtOrBefore,
+            boolean expectedEndsAfter,
+            boolean expectedEndsAtOrAfter) {
+        
+        assertEquals(expectedEndsBefore, test.endsBefore(instant));
+        assertEquals(expectedEndsAtOrBefore, test.endsAtOrBefore(instant));
+        assertEquals(expectedEndsAfter, test.endsAfter(instant));
+        assertEquals(expectedEndsAtOrAfter, test.endsAtOrAfter(instant));
+    }
+
+    @Test
+    public void test_ends_Instant_null() {
+        Interval base = Interval.of(NOW12, NOW14);
+//        assertThrows(NullPointerException.class, () -> base.endsBefore((Instant) null));
+//        assertThrows(NullPointerException.class, () -> base.endsOnOrBefore((Instant) null));
+        assertThrows(NullPointerException.class, () -> base.endsAfter((Instant) null));
+//        assertThrows(NullPointerException.class, () -> base.endsOnOrAfter((Instant) null));
     }
 
     //-----------------------------------------------------------------------
