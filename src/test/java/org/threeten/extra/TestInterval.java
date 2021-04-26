@@ -600,7 +600,7 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
-    static Object[][] data_starts() {
+    public static Object[][] data_starts() {
         return new Object[][] {
             // normal
             {Interval.of(NOW12, NOW14), NOW11, false, false, true, true},
@@ -653,7 +653,7 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
-    static Object[][] data_ends() {
+    public static Object[][] data_ends() {
         return new Object[][] {
             // normal
             {Interval.of(NOW12, NOW14), NOW11, false, false, true, true},
