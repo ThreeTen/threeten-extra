@@ -219,12 +219,12 @@ public class TestInterval {
 
     @Test
     public void test_parse_CharSequence_illegalOpenStartDuration() {
-        assertThrows(DateTimeException.class, () -> Interval.parse("../P1H"));
+        assertThrows(DateTimeException.class, () -> Interval.parse("../PT1H"));
     }
 
     @Test
     public void test_parse_CharSequence_illegalDurationOpenEnd() {
-        assertThrows(DateTimeException.class, () -> Interval.parse("P1H/.."));
+        assertThrows(DateTimeException.class, () -> Interval.parse("PT1H/.."));
     }
 
     @Test
