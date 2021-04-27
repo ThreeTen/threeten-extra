@@ -190,6 +190,13 @@ public class TestInterval {
     }
 
     @Test
+    public void test_startingAt_InstantMIN_isALL() {
+        Interval interval = Interval.startingAt(Instant.MIN);
+
+        assertEquals(Interval.ALL, interval);
+    }
+
+    @Test
     public void test_startingAt_null() {
         assertThrows(NullPointerException.class, () -> Interval.startingAt(null));
     }
@@ -211,6 +218,13 @@ public class TestInterval {
         assertEquals(Instant.MIN, interval.getEnd());
         assertTrue(interval.isUnboundedStart());
         assertTrue(interval.isEmpty());
+    }
+
+    @Test
+    public void test_endingAt_InstantMAX_isALL() {
+        Interval interval = Interval.endingAt(Instant.MAX);
+
+        assertEquals(Interval.ALL, interval);
     }
 
     @Test
