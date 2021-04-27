@@ -170,6 +170,54 @@ public class TestInterval {
         assertThrows(NullPointerException.class, () -> Interval.of(NOW1, (Duration) null));
     }
 
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_startingAt_Instant_createsUnboundedEnd() {
+        Interval interval = Interval.startingAt(NOW1);
+
+        assertEquals(NOW1, interval.getStart());
+        assertTrue(interval.isUnboundedEnd());
+        assertFalse(interval.isEmpty());
+    }
+
+    @Test
+    public void test_startingAt_InstantMAX_createsUnboundedEndEmpty() {
+        Interval interval = Interval.startingAt(Instant.MAX);
+
+        assertEquals(Instant.MAX, interval.getStart());
+        assertTrue(interval.isUnboundedEnd());
+        assertTrue(interval.isEmpty());
+    }
+
+    @Test
+    public void test_startingAt_null() {
+        assertThrows(NullPointerException.class, () -> Interval.startingAt(null));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_endingAt_createsUnboundedStart() {
+        Interval interval = Interval.endingAt(NOW1);
+
+        assertEquals(NOW1, interval.getEnd());
+        assertTrue(interval.isUnboundedStart());
+        assertFalse(interval.isEmpty());
+    }
+
+    @Test
+    public void test_sendingAt_InstantMIN_createsUnboundedStartEmpty() {
+        Interval interval = Interval.endingAt(Instant.MIN);
+
+        assertEquals(Instant.MIN, interval.getEnd());
+        assertTrue(interval.isUnboundedStart());
+        assertTrue(interval.isEmpty());
+    }
+
+    @Test
+    public void test_endingAt_null() {
+        assertThrows(NullPointerException.class, () -> Interval.endingAt(null));
+    }
+
     /* Lower and upper bound for Intervals */
     private static final Instant MIN_OFFSET_DATE_TIME = OffsetDateTime.MIN.plusDays(1L).toInstant();
     private static final Instant MAX_OFFSET_DATE_TIME = OffsetDateTime.MAX.minusDays(1L).toInstant();
