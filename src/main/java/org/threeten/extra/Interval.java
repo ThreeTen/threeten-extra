@@ -133,10 +133,9 @@ public final class Interval
      * Obtains an instance of {@code Interval} with the specified start instant and unbounded end.
      *
      * @param startInclusive the start instant, inclusive, not null
-     *
      * @return a new {@code Instant} with the specified start instant.
      */
-    public static Interval startingAt(final Instant startInclusive) {
+    public static Interval startingAt(Instant startInclusive) {
         Objects.requireNonNull(startInclusive, "startInclusive");
         return Interval.ALL.withStart(startInclusive);
     }
@@ -145,10 +144,9 @@ public final class Interval
      * Obtains an instance of {@code Interval} with unbounded start and the specified end instant.
      *
      * @param endExclusive the end instant, exclusive, not null
-     *
      * @return a new {@code Instant} with the specified end instant.
      */
-    public static Interval endingAt(final Instant endExclusive) {
+    public static Interval endingAt(Instant endExclusive) {
         Objects.requireNonNull(endExclusive, "endExclusive");
         return Interval.ALL.withEnd(endExclusive);
     }
