@@ -12,6 +12,10 @@
         Additional comparison methods on Interval.
         Fixes #174.
       </action>
+      <action dev="haraldk" type="add">
+        Meaningful factory methods for unbounded intervals.
+        Fixes #174.
+      </action>
       <action dev="TristonianJones" type="add">
         Add Go-compatible duration parsing.
         Fixes #182.
