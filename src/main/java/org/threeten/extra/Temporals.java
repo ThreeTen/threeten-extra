@@ -392,7 +392,7 @@ public final class Temporals {
 
     //-------------------------------------------------------------------------
     /**
-     * Converts a duration to a {@code BigDecimal}.
+     * Converts a duration to a {@code BigDecimal} with a scale of 9.
      *
      * @param duration  the duration to convert, not null
      * @return the {@code BigDecimal} equivalent of the duration, in seconds with a scale of 9
@@ -403,16 +403,23 @@ public final class Temporals {
 
     /**
      * Converts a {@code BigDecimal} representing seconds to a duration.
+     * <p>
+     * No exception is thrown by this method.
+     * Numbers are rounded up to the nearest nanosecond (away from zero).
+     * The duration will saturate at the biggest positive or negative {@code Duration}.
      *
-     * @param seconds  the number of seconds, up to scale 9, positive or negative
+     * @param seconds  the number of seconds to convert, positive or negative
      * @return a {@code Duration}, not null
-     * @throws ArithmeticException if numeric overflow occurs
      */
     public static Duration durationFromBigDecimalSeconds(BigDecimal seconds) {
-        BigInteger nanos = seconds.movePointRight(9).toBigIntegerExact();
+        BigInteger nanos = seconds.setScale(9, RoundingMode.UP).movePointRight(9).toBigIntegerExact();
         BigInteger[] divRem = nanos.divideAndRemainder(BigInteger.valueOf(1_000_000_000));
         if (divRem[0].bitLength() > 63) {
-            throw new ArithmeticException("BigDecimal seconds exceeds capacity of Duration: " + seconds);
+            if (divRem[0].signum() >= 1) {
+                return Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
+            } else {
+                return Duration.ofSeconds(Long.MIN_VALUE);
+            }
         }
         return Duration.ofSeconds(divRem[0].longValue(), divRem[1].intValue());
     }
@@ -431,11 +438,14 @@ public final class Temporals {
     }
 
     /**
-     * Converts a {@code BigDecimal} representing seconds to a duration.
+     * Converts a {@code double} representing seconds to a duration.
+     * <p>
+     * No exception is thrown by this method.
+     * Numbers are rounded up to the nearest nanosecond (away from zero).
+     * The duration will saturate at the biggest positive or negative {@code Duration}.
      *
-     * @param seconds  the number of seconds, up to scale 9, positive or negative
+     * @param seconds  the number of seconds to convert, positive or negative
      * @return a {@code Duration}, not null
-     * @throws ArithmeticException if numeric overflow occurs
      */
     public static Duration durationFromDoubleSeconds(double seconds) {
         return durationFromBigDecimalSeconds(BigDecimal.valueOf(seconds));
@@ -458,7 +468,7 @@ public final class Temporals {
             return duration;
         }
         BigDecimal amount = durationToBigDecimalSeconds(duration);
-        amount = amount.multiply(BigDecimal.valueOf(multiplicand)).setScale(9, RoundingMode.UP);
+        amount = amount.multiply(BigDecimal.valueOf(multiplicand));
         return durationFromBigDecimalSeconds(amount);
     }
 
