@@ -635,7 +635,7 @@ public final class Interval
      * This checks if the specified instant is within the bounds of this interval.
      * If this interval has an unbounded start then {@code contains(Instant#MIN)} returns true.
      * If this interval has an unbounded end then {@code contains(Instant#MAX)} returns true.
-     * If this interval is empty then this method always returns false.
+     * Otherwise, if this interval is empty then this method returns false.
      * <p>
      * This is equivalent to {@link #startsAtOrBefore(Instant)} {@code &&} {@link #endsAfter(Instant)}.
      *

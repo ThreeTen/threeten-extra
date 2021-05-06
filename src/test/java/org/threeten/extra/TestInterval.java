@@ -348,6 +348,14 @@ public class TestInterval {
     }
 
     @Test
+    public void test_contains_min() {
+        Interval test = Interval.of(Instant.MIN, NOW2);
+        assertEquals(true, test.contains(Instant.MIN));
+        assertEquals(true, test.contains(NOW1));
+        assertEquals(false, test.contains(NOW2));
+    }
+
+    @Test
     public void test_contains_max() {
         Interval test = Interval.of(NOW2, Instant.MAX);
         assertEquals(false, test.contains(Instant.MIN));
