@@ -474,7 +474,8 @@ public final class UtcInstant
         // racy single-check idiom
         String currentStringValue = toString;
         if (currentStringValue == null) {
-            toString = currentStringValue = buildToString();
+            currentStringValue = buildToString();
+            toString = currentStringValue;
         }
         return currentStringValue;
     }

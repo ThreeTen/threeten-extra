@@ -969,8 +969,12 @@ public final class YearWeek
 
     private long yearsUntil(YearWeek end) {
         long yearsDiff = end.year - this.year;
-        if (yearsDiff > 0 && end.week < this.week) return yearsDiff - 1;
-        if (yearsDiff < 0 && end.week > this.week) return yearsDiff + 1;
+        if (yearsDiff > 0 && end.week < this.week) {
+            return yearsDiff - 1;
+        }
+        if (yearsDiff < 0 && end.week > this.week) {
+            return yearsDiff + 1;
+        }
         return yearsDiff;
     }
 

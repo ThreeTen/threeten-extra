@@ -407,7 +407,7 @@ public final class AmountFormats {
         long integerPart = 0;
         int i = 0;
         int valueLength = text.length();
-        for (; i < valueLength; i++) {
+        for ( ; i < valueLength; i++) {
             char c = text.charAt(i);
             if (c < '0' || c > '9') {
                 break;
@@ -429,8 +429,7 @@ public final class AmountFormats {
         }
         // if no text was consumed, return empty.
         if (i == 0) {
-           throw new DateTimeParseException(
-               "Missing leading integer", original, offset);
+            throw new DateTimeParseException("Missing leading integer", original, offset);
         }
         return new ParsedUnitPart(text.subSequence(i, text.length()),
             new IntegerScalarPart(integerPart));
@@ -444,7 +443,7 @@ public final class AmountFormats {
         long fraction = 0;
         long scale = 1;
         boolean overflow = false;
-        for (; i < text.length(); i++) {
+        for ( ; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c < '0' || c > '9') {
                 break;
@@ -603,7 +602,7 @@ public final class AmountFormats {
 
      // -------------------------------------------------------------------------
     // data holder for a duration unit string and its associated Duration value.
-    static class DurationUnit {
+    static final class DurationUnit {
         private final String abbrev;
         private final Duration value;
 
@@ -639,7 +638,7 @@ public final class AmountFormats {
     }
 
     // data holder for parsed fragments of a floating point duration scalar.
-    static class ParsedUnitPart implements DurationScalar {
+    static final class ParsedUnitPart implements DurationScalar {
         private final CharSequence remainingText;
         private final DurationScalar scalar;
 
@@ -659,7 +658,7 @@ public final class AmountFormats {
     }
 
     // data holder for the leading integer value of a duration scalar.
-    static class IntegerScalarPart implements DurationScalar {
+    static final class IntegerScalarPart implements DurationScalar {
         private final long value;
 
         private IntegerScalarPart(long value) {
@@ -674,7 +673,7 @@ public final class AmountFormats {
 
     // data holder for the fractional floating point value of a duration
     // scalar.
-    static class FractionScalarPart implements DurationScalar {
+    static final class FractionScalarPart implements DurationScalar {
         private final long value;
         private final long scale;
 
