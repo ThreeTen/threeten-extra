@@ -426,6 +426,32 @@ public final class UtcInstant
         return Long.compare(nanoOfDay, otherInstant.nanoOfDay);
     }
 
+    /**
+     * Checks if this instant is after the specified instant.
+     * <p>
+     * The comparison is based on the time-line position of the instants.
+     *
+     * @param otherInstant  the other instant to compare to, not null
+     * @return true if this instant is after the specified instant
+     * @throws NullPointerException if otherInstant is null
+     */
+    public boolean isAfter(UtcInstant otherInstant) {
+        return compareTo(otherInstant) > 0;
+    }
+
+    /**
+     * Checks if this instant is before the specified instant.
+     * <p>
+     * The comparison is based on the time-line position of the instants.
+     *
+     * @param otherInstant  the other instant to compare to, not null
+     * @return true if this instant is before the specified instant
+     * @throws NullPointerException if otherInstant is null
+     */
+    public boolean isBefore(UtcInstant otherInstant) {
+        return compareTo(otherInstant) < 0;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this instant is equal to the specified {@code UtcInstant}.
