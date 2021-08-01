@@ -390,6 +390,13 @@
             <tagNameFormat>v@{project.version}</tagNameFormat>
             <localCheckout>true</localCheckout>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.kohsuke</groupId>
+              <artifactId>github-api</artifactId>
+              <version>1.132</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <!-- Setup Checkstyle, excluding module-info -->
         <plugin>
