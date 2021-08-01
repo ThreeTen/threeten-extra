@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.7.0" date="SNAPSHOT" description="v1.7.0">
+      <action dev="stevenpaligo" type="add">
+        Additional comparison methods on UtcInstant/TaiInstant.
+        Fixes #189.
+      </action>
       <action dev="spand" type="add">
         Additional comparison methods on Interval.
         Fixes #174.

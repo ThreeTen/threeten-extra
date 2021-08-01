@@ -32,6 +32,7 @@
 package org.threeten.extra.scale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -738,14 +739,20 @@ public class TestTaiInstant {
             for (int j = 0; j < instants.length; j++) {
                 TaiInstant b = instants[j];
                 if (i < j) {
-                    assertEquals(true, a.compareTo(b) < 0);
-                    assertEquals(false, a.equals(b));
+                    assertTrue(a.compareTo(b) < 0);
+                    assertFalse(a.equals(b));
+                    assertTrue(a.isBefore(b));
+                    assertFalse(a.isAfter(b));
                 } else if (i > j) {
-                    assertEquals(true, a.compareTo(b) > 0);
-                    assertEquals(false, a.equals(b));
+                    assertTrue(a.compareTo(b) > 0);
+                    assertFalse(a.equals(b));
+                    assertFalse(a.isBefore(b));
+                    assertTrue(a.isAfter(b));
                 } else {
                     assertEquals(0, a.compareTo(b));
-                    assertEquals(true, a.equals(b));
+                    assertTrue(a.equals(b));
+                    assertFalse(a.isBefore(b));
+                    assertFalse(a.isAfter(b));
                 }
             }
         }
