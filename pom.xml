@@ -394,7 +394,7 @@
             <dependency>
               <groupId>org.kohsuke</groupId>
               <artifactId>github-api</artifactId>
-              <version>1.132</version>
+              <version>1.301</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -500,14 +500,14 @@
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
-      <version>2.2.0</version>
+      <version>2.2.2</version>
       <scope>compile</scope>
       <optional>true</optional><!-- mandatory in Scala -->
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>30.1.1-jre</version>
+      <version>31.0.1-jre</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -531,19 +531,19 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.7.1</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <version>5.7.1</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.7.1</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -911,6 +911,8 @@
 
   <!-- ==================================================================== -->
   <properties>
+    <!-- JUnit version number -->
+    <junit.version>5.8.2</junit.version>
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>4.1.0</maven-bundle-plugin.version>
