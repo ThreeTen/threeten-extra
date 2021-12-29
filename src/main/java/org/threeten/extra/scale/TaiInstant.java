@@ -147,7 +147,7 @@ public final class TaiInstant
      * This method uses the latest available system rules.
      * The conversion first maps from UTC-SLS to UTC, then converts to TAI.
      * <p>
-     * Conversion from an {@code Instant} will not be completely accurate near
+     * Conversion from an {@link Instant} will not be completely accurate near
      * a leap second in accordance with UTC-SLS.
      *
      * @param instant  the instant to convert, not null
@@ -192,7 +192,7 @@ public final class TaiInstant
      * The seconds part must contain only numbers and a possible leading negative sign.
      * The nanoseconds part must contain exactly nine digits.
      * The trailing literal must be exactly specified.
-     * This format parses the {@code toString} format.
+     * This format parses the {@link toString} format.
      *
      * @param text  the text to parse such as "12345.123456789s(TAI)", not null
      * @return the parsed instant, not null
@@ -233,7 +233,7 @@ public final class TaiInstant
      * <p>
      * The TAI second count is a simple incrementing count of seconds where
      * second 0 is 1958-01-01T00:00:00(TAI).
-     * The nanosecond part of the day is returned by {@code getNanosOfSecond}.
+     * The nanosecond part of the second is returned by {@link getNano}.
      *
      * @return the seconds from the epoch of 1958-01-01T00:00:00(TAI)
      */
@@ -247,7 +247,7 @@ public final class TaiInstant
      * <p>
      * The TAI second count is a simple incrementing count of seconds where
      * second 0 is 1958-01-01T00:00:00(TAI).
-     * The nanosecond part of the day is returned by {@code getNanosOfSecond}.
+     * The nanosecond offset of the second is returned by {@code getNano}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -263,7 +263,7 @@ public final class TaiInstant
      * of the second.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds from
-     * the second returned by {@code getTaiSeconds()}.
+     * the second returned by {@link getTaiSeconds()}.
      *
      * @return the nanoseconds within the second, from 0 to 999,999,999
      */
@@ -275,7 +275,7 @@ public final class TaiInstant
      * Returns a copy of this {@code TaiInstant} with the nano-of-second value changed.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds from
-     * the second returned by {@code getTaiSeconds()}.
+     * the second returned by {@link getTaiSeconds()}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -368,7 +368,7 @@ public final class TaiInstant
      * This method uses the latest available system rules.
      * The conversion first maps from TAI to UTC, then converts to UTC-SLS.
      * <p>
-     * Conversion to an {@code Instant} will not be completely accurate near
+     * Conversion to an {@link Instant} will not be completely accurate near
      * a leap second in accordance with UTC-SLS.
      *
      * @return an {@code Instant} representing the best approximation of this instant, not null
@@ -385,7 +385,7 @@ public final class TaiInstant
      * Converting a TAI instant to UTC requires leap second rules.
      * This method uses the latest available system rules.
      * <p>
-     * The {@code UtcInstant} will represent exactly the same point on the
+     * The {@link UtcInstant} will represent exactly the same point on the
      * time-line as per the available leap-second rules.
      * If the leap-second rules change then conversion back to TAI may
      * result in a different instant.
