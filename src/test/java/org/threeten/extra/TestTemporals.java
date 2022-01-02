@@ -65,7 +65,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.DateTimeException;
+import java.time.LocalTime;
 import java.time.LocalDate;
+import java.time.Duration;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -668,6 +670,68 @@ public class TestTemporals {
     @UseDataProvider("data_convertAmountInvalidUnsupported")
     public void test_convertAmountInvalidUnsupported(TemporalUnit fromUnit, TemporalUnit resultUnit) {
         assertThrows(UnsupportedTemporalTypeException.class, () -> Temporals.convertAmount(1, fromUnit, resultUnit));
+    }
+
+
+    //-----------------------------------------------------------------------
+    // roundTime()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_roundTime_dateTimeException() {
+        assertThrows(DateTimeException.class, () -> Temporals.roundTime(Duration.ofMinutes(7), RoundingMode.DOWN));
+    }
+
+    @Test
+    public void test_roundTime_down_localTime() {
+        TemporalAdjuster down = Temporals.roundTime(Duration.ofMinutes(6), RoundingMode.DOWN);
+
+        assertEquals(LocalTime.of(14, 12), LocalTime.of(14, 12).with(down));
+        assertEquals(LocalTime.of(14, 12), LocalTime.of(14, 13).with(down));
+        assertEquals(LocalTime.of(14, 12), LocalTime.of(14, 14).with(down));
+        assertEquals(LocalTime.of(14, 12), LocalTime.of(14, 15).with(down));
+        assertEquals(LocalTime.of(14, 12), LocalTime.of(14, 16).with(down));
+        assertEquals(LocalTime.of(14, 12), LocalTime.of(14, 17).with(down));
+        assertEquals(LocalTime.of(14, 18), LocalTime.of(14, 18).with(down));
+
+    }
+
+    @Test
+    public void test_roundTime_up_localTime() {
+        TemporalAdjuster up = Temporals.roundTime(Duration.ofMinutes(6), RoundingMode.UP);
+
+        assertEquals(LocalTime.of(14, 12), LocalTime.of(14, 12, 7, 1).with(up));
+        assertEquals(LocalTime.of(14, 18), LocalTime.of(14, 13, 7, 1).with(up));
+        assertEquals(LocalTime.of(14, 18), LocalTime.of(14, 14).with(up));
+        assertEquals(LocalTime.of(14, 18), LocalTime.of(14, 15).with(up));
+        assertEquals(LocalTime.of(14, 18), LocalTime.of(14, 16).with(up));
+        assertEquals(LocalTime.of(14, 18), LocalTime.of(14, 17).with(up));
+        assertEquals(LocalTime.of(14, 18), LocalTime.of(14, 18).with(up));
+    }
+
+    @Test
+    public void test_roundTime_halfUp_localTime() {
+        TemporalAdjuster halfUp = Temporals.roundTime(Duration.ofMinutes(6), RoundingMode.HALF_UP);
+
+        assertEquals(LocalTime.of(14, 54), LocalTime.of(14, 54, 7, 1).with(halfUp));
+        assertEquals(LocalTime.of(14, 54), LocalTime.of(14, 55, 7, 1).with(halfUp));
+        assertEquals(LocalTime.of(14, 54), LocalTime.of(14, 56).with(halfUp));
+        assertEquals(LocalTime.of(15, 0), LocalTime.of(14, 57).with(halfUp));
+        assertEquals(LocalTime.of(15, 0), LocalTime.of(14, 58).with(halfUp));
+        assertEquals(LocalTime.of(15, 0), LocalTime.of(14, 59).with(halfUp));
+        assertEquals(LocalTime.of(15, 0), LocalTime.of(15, 0).with(halfUp));
+    }
+
+    @Test
+    public void test_roundTime_halfUp_localDateTime() {
+        TemporalAdjuster halfUp = Temporals.roundTime(Duration.ofMinutes(6), RoundingMode.HALF_UP);
+
+        assertEquals(LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 54)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 54, 7, 1)).with(halfUp));
+        assertEquals(LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 54)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 55, 7, 1)).with(halfUp));
+        assertEquals(LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 54)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 56)).with(halfUp));
+        assertEquals(LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 57)).with(halfUp));
+        assertEquals(LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 58)).with(halfUp));
+        assertEquals(LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 59)).with(halfUp));
+        assertEquals(LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)), LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)).with(halfUp));
     }
 
 }
