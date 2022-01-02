@@ -721,17 +721,4 @@ public class TestTemporals {
         assertEquals(LocalTime.of(15, 0), LocalTime.of(15, 0).with(halfUp));
     }
 
-    @Test
-    public void test_roundTime_halfUp_localDateTime() {
-        TemporalAdjuster halfUp = Temporals.roundTime(Duration.ofMinutes(6), RoundingMode.HALF_UP);
-
-        assertEquals(LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 54)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 54, 7, 1)).with(halfUp));
-        assertEquals(LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 54)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 55, 7, 1)).with(halfUp));
-        assertEquals(LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 54)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 56)).with(halfUp));
-        assertEquals(LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 57)).with(halfUp));
-        assertEquals(LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 58)).with(halfUp));
-        assertEquals(LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)), LocalDate.of(2021, DECEMBER, 31).with(LocalTime.of(23, 59)).with(halfUp));
-        assertEquals(LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)), LocalDate.of(2022, JANUARY, 1).with(LocalTime.of(0, 0)).with(halfUp));
-    }
-
 }
