@@ -131,6 +131,19 @@ public final class Temporals {
         return Adjuster.PREVIOUS_WORKING_OR_SAME;
     }
 
+    /**
+     * Returns an adjuster that offers time clock rounding.
+     * <p>
+     * Time clock rounding divides the minutes of the hour into equal fractions of the same length. Every fraction has
+     * a start-inclusive and end-exclusive minute of the hour. A rounded result is either at the lower or upper end of
+     * one of these fractions.
+     * <p>
+     * Time clock rounding views time as hour-minute. Therefore it always truncates to minutes.
+     *
+     * @param duration  the fraction of the hour, must be a divisor of 60
+     * @param roundingMode  the time clock rounding mode
+     * @return time rounded to a fraction of the hour
+     */
     public static TemporalAdjuster roundTime(Duration duration, RoundingMode roundingMode) {
         Objects.requireNonNull(duration, "duration");
         Objects.requireNonNull(roundingMode, "mode");
