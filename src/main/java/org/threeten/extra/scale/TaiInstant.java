@@ -263,7 +263,7 @@ public final class TaiInstant
      * of the second.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds from
-     * the second returned by {@link getTaiSeconds()}.
+     * the second returned by {@link #getTaiSeconds()}.
      *
      * @return the nanoseconds within the second, from 0 to 999,999,999
      */
@@ -275,7 +275,7 @@ public final class TaiInstant
      * Returns a copy of this {@code TaiInstant} with the nano-of-second value changed.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds from
-     * the second returned by {@link getTaiSeconds()}.
+     * the second returned by {@link #getTaiSeconds()}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
