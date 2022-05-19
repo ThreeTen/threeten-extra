@@ -32,12 +32,16 @@
 package org.threeten.extra;
 
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.FOREVER;
 import static java.time.temporal.ChronoUnit.WEEKS;
 
 import java.text.ParsePosition;
+import java.time.Duration;
 import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -59,6 +63,7 @@ import java.util.concurrent.TimeUnit;
  * <li>adjusters that ignore Saturday/Sunday weekends
  * <li>conversion between {@code TimeUnit} and {@code ChronoUnit}
  * <li>converting an amount to another unit
+ * <li>adjusters that round time
  * </ul>
  *
  * <h3>Implementation Requirements:</h3>
@@ -124,6 +129,66 @@ public final class Temporals {
      */
     public static TemporalAdjuster previousWorkingDayOrSame() {
         return Adjuster.PREVIOUS_WORKING_OR_SAME;
+    }
+
+    /**
+     * Returns an adjuster that offers time clock rounding.
+     * <p>
+     * Time clock rounding divides the minutes of the hour into equal fractions of the same length. Every fraction has
+     * a start-inclusive and end-exclusive minute of the hour. A rounded result is either at the lower or upper end of
+     * one of these fractions.
+     * <p>
+     * Time clock rounding views time as hour-minute. Therefore it always truncates to minutes.
+     *
+     * @param duration  the fraction of the hour, must be a divisor of 60
+     * @param roundingMode  the time clock rounding mode
+     * @return time rounded to a fraction of the hour
+     */
+    public static TemporalAdjuster roundTime(Duration duration, RoundingMode roundingMode) {
+        Objects.requireNonNull(duration, "duration");
+        Objects.requireNonNull(roundingMode, "mode");
+
+        long minutes = duration.toMinutes();
+        if (minutes < 1 || 60 % minutes != 0) {
+            throw new DateTimeException("duration is not a divisor of 60");
+        }
+
+        int divisor = (int) minutes;
+
+        return temporal -> {
+            int minuteOfHour = temporal.get(MINUTE_OF_HOUR);
+
+            temporal = temporal.with(SECOND_OF_MINUTE, 0)
+                               .with(NANO_OF_SECOND, 0);
+
+            if (minuteOfHour % divisor == 0) {
+                return temporal;
+            }
+
+            int down = minuteOfHour / divisor * divisor;
+            int up = down + divisor;
+            RoundingMode mode = roundingMode;
+
+            if (roundingMode == RoundingMode.HALF_UP) {
+                mode = (minuteOfHour - down) < (up - minuteOfHour) ? RoundingMode.DOWN : RoundingMode.UP;
+            }
+
+            if (mode == RoundingMode.DOWN) {
+                temporal = temporal.with(MINUTE_OF_HOUR, down);
+            }
+
+            if (mode == RoundingMode.UP) {
+                if (up == 60) {
+                    if (temporal.isSupported(ChronoUnit.HOURS)) {
+                        temporal = temporal.plus(1, ChronoUnit.HOURS);
+                    }
+                    up = 0;
+                }
+                temporal = temporal.with(MINUTE_OF_HOUR, up);
+            }
+
+            return temporal;
+        };
     }
 
     //-----------------------------------------------------------------------
