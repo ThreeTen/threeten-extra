@@ -45,9 +45,9 @@ import java.time.Instant;
  * Unfortunately, the Earth's rotation is not straightforward, and a solar day
  * does not match this definition.
  * <p>
- * This class is an alternative representation based on the MISP time-scale. TAI
- * is a single incrementing count of SI seconds. There are no leap seconds or
- * other discontinuities.
+ * This class is an alternative representation based on the MISP time-scale. The
+ * MISP time-scale is a single incrementing count of SI seconds. There are no
+ * leap seconds or other discontinuities.
  * <p>
  * The duration between two points on the MISP time-scale is calculated solely
  * using this class. Do not use the {@code between} method on {@code Duration}
@@ -136,8 +136,7 @@ public final class MispInstant
      *  MispInstant.ofMispSeconds(2, 1000000001);
      * </pre>
      *
-     * @param mispSeconds the number of seconds from the epoch of
-     * 1970-01-01T00:00:00(UTC)
+     * @param mispSeconds the number of seconds from the epoch of 1970-01-01T00:00:00(UTC)
      * @param nanoAdjustment the nanosecond adjustment to the number of seconds,
      * positive or negative
      * @return the MISP instant, not null
@@ -176,7 +175,7 @@ public final class MispInstant
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static MispInstant of(Instant instant) {
-        return UtcRules.system().convertToMISP(instant);
+        return UtcRules.system().convertToMisp(instant);
     }
 
     /**
@@ -196,7 +195,7 @@ public final class MispInstant
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static MispInstant of(UtcInstant instant) {
-        return UtcRules.system().convertToMISP(instant);
+        return UtcRules.system().convertToMisp(instant);
     }
 
     /**
@@ -213,8 +212,7 @@ public final class MispInstant
     }
 
     /**
-     * Gets the number of seconds from the TAI epoch of
-     * 1970-01-01T00:00:00(UTC).
+     * Gets the number of seconds from the MISP epoch of 1970-01-01T00:00:00(UTC).
      * <p>
      * The MISP second count is a simple incrementing count of seconds where
      * second 0 is 1970-01-01T00:00:00(UTC). The nanosecond part of the second
@@ -227,8 +225,7 @@ public final class MispInstant
     }
 
     /**
-     * Returns a copy of this {@code MispInstant} with the number of seconds
-     * from the MISP epoch of 1970-01-01T00:00:00(UTC).
+     * Returns a copy of this {@code MispInstant} with the number of seconds from the MISP epoch of 1970-01-01T00:00:00(UTC).
      * <p>
      * The MISP second count is a simple incrementing count of seconds where
      * second 0 is 1970-01-01T00:00:00(UTC). The nanosecond part of the second
@@ -246,8 +243,7 @@ public final class MispInstant
     }
 
     /**
-     * Gets the number of nanoseconds, later along the time-line, from the start
-     * of the second.
+     * Gets the number of nanoseconds, later along the time-line, from the start of the second.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds
      * from the second returned by {@link getMispSeconds()}.
@@ -259,8 +255,7 @@ public final class MispInstant
     }
 
     /**
-     * Returns a copy of this {@code MispInstant} with the nano-of-second value
-     * changed.
+     * Returns a copy of this {@code MispInstant} with the nano-of-second value changed.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds
      * from the second returned by {@link getMispSeconds()}.
@@ -268,8 +263,7 @@ public final class MispInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond the nano-of-second, from 0 to 999,999,999
-     * @return a {@code MispInstant} based on this instant with the requested
-     * nano-of-second, not null
+     * @return a {@code MispInstant} based on this instant with the requested nano-of-second, not null
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
     public MispInstant withNano(int nanoOfSecond) {
@@ -290,8 +284,7 @@ public final class MispInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration the duration to add, not null
-     * @return a {@code MispInstant} based on this instant with the duration
-     * added, not null
+     * @return a {@code MispInstant} based on this instant with the duration added, not null
      * @throws ArithmeticException if the calculation exceeds the supported
      * range
      */
@@ -317,10 +310,8 @@ public final class MispInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration the duration to subtract, not null
-     * @return a {@code MispInstant} based on this instant with the duration
-     * subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the supported
-     * range
+     * @return a {@code MispInstant} based on this instant with the duration subtracted, not null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public MispInstant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
@@ -342,10 +333,8 @@ public final class MispInstant
      * instant.
      *
      * @param otherInstant the instant to calculate the duration until, not null
-     * @return the duration until the specified instant, may be negative, not
-     * null
-     * @throws ArithmeticException if the calculation exceeds the supported
-     * range
+     * @return the duration until the specified instant, may be negative, not null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration durationUntil(MispInstant otherInstant) {
         long durSecs = Math.subtractExact(otherInstant.seconds, seconds);
@@ -363,8 +352,7 @@ public final class MispInstant
      * Conversion to an {@link Instant} will not be completely accurate near a
      * leap second in accordance with UTC-SLS.
      *
-     * @return an {@code Instant} representing the best approximation of this
-     * instant, not null
+     * @return an {@code Instant} representing the best approximation of this instant, not null
      * @throws DateTimeException if the range of {@code Instant} is exceeded
      * @throws ArithmeticException if numeric overflow occurs
      */
@@ -470,7 +458,6 @@ public final class MispInstant
      */
     @Override
     public int hashCode() {
-        // TODO: Evaluate hash code
         return ((int) (seconds ^ (seconds >>> 32))) + 51 * nanos;
     }
 

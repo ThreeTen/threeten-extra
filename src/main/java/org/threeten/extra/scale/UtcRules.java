@@ -251,7 +251,7 @@ public abstract class UtcRules {
      * @throws DateTimeException if the valid range is exceeded
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public MispInstant convertToMISP(UtcInstant utcInstant) {
+    public MispInstant convertToMisp(UtcInstant utcInstant) {
         TaiInstant tai = convertToTai(utcInstant);
         return MispInstant.of(tai);
     }
@@ -285,7 +285,7 @@ public abstract class UtcRules {
      * @throws DateTimeException if the valid range is exceeded
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public MispInstant convertToMISP(Instant instant) {
+    public MispInstant convertToMisp(Instant instant) {
         TaiInstant tai = convertToTai(instant);
         return MispInstant.of(tai);
     }
