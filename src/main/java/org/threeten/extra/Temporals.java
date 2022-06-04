@@ -463,7 +463,7 @@ public final class Temporals {
      * @return the multiplied duration, not null
      */
     public static Duration multiply(Duration duration, double multiplicand) {
-        if (multiplicand == 0d || multiplicand == -0d || duration.isZero()) {
+        if (multiplicand == 0d || duration.isZero()) {
             return Duration.ZERO;
         }
         if (multiplicand == 1d) {
