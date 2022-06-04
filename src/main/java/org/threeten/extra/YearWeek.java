@@ -344,13 +344,12 @@ public final class YearWeek
      * If false, then calling the {@link #range(TemporalField) range} and
      * {@link #get(TemporalField) get} methods will throw an exception.
      * <p>
-     * If the field is a {@link ChronoField} then the query is implemented here.
      * The supported fields are:
      * <ul>
      * <li>{@code WEEK_OF_WEEK_BASED_YEAR}
      * <li>{@code WEEK_BASED_YEAR}
      * </ul>
-     * All {@code ChronoField} instances will return false.
+     * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
      * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
@@ -377,7 +376,6 @@ public final class YearWeek
      * If false, then calling the {@link #plus(long, TemporalUnit)} and
      * {@link #minus(long, TemporalUnit) minus} methods will throw an exception.
      * <p>
-     * If the unit is a {@link ChronoUnit} then the query is implemented here.
      * The supported units are:
      * <ul>
      * <li>{@code WEEKS}
@@ -395,8 +393,10 @@ public final class YearWeek
      */
     @Override
     public boolean isSupported(TemporalUnit unit) {
-        if (unit instanceof ChronoUnit) {
-            return unit == WEEKS || unit == WEEK_BASED_YEARS;
+        if (unit == WEEKS || unit == WEEK_BASED_YEARS) {
+            return true;
+        } else if (unit instanceof ChronoUnit) {
+            return false;
         }
         return unit != null && unit.isSupportedBy(this);
     }

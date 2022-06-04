@@ -68,9 +68,22 @@ import static java.time.temporal.ChronoField.SECOND_OF_DAY;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.ChronoUnit.CENTURIES;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MICROS;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.NANOS;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.time.temporal.ChronoUnit.WEEKS;
+import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
+import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
+import static java.time.temporal.IsoFields.WEEK_BASED_YEARS;
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -106,6 +119,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
@@ -473,6 +487,27 @@ public class TestYearWeek {
         assertEquals(false, TEST.isSupported(DAY_OF_QUARTER));
         assertEquals(true, TEST.isSupported(WEEK_BASED_YEAR));
         assertEquals(true, TEST.isSupported(WEEK_OF_WEEK_BASED_YEAR));
+    }
+
+    //-----------------------------------------------------------------------
+    // isSupported(TemporalUnit)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_isSupported_TemporalUnit() {
+        assertEquals(false, TEST.isSupported((TemporalUnit) null));
+        assertEquals(false, TEST.isSupported(NANOS));
+        assertEquals(false, TEST.isSupported(MICROS));
+        assertEquals(false, TEST.isSupported(MILLIS));
+        assertEquals(false, TEST.isSupported(SECONDS));
+        assertEquals(false, TEST.isSupported(MINUTES));
+        assertEquals(false, TEST.isSupported(HOURS));
+        assertEquals(false, TEST.isSupported(DAYS));
+        assertEquals(true, TEST.isSupported(WEEKS));
+        assertEquals(false, TEST.isSupported(MONTHS));
+        assertEquals(false, TEST.isSupported(YEARS));
+        assertEquals(false, TEST.isSupported(CENTURIES));
+        assertEquals(true, TEST.isSupported(WEEK_BASED_YEARS));
+        assertEquals(false, TEST.isSupported(QUARTER_YEARS));
     }
 
     //-----------------------------------------------------------------------
