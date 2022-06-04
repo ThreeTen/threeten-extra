@@ -64,7 +64,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -78,9 +80,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test Temporals.
@@ -357,7 +357,6 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     // parseFirstMatching()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_parseFirstMatching() {
         return new Object[][] {
             {"2016-09-06", DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE},
@@ -366,7 +365,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_parseFirstMatching")
+    @MethodSource("data_parseFirstMatching")
     public void test_parseFirstMatching(String text, DateTimeFormatter fmt1, DateTimeFormatter fmt2) {
         assertEquals(LocalDate.of(2016, 9, 6), Temporals.parseFirstMatching(text, LocalDate::from, fmt1, fmt2));
     }
@@ -389,7 +388,6 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     // chronoUnit() / timeUnit()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_timeUnitConversion() {
         return new Object[][] {
             {ChronoUnit.NANOS, TimeUnit.NANOSECONDS},
@@ -403,7 +401,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_timeUnitConversion")
+    @MethodSource("data_timeUnitConversion")
     public void test_timeUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
         assertEquals(timeUnit, Temporals.timeUnit(chronoUnit));
     }
@@ -419,7 +417,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_timeUnitConversion")
+    @MethodSource("data_timeUnitConversion")
     public void test_chronoUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
         assertEquals(chronoUnit, Temporals.chronoUnit(timeUnit));
     }
@@ -432,7 +430,6 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     // convertAmount()
     //-------------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_convertAmount() {
         return new Object[][] {
             {2L, NANOS, SECONDS, 0L, 2L},
@@ -580,7 +577,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_convertAmount")
+    @MethodSource("data_convertAmount")
     public void test_convertAmount(
             long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
             long resultWhole, long resultRemainder) {
@@ -590,7 +587,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_convertAmount")
+    @MethodSource("data_convertAmount")
     public void test_convertAmount_negative(
             long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
             long resultWhole, long resultRemainder) {
@@ -621,7 +618,6 @@ public class TestTemporals {
         }
     }
 
-    @DataProvider
     public static Object[][] data_convertAmountInvalid() {
         return new Object[][] {
             {SECONDS, MONTHS},
@@ -641,12 +637,11 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_convertAmountInvalid")
+    @MethodSource("data_convertAmountInvalid")
     public void test_convertAmountInvalid(TemporalUnit fromUnit, TemporalUnit resultUnit) {
         assertThrows(DateTimeException.class, () -> Temporals.convertAmount(1, fromUnit, resultUnit));
     }
 
-    @DataProvider
     public static Object[][] data_convertAmountInvalidUnsupported() {
         return new Object[][] {
             {SECONDS, ERAS},
@@ -665,9 +660,113 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_convertAmountInvalidUnsupported")
+    @MethodSource("data_convertAmountInvalidUnsupported")
     public void test_convertAmountInvalidUnsupported(TemporalUnit fromUnit, TemporalUnit resultUnit) {
         assertThrows(UnsupportedTemporalTypeException.class, () -> Temporals.convertAmount(1, fromUnit, resultUnit));
+    }
+
+    //-----------------------------------------------------------------------
+    // duration to/from BigDecimal/double
+    //-------------------------------------------------------------------------
+    public static Object[][] data_durationConversions() {
+        return new Object[][] {
+            {Duration.ZERO, BigDecimal.valueOf(0, 9), 0d},
+            {Duration.ofSeconds(1, 0), new BigDecimal("1.000000000"), 1d},
+            {Duration.ofSeconds(1, 500_000_000), new BigDecimal("1.500000000"), 1.5d},
+            {Duration.ofSeconds(0, -400_000_000), new BigDecimal("-0.400000000"), -0.4d},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_durationConversions")
+    public void test_durationToBigDecimalSeconds(Duration input, BigDecimal expected, double ignored) {
+        BigDecimal test = Temporals.durationToBigDecimalSeconds(input);
+        assertEquals(expected, test);
+        assertEquals(9, test.scale());
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_durationConversions")
+    public void test_durationFromBigDecimalSeconds(Duration expected, BigDecimal input, double ignored) {
+        Duration test = Temporals.durationFromBigDecimalSeconds(input);
+        assertEquals(expected, test);
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_durationConversions")
+    public void test_durationToDoubleSeconds(Duration input, BigDecimal ignored, double expected) {
+        double test = Temporals.durationToDoubleSeconds(input);
+        assertEquals(expected, test, 0d);
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_durationConversions")
+    public void test_durationFromDoubleSeconds(Duration expected, BigDecimal ignored, double input) {
+        Duration test = Temporals.durationFromDoubleSeconds(input);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void test_durationFromBigDecimalSeconds_manyDecimals() {
+        Duration test = Temporals.durationFromBigDecimalSeconds(BigDecimal.valueOf(122233322251L, 11));
+        assertEquals(Duration.ofSeconds(1, 222333223), test);
+    }
+
+    @Test
+    public void test_durationFromDoubleSeconds_manyDecimals() {
+        Duration test = Temporals.durationFromDoubleSeconds(1.22233322251d);
+        assertEquals(Duration.ofSeconds(1, 222333223), test);
+    }
+
+    @Test
+    public void test_durationFromBigDecimalSeconds_tooLargePositive() {
+        Duration test = Temporals.durationFromBigDecimalSeconds(BigDecimal.valueOf(122233322251L, -10));
+        assertEquals(Duration.ofSeconds(Long.MAX_VALUE, 999_999_999), test);
+    }
+
+    @Test
+    public void test_durationFromBigDecimalSeconds_tooLargeNegative() {
+        Duration test = Temporals.durationFromBigDecimalSeconds(BigDecimal.valueOf(-122233322251L, -10));
+        assertEquals(Duration.ofSeconds(Long.MIN_VALUE), test);
+    }
+
+    @Test
+    public void test_durationFromDoubleSeconds_tooLargePositive() {
+        Duration test = Temporals.durationFromDoubleSeconds(122233322251e10);
+        assertEquals(Duration.ofSeconds(Long.MAX_VALUE, 999_999_999), test);
+    }
+
+    @Test
+    public void test_durationFromDoubleSeconds_tooLargeNegative() {
+        Duration test = Temporals.durationFromDoubleSeconds(-122233322251e10);
+        assertEquals(Duration.ofSeconds(Long.MIN_VALUE), test);
+    }
+
+    //-----------------------------------------------------------------------
+    // duration multiply
+    //-------------------------------------------------------------------------
+    public static Object[][] data_durationMultiply() {
+        return new Object[][] {
+            {Duration.ZERO, 0d, Duration.ZERO},
+            {Duration.ZERO, 1d, Duration.ZERO},
+            {Duration.ZERO, 2d, Duration.ZERO},
+            {Duration.ofSeconds(1, 0), 0d, Duration.ZERO},
+            {Duration.ofSeconds(1, 0), -0d, Duration.ZERO},
+            {Duration.ofSeconds(1, 0), 1d, Duration.ofSeconds(1, 0)},
+            {Duration.ofSeconds(1, 0), 2d, Duration.ofSeconds(2, 0)},
+            {Duration.ofSeconds(1, 500_000_000), 2d, Duration.ofSeconds(3, 0)},
+            {Duration.ofSeconds(1, 0), 1e-12, Duration.ofNanos(1)},
+            {Duration.ofNanos(1), 1e-12, Duration.ofNanos(1)},
+            {Duration.ofSeconds(Long.MAX_VALUE - 1, 0), 1.1d, Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)},
+            {Duration.ofSeconds(Long.MAX_VALUE - 1, 0), -1.1d, Duration.ofSeconds(Long.MIN_VALUE, 0)},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_durationMultiply")
+    public void test_durationMultiply(Duration input, double multiplicand, Duration expected) {
+        Duration test = Temporals.multiply(input, multiplicand);
+        assertEquals(expected, test);
     }
 
 }

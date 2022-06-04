@@ -37,8 +37,12 @@ import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.FOREVER;
 import static java.time.temporal.ChronoUnit.WEEKS;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.text.ParsePosition;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -384,6 +388,90 @@ public final class Temporals {
             }
         }
         return 3;  // quarters
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Converts a duration to a {@code BigDecimal} with a scale of 9.
+     *
+     * @param duration  the duration to convert, not null
+     * @return the {@code BigDecimal} equivalent of the duration, in seconds with a scale of 9
+     */
+    public static BigDecimal durationToBigDecimalSeconds(Duration duration) {
+        return BigDecimal.valueOf(duration.getSeconds()).add(BigDecimal.valueOf(duration.getNano(), 9));
+    }
+
+    /**
+     * Converts a {@code BigDecimal} representing seconds to a duration, saturating if necessary.
+     * <p>
+     * No exception is thrown by this method.
+     * Numbers are rounded up to the nearest nanosecond (away from zero).
+     * The duration will saturate at the biggest positive or negative {@code Duration}.
+     *
+     * @param seconds  the number of seconds to convert, positive or negative
+     * @return a {@code Duration}, not null
+     */
+    public static Duration durationFromBigDecimalSeconds(BigDecimal seconds) {
+        BigInteger nanos = seconds.setScale(9, RoundingMode.UP).movePointRight(9).toBigIntegerExact();
+        BigInteger[] divRem = nanos.divideAndRemainder(BigInteger.valueOf(1_000_000_000));
+        if (divRem[0].bitLength() > 63) {
+            if (divRem[0].signum() >= 1) {
+                return Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
+            } else {
+                return Duration.ofSeconds(Long.MIN_VALUE);
+            }
+        }
+        return Duration.ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+    }
+
+    /**
+     * Converts a duration to a {@code double}.
+     *
+     * @param duration  the duration to convert, not null
+     * @return the {@code double} equivalent of the duration, in seconds
+     */
+    public static double durationToDoubleSeconds(Duration duration) {
+        if (duration.getSeconds() < 1_000_000_000) {
+            return duration.toNanos() / 1_000_000_000d;
+        }
+        return durationToBigDecimalSeconds(duration).doubleValue();
+    }
+
+    /**
+     * Converts a {@code double} representing seconds to a duration, saturating if necessary.
+     * <p>
+     * No exception is thrown by this method.
+     * Numbers are rounded up to the nearest nanosecond (away from zero).
+     * The duration will saturate at the biggest positive or negative {@code Duration}.
+     *
+     * @param seconds  the number of seconds to convert, positive or negative
+     * @return a {@code Duration}, not null
+     */
+    public static Duration durationFromDoubleSeconds(double seconds) {
+        return durationFromBigDecimalSeconds(BigDecimal.valueOf(seconds));
+    }
+
+    /**
+     * Multiplies a duration by a {@code double}.
+     * <p>
+     * The amount is rounded away from zero, thus the result is only zero if zero is passed in.
+     * See {@link #durationToBigDecimalSeconds(Duration)} and {@link #durationFromBigDecimalSeconds(BigDecimal)}.
+     * Note that due to the rounding up, 1 nanosecond multiplied by any number smaller than 1 will still be 1 nanosecond.
+     * 
+     * @param duration  the duration to multiply, not null
+     * @param multiplicand  the multiplication factor
+     * @return the multiplied duration, not null
+     */
+    public static Duration multiply(Duration duration, double multiplicand) {
+        if (multiplicand == 0d || duration.isZero()) {
+            return Duration.ZERO;
+        }
+        if (multiplicand == 1d) {
+            return duration;
+        }
+        BigDecimal amount = durationToBigDecimalSeconds(duration);
+        amount = amount.multiply(BigDecimal.valueOf(multiplicand));
+        return durationFromBigDecimalSeconds(amount);
     }
 
 }
