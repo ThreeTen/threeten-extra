@@ -412,16 +412,11 @@ public final class Temporals {
      * @return a {@code Duration}, not null
      */
     public static Duration durationFromBigDecimalSeconds(BigDecimal seconds) {
-        BigInteger nanos = seconds.setScale(9, RoundingMode.UP).movePointRight(9).toBigIntegerExact();
-        BigInteger[] divRem = nanos.divideAndRemainder(BigInteger.valueOf(1_000_000_000));
-        if (divRem[0].bitLength() > 63) {
-            if (divRem[0].signum() >= 1) {
-                return Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
-            } else {
-                return Duration.ofSeconds(Long.MIN_VALUE);
-            }
-        }
-        return Duration.ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+        BigDecimal min = BigDecimal.valueOf(Long.MIN_VALUE).add(BigDecimal.valueOf(000_000_000, 9));
+        BigDecimal max = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(999_999_999, 9));
+        BigInteger nanos = seconds.setScale(9, RoundingMode.UP).max(min).min(max).unscaledValue();
+        BigInteger[] secondsNanos = nanos.divideAndRemainder(BigInteger.valueOf(1_000_000_000));
+        return Duration.ofSeconds(secondsNanos[0].longValue(), secondsNanos[1].intValue());
     }
 
     /**
