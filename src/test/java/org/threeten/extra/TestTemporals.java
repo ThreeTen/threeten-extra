@@ -751,11 +751,14 @@ public class TestTemporals {
             {Duration.ZERO, 1d, Duration.ZERO},
             {Duration.ZERO, 2d, Duration.ZERO},
             {Duration.ofSeconds(1, 0), 0d, Duration.ZERO},
+            {Duration.ofSeconds(1, 0), -0d, Duration.ZERO},
             {Duration.ofSeconds(1, 0), 1d, Duration.ofSeconds(1, 0)},
             {Duration.ofSeconds(1, 0), 2d, Duration.ofSeconds(2, 0)},
             {Duration.ofSeconds(1, 500_000_000), 2d, Duration.ofSeconds(3, 0)},
             {Duration.ofSeconds(1, 0), 1e-12, Duration.ofNanos(1)},
             {Duration.ofNanos(1), 1e-12, Duration.ofNanos(1)},
+            {Duration.ofSeconds(Long.MAX_VALUE - 1, 0), 1.1d, Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)},
+            {Duration.ofSeconds(Long.MAX_VALUE - 1, 0), -1.1d, Duration.ofSeconds(Long.MIN_VALUE, 0)},
         };
     }
 

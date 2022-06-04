@@ -402,7 +402,7 @@ public final class Temporals {
     }
 
     /**
-     * Converts a {@code BigDecimal} representing seconds to a duration.
+     * Converts a {@code BigDecimal} representing seconds to a duration, saturating if necessary.
      * <p>
      * No exception is thrown by this method.
      * Numbers are rounded up to the nearest nanosecond (away from zero).
@@ -438,7 +438,7 @@ public final class Temporals {
     }
 
     /**
-     * Converts a {@code double} representing seconds to a duration.
+     * Converts a {@code double} representing seconds to a duration, saturating if necessary.
      * <p>
      * No exception is thrown by this method.
      * Numbers are rounded up to the nearest nanosecond (away from zero).
@@ -455,13 +455,15 @@ public final class Temporals {
      * Multiplies a duration by a {@code double}.
      * <p>
      * The amount is rounded away from zero, thus the result is only zero if zero is passed in.
+     * See {@link #durationToBigDecimalSeconds(Duration)} and {@link #durationFromBigDecimalSeconds(BigDecimal)}.
+     * Note that due to the rounding up, 1 nanosecond multiplied by any number smaller than 1 will still be 1 nanosecond.
      * 
      * @param duration  the duration to multiply, not null
      * @param multiplicand  the multiplication factor
      * @return the multiplied duration, not null
      */
     public static Duration multiply(Duration duration, double multiplicand) {
-        if (multiplicand == 0d) {
+        if (multiplicand == 0d || multiplicand == -0d || duration.isZero()) {
             return Duration.ZERO;
         }
         if (multiplicand == 1d) {
