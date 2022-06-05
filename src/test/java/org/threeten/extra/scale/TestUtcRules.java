@@ -53,9 +53,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test SystemLeapSecondRules.
@@ -103,7 +101,6 @@ public class TestUtcRules {
     //-----------------------------------------------------------------------
     // getLeapSecond()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_leapSeconds() {
         return new Object[][] {
             {-1, 0, 10, "1858-11-16"},
@@ -237,7 +234,7 @@ public class TestUtcRules {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_leapSeconds")
+    @MethodSource("data_leapSeconds")
     public void test_leapSeconds(long mjd, int adjust, int offset, String checkDate) {
         assertEquals(LocalDate.parse(checkDate).getLong(JulianFields.MODIFIED_JULIAN_DAY), mjd);
 

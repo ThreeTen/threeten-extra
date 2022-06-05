@@ -54,9 +54,7 @@ import java.time.temporal.TemporalAmount;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test class.
@@ -170,7 +168,6 @@ public class TestWeeks {
         assertEquals(Weeks.of(2), Weeks.parse("-P-2W"));
     }
 
-    @DataProvider
     public static Object[][] data_invalid() {
         return new Object[][] {
             {"P3Y"},
@@ -188,7 +185,7 @@ public class TestWeeks {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_invalid")
+    @MethodSource("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
         assertThrows(DateTimeParseException.class, () -> Weeks.parse(str));
     }

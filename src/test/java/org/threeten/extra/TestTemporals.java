@@ -78,9 +78,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test Temporals.
@@ -153,7 +151,7 @@ public class TestTemporals {
         test = Temporals.nextWorkingDay().adjustInto(saturday);
         assertEquals(LocalDate.of(2012, JANUARY, 2), test);
     }
-    
+
     //-----------------------------------------------------------------------
     // nextWorkingDayOrSame()
     //-----------------------------------------------------------------------
@@ -357,7 +355,6 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     // parseFirstMatching()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_parseFirstMatching() {
         return new Object[][] {
             {"2016-09-06", DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE},
@@ -366,7 +363,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_parseFirstMatching")
+    @MethodSource("data_parseFirstMatching")
     public void test_parseFirstMatching(String text, DateTimeFormatter fmt1, DateTimeFormatter fmt2) {
         assertEquals(LocalDate.of(2016, 9, 6), Temporals.parseFirstMatching(text, LocalDate::from, fmt1, fmt2));
     }
@@ -389,7 +386,6 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     // chronoUnit() / timeUnit()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_timeUnitConversion() {
         return new Object[][] {
             {ChronoUnit.NANOS, TimeUnit.NANOSECONDS},
@@ -403,7 +399,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_timeUnitConversion")
+    @MethodSource("data_timeUnitConversion")
     public void test_timeUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
         assertEquals(timeUnit, Temporals.timeUnit(chronoUnit));
     }
@@ -419,7 +415,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_timeUnitConversion")
+    @MethodSource("data_timeUnitConversion")
     public void test_chronoUnit(ChronoUnit chronoUnit, TimeUnit timeUnit) {
         assertEquals(chronoUnit, Temporals.chronoUnit(timeUnit));
     }
@@ -432,7 +428,6 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     // convertAmount()
     //-------------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_convertAmount() {
         return new Object[][] {
             {2L, NANOS, SECONDS, 0L, 2L},
@@ -580,7 +575,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_convertAmount")
+    @MethodSource("data_convertAmount")
     public void test_convertAmount(
             long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
             long resultWhole, long resultRemainder) {
@@ -590,7 +585,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_convertAmount")
+    @MethodSource("data_convertAmount")
     public void test_convertAmount_negative(
             long fromAmount, TemporalUnit fromUnit, TemporalUnit resultUnit,
             long resultWhole, long resultRemainder) {
@@ -621,7 +616,6 @@ public class TestTemporals {
         }
     }
 
-    @DataProvider
     public static Object[][] data_convertAmountInvalid() {
         return new Object[][] {
             {SECONDS, MONTHS},
@@ -641,12 +635,11 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_convertAmountInvalid")
+    @MethodSource("data_convertAmountInvalid")
     public void test_convertAmountInvalid(TemporalUnit fromUnit, TemporalUnit resultUnit) {
         assertThrows(DateTimeException.class, () -> Temporals.convertAmount(1, fromUnit, resultUnit));
     }
 
-    @DataProvider
     public static Object[][] data_convertAmountInvalidUnsupported() {
         return new Object[][] {
             {SECONDS, ERAS},
@@ -665,7 +658,7 @@ public class TestTemporals {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_convertAmountInvalidUnsupported")
+    @MethodSource("data_convertAmountInvalidUnsupported")
     public void test_convertAmountInvalidUnsupported(TemporalUnit fromUnit, TemporalUnit resultUnit) {
         assertThrows(UnsupportedTemporalTypeException.class, () -> Temporals.convertAmount(1, fromUnit, resultUnit));
     }

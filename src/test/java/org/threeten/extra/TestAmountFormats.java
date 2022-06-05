@@ -41,9 +41,7 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test AmountFormats.
@@ -62,7 +60,6 @@ public class TestAmountFormats {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_wordBased() {
         return new Object[][] {
             {Period.ofYears(0), Locale.ROOT, "0 days"},
@@ -100,12 +97,11 @@ public class TestAmountFormats {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_wordBased")
+    @MethodSource("data_wordBased")
     public void test_wordBased(Period period, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(period, locale));
     }
 
-    @DataProvider
     public static Object[][] duration_wordBased() {
         return new Object[][] {
             {Duration.ofMinutes(180 + 2), Locale.ENGLISH, "3 hours and 2 minutes"},
@@ -136,12 +132,11 @@ public class TestAmountFormats {
     }
 
     @ParameterizedTest
-    @UseDataProvider("duration_wordBased")
+    @MethodSource("duration_wordBased")
     public void test_wordBased(Duration duration, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(duration, locale));
     }
 
-    @DataProvider
     public static Object[][] period_duration_wordBased() {
         return new Object[][] {
             {Period.ofDays(1), Duration.ofMinutes(180 + 2), Locale.ROOT, "1 day, 3 hours and 2 minutes"},
@@ -163,7 +158,7 @@ public class TestAmountFormats {
     }
 
     @ParameterizedTest
-    @UseDataProvider("period_duration_wordBased")
+    @MethodSource("period_duration_wordBased")
     public void test_wordBased(Period period, Duration duration, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(period, duration, locale));
     }
@@ -296,12 +291,11 @@ public class TestAmountFormats {
 
     // -----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("wordBased_ru_formatSeparator")
+    @MethodSource("wordBased_ru_formatSeparator")
     public void test_wordBased_ru_formatSeparator(String expected, Duration duration) {
         assertEquals(expected, AmountFormats.wordBased(duration, RU));
     }
 
-    @DataProvider
     public static Object[][] wordBased_ru_formatSeparator() {
         return new Object[][]{
             {"18 \u0447\u0430\u0441\u043E\u0432 \u0438 32 \u043C\u0438\u043D\u0443\u0442\u044B", Duration.ofMinutes(1112)},
@@ -311,12 +305,11 @@ public class TestAmountFormats {
 
     // -----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("wordBased_ru_period_predicate")
+    @MethodSource("wordBased_ru_period_predicate")
     public void test_wordBased_ru_period_predicate(String expected, Period period) {
         assertEquals(expected, AmountFormats.wordBased(period, RU));
     }
 
-    @DataProvider
     public static Object[][] wordBased_ru_period_predicate() {
         return new Object[][]{
 
@@ -439,12 +432,11 @@ public class TestAmountFormats {
 
     // -----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("wordBased_ru_duration_predicate")
+    @MethodSource("wordBased_ru_duration_predicate")
     public void test_wordBased_ru_duration_predicate(String expected, Duration duration) {
         assertEquals(expected, AmountFormats.wordBased(duration, RU));
     }
 
-    @DataProvider
     public static Object[][] wordBased_ru_duration_predicate() {
         return new Object[][]{
 
@@ -544,12 +536,11 @@ public class TestAmountFormats {
 
     // -----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("duration_unitBased")
+    @MethodSource("duration_unitBased")
     public void test_parseUnitBasedDuration(Duration expected, String input) {
         assertEquals(expected, AmountFormats.parseUnitBasedDuration(input));
     }
 
-    @DataProvider
     public static Object[][] duration_unitBased() {
         return new Object[][] {
             {Duration.ZERO, "0"},
@@ -574,7 +565,7 @@ public class TestAmountFormats {
     }
 
     @ParameterizedTest
-    @UseDataProvider("duration_unitBasedErrors")
+    @MethodSource("duration_unitBasedErrors")
     public void test_parseUnitBasedDurationErrors(Exception e, String input) {
         Exception thrown =
             assertThrows(e.getClass(), () -> AmountFormats.parseUnitBasedDuration(input));
@@ -587,7 +578,6 @@ public class TestAmountFormats {
         }
     }
 
-    @DataProvider
     public static Object[][] duration_unitBasedErrors() {
         return new Object[][] {
             {new NullPointerException("durationText must not be null"), null},
