@@ -34,6 +34,7 @@ package org.threeten.extra.chrono;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -42,11 +43,18 @@ import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.ValueRange;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Streams;
 
 /**
  * Test.
@@ -56,28 +64,11 @@ public class TestAccountingChronologyBuilder {
     //-----------------------------------------------------------------------
     // isLeapYear(), date(int, int, int)
     //-----------------------------------------------------------------------
-    public static Object[][] data_yearEnding() {
-        return new Object[][] {
-            {DayOfWeek.MONDAY, Month.JANUARY},
-            {DayOfWeek.TUESDAY, Month.MARCH},
-            {DayOfWeek.WEDNESDAY, Month.APRIL},
-            {DayOfWeek.THURSDAY, Month.MAY},
-            {DayOfWeek.FRIDAY, Month.JUNE},
-            {DayOfWeek.SATURDAY, Month.JULY},
-            {DayOfWeek.SUNDAY, Month.AUGUST},
-            {DayOfWeek.MONDAY, Month.SEPTEMBER},
-            {DayOfWeek.TUESDAY, Month.OCTOBER},
-            {DayOfWeek.WEDNESDAY, Month.NOVEMBER},
-            {DayOfWeek.THURSDAY, Month.DECEMBER},
-
-            {DayOfWeek.MONDAY, Month.FEBRUARY},
-            {DayOfWeek.TUESDAY, Month.FEBRUARY},
-            {DayOfWeek.WEDNESDAY, Month.FEBRUARY},
-            {DayOfWeek.THURSDAY, Month.FEBRUARY},
-            {DayOfWeek.FRIDAY, Month.FEBRUARY},
-            {DayOfWeek.SATURDAY, Month.FEBRUARY},
-            {DayOfWeek.SUNDAY, Month.FEBRUARY},
-        };
+    public static Stream<Arguments> data_yearEnding() {
+        return Lists.cartesianProduct(
+                Lists.newArrayList(DayOfWeek.values()),
+                Lists.newArrayList(Month.values())).stream().map(
+                        (args) -> arguments(args.toArray()));
     }
 
     @ParameterizedTest
@@ -217,50 +208,38 @@ public class TestAccountingChronologyBuilder {
     //-----------------------------------------------------------------------
     // range(MONTH_OF_YEAR), range(DAY_OF_MONTH)
     //-----------------------------------------------------------------------
-    public static Object[][] data_range() {
-        return new Object[][] {
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 1,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 2,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 3,
-                ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 4,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 5,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 6,
-                ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 7,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 8,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 9,
-                ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 10,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 11,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 12,
-                ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+    public static Stream<Arguments> data_range() {
+        IntBinaryOperator weeksInMonth = (leapWeekInMonth, offset) -> (leapWeekInMonth + offset) % 3 == 0 ? 6 : 5;
 
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 1,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 2,
-                ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 3,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+        Stream<Arguments> pattern_4_4_5 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
+                        leapWeekInMonth,
+                        ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 0)),
+                        ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 0)),
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)));
 
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 1,
-                ValueRange.of(1, 4, 6), ValueRange.of(1, 28, 42), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 2,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 3,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)},
+        Stream<Arguments> pattern_4_5_4 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS,
+                        leapWeekInMonth,
+                        ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 1)),
+                        ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 1)),
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)));
 
-            {AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 1,
-                ValueRange.of(1, 4, 5), ValueRange.of(1, 28, 35), ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12)},
-        };
+        Stream<Arguments> pattern_5_4_4 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+                        leapWeekInMonth,
+                        ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 2)),
+                        ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 2)),
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)));
+
+        Stream<Arguments> pattern_even_13 = IntStream.range(1, 14)
+                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
+                        leapWeekInMonth,
+                        ValueRange.of(1, 4, 5),
+                        ValueRange.of(1, 7 * 4, 7 * 5),
+                        ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12)));
+
+        return Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13);
     }
 
     @ParameterizedTest
@@ -339,31 +318,24 @@ public class TestAccountingChronologyBuilder {
     // getWeeksInMonth(month),
     // getWeeksAtStartOfMonth(weeks), getMonthFromElapsedWeeks(weeks)
     //-----------------------------------------------------------------------
-    public static Object[][] data_weeksInMonth() {
-        return new Object[][] {
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 1},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 2},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 3},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 4},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 5},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 6},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 7},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 8},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 9},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 10},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 11},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] {4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5}, 12},
+    public static Stream<Arguments> data_weeksInMonth() {
+        Stream<Arguments> pattern_4_4_5 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
+                        new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }, leapWeekInMonth));
 
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 1},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 2},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] {4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4}, 3},
+        Stream<Arguments> pattern_4_5_4 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS,
+                        new int[] { 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4 }, leapWeekInMonth));
 
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 1},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 2},
-            {AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] {5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4}, 3},
+        Stream<Arguments> pattern_5_4_4 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+                        new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }, leapWeekInMonth));
 
-            {AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, new int[] {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 13},
-        };
+        Stream<Arguments> pattern_even_13 = IntStream.range(1, 14)
+                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
+                        new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, leapWeekInMonth));
+
+        return Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13);
     }
 
     @ParameterizedTest
@@ -444,19 +416,17 @@ public class TestAccountingChronologyBuilder {
     //-----------------------------------------------------------------------
     // toChronology() failures.
     //-----------------------------------------------------------------------
-    public static Object[][] data_badChronology() {
-        return new Object[][] {
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 0},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, -1},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 14},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 13},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 13},
-            {DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 13},
-            {DayOfWeek.MONDAY, Month.JANUARY, null, 13},
-            {DayOfWeek.MONDAY, null, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13},
-            {null, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13},
-
-        };
+    public static Stream<Arguments> data_badChronology() {
+        return Stream.of(
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 0),
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, -1),
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 14),
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 13),
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 13),
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 13),
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, null, 13),
+                arguments(DayOfWeek.MONDAY, null, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13),
+                arguments(null, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13));
     }
 
     @ParameterizedTest
