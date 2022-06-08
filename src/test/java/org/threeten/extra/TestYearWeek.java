@@ -126,16 +126,13 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class TestYearWeek {
 
     private static final YearWeek TEST_NON_LEAP = YearWeek.of(2014, 1);
     private static final YearWeek TEST = YearWeek.of(2015, 1);
 
-    @DataProvider
     public static Object[][] data_sampleYearWeeks() {
         return new Object[][]{
             {2015, 1},
@@ -197,7 +194,6 @@ public class TestYearWeek {
         };
     }
 
-    @DataProvider
     public static Object[][] data_53WeekYear() {
         return new Object[][]{
             {4},
@@ -274,7 +270,6 @@ public class TestYearWeek {
         };
     }
 
-    @DataProvider
     public static Object[][] data_sampleAtDay() {
         return new Object[][]{
             {2014, 52, MONDAY,    2014, 12, 22},
@@ -307,7 +302,6 @@ public class TestYearWeek {
         };
     }
 
-    @DataProvider
     public static Object[][] data_outOfBounds() {
     	return new Object[][] {
     		{IsoFields.WEEK_OF_WEEK_BASED_YEAR, 54},
@@ -399,7 +393,7 @@ public class TestYearWeek {
     // of(Year, int)
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_sampleYearWeeks")
+    @MethodSource("data_sampleYearWeeks")
     public void test_of_Year_int(int year, int week) {
         YearWeek yearWeek = YearWeek.of(Year.of(year), week);
         assertEquals(year, yearWeek.getYear());
@@ -415,7 +409,7 @@ public class TestYearWeek {
     // of(int, int)
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_sampleYearWeeks")
+    @MethodSource("data_sampleYearWeeks")
     public void test_of(int year, int week) {
         YearWeek yearWeek = YearWeek.of(year, week);
         assertEquals(year, yearWeek.getYear());
@@ -514,7 +508,7 @@ public class TestYearWeek {
     // atDay(DayOfWeek)
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_sampleAtDay")
+    @MethodSource("data_sampleAtDay")
     public void test_atDay(int weekBasedYear, int weekOfWeekBasedYear, DayOfWeek dayOfWeek, int year, int month, int dayOfMonth) {
         YearWeek yearWeek = YearWeek.of(weekBasedYear, weekOfWeekBasedYear);
         LocalDate expected = LocalDate.of(year, month, dayOfMonth);
@@ -546,7 +540,7 @@ public class TestYearWeek {
     // is53WeekYear()
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_53WeekYear")
+    @MethodSource("data_53WeekYear")
     public void test_is53WeekYear(int year) {
         YearWeek yearWeek = YearWeek.of(year, 1);
         assertTrue(yearWeek.is53WeekYear());
@@ -616,7 +610,7 @@ public class TestYearWeek {
     // from(TemporalAccessor)
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_sampleAtDay")
+    @MethodSource("data_sampleAtDay")
     public void test_from(int weekBasedYear, int weekOfWeekBasedYear, DayOfWeek dayOfWeek, int year, int month, int dayOfMonth) {
         YearWeek expected = YearWeek.of(weekBasedYear, weekOfWeekBasedYear);
         LocalDate ld = LocalDate.of(year, month, dayOfMonth);
@@ -692,7 +686,7 @@ public class TestYearWeek {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_outOfBounds")
+    @MethodSource("data_outOfBounds")
     public void test_with_outOfBounds(TemporalField field, long newValue) {
         assertThrows(DateTimeException.class, () -> TEST.with(field, newValue));
     }
@@ -1090,7 +1084,7 @@ public class TestYearWeek {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_sampleYearWeeks")
+    @MethodSource("data_sampleYearWeeks")
     public void test_equalsAndHashCodeContract(int year, int week) {
         YearWeek a = YearWeek.of(year, week);
         YearWeek b = YearWeek.of(year, week);
@@ -1121,7 +1115,6 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_sampleToString() {
         return new Object[][]{
             {2015, 1, "2015-W01"},
@@ -1133,7 +1126,7 @@ public class TestYearWeek {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleToString")
+    @MethodSource("data_sampleToString")
     public void test_toString(int year, int week, String expected) {
         YearWeek yearWeek = YearWeek.of(year, week);
         String s = yearWeek.toString();

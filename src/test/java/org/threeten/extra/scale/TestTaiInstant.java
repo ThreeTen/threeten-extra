@@ -47,9 +47,7 @@ import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test TaiInstant.
@@ -163,7 +161,6 @@ public class TestTaiInstant {
         }
     }
 
-    @DataProvider
     public static Object[][] data_badParse() {
         return new Object[][] {
             {"A.123456789s(TAI)"},
@@ -176,7 +173,7 @@ public class TestTaiInstant {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_badParse")
+    @MethodSource("data_badParse")
     public void factory_parse_CharSequence_invalid(String str) {
         assertThrows(DateTimeParseException.class, () -> TaiInstant.parse(str));
     }
@@ -189,7 +186,6 @@ public class TestTaiInstant {
     //-----------------------------------------------------------------------
     // withTAISeconds()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_withTAISeconds() {
         return new Object[][] {
             {0L, 12345L, 1L, 1L, 12345L},
@@ -202,7 +198,7 @@ public class TestTaiInstant {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_withTAISeconds")
+    @MethodSource("data_withTAISeconds")
     public void test_withTAISeconds(long tai, long nanos, long newTai, Long expectedTai, Long expectedNanos) {
         TaiInstant i = TaiInstant.ofTaiSeconds(tai, nanos).withTaiSeconds(newTai);
         assertEquals(expectedTai.longValue(), i.getTaiSeconds());
@@ -212,7 +208,6 @@ public class TestTaiInstant {
     //-----------------------------------------------------------------------
     // withNano()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_withNano() {
         return new Object[][] {
             {0L, 12345L, 1, 0L, 1L},
@@ -225,7 +220,7 @@ public class TestTaiInstant {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_withNano")
+    @MethodSource("data_withNano")
     public void test_withNano(long tai, long nanos, int newNano, Long expectedTai, Long expectedNanos) {
         TaiInstant i = TaiInstant.ofTaiSeconds(tai, nanos);
         if (expectedTai != null) {
@@ -240,7 +235,6 @@ public class TestTaiInstant {
     //-----------------------------------------------------------------------
     // plus(Duration)
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_plus() {
         return new Object[][] {
             {Long.MIN_VALUE, 0, Long.MAX_VALUE, 0, -1, 0},
@@ -426,7 +420,7 @@ public class TestTaiInstant {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus")
+    @MethodSource("data_plus")
     public void test_plus(long seconds, int nanos, long plusSeconds, int plusNanos, long expectedSeconds, int expectedNanoOfSecond) {
         TaiInstant i = TaiInstant.ofTaiSeconds(seconds, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
         assertEquals(expectedSeconds, i.getTaiSeconds());
@@ -448,7 +442,6 @@ public class TestTaiInstant {
     //-----------------------------------------------------------------------
     // minus(Duration)
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_minus() {
         return new Object[][] {
             {Long.MIN_VALUE, 0, Long.MIN_VALUE + 1, 0, -1, 0},
@@ -634,7 +627,7 @@ public class TestTaiInstant {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_minus")
+    @MethodSource("data_minus")
     public void test_minus(long seconds, int nanos, long minusSeconds, int minusNanos, long expectedSeconds, int expectedNanoOfSecond) {
         TaiInstant i = TaiInstant.ofTaiSeconds(seconds, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
         assertEquals(expectedSeconds, i.getTaiSeconds());

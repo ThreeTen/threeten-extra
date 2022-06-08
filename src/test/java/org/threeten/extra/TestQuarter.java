@@ -85,9 +85,7 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test Quarter.
@@ -315,7 +313,6 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     // plus(long), plus(long,unit)
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_plus() {
         return new Object[][] {
             {1, -5, 4},
@@ -333,7 +330,7 @@ public class TestQuarter {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus")
+    @MethodSource("data_plus")
     public void test_plus_long(int base, long amount, int expected) {
         assertEquals(Quarter.of(expected), Quarter.of(base).plus(amount));
     }
@@ -341,7 +338,6 @@ public class TestQuarter {
     //-----------------------------------------------------------------------
     // minus(long), minus(long,unit)
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_minus() {
         return new Object[][] {
             {1, -5, 2},
@@ -359,7 +355,7 @@ public class TestQuarter {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_minus")
+    @MethodSource("data_minus")
     public void test_minus_long(int base, long amount, int expected) {
         assertEquals(Quarter.of(expected), Quarter.of(base).minus(amount));
     }

@@ -47,16 +47,16 @@ import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.collect.Range;
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
 
 /**
  * Test date range.
@@ -702,7 +702,6 @@ public class TestLocalDateRange {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_queries() {
         return new Object[][] {
             // before start
@@ -752,7 +751,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_queries")
+    @MethodSource("data_queries")
     public void test_encloses(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
@@ -760,7 +759,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_queries")
+    @MethodSource("data_queries")
     public void test_abuts(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
@@ -768,7 +767,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_queries")
+    @MethodSource("data_queries")
     public void test_isConnected(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
@@ -776,7 +775,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_queries")
+    @MethodSource("data_queries")
     public void test_overlaps(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
@@ -784,7 +783,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_queries")
+    @MethodSource("data_queries")
     public void test_crossCheck(
             LocalDate start, LocalDate end, boolean isEnclosedBy, boolean abuts, boolean isConnected, boolean overlaps) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
@@ -844,7 +843,6 @@ public class TestLocalDateRange {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_intersection() {
         return new Object[][] {
             // adjacent
@@ -861,7 +859,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_intersection")
+    @MethodSource("data_intersection")
     public void test_intersection(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
 
@@ -873,7 +871,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_intersection")
+    @MethodSource("data_intersection")
     public void test_intersection_reverse(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
 
@@ -899,7 +897,6 @@ public class TestLocalDateRange {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_union() {
         return new Object[][] {
             // adjacent
@@ -916,7 +913,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_union")
+    @MethodSource("data_union")
     public void test_unionAndSpan(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
 
@@ -929,7 +926,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_union")
+    @MethodSource("data_union")
     public void test_unionAndSpan_reverse(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
 
@@ -942,7 +939,7 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_union")
+    @MethodSource("data_union")
     public void test_span_enclosesInputs(
             LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2, LocalDate expStart, LocalDate expEnd) {
 
@@ -1008,7 +1005,6 @@ public class TestLocalDateRange {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_isBefore() {
         return new Object[][] {
             // before start
@@ -1052,14 +1048,14 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_isBefore")
+    @MethodSource("data_isBefore")
     public void test_isBefore_range(LocalDate start, LocalDate end, boolean before) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         assertEquals(before, test.isBefore(LocalDateRange.of(start, end)));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_isBefore")
+    @MethodSource("data_isBefore")
     public void test_isBefore_date(LocalDate start, LocalDate end, boolean before) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         assertEquals(before, test.isBefore(start));
@@ -1085,7 +1081,6 @@ public class TestLocalDateRange {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_isAfter() {
         return new Object[][] {
             // before start
@@ -1132,14 +1127,14 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_isAfter")
+    @MethodSource("data_isAfter")
     public void test_isAfter_range(LocalDate start, LocalDate end, boolean before) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         assertEquals(before, test.isAfter(LocalDateRange.of(start, end)));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_isAfter")
+    @MethodSource("data_isAfter")
     public void test_isAfter_date(LocalDate start, LocalDate end, boolean before) {
         LocalDateRange test = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         assertEquals(before, test.isAfter(end.minusDays(1)));
@@ -1210,9 +1205,8 @@ public class TestLocalDateRange {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
-    public static List<List<Object>> data_crossCheckGuava() {
-        List<List<Object>> list = new ArrayList<>();
+    public static List<Arguments> data_crossCheckGuava() {
+        List<Arguments> list = new ArrayList<>();
         for (int i1 = 1; i1 < 5; i1++) {
             for (int j1 = i1; j1 < 5; j1++) {
                 LocalDate date11 = LocalDate.of(2016, 1, i1);
@@ -1225,7 +1219,7 @@ public class TestLocalDateRange {
                         LocalDate date22 = LocalDate.of(2016, 1, j2);
                         LocalDateRange extraRange2 = LocalDateRange.of(date21, date22);
                         Range<LocalDate> guavaRange2 = Range.closedOpen(date21, date22);
-                        list.add(Arrays.asList(extraRange1, extraRange2, guavaRange1, guavaRange2));
+                        list.add(arguments(extraRange1, extraRange2, guavaRange1, guavaRange2));
                     }
                 }
             }
@@ -1234,11 +1228,11 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_crossCheckGuava")
+    @MethodSource("data_crossCheckGuava")
     public void crossCheckGuava_encloses(
             LocalDateRange extraRange1,
-            LocalDateRange extraRange2, 
-            Range<LocalDate> guavaRange1, 
+            LocalDateRange extraRange2,
+            Range<LocalDate> guavaRange1,
             Range<LocalDate> guavaRange2) {
 
         boolean extra = extraRange1.encloses(extraRange2);
@@ -1247,11 +1241,11 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_crossCheckGuava")
+    @MethodSource("data_crossCheckGuava")
     public void crossCheckGuava_isConnected(
             LocalDateRange extraRange1,
-            LocalDateRange extraRange2, 
-            Range<LocalDate> guavaRange1, 
+            LocalDateRange extraRange2,
+            Range<LocalDate> guavaRange1,
             Range<LocalDate> guavaRange2) {
 
         boolean extra = extraRange1.isConnected(extraRange2);
@@ -1260,11 +1254,11 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_crossCheckGuava")
+    @MethodSource("data_crossCheckGuava")
     public void crossCheckGuava_intersection(
             LocalDateRange extraRange1,
-            LocalDateRange extraRange2, 
-            Range<LocalDate> guavaRange1, 
+            LocalDateRange extraRange2,
+            Range<LocalDate> guavaRange1,
             Range<LocalDate> guavaRange2) {
 
         LocalDateRange extra = null;
@@ -1288,11 +1282,11 @@ public class TestLocalDateRange {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_crossCheckGuava")
+    @MethodSource("data_crossCheckGuava")
     public void crossCheckGuava_span(
             LocalDateRange extraRange1,
-            LocalDateRange extraRange2, 
-            Range<LocalDate> guavaRange1, 
+            LocalDateRange extraRange2,
+            Range<LocalDate> guavaRange1,
             Range<LocalDate> guavaRange2) {
 
         LocalDateRange extra = extraRange1.span(extraRange2);

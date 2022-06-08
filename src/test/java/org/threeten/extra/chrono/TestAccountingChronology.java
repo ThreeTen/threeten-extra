@@ -77,9 +77,7 @@ import java.util.function.IntPredicate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test.
@@ -105,7 +103,6 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // creation, toLocalDate()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_samples() {
         return new Object[][] {
             {INSTANCE.date(1, 1, 1), LocalDate.of(0, 9, 4)},
@@ -142,55 +139,55 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_LocalDate_from_AccountingDate(AccountingDate accounting, LocalDate iso) {
         assertEquals(iso, LocalDate.from(accounting));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_AccountingDate_from_LocalDate(AccountingDate accounting, LocalDate iso) {
         assertEquals(accounting, AccountingDate.from(INSTANCE, iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_AccountingDate_chronology_dateEpochDay(AccountingDate accounting, LocalDate iso) {
         assertEquals(accounting, INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_AccountingDate_toEpochDay(AccountingDate accounting, LocalDate iso) {
         assertEquals(iso.toEpochDay(), accounting.toEpochDay());
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_AccountingDate_until_CoptiDate(AccountingDate accounting, LocalDate iso) {
         assertEquals(INSTANCE.period(0, 0, 0), accounting.until(accounting));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_AccountingDate_until_LocalDate(AccountingDate accounting, LocalDate iso) {
         assertEquals(INSTANCE.period(0, 0, 0), accounting.until(iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_LocalDate_until_CoptiDate(AccountingDate accounting, LocalDate iso) {
         assertEquals(Period.ZERO, iso.until(accounting));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_Chronology_date_Temporal(AccountingDate accounting, LocalDate iso) {
         assertEquals(accounting, INSTANCE.date(iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_plusDays(AccountingDate accounting, LocalDate iso) {
         assertEquals(iso, LocalDate.from(accounting.plus(0, DAYS)));
         assertEquals(iso.plusDays(1), LocalDate.from(accounting.plus(1, DAYS)));
@@ -200,7 +197,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_minusDays(AccountingDate accounting, LocalDate iso) {
         assertEquals(iso, LocalDate.from(accounting.minus(0, DAYS)));
         assertEquals(iso.minusDays(1), LocalDate.from(accounting.minus(1, DAYS)));
@@ -210,7 +207,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_until_DAYS(AccountingDate accounting, LocalDate iso) {
         assertEquals(0, accounting.until(iso.plusDays(0), DAYS));
         assertEquals(1, accounting.until(iso.plusDays(1), DAYS));
@@ -218,7 +215,6 @@ public class TestAccountingChronology {
         assertEquals(-40, accounting.until(iso.minusDays(40), DAYS));
     }
 
-    @DataProvider
     public static Object[][] data_badDates() {
         return new Object[][] {
             {2012, 0, 0},
@@ -262,7 +258,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_badDates")
+    @MethodSource("data_badDates")
     public void test_badDates(int year, int month, int dom) {
         assertThrows(DateTimeException.class, () -> INSTANCE.date(year, month, dom));
     }
@@ -338,7 +334,6 @@ public class TestAccountingChronology {
         assertEquals(false, INSTANCE.isLeapYear(-6));
     }
 
-    @DataProvider
     public static Object[][] data_lengthOfMonth() {
         return new Object[][] {
             {2012, 1, 28},
@@ -363,7 +358,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_lengthOfMonth")
+    @MethodSource("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(length, INSTANCE.date(year, month, 1).lengthOfMonth());
     }
@@ -450,7 +445,6 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // AccountingDate.range
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_ranges() {
         return new Object[][] {
             {2012, 1, 23, DAY_OF_MONTH, 1, 28},
@@ -478,7 +472,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_ranges")
+    @MethodSource("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
         assertEquals(ValueRange.of(expectedMin, expectedMax), INSTANCE.date(year, month, dom).range(field));
     }
@@ -491,7 +485,6 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // AccountingDate.getLong
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_getLong() {
         return new Object[][] {
             {2014, 5, 26, DAY_OF_WEEK, 5},
@@ -513,7 +506,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_getLong")
+    @MethodSource("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
         assertEquals(expected, INSTANCE.date(year, month, dom).getLong(field));
     }
@@ -526,7 +519,6 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // AccountingDate.with
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_with() {
         return new Object[][] {
             {2014, 5, 26, DAY_OF_WEEK, 3, 2014, 5, 24},
@@ -565,7 +557,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_with")
+    @MethodSource("data_with")
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
@@ -630,7 +622,6 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // AccountingDate.plus
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_plus() {
         return new Object[][] {
             {2014, 5, 26, 0, DAYS, 2014, 5, 26},
@@ -659,7 +650,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus")
+    @MethodSource("data_plus")
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
@@ -667,7 +658,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus")
+    @MethodSource("data_plus")
     public void test_minus_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
@@ -683,7 +674,6 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // AccountingDate.until
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_until() {
         return new Object[][] {
             {2014, 5, 26, 2014, 5, 26, DAYS, 0},
@@ -713,7 +703,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_until")
+    @MethodSource("data_until")
     public void test_until_TemporalUnit(
             int year1, int month1, int dom1,
             int year2, int month2, int dom2,
@@ -784,7 +774,6 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_toString() {
         return new Object[][] {
             {INSTANCE.date(1, 1, 1), "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 CE 1-01-01"},
@@ -793,7 +782,7 @@ public class TestAccountingChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_toString")
+    @MethodSource("data_toString")
     public void test_toString(AccountingDate accounting, String expected) {
         assertEquals(expected, accounting.toString());
     }

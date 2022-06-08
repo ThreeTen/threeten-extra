@@ -76,9 +76,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test.
@@ -109,7 +107,6 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     // creation, toLocalDate()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_samples() {
         return new Object[][] {
             {CopticDate.of(-1, 13, 6), LocalDate.of(283, 8, 29)},
@@ -138,55 +135,55 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_LocalDate_from_CopticDate(CopticDate coptic, LocalDate iso) {
         assertEquals(iso, LocalDate.from(coptic));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_CopticDate_from_LocalDate(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic, CopticDate.from(iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_CopticDate_chronology_dateEpochDay(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic, CopticChronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_CopticDate_toEpochDay(CopticDate coptic, LocalDate iso) {
         assertEquals(iso.toEpochDay(), coptic.toEpochDay());
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_CopticDate_until_CopticDate(CopticDate coptic, LocalDate iso) {
         assertEquals(CopticChronology.INSTANCE.period(0, 0, 0), coptic.until(coptic));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_CopticDate_until_LocalDate(CopticDate coptic, LocalDate iso) {
         assertEquals(CopticChronology.INSTANCE.period(0, 0, 0), coptic.until(iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_LocalDate_until_CopticDate(CopticDate coptic, LocalDate iso) {
         assertEquals(Period.ZERO, iso.until(coptic));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_Chronology_date_Temporal(CopticDate coptic, LocalDate iso) {
         assertEquals(coptic, CopticChronology.INSTANCE.date(iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_plusDays(CopticDate coptic, LocalDate iso) {
         assertEquals(iso, LocalDate.from(coptic.plus(0, DAYS)));
         assertEquals(iso.plusDays(1), LocalDate.from(coptic.plus(1, DAYS)));
@@ -196,7 +193,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_minusDays(CopticDate coptic, LocalDate iso) {
         assertEquals(iso, LocalDate.from(coptic.minus(0, DAYS)));
         assertEquals(iso.minusDays(1), LocalDate.from(coptic.minus(1, DAYS)));
@@ -206,7 +203,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_until_DAYS(CopticDate coptic, LocalDate iso) {
         assertEquals(0, coptic.until(iso.plusDays(0), DAYS));
         assertEquals(1, coptic.until(iso.plusDays(1), DAYS));
@@ -214,7 +211,6 @@ public class TestCopticChronology {
         assertEquals(-40, coptic.until(iso.minusDays(40), DAYS));
     }
 
-    @DataProvider
     public static Object[][] data_badDates() {
         return new Object[][] {
             {1728, 0, 0},
@@ -247,7 +243,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_badDates")
+    @MethodSource("data_badDates")
     public void test_badDates(int year, int month, int dom) {
         assertThrows(DateTimeException.class, () -> CopticDate.of(year, month, dom));
     }
@@ -288,7 +284,6 @@ public class TestCopticChronology {
         assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-6));
     }
 
-    @DataProvider
     public static Object[][] data_lengthOfMonth() {
         return new Object[][] {
             {1726, 1, 30},
@@ -309,7 +304,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_lengthOfMonth")
+    @MethodSource("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(length, CopticDate.of(year, month, 1).lengthOfMonth());
     }
@@ -390,7 +385,6 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     // CopticDate.range
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_ranges() {
         return new Object[][] {
             {1727, 1, 23, DAY_OF_MONTH, 1, 30},
@@ -420,7 +414,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_ranges")
+    @MethodSource("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
         assertEquals(ValueRange.of(expectedMin, expectedMax), CopticDate.of(year, month, dom).range(field));
     }
@@ -433,7 +427,6 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     // CopticDate.getLong
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_getLong() {
         return new Object[][] {
             {1727, 6, 8, DAY_OF_WEEK, 2},
@@ -455,7 +448,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_getLong")
+    @MethodSource("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
         assertEquals(expected, CopticDate.of(year, month, dom).getLong(field));
     }
@@ -468,7 +461,6 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     // CopticDate.with
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_with() {
         return new Object[][] {
             {1727, 6, 8, DAY_OF_WEEK, 4, 1727, 6, 10},
@@ -505,7 +497,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_with")
+    @MethodSource("data_with")
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
@@ -570,7 +562,6 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     // CopticDate.plus
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_plus() {
         return new Object[][] {
             {1726, 5, 26, 0, DAYS, 1726, 5, 26},
@@ -599,7 +590,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus")
+    @MethodSource("data_plus")
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
@@ -607,7 +598,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus")
+    @MethodSource("data_plus")
     public void test_minus_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
@@ -644,7 +635,6 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     // CopticDate.until
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_until() {
         return new Object[][] {
             {1726, 5, 26, 1726, 5, 26, DAYS, 0},
@@ -672,7 +662,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_until")
+    @MethodSource("data_until")
     public void test_until_TemporalUnit(
             int year1, int month1, int dom1,
             int year2, int month2, int dom2,
@@ -715,7 +705,6 @@ public class TestCopticChronology {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_toString() {
         return new Object[][] {
             {CopticDate.of(1, 1, 1), "Coptic AM 1-01-01"},
@@ -727,7 +716,7 @@ public class TestCopticChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_toString")
+    @MethodSource("data_toString")
     public void test_toString(CopticDate coptic, String expected) {
         assertEquals(expected, coptic.toString());
     }

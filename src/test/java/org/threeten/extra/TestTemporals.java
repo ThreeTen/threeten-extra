@@ -153,7 +153,7 @@ public class TestTemporals {
         test = Temporals.nextWorkingDay().adjustInto(saturday);
         assertEquals(LocalDate.of(2012, JANUARY, 2), test);
     }
-    
+
     //-----------------------------------------------------------------------
     // nextWorkingDayOrSame()
     //-----------------------------------------------------------------------

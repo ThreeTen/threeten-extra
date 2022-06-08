@@ -55,9 +55,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
-
 /**
  * Test class.
  */
@@ -237,7 +234,6 @@ public class TestInterval {
     private static final Instant MAX_OFFSET_DATE_TIME = OffsetDateTime.MAX.minusDays(1L).toInstant();
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_parseValid() {
         Instant minPlusOneDay = Instant.MIN.plus(Duration.ofDays(1));
         Instant maxMinusOneDay = Instant.MAX.minus(Duration.ofDays(1));
@@ -264,7 +260,7 @@ public class TestInterval {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_parseValid")
+    @MethodSource("data_parseValid")
     public void test_parse_CharSequence(String input, Instant start, Instant end) {
         Interval test = Interval.parse(input);
         assertEquals(start, test.getStart());
@@ -537,7 +533,6 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_intersection() {
         return new Object[][] {
             // adjacent
@@ -554,7 +549,7 @@ public class TestInterval {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_intersection")
+    @MethodSource("data_intersection")
     public void test_intersection(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
 
@@ -566,7 +561,7 @@ public class TestInterval {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_intersection")
+    @MethodSource("data_intersection")
     public void test_intersection_reverse(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
 
@@ -592,7 +587,6 @@ public class TestInterval {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_union() {
         return new Object[][] {
             // adjacent
@@ -609,7 +603,7 @@ public class TestInterval {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_union")
+    @MethodSource("data_union")
     public void test_unionAndSpan(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
 
@@ -622,7 +616,7 @@ public class TestInterval {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_union")
+    @MethodSource("data_union")
     public void test_unionAndSpan_reverse(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
 
@@ -635,7 +629,7 @@ public class TestInterval {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_union")
+    @MethodSource("data_union")
     public void test_span_enclosesInputs(
             Instant start1, Instant end1, Instant start2, Instant end2, Instant expStart, Instant expEnd) {
 
@@ -696,17 +690,17 @@ public class TestInterval {
             {Interval.of(NOW12, Instant.MAX), Instant.MAX, true, true, false, false},
         };
     }
-    
+
     @ParameterizedTest
     @MethodSource("data_starts")
     public void test_starts_Instant(
-            Interval test, 
-            Instant instant, 
+            Interval test,
+            Instant instant,
             boolean expectedStartsBefore,
             boolean expectedStartsAtOrBefore,
             boolean expectedStartsAfter,
             boolean expectedStartsAtOrAfter) {
-        
+
         assertEquals(expectedStartsBefore, test.startsBefore(instant));
         assertEquals(expectedStartsAtOrBefore, test.startsAtOrBefore(instant));
         assertEquals(expectedStartsAfter, test.startsAfter(instant));
@@ -749,17 +743,17 @@ public class TestInterval {
             {Interval.of(NOW12, Instant.MAX), Instant.MAX, false, false, true, true},
         };
     }
-    
+
     @ParameterizedTest
     @MethodSource("data_ends")
     public void test_ends_Instant(
-            Interval test, 
-            Instant instant, 
+            Interval test,
+            Instant instant,
             boolean expectedEndsBefore,
             boolean expectedEndsAtOrBefore,
             boolean expectedEndsAfter,
             boolean expectedEndsAtOrAfter) {
-        
+
         assertEquals(expectedEndsBefore, test.endsBefore(instant));
         assertEquals(expectedEndsAtOrBefore, test.endsAtOrBefore(instant));
         assertEquals(expectedEndsAfter, test.endsAfter(instant));

@@ -48,9 +48,7 @@ import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test class.
@@ -116,7 +114,6 @@ public class TestHours {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_valid() {
         return new Object[][] {
             {"PT0H", 0},
@@ -143,24 +140,23 @@ public class TestHours {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_valid")
+    @MethodSource("data_valid")
     public void test_parse_CharSequence_valid(String str, int expectedDays) {
         assertEquals(Hours.of(expectedDays), Hours.parse(str));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_valid")
+    @MethodSource("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, int expectedDays) {
         assertEquals(Hours.of(expectedDays), Hours.parse("+" + str));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_valid")
+    @MethodSource("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, int expectedDays) {
         assertEquals(Hours.of(-expectedDays), Hours.parse("-" + str));
     }
 
-    @DataProvider
     public static Object[][] data_invalid() {
         return new Object[][] {
             {"P3W"},
@@ -181,7 +177,7 @@ public class TestHours {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_invalid")
+    @MethodSource("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
         assertThrows(DateTimeParseException.class, () -> Hours.parse(str));
     }

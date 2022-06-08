@@ -57,9 +57,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test class.
@@ -194,7 +192,6 @@ public class TestPeriodDuration {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_valid() {
         return new Object[][] {
                 {"P1Y2M3W4DT5H6M7S", Period.of(1, 2, 3 * 7 + 4), Duration.ofHours(5).plusMinutes(6).plusSeconds(7)},
@@ -220,24 +217,23 @@ public class TestPeriodDuration {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_valid")
+    @MethodSource("data_valid")
     public void test_parse_CharSequence_valid(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.of(period, duration), PeriodDuration.parse(str));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_valid")
+    @MethodSource("data_valid")
     public void test_parse_CharSequence_valid_initialPlus(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.of(period, duration), PeriodDuration.parse("+" + str));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_valid")
+    @MethodSource("data_valid")
     public void test_parse_CharSequence_valid_initialMinus(String str, Period period, Duration duration) {
         assertEquals(PeriodDuration.of(period, duration).negated(), PeriodDuration.parse("-" + str));
     }
 
-    @DataProvider
     public static Object[][] data_invalid() {
         return new Object[][] {
                 {"P3Q"},
@@ -256,7 +252,7 @@ public class TestPeriodDuration {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_invalid")
+    @MethodSource("data_invalid")
     public void test_parse_CharSequence_invalid(String str) {
         assertThrows(DateTimeParseException.class, () -> PeriodDuration.parse(str));
     }

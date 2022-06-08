@@ -40,15 +40,12 @@ import java.time.Period;
 
 import org.joda.convert.StringConvert;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.threeten.extra.scale.TaiInstant;
 import org.threeten.extra.scale.UtcInstant;
 
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
-
 public class TestConvert {
 
-    @DataProvider
     public static Object[][] data_inputs() {
         return new Object[][] {
                 {Seconds.of(23), "PT23S"},
@@ -69,13 +66,13 @@ public class TestConvert {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_inputs")
+    @MethodSource("data_inputs")
     public void test_convertToString(Object obj, String str) {
         assertEquals(str, StringConvert.INSTANCE.convertToString(obj));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_inputs")
+    @MethodSource("data_inputs")
     public void test_convertFromString(Object obj, String str) {
         assertEquals(obj, StringConvert.INSTANCE.convertFromString(obj.getClass(), str));
     }

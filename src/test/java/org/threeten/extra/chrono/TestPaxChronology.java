@@ -79,9 +79,7 @@ import java.util.function.IntPredicate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test.
@@ -113,7 +111,6 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // creation, toLocalDate()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_samples() {
         return new Object[][] {
             {PaxDate.of(1, 1, 1), LocalDate.of(0, 12, 31)},
@@ -179,55 +176,55 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_LocalDate_from_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(iso, LocalDate.from(pax));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_PaxDate_from_LocalDate(PaxDate pax, LocalDate iso) {
         assertEquals(pax, PaxDate.from(iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_PaxDate_chronology_dateEpochDay(PaxDate pax, LocalDate iso) {
         assertEquals(pax, PaxChronology.INSTANCE.dateEpochDay(iso.toEpochDay()));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_PaxDate_toEpochDay(PaxDate pax, LocalDate iso) {
         assertEquals(iso.toEpochDay(), pax.toEpochDay());
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_PaxDate_until_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(PaxChronology.INSTANCE.period(0, 0, 0), pax.until(pax));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_PaxDate_until_LocalDate(PaxDate pax, LocalDate iso) {
         assertEquals(PaxChronology.INSTANCE.period(0, 0, 0), pax.until(iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_LocalDate_until_PaxDate(PaxDate pax, LocalDate iso) {
         assertEquals(Period.ZERO, iso.until(pax));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_Chronology_date_Temporal(PaxDate pax, LocalDate iso) {
         assertEquals(pax, PaxChronology.INSTANCE.date(iso));
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_plusDays(PaxDate pax, LocalDate iso) {
         assertEquals(iso, LocalDate.from(pax.plus(0, DAYS)));
         assertEquals(iso.plusDays(1), LocalDate.from(pax.plus(1, DAYS)));
@@ -237,7 +234,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_minusDays(PaxDate pax, LocalDate iso) {
         assertEquals(iso, LocalDate.from(pax.minus(0, DAYS)));
         assertEquals(iso.minusDays(1), LocalDate.from(pax.minus(1, DAYS)));
@@ -247,7 +244,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samples")
+    @MethodSource("data_samples")
     public void test_until_DAYS(PaxDate pax, LocalDate iso) {
         assertEquals(0, pax.until(iso.plusDays(0), DAYS));
         assertEquals(1, pax.until(iso.plusDays(1), DAYS));
@@ -255,7 +252,6 @@ public class TestPaxChronology {
         assertEquals(-40, pax.until(iso.minusDays(40), DAYS));
     }
 
-    @DataProvider
     public static Object[][] data_badDates() {
         return new Object[][] {
             {1900, 0, 0},
@@ -303,7 +299,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_badDates")
+    @MethodSource("data_badDates")
     public void test_badDates(int year, int month, int dom) {
         assertThrows(DateTimeException.class, () -> PaxDate.of(year, month, dom));
     }
@@ -353,7 +349,6 @@ public class TestPaxChronology {
         assertEquals(false, PaxChronology.INSTANCE.isLeapYear(-400));
     }
 
-    @DataProvider
     public static Object[][] data_lengthOfMonth() {
         return new Object[][] {
             {1900, 1, 28},
@@ -383,7 +378,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_lengthOfMonth")
+    @MethodSource("data_lengthOfMonth")
     public void test_lengthOfMonth(int year, int month, int length) {
         assertEquals(length, PaxDate.of(year, month, 1).lengthOfMonth());
     }
@@ -469,7 +464,6 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.range
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_ranges() {
         return new Object[][] {
             {2012, 1, 23, DAY_OF_MONTH, 1, 28},
@@ -502,7 +496,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_ranges")
+    @MethodSource("data_ranges")
     public void test_range(int year, int month, int dom, TemporalField field, int expectedMin, int expectedMax) {
         assertEquals(ValueRange.of(expectedMin, expectedMax), PaxDate.of(year, month, dom).range(field));
     }
@@ -515,7 +509,6 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.getLong
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_getLong() {
         return new Object[][] {
             {2014, 5, 26, DAY_OF_WEEK, 4},
@@ -537,7 +530,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_getLong")
+    @MethodSource("data_getLong")
     public void test_getLong(int year, int month, int dom, TemporalField field, long expected) {
         assertEquals(expected, PaxDate.of(year, month, dom).getLong(field));
     }
@@ -550,7 +543,6 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.with
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_with() {
         return new Object[][] {
             {2014, 5, 26, DAY_OF_WEEK, 3, 2014, 5, 25},
@@ -588,7 +580,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_with")
+    @MethodSource("data_with")
     public void test_with_TemporalField(int year, int month, int dom,
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
@@ -653,7 +645,6 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.plus
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_plus() {
         return new Object[][] {
             {2014, 5, 26, 0, DAYS, 2014, 5, 26},
@@ -691,7 +682,6 @@ public class TestPaxChronology {
         };
     }
 
-    @DataProvider
     public static Object[][] data_plus_leap() {
         return new Object[][] {
             {2012, 12, 26, 1, MONTHS, 2012, 13, 7},
@@ -700,7 +690,6 @@ public class TestPaxChronology {
         };
     }
 
-    @DataProvider
     public static Object[][] data_minus_leap() {
         return new Object[][] {
             {2012, 13, 7, -1, MONTHS, 2012, 12, 26},
@@ -710,7 +699,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus")
+    @MethodSource("data_plus")
     public void test_plus_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
@@ -718,7 +707,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus_leap")
+    @MethodSource("data_plus_leap")
     public void test_plus_leap_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
@@ -726,7 +715,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_plus")
+    @MethodSource("data_plus")
     public void test_minus_TemporalUnit(
             int expectedYear, int expectedMonth, int expectedDom,
             long amount, TemporalUnit unit,
@@ -735,7 +724,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_minus_leap")
+    @MethodSource("data_minus_leap")
     public void test_minus_leap_TemporalUnit(int year, int month, int dom,
             long amount, TemporalUnit unit,
             int expectedYear, int expectedMonth, int expectedDom) {
@@ -750,7 +739,6 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // PaxDate.until
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_until() {
         return new Object[][] {
             {2014, 5, 26, 2014, 5, 26, DAYS, 0},
@@ -792,7 +780,6 @@ public class TestPaxChronology {
         };
     }
 
-    @DataProvider
     public static Object[][] data_until_period() {
         return new Object[][] {
             {2014, 5, 26, 2014, 5, 26, 0, 0, 0},
@@ -821,7 +808,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_until")
+    @MethodSource("data_until")
     public void test_until_TemporalUnit(
             int year1, int month1, int dom1,
             int year2, int month2, int dom2,
@@ -832,7 +819,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_until_period")
+    @MethodSource("data_until_period")
     public void test_until_end(
             int year1, int month1, int dom1,
             int year2, int month2, int dom2,
@@ -897,7 +884,6 @@ public class TestPaxChronology {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_toString() {
         return new Object[][] {
             {PaxDate.of(1, 1, 1), "Pax CE 1-01-01"},
@@ -906,7 +892,7 @@ public class TestPaxChronology {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_toString")
+    @MethodSource("data_toString")
     public void test_toString(PaxDate pax, String expected) {
         assertEquals(expected, pax.toString());
     }

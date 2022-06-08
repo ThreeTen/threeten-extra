@@ -87,9 +87,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import com.tngtech.junit.dataprovider.DataProvider;
-import com.tngtech.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test OffsetDate.
@@ -315,7 +313,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     // parse()
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_sampleToString")
+    @MethodSource("data_sampleToString")
     public void factory_parse_validText(int y, int m, int d, String offsetId, String parsable) {
         OffsetDate t = OffsetDate.parse(parsable);
         assertNotNull(t, parsable);
@@ -325,7 +323,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         assertEquals(ZoneOffset.of(offsetId), t.getOffset());
     }
 
-    @DataProvider
     public static Object[][] data_sampleBadParse() {
         return new Object[][]{
                 {"2008/07/05"},
@@ -348,7 +345,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleBadParse")
+    @MethodSource("data_sampleBadParse")
     public void factory_parse_invalidText(String unparsable) {
         assertThrows(DateTimeParseException.class, () -> OffsetDate.parse(unparsable));
     }
@@ -411,7 +408,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_sampleDates() {
         return new Object[][] {
             {2008, 7, 5, OFFSET_PTWO},
@@ -425,7 +421,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleDates")
+    @MethodSource("data_sampleDates")
     public void test_get_OffsetDate(int y, int m, int d, ZoneOffset offset) {
         LocalDate localDate = LocalDate.of(y, m, d);
         OffsetDate a = OffsetDate.of(localDate, offset);
@@ -543,7 +539,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // until(Temporal, TemporalUnit)
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_until() {
         return new Object[][] {
                 {1, OffsetDate.of(2007, 6, 30, OFFSET_PONE), OffsetDate.of(2007, 7, 1, OFFSET_PONE), ChronoUnit.DAYS},
@@ -554,7 +549,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_until")
+    @MethodSource("data_until")
     public void test_until(long expected, OffsetDate od1, OffsetDate od2, TemporalUnit unit) {
         assertEquals(expected, od1.until(od2, unit));
         assertEquals(-expected, od2.until(od1, unit));
@@ -949,7 +944,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusWeeks()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_samplePlusWeeksSymmetry() {
         return new Object[][] {
             {OffsetDate.of(-1, 1, 1, OFFSET_PONE)},
@@ -982,7 +976,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samplePlusWeeksSymmetry")
+    @MethodSource("data_samplePlusWeeksSymmetry")
     public void test_plusWeeks_symmetry(OffsetDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             OffsetDate t = reference.plusWeeks(weeks).plusWeeks(-weeks);
@@ -1078,7 +1072,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusDays()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_samplePlusDaysSymmetry() {
         return new Object[][] {
             {OffsetDate.of(-1, 1, 1, OFFSET_PONE)},
@@ -1111,7 +1104,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_samplePlusDaysSymmetry")
+    @MethodSource("data_samplePlusDaysSymmetry")
     public void test_plusDays_symmetry(OffsetDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             OffsetDate t = reference.plusDays(days).plusDays(-days);
@@ -1374,7 +1367,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusWeeks()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_sampleMinusWeeksSymmetry() {
         return new Object[][] {
             {OffsetDate.of(-1, 1, 1, OFFSET_PONE)},
@@ -1407,7 +1399,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleMinusWeeksSymmetry")
+    @MethodSource("data_sampleMinusWeeksSymmetry")
     public void test_minusWeeks_symmetry(OffsetDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             OffsetDate t = reference.minusWeeks(weeks).minusWeeks(-weeks);
@@ -1503,7 +1495,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusDays()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_sampleMinusDaysSymmetry() {
         return new Object[][] {
             {OffsetDate.of(-1, 1, 1, OFFSET_PONE)},
@@ -1536,7 +1527,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleMinusDaysSymmetry")
+    @MethodSource("data_sampleMinusDaysSymmetry")
     public void test_minusDays_symmetry(OffsetDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             OffsetDate t = reference.minusDays(days).minusDays(-days);
@@ -1664,7 +1655,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     // toLocalDate()
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_sampleDates")
+    @MethodSource("data_sampleDates")
     public void test_toLocalDate(int year, int month, int day, ZoneOffset offset) {
         LocalDate t = LocalDate.of(year, month, day);
         assertEquals(t, OffsetDate.of(year, month, day, offset).toLocalDate());
@@ -1831,7 +1822,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     @ParameterizedTest
-    @UseDataProvider("data_sampleDates")
+    @MethodSource("data_sampleDates")
     public void test_equals_true(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         OffsetDate b = OffsetDate.of(y, m, d, offset);
@@ -1840,7 +1831,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleDates")
+    @MethodSource("data_sampleDates")
     public void test_equals_false_year_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         OffsetDate b = OffsetDate.of(y + 1, m, d, offset);
@@ -1848,7 +1839,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleDates")
+    @MethodSource("data_sampleDates")
     public void test_equals_false_month_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         OffsetDate b = OffsetDate.of(y, m + 1, d, offset);
@@ -1856,7 +1847,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleDates")
+    @MethodSource("data_sampleDates")
     public void test_equals_false_day_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         OffsetDate b = OffsetDate.of(y, m, d + 1, offset);
@@ -1864,7 +1855,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleDates")
+    @MethodSource("data_sampleDates")
     public void test_equals_false_offset_differs(int y, int m, int d, ZoneOffset ignored) {
         OffsetDate a = OffsetDate.of(y, m, d, OFFSET_PONE);
         OffsetDate b = OffsetDate.of(y, m, d, OFFSET_PTWO);
@@ -1884,7 +1875,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_sampleToString() {
         return new Object[][] {
             {2008, 7, 5, "Z", "2008-07-05Z"},
@@ -1913,7 +1903,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @ParameterizedTest
-    @UseDataProvider("data_sampleToString")
+    @MethodSource("data_sampleToString")
     public void test_toString(int y, int m, int d, String offsetId, String expected) {
         OffsetDate t = OffsetDate.of(y, m, d, ZoneOffset.of(offsetId));
         String str = t.toString();
