@@ -412,9 +412,7 @@ public final class Temporals {
      * @return a {@code Duration}, not null
      */
     public static Duration durationFromBigDecimalSeconds(BigDecimal seconds) {
-        BigDecimal min = BigDecimal.valueOf(Long.MIN_VALUE).add(BigDecimal.valueOf(000_000_000, 9));
-        BigDecimal max = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(999_999_999, 9));
-        BigInteger nanos = seconds.setScale(9, RoundingMode.UP).max(min).min(max).unscaledValue();
+        BigInteger nanos = seconds.setScale(9, RoundingMode.UP).max(BigDecimalSeconds.MIN).min(BigDecimalSeconds.MAX).unscaledValue();
         BigInteger[] secondsNanos = nanos.divideAndRemainder(BigInteger.valueOf(1_000_000_000));
         return Duration.ofSeconds(secondsNanos[0].longValue(), secondsNanos[1].intValue());
     }
@@ -469,4 +467,14 @@ public final class Temporals {
         return durationFromBigDecimalSeconds(amount);
     }
 
+    /**
+     * Useful Duration constants expressed as BigDecimal seconds with a scale of 9.
+     */
+    private static final class BigDecimalSeconds {
+        public static final BigDecimal MIN = BigDecimal.valueOf(Long.MIN_VALUE).add(BigDecimal.valueOf(000_000_000, 9));
+        public static final BigDecimal MAX = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(999_999_999, 9));
+
+        private BigDecimalSeconds() {
+        }
+    }
 }
