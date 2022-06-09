@@ -471,7 +471,7 @@ public final class Temporals {
      * Useful Duration constants expressed as BigDecimal seconds with a scale of 9.
      */
     private static final class BigDecimalSeconds {
-        public static final BigDecimal MIN = BigDecimal.valueOf(Long.MIN_VALUE).add(BigDecimal.valueOf(000_000_000, 9));
+        public static final BigDecimal MIN = BigDecimal.valueOf(Long.MIN_VALUE).add(BigDecimal.valueOf(0, 9));
         public static final BigDecimal MAX = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(999_999_999, 9));
 
         private BigDecimalSeconds() {
