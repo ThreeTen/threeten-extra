@@ -412,16 +412,9 @@ public final class Temporals {
      * @return a {@code Duration}, not null
      */
     public static Duration durationFromBigDecimalSeconds(BigDecimal seconds) {
-        BigInteger nanos = seconds.setScale(9, RoundingMode.UP).movePointRight(9).toBigIntegerExact();
-        BigInteger[] divRem = nanos.divideAndRemainder(BigInteger.valueOf(1_000_000_000));
-        if (divRem[0].bitLength() > 63) {
-            if (divRem[0].signum() >= 1) {
-                return Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
-            } else {
-                return Duration.ofSeconds(Long.MIN_VALUE);
-            }
-        }
-        return Duration.ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+        BigInteger nanos = seconds.setScale(9, RoundingMode.UP).max(BigDecimalSeconds.MIN).min(BigDecimalSeconds.MAX).unscaledValue();
+        BigInteger[] secondsNanos = nanos.divideAndRemainder(BigInteger.valueOf(1_000_000_000));
+        return Duration.ofSeconds(secondsNanos[0].longValue(), secondsNanos[1].intValue());
     }
 
     /**
@@ -474,4 +467,14 @@ public final class Temporals {
         return durationFromBigDecimalSeconds(amount);
     }
 
+    /**
+     * Useful Duration constants expressed as BigDecimal seconds with a scale of 9.
+     */
+    private static final class BigDecimalSeconds {
+        public static final BigDecimal MIN = BigDecimal.valueOf(Long.MIN_VALUE).add(BigDecimal.valueOf(0, 9));
+        public static final BigDecimal MAX = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(999_999_999, 9));
+
+        private BigDecimalSeconds() {
+        }
+    }
 }
