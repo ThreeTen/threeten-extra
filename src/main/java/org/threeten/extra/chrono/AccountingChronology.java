@@ -113,7 +113,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      */
     private final DayOfWeek endsOn;
     /**
-     * Whether the calendar ends in the last week of a given Gregorian/ISO month, 
+     * Whether the calendar ends in the last week of a given Gregorian/ISO month,
      * or nearest to the last day of the month (will sometimes be in the next month).
      */
     private final boolean inLastWeek;
@@ -129,12 +129,16 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * The month which will have the leap-week added.
      */
     private final int leapWeekInMonth;
+    /**
+     * The year offset.
+     */
+    private final int yearOffset;
 
     /**
      * Difference in days between accounting year end and ISO month end, in ISO year 0.
      */
     private final transient int yearZeroDifference;
-    /** 
+    /**
      * Number of weeks in a month range.
      */
     private final transient ValueRange alignedWeekOfMonthRange;
@@ -151,7 +155,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     /**
      * Creates an {@code AccountingChronology} validating the input.
      * Package private as only meant to be called from the builder.
-     * 
+     *
      * @param endsOn  The day-of-week a given year ends on.
      * @param end The  month-end the year is based on.
      * @param inLastWeek  Whether the year ends in the last week of the month, or nearest the end-of-month.
@@ -160,7 +164,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return The created Chronology, not null.
      * @throws DateTimeException if the chronology cannot be built.
      */
-    static AccountingChronology create(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingYearDivision division, int leapWeekInMonth) {
+    static AccountingChronology create(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingYearDivision division,
+            int leapWeekInMonth, int yearOffset) {
         if (endsOn == null || end == null || division == null || leapWeekInMonth == 0) {
             throw new IllegalStateException("AccountingCronology cannot be built: "
                     + (endsOn == null ? "| ending day-of-week |" : "")
@@ -191,13 +196,14 @@ public final class AccountingChronology extends AbstractChronology implements Se
         ValueRange dayOfMonthRange = ValueRange.of(1, shortestMonthLength * 7, longestMonthLength * 7);
         int daysToEpoch = Math.toIntExact(0 - yearZeroEnd.plusDays(1).toEpochDay());
 
-        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInMonth, yearZeroDifference, alignedWeekOfMonthRange, dayOfMonthRange, daysToEpoch);
+        return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInMonth, yearZeroDifference,
+                alignedWeekOfMonthRange, dayOfMonthRange, daysToEpoch, yearOffset);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Creates an instance from validated data, and cached data.
-     * 
+     *
      * @param endsOn  The day-of-week a given year ends on.
      * @param end  The month-end the year is based on.
      * @param inLastWeek  Whether the year ends in the last week of the month, or nearest the end-of-month.
@@ -209,7 +215,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @param daysToEpoch  The number of days between the start of Accounting 1 and ISO 1970.
      */
     private AccountingChronology(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingYearDivision division, int leapWeekInMonth, int yearZeroDifference, ValueRange alignedWeekOfMonthRange,
-            ValueRange dayOfMonthRange, int daysToEpoch) {
+            ValueRange dayOfMonthRange, int daysToEpoch, int yearOffset) {
         this.endsOn = endsOn;
         this.end = end;
         this.inLastWeek = inLastWeek;
@@ -219,6 +225,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
         this.alignedWeekOfMonthRange = alignedWeekOfMonthRange;
         this.dayOfMonthRange = dayOfMonthRange;
         this.days0001ToIso1970 = daysToEpoch;
+        this.yearOffset = yearOffset;
     }
 
     /**
@@ -227,7 +234,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return a built, validated instance.
      */
     private Object readResolve() {
-        return AccountingChronology.create(endsOn, end, inLastWeek, getDivision(), leapWeekInMonth);
+        return AccountingChronology.create(endsOn, end, inLastWeek, getDivision(), leapWeekInMonth, yearOffset);
     }
 
     //-----------------------------------------------------------------------
@@ -247,7 +254,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     /**
      * Gets the ID of the chronology - 'Accounting'.
      * <p>
-     * The ID uniquely identifies the {@code Chronology}, 
+     * The ID uniquely identifies the {@code Chronology},
      * but does not differentiate between instances of {@code AccountingChronology}.
      * It cannot be used to lookup the {@code Chronology} using {@link Chronology#of(String)},
      * because each instance requires setup.
@@ -265,7 +272,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * <p>
      * The <em>Unicode Locale Data Markup Language (LDML)</em> specification
      * does not define an identifier for 52/53 week calendars used for accounting purposes,
-     * and given that setup required is unlikely to do so.  
+     * and given that setup required is unlikely to do so.
      * For this reason, the calendar type is null.
      *
      * @return null, as the calendar is unlikely to be specified in LDML
@@ -460,7 +467,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     /**
      * Checks if the specified year is a leap year.
      * <p>
-     * An Accounting proleptic-year is leap if the time between the end of the previous year 
+     * An Accounting proleptic-year is leap if the time between the end of the previous year
      * and the end of the current year is 371 days.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
@@ -481,7 +488,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * The count returned will be negative for years before 1.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
-     * 
+     *
      * @param prolepticYear  the proleptic-year to check, not validated for range
      * @return the count of leap years since year 1.
      */
@@ -497,7 +504,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * The count returned will be negative for years before 1.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
-     * 
+     *
      * @param prolepticYear  the proleptic-year to check, not validated for range
      * @return the count of leap years since year 1.
      */
@@ -557,7 +564,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
                     this.inLastWeek == other.inLastWeek &&
                     this.end == other.end &&
                     this.getDivision() == other.getDivision() &&
-                    this.leapWeekInMonth == other.leapWeekInMonth;
+                    this.leapWeekInMonth == other.leapWeekInMonth &&
+                    this.yearOffset == other.yearOffset;
         }
         return false;
     }
@@ -571,6 +579,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
         result = prime * result + end.hashCode();
         result = prime * result + leapWeekInMonth;
         result = prime * result + getDivision().hashCode();
+        result = prime * result + yearOffset;
         return result;
     }
 
@@ -585,7 +594,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
                 .append(", year divided in ")
                 .append(getDivision())
                 .append(" with leap-week in month ")
-                .append(leapWeekInMonth);
+                .append(leapWeekInMonth)
+                .append(yearOffset == 0 ? " ending in the given ISO year" : " starting in the given ISO year");
         return bld.toString();
     }
 

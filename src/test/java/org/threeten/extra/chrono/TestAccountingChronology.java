@@ -755,6 +755,7 @@ public class TestAccountingChronology {
         AccountingDate other = new AccountingChronologyBuilder().endsOn(DayOfWeek.WEDNESDAY)
                 .nearestEndOf(Month.AUGUST).leapWeekInMonth(13)
                 .withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS)
+                .accountingYearEndsInIsoYear()
                 .toChronology().date(2000, 1, 3);
 
         assertEquals(true, a1.equals(a1));
@@ -776,8 +777,10 @@ public class TestAccountingChronology {
     //-----------------------------------------------------------------------
     public static Object[][] data_toString() {
         return new Object[][] {
-            {INSTANCE.date(1, 1, 1), "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 CE 1-01-01"},
-            {INSTANCE.date(2012, 6, 23), "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 CE 2012-06-23"},
+                { INSTANCE.date(1, 1, 1),
+                        "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 ending in the given ISO year CE 1-01-01" },
+                { INSTANCE.date(2012, 6, 23),
+                        "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 ending in the given ISO year CE 2012-06-23" },
         };
     }
 
