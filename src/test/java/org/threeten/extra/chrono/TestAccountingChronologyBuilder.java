@@ -47,6 +47,7 @@ import java.time.temporal.ValueRange;
 import java.util.function.BiFunction;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntPredicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -147,50 +148,59 @@ public class TestAccountingChronologyBuilder {
     public static Stream<Arguments> data_range() {
         IntBinaryOperator weeksInMonth = (leapWeekInMonth, offset) -> (leapWeekInMonth + offset) % 3 == 0 ? 6 : 5;
 
-        Stream<Arguments> pattern_4_4_5 = IntStream.range(1, 13)
-                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
+        Stream<Object[]> pattern_4_4_5 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
                         leapWeekInMonth,
                         ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 0)),
                         ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 0)),
-                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)));
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)});
 
-        Stream<Arguments> pattern_4_5_4 = IntStream.range(1, 13)
-                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS,
+        Stream<Object[]> pattern_4_5_4 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS,
                         leapWeekInMonth,
                         ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 1)),
                         ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 1)),
-                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)));
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)});
 
-        Stream<Arguments> pattern_5_4_4 = IntStream.range(1, 13)
-                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+        Stream<Object[]> pattern_5_4_4 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
                         leapWeekInMonth,
                         ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 2)),
                         ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 2)),
-                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)));
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)});
 
-        Stream<Arguments> pattern_even_13 = IntStream.range(1, 14)
-                .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
+        Stream<Object[]> pattern_even_13 = IntStream.range(1, 14)
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
                         leapWeekInMonth,
                         ValueRange.of(1, 4, 5),
                         ValueRange.of(1, 7 * 4, 7 * 5),
-                        ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12)));
+                        ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12)});
 
-        return Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13);
+        return Lists.cartesianProduct(
+                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList())).stream().map(args -> {
+                    AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
+                    int leapWeekInMonth = (int) ((Object[]) args.get(0))[1];
+                    ValueRange expectedWeekOfMonthRange = (ValueRange) ((Object[]) args.get(0))[2];
+                    ValueRange expectedDayOfMonthRange = (ValueRange) ((Object[]) args.get(0))[3];
+                    ValueRange expectedMonthRange = (ValueRange) ((Object[]) args.get(0))[4];
+                    ValueRange expectedProlepticMonthRange = (ValueRange) ((Object[]) args.get(0))[5];
+
+                    AccountingChronologyBuilder builder = new AccountingChronologyBuilder().nearestEndOf(Month.AUGUST).endsOn(DayOfWeek.SUNDAY)
+                            .withDivision(division).leapWeekInMonth(leapWeekInMonth);
+
+                    return arguments(builder.toChronology(), expectedWeekOfMonthRange, expectedDayOfMonthRange, expectedMonthRange, expectedProlepticMonthRange);
+                });
     }
 
     @ParameterizedTest
     @MethodSource("data_range")
-    public void test_range(AccountingYearDivision division, int leapWeekInMonth,
-            ValueRange expectedWeekOfMonthRange, ValueRange expectedDayOfMonthRange, ValueRange expectedMonthRange, ValueRange expectedProlepticMonthRange) {
-        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                .toChronology();
-
-        assertEquals(expectedWeekOfMonthRange, chronology.range(ChronoField.ALIGNED_WEEK_OF_MONTH));
-        assertEquals(expectedDayOfMonthRange, chronology.range(ChronoField.DAY_OF_MONTH));
-        assertEquals(ValueRange.of(1, 364, 371), chronology.range(ChronoField.DAY_OF_YEAR));
-        assertEquals(expectedMonthRange, chronology.range(ChronoField.MONTH_OF_YEAR));
-        assertEquals(expectedProlepticMonthRange, chronology.range(ChronoField.PROLEPTIC_MONTH));
+    public void test_range(AccountingChronology chronology, ValueRange expectedWeekOfMonthRange, ValueRange expectedDayOfMonthRange, ValueRange expectedMonthRange, ValueRange expectedProlepticMonthRange) {
+        assertAll(
+                () -> assertEquals(expectedWeekOfMonthRange, chronology.range(ChronoField.ALIGNED_WEEK_OF_MONTH)),
+                () -> assertEquals(expectedDayOfMonthRange, chronology.range(ChronoField.DAY_OF_MONTH)),
+                () -> assertEquals(ValueRange.of(1, 364, 371), chronology.range(ChronoField.DAY_OF_YEAR)),
+                () -> assertEquals(expectedMonthRange, chronology.range(ChronoField.MONTH_OF_YEAR)),
+                () -> assertEquals(expectedProlepticMonthRange, chronology.range(ChronoField.PROLEPTIC_MONTH)));
     }
 
     @ParameterizedTest
