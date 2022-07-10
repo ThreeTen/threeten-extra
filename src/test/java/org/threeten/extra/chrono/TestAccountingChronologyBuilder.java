@@ -44,6 +44,7 @@ import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.ValueRange;
+import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntPredicate;
@@ -53,6 +54,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.collect.Lists;
@@ -205,17 +207,25 @@ public class TestAccountingChronologyBuilder {
 
     @ParameterizedTest
     @MethodSource("data_weeksInMonth")
-    public void test_date_dayOfMonth_range(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
-        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                .toChronology();
-
-        for (int month = 1; month <= weeksInMonth.length; month++) {
-            assertEquals(ValueRange.of(1, weeksInMonth[month - 1] * 7), AccountingDate.of(chronology, 2011, month, 15).range(ChronoField.DAY_OF_MONTH));
-            assertEquals(ValueRange.of(1, weeksInMonth[month - 1] * 7 + (month == leapWeekInMonth ? 7 : 0)), AccountingDate.of(chronology, 2012, month, 15).range(ChronoField.DAY_OF_MONTH));
-            assertEquals(ValueRange.of(1, weeksInMonth[month - 1]), AccountingDate.of(chronology, 2011, month, 15).range(ChronoField.ALIGNED_WEEK_OF_MONTH));
-            assertEquals(ValueRange.of(1, weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0)), AccountingDate.of(chronology, 2012, month, 15).range(ChronoField.ALIGNED_WEEK_OF_MONTH));
-        }
+    public void test_date_dayOfMonth_range(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
+        assertAll(IntStream.range(1, weeksInMonth.length).mapToObj(
+                month -> () -> assertAll(
+                        () -> assertEquals(ValueRange.of(1, weeksInMonth[month - 1] * 7),
+                                AccountingDate.of(chronology, 2011, month, 15).range(ChronoField.DAY_OF_MONTH),
+                                () -> String.format("day of month for month %d ", month)),
+                        () -> assertEquals(
+                                ValueRange.of(1, weeksInMonth[month - 1] * 7 + (month == leapWeekInMonth ? 7 : 0)),
+                                AccountingDate.of(chronology, 2012, month, 15).range(ChronoField.DAY_OF_MONTH),
+                                () -> String.format("leap year day of month for month %d ", month)),
+                        () -> assertEquals(ValueRange.of(1, weeksInMonth[month - 1]),
+                                AccountingDate.of(chronology, 2011, month, 15)
+                                        .range(ChronoField.ALIGNED_WEEK_OF_MONTH),
+                                () -> String.format("week of month for month %d ", month)),
+                        () -> assertEquals(
+                                ValueRange.of(1, weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0)),
+                                AccountingDate.of(chronology, 2012, month, 15)
+                                        .range(ChronoField.ALIGNED_WEEK_OF_MONTH)),
+                        () -> String.format("leap year week of month for month %d ", month))));
     }
 
     @ParameterizedTest
@@ -231,6 +241,113 @@ public class TestAccountingChronologyBuilder {
     // getWeeksAtStartOfMonth(weeks), getMonthFromElapsedWeeks(weeks)
     //-----------------------------------------------------------------------
     public static Stream<Arguments> data_weeksInMonth() {
+        Stream<Object[]> pattern_4_4_5 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
+                    new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }, leapWeekInMonth});
+
+        Stream<Object[]> pattern_4_5_4 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+                        new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }, leapWeekInMonth});
+
+        Stream<Object[]> pattern_5_4_4 = IntStream.range(1, 13)
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+                    new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }, leapWeekInMonth});
+
+        Stream<Object[]> pattern_even_13 = IntStream.range(1, 14)
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
+                    new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, leapWeekInMonth});
+
+        return Lists.cartesianProduct(
+                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList()))
+                .stream().map(args -> {
+                    AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
+                    int[] expectedWeeksInMonth = (int[]) ((Object[]) args.get(0))[1];
+                    int leapWeekInMonth = (int) ((Object[]) args.get(0))[2];
+
+                    AccountingChronologyBuilder builder = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY)
+                            .nearestEndOf(Month.AUGUST)
+                            .withDivision(division).leapWeekInMonth(leapWeekInMonth);
+
+                    return arguments(builder.toChronology(), expectedWeeksInMonth, leapWeekInMonth);
+                });
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_weeksInMonth")
+    public void test_getWeeksInMonth(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
+        assertAll(
+                IntStream.range(1, weeksInMonth.length)
+                        .mapToObj(month -> () -> assertAll(
+                                () -> assertEquals(weeksInMonth[month - 1],
+                                        chronology.getDivision().getWeeksInMonth(month),
+                                        () -> String.format("weeks in month mismatch for month %d ", month)),
+                                () -> assertEquals(weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0),
+                                        chronology.getDivision().getWeeksInMonth(month, leapWeekInMonth),
+                                        () -> String.format("weeks in month mismatch with leap week for month %d ", month)))));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_weeksInMonth")
+    public void test_getWeeksAtStartOf(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
+        for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
+            final int finalMonth = month;
+            assertEquals(elapsedWeeks, chronology.getDivision().getWeeksAtStartOfMonth(month), 
+                () -> String.format("weeks in month mismatch for month %d ", finalMonth));
+            assertEquals(elapsedWeeks + (month > leapWeekInMonth ? 1 : 0), chronology.getDivision().getWeeksAtStartOfMonth(month, leapWeekInMonth), 
+                () -> String.format("weeks in month mismatch with leap week for month %d ", finalMonth));
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_weeksInMonth")
+    public void test_getMonthFromElapsedWeeks(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
+        for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
+            final int finalMonth = month;
+            for (int i = 0; i < weeksInMonth[month - 1]; i++) {
+                assertEquals(month, chronology.getDivision().getMonthFromElapsedWeeks(elapsedWeeks + i),
+                        () -> String.format("weeks in month mismatch for month %d ", finalMonth));
+                assertEquals(month,
+                        chronology.getDivision().getMonthFromElapsedWeeks(
+                                elapsedWeeks + i + (month > leapWeekInMonth ? 1 : 0), leapWeekInMonth),
+                        () -> String.format("weeks in month mismatch with leap week for month %d ", finalMonth));
+                if (month == leapWeekInMonth && i == weeksInMonth[month - 1] - 1) {
+                    assertEquals(month,
+                            chronology.getDivision().getMonthFromElapsedWeeks(elapsedWeeks + i + 1, leapWeekInMonth),
+                            () -> String.format("leap week in month for month %d ", finalMonth));
+                }
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    public void test_negativeWeeks_getMonthFromElapsedWeekspublic(AccountingYearDivision division) {
+        assertAll(
+                () -> assertEquals(1, division.getMonthFromElapsedWeeks(0)),
+                () -> assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(-1)));
+    }
+
+    public static Stream<Arguments> data_weeksInMonth_noChronology() {
+        return Stream.of(
+            arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }),
+            arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] { 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4 }),
+            arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }),
+            arguments(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 })
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_weeksInMonth_noChronology")
+    public void test_extraWeeks_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth) {
+        final int elapsedWeeks = Arrays.stream(weeksInMonth).sum();
+        assertAll(
+                () -> assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(elapsedWeeks),
+                        "For elapsed weeks on border"),
+                () -> assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(elapsedWeeks + 1),
+                        "For elapsed weeks beyond border"));
+    }
+
+    public static Stream<Arguments> data_weeksInMonth_weekInMonth_noChronology() {
         Stream<Arguments> pattern_4_4_5 = IntStream.range(1, 13)
                 .mapToObj((leapWeekInMonth) -> arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
                         new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }, leapWeekInMonth));
@@ -251,78 +368,14 @@ public class TestAccountingChronologyBuilder {
     }
 
     @ParameterizedTest
-    @MethodSource("data_weeksInMonth")
-    public void test_getWeeksInMonth(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
-        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                .toChronology();
-
-        for (int month = 1; month <= weeksInMonth.length; month++) {
-            assertEquals(weeksInMonth[month - 1], chronology.getDivision().getWeeksInMonth(month));
-            assertEquals(weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0), chronology.getDivision().getWeeksInMonth(month, leapWeekInMonth));
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_weeksInMonth")
-    public void test_getWeeksAtStartOf(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
-        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                .toChronology();
-
-        for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
-            assertEquals(elapsedWeeks, chronology.getDivision().getWeeksAtStartOfMonth(month));
-            assertEquals(elapsedWeeks + (month > leapWeekInMonth ? 1 : 0), chronology.getDivision().getWeeksAtStartOfMonth(month, leapWeekInMonth));
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_weeksInMonth")
-    public void test_getMonthFromElapsedWeeks(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
-        AccountingChronology chronology = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST)
-                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                .toChronology();
-
-        for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
-            for (int i = 0; i < weeksInMonth[month - 1]; i++) {
-                assertEquals(month, chronology.getDivision().getMonthFromElapsedWeeks(elapsedWeeks + i));
-                assertEquals(month, chronology.getDivision().getMonthFromElapsedWeeks(elapsedWeeks + i + (month > leapWeekInMonth ? 1 : 0), leapWeekInMonth));
-                if (month == leapWeekInMonth && i == weeksInMonth[month - 1] - 1) {
-                    assertEquals(month, chronology.getDivision().getMonthFromElapsedWeeks(elapsedWeeks + i + 1, leapWeekInMonth));
-                }
-            }
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_weeksInMonth")
-    public void test_negativeWeeks_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
-        assertEquals(1, division.getMonthFromElapsedWeeks(0));
-        assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(-1));
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_weeksInMonth")
-    public void test_extraWeeks_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
-        int elapsedWeeks = 0;
-        for (int month = 1; month <= weeksInMonth.length; month++) {
-            elapsedWeeks += weeksInMonth[month - 1];
-        }
-        int finalElapsedWeeks = elapsedWeeks;
-        assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(finalElapsedWeeks));
-        assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(finalElapsedWeeks + 1));
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_weeksInMonth")
+    @MethodSource("data_weeksInMonth_weekInMonth_noChronology")
     public void test_extraWeeksLeap_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
-        int elapsedWeeks = 1;
-        for (int month = 1; month <= weeksInMonth.length; month++) {
-            elapsedWeeks += weeksInMonth[month - 1];
-        }
-        int finalElapsedWeeks = elapsedWeeks;
-        assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(finalElapsedWeeks, leapWeekInMonth));
-        assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(finalElapsedWeeks + 1, leapWeekInMonth));
+        final int elapsedWeeks = Arrays.stream(weeksInMonth).sum() + 1;
+        assertAll(
+                () -> assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(elapsedWeeks, leapWeekInMonth),
+                        "For elapsed weeks on border"),
+                () -> assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(elapsedWeeks + 1, leapWeekInMonth),
+                        "For elapsed weeks beyond border"));
     }
 
     //-----------------------------------------------------------------------
