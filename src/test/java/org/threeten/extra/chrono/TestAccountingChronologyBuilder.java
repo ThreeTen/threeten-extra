@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntPredicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -85,15 +86,19 @@ public class TestAccountingChronologyBuilder {
                         (BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder>) AccountingChronologyBuilder::nearestEndOf,
                         (GetYearEnd) ((year, ending, dayOfWeek) -> LocalDate.of(year, ending, 3).plusMonths(1)
                                 .with(TemporalAdjusters.previousOrSame(dayOfWeek)))
-                })).stream().map(
+                }),
+                Lists.newArrayList((UnaryOperator<AccountingChronologyBuilder>)(AccountingChronologyBuilder::accountingYearEndsInIsoYear))
+                ).stream().map(
                         (args) -> {
                             DayOfWeek dayOfWeek = (DayOfWeek) args.get(0);
                             Month ending = (Month) args.get(1);
                             BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder> endingType = 
                                 (BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder>) ((Object[]) args.get(2))[0];
-                            GetYearEnd getYearEnd = (GetYearEnd) ((Object[]) args.get(2))[1];
+                            GetYearEnd getYearEnd = (GetYearEnd) ((Object[]) args.get(2))[1];                        
+                            UnaryOperator<AccountingChronologyBuilder> startOrEnd = (UnaryOperator<AccountingChronologyBuilder>) args.get(3);
 
-                            AccountingChronology chrono = endingType.apply(new AccountingChronologyBuilder(), ending).endsOn(dayOfWeek)
+                            AccountingChronology chrono = startOrEnd.apply(endingType.apply(new AccountingChronologyBuilder(), ending))
+                                    .endsOn(dayOfWeek)
                                     .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS)
                                     .leapWeekInMonth(12)
                                     .toChronology();
@@ -179,15 +184,20 @@ public class TestAccountingChronologyBuilder {
                         ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12)});
 
         return Lists.cartesianProduct(
-                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList())).stream().map(args -> {
+                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList()),
+                Lists.newArrayList(
+                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear))
+                ).stream().map(args -> {
                     AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
                     int leapWeekInMonth = (int) ((Object[]) args.get(0))[1];
                     ValueRange expectedWeekOfMonthRange = (ValueRange) ((Object[]) args.get(0))[2];
                     ValueRange expectedDayOfMonthRange = (ValueRange) ((Object[]) args.get(0))[3];
                     ValueRange expectedMonthRange = (ValueRange) ((Object[]) args.get(0))[4];
                     ValueRange expectedProlepticMonthRange = (ValueRange) ((Object[]) args.get(0))[5];
+                    UnaryOperator<AccountingChronologyBuilder> startOrEnd = (UnaryOperator<AccountingChronologyBuilder>) args.get(1);
 
-                    AccountingChronologyBuilder builder = new AccountingChronologyBuilder().nearestEndOf(Month.AUGUST).endsOn(DayOfWeek.SUNDAY)
+                    AccountingChronologyBuilder builder = startOrEnd.apply(new AccountingChronologyBuilder())
+                            .nearestEndOf(Month.AUGUST).endsOn(DayOfWeek.SUNDAY)
                             .withDivision(division).leapWeekInMonth(leapWeekInMonth);
 
                     return arguments(builder.toChronology(), expectedWeekOfMonthRange, expectedDayOfMonthRange, expectedMonthRange, expectedProlepticMonthRange);
@@ -258,13 +268,18 @@ public class TestAccountingChronologyBuilder {
                     new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, leapWeekInMonth});
 
         return Lists.cartesianProduct(
-                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList()))
+                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList()),
+                Lists.newArrayList(
+                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear))
+                )
                 .stream().map(args -> {
                     AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
                     int[] expectedWeeksInMonth = (int[]) ((Object[]) args.get(0))[1];
                     int leapWeekInMonth = (int) ((Object[]) args.get(0))[2];
+                    UnaryOperator<AccountingChronologyBuilder> startOrEnd = (UnaryOperator<AccountingChronologyBuilder>) args.get(1);
 
-                    AccountingChronologyBuilder builder = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY)
+                    AccountingChronologyBuilder builder = startOrEnd.apply(new AccountingChronologyBuilder())
+                            .endsOn(DayOfWeek.SUNDAY)
                             .nearestEndOf(Month.AUGUST)
                             .withDivision(division).leapWeekInMonth(leapWeekInMonth);
 
