@@ -87,17 +87,19 @@ public class TestAccountingChronologyBuilder {
                         (GetYearEnd) ((year, ending, dayOfWeek) -> LocalDate.of(year, ending, 3).plusMonths(1)
                                 .with(TemporalAdjusters.previousOrSame(dayOfWeek)))
                 }),
-                Lists.newArrayList((UnaryOperator<AccountingChronologyBuilder>)(AccountingChronologyBuilder::accountingYearEndsInIsoYear))
-                ).stream().map(
+                Lists.newArrayList(
+                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear)))
+                .stream().map(
                         (args) -> {
                             DayOfWeek dayOfWeek = (DayOfWeek) args.get(0);
                             Month ending = (Month) args.get(1);
                             BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder> endingType = 
                                 (BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder>) ((Object[]) args.get(2))[0];
-                            GetYearEnd getYearEnd = (GetYearEnd) ((Object[]) args.get(2))[1];                        
+                            GetYearEnd getYearEnd = (GetYearEnd) ((Object[]) args.get(2))[1];
                             UnaryOperator<AccountingChronologyBuilder> startOrEnd = (UnaryOperator<AccountingChronologyBuilder>) args.get(3);
 
-                            AccountingChronology chrono = startOrEnd.apply(endingType.apply(new AccountingChronologyBuilder(), ending))
+                            AccountingChronology chrono = startOrEnd
+                                    .apply(endingType.apply(new AccountingChronologyBuilder(), ending))
                                     .endsOn(dayOfWeek)
                                     .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS)
                                     .leapWeekInMonth(12)
@@ -145,49 +147,55 @@ public class TestAccountingChronologyBuilder {
     @MethodSource("data_yearEnding")
     public void test_date_int_int_int(AccountingChronology chronology, GetYearEnd getYearEnd, IntPredicate isLeapYear, DayOfWeek dayOfWeek, Month ending) {
         assertAll(IntStream.range(-200, 600).mapToObj(
-            year -> () -> assertEquals(getYearEnd.apply(year - 1, ending, dayOfWeek).plusDays(1).toEpochDay(), chronology.date(year, 1, 1).toEpochDay(),
-                    () -> String.format("for year %d ", year))));
+                year -> () -> assertEquals(getYearEnd.apply(year - 1, ending, dayOfWeek).plusDays(1).toEpochDay(),
+                        chronology.date(year, 1, 1).toEpochDay(),
+                        () -> String.format("for year %d ", year))));
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // range(MONTH_OF_YEAR), range(DAY_OF_MONTH)
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     public static Stream<Arguments> data_range() {
         IntBinaryOperator weeksInMonth = (leapWeekInMonth, offset) -> (leapWeekInMonth + offset) % 3 == 0 ? 6 : 5;
 
         Stream<Object[]> pattern_4_4_5 = IntStream.range(1, 13)
-                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
+                .mapToObj((leapWeekInMonth) -> new Object[] {
+                        AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
                         leapWeekInMonth,
                         ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 0)),
                         ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 0)),
-                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)});
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11) });
 
         Stream<Object[]> pattern_4_5_4 = IntStream.range(1, 13)
-                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS,
+                .mapToObj((leapWeekInMonth) -> new Object[] {
+                        AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS,
                         leapWeekInMonth,
                         ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 1)),
                         ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 1)),
-                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)});
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11) });
 
         Stream<Object[]> pattern_5_4_4 = IntStream.range(1, 13)
-                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+                .mapToObj((leapWeekInMonth) -> new Object[] {
+                        AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
                         leapWeekInMonth,
                         ValueRange.of(1, 4, weeksInMonth.applyAsInt(leapWeekInMonth, 2)),
                         ValueRange.of(1, 7 * 4, 7 * weeksInMonth.applyAsInt(leapWeekInMonth, 2)),
-                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11)});
+                        ValueRange.of(1, 12), ValueRange.of(-999_999 * 12L, 999_999 * 12L + 11) });
 
         Stream<Object[]> pattern_even_13 = IntStream.range(1, 14)
-                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
+                .mapToObj((leapWeekInMonth) -> new Object[] {
+                        AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
                         leapWeekInMonth,
                         ValueRange.of(1, 4, 5),
                         ValueRange.of(1, 7 * 4, 7 * 5),
-                        ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12)});
+                        ValueRange.of(1, 13), ValueRange.of(-999_999 * 13L, 999_999 * 13L + 12) });
 
         return Lists.cartesianProduct(
-                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList()),
+                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13)
+                        .collect(Collectors.toList()),
                 Lists.newArrayList(
-                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear))
-                ).stream().map(args -> {
+                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear)))
+                .stream().map(args -> {
                     AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
                     int leapWeekInMonth = (int) ((Object[]) args.get(0))[1];
                     ValueRange expectedWeekOfMonthRange = (ValueRange) ((Object[]) args.get(0))[2];
@@ -200,13 +208,15 @@ public class TestAccountingChronologyBuilder {
                             .nearestEndOf(Month.AUGUST).endsOn(DayOfWeek.SUNDAY)
                             .withDivision(division).leapWeekInMonth(leapWeekInMonth);
 
-                    return arguments(builder.toChronology(), expectedWeekOfMonthRange, expectedDayOfMonthRange, expectedMonthRange, expectedProlepticMonthRange);
+                    return arguments(builder.toChronology(), expectedWeekOfMonthRange, expectedDayOfMonthRange,
+                            expectedMonthRange, expectedProlepticMonthRange);
                 });
     }
 
     @ParameterizedTest
     @MethodSource("data_range")
-    public void test_range(AccountingChronology chronology, ValueRange expectedWeekOfMonthRange, ValueRange expectedDayOfMonthRange, ValueRange expectedMonthRange, ValueRange expectedProlepticMonthRange) {
+    public void test_range(AccountingChronology chronology, ValueRange expectedWeekOfMonthRange,
+            ValueRange expectedDayOfMonthRange, ValueRange expectedMonthRange, ValueRange expectedProlepticMonthRange) {
         assertAll(
                 () -> assertEquals(expectedWeekOfMonthRange, chronology.range(ChronoField.ALIGNED_WEEK_OF_MONTH)),
                 () -> assertEquals(expectedDayOfMonthRange, chronology.range(ChronoField.DAY_OF_MONTH)),
@@ -242,36 +252,37 @@ public class TestAccountingChronologyBuilder {
     @MethodSource("data_yearEnding")
     public void test_date_dayOfYear_range(AccountingChronology chronology, GetYearEnd _getYearEnd, IntPredicate isLeapYear, DayOfWeek _dayOfWeek, Month _ending) {
         assertAll(IntStream.range(2007, 2015).mapToObj(
-            year -> () -> assertEquals(ValueRange.of(1, isLeapYear.test(year) ? 371 : 364), AccountingDate.of(chronology, year, 3, 5).range(ChronoField.DAY_OF_YEAR),
-                    () -> String.format("for year %d ", year))));
+                year -> () -> assertEquals(ValueRange.of(1, isLeapYear.test(year) ? 371 : 364),
+                        AccountingDate.of(chronology, year, 3, 5).range(ChronoField.DAY_OF_YEAR),
+                        () -> String.format("for year %d ", year))));
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // getWeeksInMonth(month),
     // getWeeksAtStartOfMonth(weeks), getMonthFromElapsedWeeks(weeks)
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     public static Stream<Arguments> data_weeksInMonth() {
         Stream<Object[]> pattern_4_4_5 = IntStream.range(1, 13)
                 .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
-                    new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }, leapWeekInMonth});
+                        new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }, leapWeekInMonth });
 
         Stream<Object[]> pattern_4_5_4 = IntStream.range(1, 13)
                 .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
-                        new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }, leapWeekInMonth});
+                        new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }, leapWeekInMonth });
 
         Stream<Object[]> pattern_5_4_4 = IntStream.range(1, 13)
                 .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
-                    new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }, leapWeekInMonth});
+                        new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }, leapWeekInMonth });
 
         Stream<Object[]> pattern_even_13 = IntStream.range(1, 14)
                 .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
-                    new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, leapWeekInMonth});
+                        new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, leapWeekInMonth });
 
         return Lists.cartesianProduct(
-                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList()),
+                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13)
+                        .collect(Collectors.toList()),
                 Lists.newArrayList(
-                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear))
-                )
+                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear)))
                 .stream().map(args -> {
                     AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
                     int[] expectedWeeksInMonth = (int[]) ((Object[]) args.get(0))[1];
@@ -298,7 +309,8 @@ public class TestAccountingChronologyBuilder {
                                         () -> String.format("weeks in month mismatch for month %d ", month)),
                                 () -> assertEquals(weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0),
                                         chronology.getDivision().getWeeksInMonth(month, leapWeekInMonth),
-                                        () -> String.format("weeks in month mismatch with leap week for month %d ", month)))));
+                                        () -> String.format("weeks in month mismatch with leap week for month %d ",
+                                                month)))));
     }
 
     @ParameterizedTest
@@ -306,10 +318,11 @@ public class TestAccountingChronologyBuilder {
     public void test_getWeeksAtStartOf(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
             final int finalMonth = month;
-            assertEquals(elapsedWeeks, chronology.getDivision().getWeeksAtStartOfMonth(month), 
-                () -> String.format("weeks in month mismatch for month %d ", finalMonth));
-            assertEquals(elapsedWeeks + (month > leapWeekInMonth ? 1 : 0), chronology.getDivision().getWeeksAtStartOfMonth(month, leapWeekInMonth), 
-                () -> String.format("weeks in month mismatch with leap week for month %d ", finalMonth));
+            assertEquals(elapsedWeeks, chronology.getDivision().getWeeksAtStartOfMonth(month),
+                    () -> String.format("weeks in month mismatch for month %d ", finalMonth));
+            assertEquals(elapsedWeeks + (month > leapWeekInMonth ? 1 : 0),
+                    chronology.getDivision().getWeeksAtStartOfMonth(month, leapWeekInMonth),
+                    () -> String.format("weeks in month mismatch with leap week for month %d ", finalMonth));
         }
     }
 
@@ -344,11 +357,14 @@ public class TestAccountingChronologyBuilder {
 
     public static Stream<Arguments> data_weeksInMonth_noChronology() {
         return Stream.of(
-            arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }),
-            arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, new int[] { 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4 }),
-            arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }),
-            arguments(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 })
-        );
+                arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS,
+                        new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }),
+                arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS,
+                        new int[] { 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4 }),
+                arguments(AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
+                        new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }),
+                arguments(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS,
+                        new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }));
     }
 
     @ParameterizedTest
@@ -387,15 +403,17 @@ public class TestAccountingChronologyBuilder {
     public void test_extraWeeksLeap_getMonthFromElapsedWeekspublic(AccountingYearDivision division, int[] weeksInMonth, int leapWeekInMonth) {
         final int elapsedWeeks = Arrays.stream(weeksInMonth).sum() + 1;
         assertAll(
-                () -> assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(elapsedWeeks, leapWeekInMonth),
+                () -> assertThrows(DateTimeException.class,
+                        () -> division.getMonthFromElapsedWeeks(elapsedWeeks, leapWeekInMonth),
                         "For elapsed weeks on border"),
-                () -> assertThrows(DateTimeException.class, () -> division.getMonthFromElapsedWeeks(elapsedWeeks + 1, leapWeekInMonth),
+                () -> assertThrows(DateTimeException.class,
+                        () -> division.getMonthFromElapsedWeeks(elapsedWeeks + 1, leapWeekInMonth),
                         "For elapsed weeks beyond border"));
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // toChronology() failures.
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     public static Stream<Arguments> data_badChronology() {
         return Stream.of(
                 arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 0),
@@ -412,17 +430,19 @@ public class TestAccountingChronologyBuilder {
     @ParameterizedTest
     @MethodSource("data_badChronology")
     public void test_badChronology_nearestEndOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
-        assertThrows(IllegalStateException.class, () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
-                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                .toChronology());
+        assertThrows(IllegalStateException.class,
+                () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
+                        .withDivision(division).leapWeekInMonth(leapWeekInMonth)
+                        .toChronology());
     }
 
     @ParameterizedTest
     @MethodSource("data_badChronology")
     public void test_badChronology_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
-        assertThrows(IllegalStateException.class, () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
-                .withDivision(division).leapWeekInMonth(leapWeekInMonth)
-                .toChronology());
+        assertThrows(IllegalStateException.class,
+                () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
+                        .withDivision(division).leapWeekInMonth(leapWeekInMonth)
+                        .toChronology());
     }
 
 }
