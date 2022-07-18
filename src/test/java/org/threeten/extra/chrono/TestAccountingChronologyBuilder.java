@@ -87,27 +87,28 @@ public class TestAccountingChronologyBuilder {
                         (GetYearEnd) ((year, ending, dayOfWeek) -> LocalDate.of(year, ending, 3).plusMonths(1)
                                 .with(TemporalAdjusters.previousOrSame(dayOfWeek)))
                 }),
-                Lists.newArrayList(
-                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear)))
+                Lists.newArrayList((Object) new Object[] {
+                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear, 0
+                }))
                 .stream().map(
                         (args) -> {
                             DayOfWeek dayOfWeek = (DayOfWeek) args.get(0);
                             Month ending = (Month) args.get(1);
-                            BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder> endingType = 
-                                (BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder>) ((Object[]) args.get(2))[0];
+                            BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder> endingType =
+                                    (BiFunction<AccountingChronologyBuilder, Month, AccountingChronologyBuilder>) ((Object[]) args.get(2))[0];
                             GetYearEnd getYearEnd = (GetYearEnd) ((Object[]) args.get(2))[1];
-                            UnaryOperator<AccountingChronologyBuilder> startOrEnd = (UnaryOperator<AccountingChronologyBuilder>) args.get(3);
+                            UnaryOperator<AccountingChronologyBuilder> startOrEnd = (UnaryOperator<AccountingChronologyBuilder>) ((Object[]) args.get(3))[0];
+                            int offset = (int) ((Object[]) args.get(3))[1];
 
-                            AccountingChronology chrono = startOrEnd
-                                    .apply(endingType.apply(new AccountingChronologyBuilder(), ending))
+                            AccountingChronology chrono = endingType.andThen(startOrEnd).apply(new AccountingChronologyBuilder(), ending)
                                     .endsOn(dayOfWeek)
                                     .withDivision(AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS)
                                     .leapWeekInMonth(12)
                                     .toChronology();
 
                             IntPredicate isLeapYear = year -> {
-                                LocalDate currentYearEnd = getYearEnd.apply(year, ending, dayOfWeek);
-                                LocalDate prevYearEnd = getYearEnd.apply(year - 1, ending, dayOfWeek);
+                                LocalDate currentYearEnd = getYearEnd.apply(year + offset, ending, dayOfWeek);
+                                LocalDate prevYearEnd = getYearEnd.apply(year - 1 + offset, ending, dayOfWeek);
                                 return prevYearEnd.until(currentYearEnd, DAYS) == 371;
                             };
 
@@ -194,7 +195,7 @@ public class TestAccountingChronologyBuilder {
                 Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13)
                         .collect(Collectors.toList()),
                 Lists.newArrayList(
-                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear)))
+                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear))
                 .stream().map(args -> {
                     AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
                     int leapWeekInMonth = (int) ((Object[]) args.get(0))[1];
@@ -282,7 +283,7 @@ public class TestAccountingChronologyBuilder {
                 Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13)
                         .collect(Collectors.toList()),
                 Lists.newArrayList(
-                        (UnaryOperator<AccountingChronologyBuilder>) (AccountingChronologyBuilder::accountingYearEndsInIsoYear)))
+                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear))
                 .stream().map(args -> {
                     AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
                     int[] expectedWeeksInMonth = (int[]) ((Object[]) args.get(0))[1];
