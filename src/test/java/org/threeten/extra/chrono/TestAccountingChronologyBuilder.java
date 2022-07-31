@@ -268,8 +268,8 @@ public class TestAccountingChronologyBuilder {
                         new int[] { 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5 }, leapWeekInMonth });
 
         Stream<Object[]> pattern_4_5_4 = IntStream.range(1, 13)
-                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
-                        new int[] { 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4 }, leapWeekInMonth });
+                .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS,
+                        new int[] { 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4 }, leapWeekInMonth });
 
         Stream<Object[]> pattern_5_4_4 = IntStream.range(1, 13)
                 .mapToObj((leapWeekInMonth) -> new Object[] { AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS,
