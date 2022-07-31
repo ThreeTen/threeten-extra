@@ -228,23 +228,23 @@ public class TestAccountingChronologyBuilder {
 
     @ParameterizedTest
     @MethodSource("data_weeksInMonth")
-    public void test_date_dayOfMonth_range(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
+    public void test_date_dayOfMonth_range(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth, int yearOffset) {
         assertAll(IntStream.range(1, weeksInMonth.length).mapToObj(
                 month -> () -> assertAll(
                         () -> assertEquals(ValueRange.of(1, weeksInMonth[month - 1] * 7),
-                                AccountingDate.of(chronology, 2011, month, 15).range(ChronoField.DAY_OF_MONTH),
+                                AccountingDate.of(chronology, 2011 - yearOffset, month, 15).range(ChronoField.DAY_OF_MONTH),
                                 () -> String.format("day of month for month %d ", month)),
                         () -> assertEquals(
                                 ValueRange.of(1, weeksInMonth[month - 1] * 7 + (month == leapWeekInMonth ? 7 : 0)),
-                                AccountingDate.of(chronology, 2012, month, 15).range(ChronoField.DAY_OF_MONTH),
+                                AccountingDate.of(chronology, 2012 - yearOffset, month, 15).range(ChronoField.DAY_OF_MONTH),
                                 () -> String.format("leap year day of month for month %d ", month)),
                         () -> assertEquals(ValueRange.of(1, weeksInMonth[month - 1]),
-                                AccountingDate.of(chronology, 2011, month, 15)
+                                AccountingDate.of(chronology, 2011 - yearOffset, month, 15)
                                         .range(ChronoField.ALIGNED_WEEK_OF_MONTH),
                                 () -> String.format("week of month for month %d ", month)),
                         () -> assertEquals(
                                 ValueRange.of(1, weeksInMonth[month - 1] + (month == leapWeekInMonth ? 1 : 0)),
-                                AccountingDate.of(chronology, 2012, month, 15)
+                                AccountingDate.of(chronology, 2012 - yearOffset, month, 15)
                                         .range(ChronoField.ALIGNED_WEEK_OF_MONTH)),
                         () -> String.format("leap year week of month for month %d ", month))));
     }
@@ -280,28 +280,29 @@ public class TestAccountingChronologyBuilder {
                         new int[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, leapWeekInMonth });
 
         return Lists.cartesianProduct(
-                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13)
-                        .collect(Collectors.toList()),
-                Lists.newArrayList(
-                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear))
+                Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13).collect(Collectors.toList()),
+                Lists.newArrayList((Object) new Object[] {
+                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear, 0
+                }))
                 .stream().map(args -> {
                     AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
                     int[] expectedWeeksInMonth = (int[]) ((Object[]) args.get(0))[1];
                     int leapWeekInMonth = (int) ((Object[]) args.get(0))[2];
-                    UnaryOperator<AccountingChronologyBuilder> startOrEnd = (UnaryOperator<AccountingChronologyBuilder>) args.get(1);
+                    UnaryOperator<AccountingChronologyBuilder> startOrEnd = (UnaryOperator<AccountingChronologyBuilder>) ((Object[]) args.get(1))[0];
+                    int offset = (int) ((Object[]) args.get(1))[1];
 
                     AccountingChronologyBuilder builder = startOrEnd.apply(new AccountingChronologyBuilder())
                             .endsOn(DayOfWeek.SUNDAY)
                             .nearestEndOf(Month.AUGUST)
                             .withDivision(division).leapWeekInMonth(leapWeekInMonth);
 
-                    return arguments(builder.toChronology(), expectedWeeksInMonth, leapWeekInMonth);
+                    return arguments(builder.toChronology(), expectedWeeksInMonth, leapWeekInMonth, offset);
                 });
     }
 
     @ParameterizedTest
     @MethodSource("data_weeksInMonth")
-    public void test_getWeeksInMonth(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
+    public void test_getWeeksInMonth(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth, int _yearOffset) {
         assertAll(
                 IntStream.range(1, weeksInMonth.length)
                         .mapToObj(month -> () -> assertAll(
@@ -316,7 +317,7 @@ public class TestAccountingChronologyBuilder {
 
     @ParameterizedTest
     @MethodSource("data_weeksInMonth")
-    public void test_getWeeksAtStartOf(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
+    public void test_getWeeksAtStartOf(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth, int _yearOffset) {
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
             final int finalMonth = month;
             assertEquals(elapsedWeeks, chronology.getDivision().getWeeksAtStartOfMonth(month),
@@ -329,7 +330,7 @@ public class TestAccountingChronologyBuilder {
 
     @ParameterizedTest
     @MethodSource("data_weeksInMonth")
-    public void test_getMonthFromElapsedWeeks(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth) {
+    public void test_getMonthFromElapsedWeeks(AccountingChronology chronology, int[] weeksInMonth, int leapWeekInMonth, int _yearOffset) {
         for (int month = 1, elapsedWeeks = 0; month <= weeksInMonth.length; elapsedWeeks += weeksInMonth[month - 1], month++) {
             final int finalMonth = month;
             for (int i = 0; i < weeksInMonth[month - 1]; i++) {
