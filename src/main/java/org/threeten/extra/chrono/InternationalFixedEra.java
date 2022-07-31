@@ -37,7 +37,7 @@ import java.time.chrono.Era;
 /**
  * An era in the International Fixed calendar system.
  * <p>
- * The International Fixed calendar system only has one era.
+ * The International Fixed calendar system officially only has one era.
  * The current era, for years from 1 onwards, is known as 'Current Era'.
  * All previous years are invalid.
  * <p>
@@ -85,7 +85,7 @@ public enum InternationalFixedEra implements Era {
      */
     @Override
     public int getValue() {
-        return ordinal();
+        return 1;
     }
 
 }
