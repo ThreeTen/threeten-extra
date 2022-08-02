@@ -387,7 +387,7 @@
             <dependency>
               <groupId>org.kohsuke</groupId>
               <artifactId>github-api</artifactId>
-              <version>1.301</version>
+              <version>${github-api.version}</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -455,7 +455,7 @@
             <dependency>
               <groupId>org.joda.external</groupId>
               <artifactId>reflow-velocity-tools</artifactId>
-              <version>1.2</version>
+              <version>${reflow-velocity-tools.version}</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -494,7 +494,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.8.2</version>
+        <version>${junit.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -504,14 +504,14 @@
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
-      <version>2.2.2</version>
+      <version>${joda-convert.version}</version>
       <scope>compile</scope>
       <optional>true</optional><!-- mandatory in Scala -->
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.0.1-jre</version>
+      <version>${guava.version}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -535,7 +535,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -859,7 +858,7 @@
           <plugin>
             <groupId>de.jutzig</groupId>
             <artifactId>github-release-plugin</artifactId>
-            <version>1.4.0</version>
+            <version>${github-release-plugin.version}</version>
             <configuration>
               <releaseName>Release v${project.version}</releaseName>
               <description>See the [change notes](https://www.threeten.org/threeten-extra/changes-report.html) for more information.</description>
@@ -897,13 +896,14 @@
 
   <!-- ==================================================================== -->
   <properties>
-    <!-- JUnit version number -->
+    <!-- Dependencies -->
+    <joda-convert.version>2.2.2</joda-convert.version>
     <junit.version>5.9.0</junit.version>
+    <guava.version>31.1-jre</guava.version>
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <!-- v3.0.0 does not work with Eclipse -->
     <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
@@ -926,8 +926,12 @@
     <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
+    <!-- Other plugins -->
+    <github-api.version>1.307</github-api.version>
+    <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+    <reflow-velocity-tools.version>1.2</reflow-velocity-tools.version>
     <spotbugs-maven-plugin.version>4.7.1.1</spotbugs-maven-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
