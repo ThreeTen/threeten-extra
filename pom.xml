@@ -387,7 +387,7 @@
             <dependency>
               <groupId>org.kohsuke</groupId>
               <artifactId>github-api</artifactId>
-              <version>1.301</version>
+              <version>1.307</version>
             </dependency>
           </dependencies>
         </plugin>
