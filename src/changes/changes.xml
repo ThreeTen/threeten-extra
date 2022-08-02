@@ -7,6 +7,21 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.7.1" date="2022-08-02" description="v1.7.1">
+      <action dev="jodastephen" type="add">
+        Add utilities to work with durations as numbers.
+        Fixes #147.
+      </action>
+      <action dev="jodastephen" type="fix">
+        Fix YearWeek.isSupported.
+        Fixes #192.
+      </action>
+      <action dev="catull" type="fix">
+        Fix InternationalFixedEra era value.
+        Fixes #205.
+      </action>
+    </release>
+    <!-- types are add, fix, remove, update -->
     <release version="1.7.0" date="2021-08-01" description="v1.7.0">
       <action dev="stevenpaligo" type="add">
         Additional comparison methods on UtcInstant/TaiInstant.
