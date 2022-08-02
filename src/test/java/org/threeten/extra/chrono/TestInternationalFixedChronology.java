@@ -367,6 +367,30 @@ public class TestInternationalFixedChronology {
         assertEquals(29, InternationalFixedDate.of(2000, 6, 29).lengthOfMonth());
     }
 
+    @Test
+    public void test_era_valid() {
+        Era era = InternationalFixedChronology.INSTANCE.eraOf(1);
+        assertNotNull(era);
+        assertEquals(1, era.getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    // data_invalidEraValues()
+    //-----------------------------------------------------------------------
+    public static Object[][] data_invalidEraValues() {
+        return new Object[][] {
+                {-1},
+                {0},
+                {2},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_invalidEraValues")
+    public void test_era_invalid(int eraValue) {
+        assertThrows(DateTimeException.class, () -> InternationalFixedChronology.INSTANCE.eraOf(eraValue));
+    }
+
     //-----------------------------------------------------------------------
     // era, prolepticYear and dateYearDay
     //-----------------------------------------------------------------------
