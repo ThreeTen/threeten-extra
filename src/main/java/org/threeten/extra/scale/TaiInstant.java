@@ -192,7 +192,7 @@ public final class TaiInstant
      * The seconds part must contain only numbers and a possible leading negative sign.
      * The nanoseconds part must contain exactly nine digits.
      * The trailing literal must be exactly specified.
-     * This format parses the {@link toString} format.
+     * This format parses the {@link #toString()} format.
      *
      * @param text  the text to parse such as "12345.123456789s(TAI)", not null
      * @return the parsed instant, not null
@@ -233,7 +233,7 @@ public final class TaiInstant
      * <p>
      * The TAI second count is a simple incrementing count of seconds where
      * second 0 is 1958-01-01T00:00:00(TAI).
-     * The nanosecond part of the second is returned by {@link getNano}.
+     * The nanosecond part of the second is returned by {@link #getNano()}.
      *
      * @return the seconds from the epoch of 1958-01-01T00:00:00(TAI)
      */
