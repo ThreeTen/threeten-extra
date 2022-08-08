@@ -729,9 +729,9 @@ public class TestDayOfMonth {
 
     @Test
     public void test_compareTo_nullDayOfMonth() {
-        DayOfMonth doy = null;
+        DayOfMonth dom = null;
         DayOfMonth test = DayOfMonth.of(1);
-        assertThrows(NullPointerException.class, () -> test.compareTo(doy));
+        assertThrows(NullPointerException.class, () -> test.compareTo(dom));
     }
 
     //-----------------------------------------------------------------------
@@ -751,9 +751,9 @@ public class TestDayOfMonth {
 
     @Test
     public void test_equals_nullDayOfMonth() {
-        DayOfMonth doy = null;
+        DayOfMonth dom = null;
         DayOfMonth test = DayOfMonth.of(1);
-        assertEquals(false, test.equals(doy));
+        assertEquals(false, test.equals(dom));
     }
 
     @Test
