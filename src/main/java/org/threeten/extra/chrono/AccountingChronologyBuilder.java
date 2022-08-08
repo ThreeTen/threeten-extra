@@ -49,7 +49,7 @@ import java.time.Month;
  * and how many weeks are in each.
  * <li>leap-week month - Which month will have the leap 'week' added to it.
  * In practice this is probably the last one, but this does not seem to be required.
- * <li>year start/end offset - Whether the fiscal year starts or ends in the similarly numbered ISO year.  
+ * <li>year start/end offset - Whether the fiscal year starts or ends in the similarly numbered ISO year.
  * If nearest-end-of-month is set and the ending month is December, the effective offset will shift over time.
  * </ul>
  * <p>
@@ -167,6 +167,17 @@ public final class AccountingChronologyBuilder {
      */
     public AccountingChronologyBuilder accountingYearEndsInIsoYear() {
         this.yearOffset = 0;
+        return this;
+    }
+
+
+    /**
+     * Sets the proleptic accounting year to start in the matching Iso year.
+     *
+     * @return this, for chaining, not null.
+     */
+    public AccountingChronologyBuilder accountingYearStartsInIsoYear() {
+        this.yearOffset = 1;
         return this;
     }
 

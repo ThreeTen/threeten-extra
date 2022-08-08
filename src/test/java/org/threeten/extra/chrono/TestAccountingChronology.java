@@ -770,17 +770,36 @@ public class TestAccountingChronology {
         assertEquals(false, a1.equals(other));
 
         assertTrue(a1.hashCode() == a1.hashCode());
+
+        AccountingDate startChronologyDate = new AccountingChronologyBuilder().endsOn(DayOfWeek.WEDNESDAY)
+        .nearestEndOf(Month.AUGUST).leapWeekInMonth(13)
+        .withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS)
+        .accountingYearStartsInIsoYear()
+        .toChronology().date(2000, 1, 3);
+
+
+        assertEquals(false, a1.getChronology().equals(startChronologyDate.getChronology()));
+        assertEquals(false, a1.equals(startChronologyDate));
+        assertEquals(false, other.getChronology().equals(startChronologyDate.getChronology()));
+        assertEquals(false, other.equals(startChronologyDate));
     }
 
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     public static Object[][] data_toString() {
+        AccountingChronology other = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST).
+        withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS).leapWeekInMonth(13).accountingYearStartsInIsoYear().toChronology();
+
         return new Object[][] {
                 { INSTANCE.date(1, 1, 1),
                         "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 ending in the given ISO year CE 1-01-01" },
                 { INSTANCE.date(2012, 6, 23),
                         "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 ending in the given ISO year CE 2012-06-23" },
+                { other.date(1, 1, 1),
+                        "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 starting in the given ISO year CE 1-01-01" },
+                { other.date(2012, 6, 23),
+                        "Accounting calendar ends on SUNDAY nearest end of AUGUST, year divided in THIRTEEN_EVEN_MONTHS_OF_4_WEEKS with leap-week in month 13 starting in the given ISO year CE 2012-06-23" },
         };
     }
 
