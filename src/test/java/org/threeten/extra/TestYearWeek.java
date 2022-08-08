@@ -1107,8 +1107,12 @@ public class TestYearWeek {
     }
 
     @Test
+    public void test_equals_null() {
+        assertEquals(false, TEST.equals(null));
+    }
+
+    @Test
     public void test_equals_incorrectType() {
-        assertTrue(TEST.equals(null) == false);
         assertEquals(false, TEST.equals((Object) "Incorrect type"));
     }
 
