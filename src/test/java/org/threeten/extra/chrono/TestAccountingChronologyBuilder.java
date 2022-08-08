@@ -195,7 +195,9 @@ public class TestAccountingChronologyBuilder {
                 Streams.concat(pattern_4_4_5, pattern_4_5_4, pattern_5_4_4, pattern_even_13)
                         .collect(Collectors.toList()),
                 Lists.newArrayList(
-                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear))
+                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear,
+                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearStartsInIsoYear
+                ))
                 .stream().map(args -> {
                     AccountingYearDivision division = (AccountingYearDivision) ((Object[]) args.get(0))[0];
                     int leapWeekInMonth = (int) ((Object[]) args.get(0))[1];
