@@ -109,6 +109,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 
 /**
  * Test DayOfMonth.
@@ -194,26 +195,18 @@ public class TestDayOfMonth {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test
+    @RetryingTest(100)
     public void test_now() {
-        DayOfMonth test = DayOfMonth.now();
-        if (LocalDate.now().getDayOfMonth() != test.getValue()) {
-            test = DayOfMonth.now();
-        }
-        assertEquals(LocalDate.now().getDayOfMonth(), test.getValue());
+        assertEquals(LocalDate.now().getDayOfMonth(), DayOfMonth.now().getValue());
     }
 
     //-----------------------------------------------------------------------
     // now(ZoneId)
     //-----------------------------------------------------------------------
-    @Test
+    @RetryingTest(100)
     public void test_now_ZoneId() {
         ZoneId zone = ZoneId.of("Asia/Tokyo");
-        DayOfMonth test = DayOfMonth.now(zone);
-        if (LocalDate.now(zone).getDayOfMonth() != test.getValue()) {
-            test = DayOfMonth.now(zone);
-        }
-        assertEquals(LocalDate.now(zone).getDayOfMonth(), test.getValue());
+        assertEquals(LocalDate.now(zone).getDayOfMonth(), DayOfMonth.now(zone).getValue());
     }
 
     //-----------------------------------------------------------------------

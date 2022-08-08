@@ -93,6 +93,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 
 /**
  * Test DayOfYear.
@@ -181,26 +182,18 @@ public class TestDayOfYear {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test
+    @RetryingTest(100)
     public void test_now() {
-        DayOfYear test = DayOfYear.now();
-        if (LocalDate.now().getDayOfYear() != test.getValue()) {
-            test = DayOfYear.now();
-        }
-        assertEquals(LocalDate.now().getDayOfYear(), test.getValue());
+        assertEquals(LocalDate.now().getDayOfYear(), DayOfYear.now().getValue());
     }
 
     //-----------------------------------------------------------------------
     // now(ZoneId)
     //-----------------------------------------------------------------------
-    @Test
+    @RetryingTest(100)
     public void test_now_ZoneId() {
         ZoneId zone = ZoneId.of("Asia/Tokyo");
-        DayOfYear test = DayOfYear.now(zone);
-        if (LocalDate.now(zone).getDayOfYear() != test.getValue()) {
-            test = DayOfYear.now(zone);
-        }
-        assertEquals(LocalDate.now(zone).getDayOfYear(), test.getValue());
+        assertEquals(LocalDate.now(zone).getDayOfYear(), DayOfYear.now(zone).getValue());
     }
 
     //-----------------------------------------------------------------------
