@@ -467,8 +467,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
         if (!(era instanceof InternationalFixedEra)) {
             throw new ClassCastException("Invalid era: " + era);
         }
-        YEAR_RANGE.checkValidIntValue(yearOfEra, ChronoField.YEAR_OF_ERA);
-        return yearOfEra;
+        return YEAR_RANGE.checkValidIntValue(yearOfEra, ChronoField.YEAR_OF_ERA);
     }
 
     /**
