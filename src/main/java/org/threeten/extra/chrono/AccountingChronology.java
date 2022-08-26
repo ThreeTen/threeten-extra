@@ -180,8 +180,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
         }
 
         // Derive cached information.
-        LocalDate endingLimit = inLastWeek ? LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
-                LocalDate.of(0, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
+        LocalDate endingLimit = inLastWeek ? LocalDate.of(0 + yearOffset, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
+                LocalDate.of(0 + yearOffset, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
         LocalDate yearZeroEnd = endingLimit.with(TemporalAdjusters.previousOrSame(endsOn));
         int yearZeroDifference = (int) yearZeroEnd.until(endingLimit, ChronoUnit.DAYS);
         // Longest/shortest month lengths and related
@@ -485,7 +485,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * Return the number of ISO Leap Years since Accounting Year 1.
      * <p>
      * This method calculates how many ISO leap years have passed since year 1.
-     * The count returned will be negative for years before 1.
+     * The count returned may be negative for years before 1.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
      *
@@ -493,15 +493,15 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return the count of leap years since year 1.
      */
     private long getISOLeapYearCount(long prolepticYear) {
-        long offsetYear = prolepticYear - (end == Month.JANUARY ? 1 : 0) - 1;
-        return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400) + (end == Month.JANUARY ? 1 : 0);
+        long offsetYear = prolepticYear - (end == Month.JANUARY? 1 : 0) - 1 + yearOffset;
+        return Math.floorDiv(offsetYear, 4) - Math.floorDiv(offsetYear, 100) + Math.floorDiv(offsetYear, 400) + (end == Month.JANUARY && yearOffset == 0 ? 1 : 0);
     }
 
     /**
      * Returns the count of leap years since year 1.
      * <p>
      * This method calculates how many Accounting leap years have passed since year 1.
-     * The count returned will be negative for years before 1.
+     * The count returned may be negative for years before 1.
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
      *

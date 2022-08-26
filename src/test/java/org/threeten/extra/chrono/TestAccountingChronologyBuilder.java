@@ -88,9 +88,10 @@ public class TestAccountingChronologyBuilder {
                         (GetYearEnd) ((year, ending, dayOfWeek) -> LocalDate.of(year, ending, 3).plusMonths(1)
                                 .with(TemporalAdjusters.previousOrSame(dayOfWeek)))
                 }),
-                Lists.newArrayList((Object) new Object[] {
-                        (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear, 0
-                }))
+                Lists.newArrayList(
+                        (Object) new Object[] { (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearEndsInIsoYear, 0},
+                        (Object) new Object[] { (UnaryOperator<AccountingChronologyBuilder>) AccountingChronologyBuilder::accountingYearStartsInIsoYear, 1}
+                ))
                 .stream().map(
                         (args) -> {
                             DayOfWeek dayOfWeek = (DayOfWeek) args.get(0);
