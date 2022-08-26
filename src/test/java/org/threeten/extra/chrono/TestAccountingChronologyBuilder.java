@@ -47,6 +47,7 @@ import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -106,20 +107,22 @@ public class TestAccountingChronologyBuilder {
                                     .leapWeekInMonth(12)
                                     .toChronology();
 
+                            IntFunction<LocalDate> offsetYearEnd = (int year) -> getYearEnd.apply(year + offset, ending, dayOfWeek);
+
                             IntPredicate isLeapYear = year -> {
-                                LocalDate currentYearEnd = getYearEnd.apply(year + offset, ending, dayOfWeek);
-                                LocalDate prevYearEnd = getYearEnd.apply(year - 1 + offset, ending, dayOfWeek);
+                                LocalDate currentYearEnd = offsetYearEnd.apply(year);
+                                LocalDate prevYearEnd = offsetYearEnd.apply(year - 1);
                                 return prevYearEnd.until(currentYearEnd, DAYS) == 371;
                             };
 
-                            return arguments(chrono, getYearEnd, isLeapYear, dayOfWeek, ending);
+                            return arguments(chrono, offsetYearEnd, isLeapYear);
 
                         });
     }
 
     @ParameterizedTest
     @MethodSource("data_yearEnding")
-    public void test_isLeapYear(AccountingChronology chronology, GetYearEnd _getYearEnd, IntPredicate isLeapYear, DayOfWeek _dayOfWeek, Month _ending) {
+    public void test_isLeapYear(AccountingChronology chronology, IntFunction<LocalDate> _getYearEnd, IntPredicate isLeapYear) {
         assertAll(IntStream.range(-200, 600).mapToObj(
                 year -> () -> assertEquals(isLeapYear.test(year), chronology.isLeapYear(year),
                         () -> String.format("for year %d ", year))));
@@ -127,7 +130,7 @@ public class TestAccountingChronologyBuilder {
 
     @ParameterizedTest
     @MethodSource("data_yearEnding")
-    public void test_previousLeapYears(AccountingChronology chronology, GetYearEnd _getYearEnd, IntPredicate isLeapYear, DayOfWeek _dayOfWeek, Month _ending) {
+    public void test_previousLeapYears(AccountingChronology chronology, IntFunction<LocalDate> _getYearEnd, IntPredicate isLeapYear) {
         for (int year = 1, leapYears = 0; year < 600; year++) {
             if (year != 1 && isLeapYear.test(year - 1)) {
                 leapYears++;
@@ -146,9 +149,9 @@ public class TestAccountingChronologyBuilder {
 
     @ParameterizedTest
     @MethodSource("data_yearEnding")
-    public void test_date_int_int_int(AccountingChronology chronology, GetYearEnd getYearEnd, IntPredicate isLeapYear, DayOfWeek dayOfWeek, Month ending) {
+    public void test_date_int_int_int(AccountingChronology chronology, IntFunction<LocalDate> getYearEnd, IntPredicate isLeapYear) {
         assertAll(IntStream.range(-200, 600).mapToObj(
-                year -> () -> assertEquals(getYearEnd.apply(year - 1, ending, dayOfWeek).plusDays(1).toEpochDay(),
+                year -> () -> assertEquals(getYearEnd.apply(year - 1).plusDays(1).toEpochDay(),
                         chronology.date(year, 1, 1).toEpochDay(),
                         () -> String.format("for year %d ", year))));
     }
@@ -253,7 +256,7 @@ public class TestAccountingChronologyBuilder {
 
     @ParameterizedTest
     @MethodSource("data_yearEnding")
-    public void test_date_dayOfYear_range(AccountingChronology chronology, GetYearEnd _getYearEnd, IntPredicate isLeapYear, DayOfWeek _dayOfWeek, Month _ending) {
+    public void test_date_dayOfYear_range(AccountingChronology chronology, IntFunction<LocalDate> _getYearEnd, IntPredicate isLeapYear) {
         assertAll(IntStream.range(2007, 2015).mapToObj(
                 year -> () -> assertEquals(ValueRange.of(1, isLeapYear.test(year) ? 371 : 364),
                         AccountingDate.of(chronology, year, 3, 5).range(ChronoField.DAY_OF_YEAR),
