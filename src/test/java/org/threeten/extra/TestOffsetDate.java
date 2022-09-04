@@ -88,6 +88,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.RetryingTest;
 
 /**
  * Test OffsetDate.
@@ -157,18 +158,9 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test
+    @RetryingTest(100)
     public void now() {
-        OffsetDate expected = OffsetDate.now(Clock.systemDefaultZone());
-        OffsetDate test = OffsetDate.now();
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = OffsetDate.now(Clock.systemDefaultZone());
-            test = OffsetDate.now();
-        }
-        assertEquals(expected, test);
+        assertEquals(OffsetDate.now(Clock.systemDefaultZone()), OffsetDate.now());
     }
 
     @Test

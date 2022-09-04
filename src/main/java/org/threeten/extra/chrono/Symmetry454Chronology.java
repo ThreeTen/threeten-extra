@@ -490,10 +490,7 @@ public final class Symmetry454Chronology
         if (!(era instanceof IsoEra)) {
             throw new ClassCastException("Invalid era: " + era);
         }
-
-        YEAR_RANGE.checkValidIntValue(yearOfEra, ChronoField.YEAR_OF_ERA);
-
-        return yearOfEra;
+        return YEAR_RANGE.checkValidIntValue(yearOfEra, ChronoField.YEAR_OF_ERA);
     }
 
     /**

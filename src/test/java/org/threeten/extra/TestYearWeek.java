@@ -127,6 +127,7 @@ import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.RetryingTest;
 
 public class TestYearWeek {
 
@@ -335,18 +336,9 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test
+    @RetryingTest(100)
     public void test_now() {
-        YearWeek expected = YearWeek.now(Clock.systemDefaultZone());
-        YearWeek test = YearWeek.now();
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = YearWeek.now(Clock.systemDefaultZone());
-            test = YearWeek.now();
-        }
-        assertEquals(expected, test);
+        assertEquals(YearWeek.now(Clock.systemDefaultZone()), YearWeek.now());
     }
 
     //-----------------------------------------------------------------------
@@ -357,19 +349,10 @@ public class TestYearWeek {
         assertThrows(NullPointerException.class, () -> YearWeek.now((ZoneId) null));
     }
 
-    @Test
+    @RetryingTest(100)
     public void now_ZoneId() {
         ZoneId zone = ZoneId.of("UTC+01:02:03");
-        YearWeek expected = YearWeek.now(Clock.system(zone));
-        YearWeek test = YearWeek.now(zone);
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = YearWeek.now(Clock.system(zone));
-            test = YearWeek.now(zone);
-        }
-        assertEquals(expected, test);
+        assertEquals(YearWeek.now(Clock.system(zone)), YearWeek.now(zone));
     }
 
     //-----------------------------------------------------------------------
@@ -1107,8 +1090,12 @@ public class TestYearWeek {
     }
 
     @Test
+    public void test_equals_null() {
+        assertEquals(false, TEST.equals(null));
+    }
+
+    @Test
     public void test_equals_incorrectType() {
-        assertTrue(TEST.equals(null) == false);
         assertEquals(false, TEST.equals((Object) "Incorrect type"));
     }
 

@@ -537,6 +537,12 @@
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+     <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <version>${pioneer.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <!-- ==================================================================== -->
@@ -911,6 +917,7 @@
     <!-- Dependencies -->
     <joda-convert.version>2.2.2</joda-convert.version>
     <junit.version>5.9.0</junit.version>
+    <pioneer.version>1.7.1</pioneer.version>
     <guava.version>31.1-jre</guava.version>
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
