@@ -946,7 +946,7 @@
     <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <!-- Other plugins -->
-    <github-api.version>1.307</github-api.version>
+    <github-api.version>1.308</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
