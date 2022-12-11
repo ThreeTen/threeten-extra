@@ -162,14 +162,12 @@ public final class Interval
      * Obtains an instance of {@code Interval} from a text string such as
      * {@code 2007-12-03T10:15:30Z/2007-12-04T10:15:30Z}, where the end instant is exclusive.
      * <p>
-     * The string must consist of one of the following five formats:
+     * The string must consist of one of the following four formats:
      * <ul>
      * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash,
      *  followed by a representation of a {@link OffsetDateTime}
      * <li>a representations of an {@link OffsetDateTime}, followed by a forward slash,
      *  followed by a representation of a {@link LocalDateTime}, where the end offset is implied.
-     * <li>a representations of an {@link LocalDateTime}, followed by a forward slash,
-     *  followed by a representation of a {@link OffsetDateTime}, where the start offset is implied.
      * <li>a representation of an {@link OffsetDateTime}, followed by a forward slash,
      *  followed by a representation of a {@link PeriodDuration}
      * <li>a representation of a {@link PeriodDuration}, followed by a forward slash,
@@ -205,9 +203,11 @@ public final class Interval
                     Temporal start = parseTemporal(startStr);
                     Temporal end = parseTemporal(endStr);
                     if (start instanceof LocalDateTime) {
-                        return Interval.of(((LocalDateTime) start).atOffset(ZoneOffset.from(end)).toInstant(), Instant.from(end));
+                        // can *not* use zone offset from end instant (see ISO 8601-1:2019)
+                        throw new DateTimeParseException("Interval cannot be parsed, start instant must contain zone offset", text, 0);
                     }
                     if (end instanceof LocalDateTime) {
+                        // can use zone offset from start instant (see ISO 8601-1:2019)
                         return Interval.of(Instant.from(start), ((LocalDateTime) end).atOffset(ZoneOffset.from(start)).toInstant());
                     }
                     return Interval.of(Instant.from(start), Instant.from(end));

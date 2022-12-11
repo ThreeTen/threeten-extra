@@ -254,7 +254,6 @@ public class TestInterval {
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)), NOW1, NOW2},
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(3)), NOW1, NOW2},
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)).toLocalDateTime(), NOW1, NOW2},
-            {NOW1.atOffset(ZoneOffset.ofHours(2)).toLocalDateTime() + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)), NOW1, NOW2},
             {MIN_OFFSET_DATE_TIME.toString() + "/" + MAX_OFFSET_DATE_TIME, MIN_OFFSET_DATE_TIME, MAX_OFFSET_DATE_TIME},
             {NOW1 + "/" + Instant.MAX, NOW1, Instant.MAX},
             {Instant.MIN.toString() + "/" + NOW2, Instant.MIN, NOW2},
