@@ -77,8 +77,8 @@ public class TestHours {
     //-----------------------------------------------------------------------
     @Test
     public void test_ZERO() {
-        assertSame(Hours.of(0), Hours.ZERO);
-        assertEquals(Hours.of(0), Hours.ZERO);
+        assertSame(Hours.ZERO, Hours.of(0));
+        assertEquals(Hours.ZERO, Hours.of(0));
         assertEquals(0, Hours.ZERO.getAmount());
         assertFalse(Hours.ZERO.isNegative());
         assertTrue(Hours.ZERO.isZero());

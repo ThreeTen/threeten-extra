@@ -83,8 +83,8 @@ public class TestWeeks {
     //-----------------------------------------------------------------------
     @Test
     public void test_ZERO() {
-        assertSame(Weeks.of(0), Weeks.ZERO);
-        assertEquals(Weeks.of(0), Weeks.ZERO);
+        assertSame(Weeks.ZERO, Weeks.of(0));
+        assertEquals(Weeks.ZERO, Weeks.of(0));
         assertEquals(0, Weeks.ZERO.getAmount());
         assertFalse(Weeks.ZERO.isNegative());
         assertTrue(Weeks.ZERO.isZero());
@@ -93,8 +93,8 @@ public class TestWeeks {
 
     @Test
     public void test_ONE() {
-        assertSame(Weeks.of(1), Weeks.ONE);
-        assertEquals(Weeks.of(1), Weeks.ONE);
+        assertSame(Weeks.ONE, Weeks.of(1));
+        assertEquals(Weeks.ONE, Weeks.of(1));
         assertEquals(1, Weeks.ONE.getAmount());
         assertFalse(Weeks.ONE.isNegative());
         assertFalse(Weeks.ONE.isZero());

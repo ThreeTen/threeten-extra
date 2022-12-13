@@ -83,8 +83,8 @@ public class TestYears {
     //-----------------------------------------------------------------------
     @Test
     public void test_ZERO() {
-        assertSame(Years.of(0), Years.ZERO);
-        assertEquals(Years.of(0), Years.ZERO);
+        assertSame(Years.ZERO, Years.of(0));
+        assertEquals(Years.ZERO, Years.of(0));
         assertEquals(0, Years.ZERO.getAmount());
         assertFalse(Years.ZERO.isNegative());
         assertTrue(Years.ZERO.isZero());
@@ -93,8 +93,8 @@ public class TestYears {
 
     @Test
     public void test_ONE() {
-        assertSame(Years.of(1), Years.ONE);
-        assertEquals(Years.of(1), Years.ONE);
+        assertSame(Years.ONE, Years.of(1));
+        assertEquals(Years.ONE, Years.of(1));
         assertEquals(1, Years.ONE.getAmount());
         assertFalse(Years.ONE.isNegative());
         assertFalse(Years.ONE.isZero());

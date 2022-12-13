@@ -83,8 +83,8 @@ public class TestDays {
     //-----------------------------------------------------------------------
     @Test
     public void test_ZERO() {
-        assertSame(Days.of(0), Days.ZERO);
-        assertEquals(Days.of(0), Days.ZERO);
+        assertSame(Days.ZERO, Days.of(0));
+        assertEquals(Days.ZERO, Days.of(0));
         assertEquals(0, Days.ZERO.getAmount());
         assertFalse(Days.ZERO.isNegative());
         assertTrue(Days.ZERO.isZero());
@@ -93,8 +93,8 @@ public class TestDays {
 
     @Test
     public void test_ONE() {
-        assertSame(Days.of(1), Days.ONE);
-        assertEquals(Days.of(1), Days.ONE);
+        assertSame(Days.ONE, Days.of(1));
+        assertEquals(Days.ONE, Days.of(1));
         assertEquals(1, Days.ONE.getAmount());
         assertFalse(Days.ONE.isNegative());
         assertFalse(Days.ONE.isZero());

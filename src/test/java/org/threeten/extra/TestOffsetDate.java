@@ -48,6 +48,7 @@ import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -386,7 +387,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         Constructor<OffsetDate> con = OffsetDate.class.getDeclaredConstructor(LocalDate.class, ZoneOffset.class);
         con.setAccessible(true);
         InvocationTargetException thrown = assertThrows(InvocationTargetException.class, () -> con.newInstance(null, OFFSET_PONE));
-        assertTrue(thrown.getCause() instanceof NullPointerException);
+        assertInstanceOf(NullPointerException.class, thrown.getCause());
     }
 
     @Test
@@ -394,7 +395,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         Constructor<OffsetDate> con = OffsetDate.class.getDeclaredConstructor(LocalDate.class, ZoneOffset.class);
         con.setAccessible(true);
         InvocationTargetException thrown = assertThrows(InvocationTargetException.class, () -> con.newInstance(LocalDate.of(2008, 6, 30), null));
-        assertTrue(thrown.getCause() instanceof NullPointerException);
+        assertInstanceOf(NullPointerException.class, thrown.getCause());
     }
 
     //-----------------------------------------------------------------------

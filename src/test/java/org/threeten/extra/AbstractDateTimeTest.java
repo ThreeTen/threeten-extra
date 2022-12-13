@@ -31,6 +31,7 @@
  */
 package org.threeten.extra;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -101,7 +102,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_range_TemporalField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
-                sample.range(field);  // no exception
+                assertDoesNotThrow(() -> sample.range(field));
             }
         }
     }
@@ -130,7 +131,7 @@ public abstract class AbstractDateTimeTest {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
                 if (sample.range(field).isIntValue()) {
-                    sample.get(field);  // no exception
+                    assertDoesNotThrow(() -> sample.get(field));
                 } else {
                     assertThrows(DateTimeException.class, () -> sample.get(field), "Failed on " + sample + " " + field);
                 }
@@ -161,7 +162,7 @@ public abstract class AbstractDateTimeTest {
     public void basicTest_getLong_TemporalField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
-                sample.getLong(field);  // no exception
+                assertDoesNotThrow(() -> sample.getLong(field));
             }
         }
     }
