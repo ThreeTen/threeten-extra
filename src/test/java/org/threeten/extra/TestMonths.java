@@ -83,8 +83,8 @@ public class TestMonths {
     //-----------------------------------------------------------------------
     @Test
     public void test_ZERO() {
-        assertSame(Months.of(0), Months.ZERO);
-        assertEquals(Months.of(0), Months.ZERO);
+        assertSame(Months.ZERO, Months.of(0));
+        assertEquals(Months.ZERO, Months.of(0));
         assertEquals(0, Months.ZERO.getAmount());
         assertFalse(Months.ZERO.isNegative());
         assertTrue(Months.ZERO.isZero());
@@ -93,8 +93,8 @@ public class TestMonths {
 
     @Test
     public void test_ONE() {
-        assertSame(Months.of(1), Months.ONE);
-        assertEquals(Months.of(1), Months.ONE);
+        assertSame(Months.ONE, Months.of(1));
+        assertEquals(Months.ONE, Months.of(1));
         assertEquals(1, Months.ONE.getAmount());
         assertFalse(Months.ONE.isNegative());
         assertFalse(Months.ONE.isZero());

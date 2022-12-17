@@ -62,6 +62,7 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -175,7 +176,7 @@ public class TestDayOfYear {
             oos.writeObject(test);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-            assertEquals(test, ois.readObject());
+            assertSame(test, ois.readObject());
         }
     }
 
@@ -204,7 +205,7 @@ public class TestDayOfYear {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.of(i);
             assertEquals(i, test.getValue());
-            assertEquals(test, DayOfYear.of(i));
+            assertSame(test, DayOfYear.of(i));
         }
     }
 

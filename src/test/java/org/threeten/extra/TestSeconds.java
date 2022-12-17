@@ -77,8 +77,8 @@ public class TestSeconds {
     //-----------------------------------------------------------------------
     @Test
     public void test_ZERO() {
-        assertSame(Seconds.of(0), Seconds.ZERO);
-        assertEquals(Seconds.of(0), Seconds.ZERO);
+        assertSame(Seconds.ZERO, Seconds.of(0));
+        assertEquals(Seconds.ZERO, Seconds.of(0));
         assertEquals(0, Seconds.ZERO.getAmount());
         assertFalse(Seconds.ZERO.isNegative());
         assertTrue(Seconds.ZERO.isZero());
