@@ -152,7 +152,7 @@
   <licenses>
     <license>
       <name>BSD 3-clause</name>
-      <url>https://raw.githubusercontent.com/ThreeTen/threeten-extra/master/LICENSE.txt</url>
+      <url>https://raw.githubusercontent.com/ThreeTen/threeten-extra/main/LICENSE.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
