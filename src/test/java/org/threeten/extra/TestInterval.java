@@ -280,11 +280,11 @@ public class TestInterval {
         assertEquals(Interval.of(Instant.parse(start), Instant.parse(end)), Interval.parse(interval));
     }
 
-    @Disabled("not implemented yet")
+    @Disabled("not implemented")
     @ParameterizedTest
     @CsvSource({
-        "P1Y/-999999999-01-01T00:00:00+00:00, -1000000000-01-01T00:00:00Z, +999999999-01-01T00:00:00Z",
-        "-999999999-01-01T00:00:00+00:00/P-1Y, -1000000000-01-01T00:00:00Z, +999999999-01-01T00:00:00Z",
+        "P1Y/-999999999-01-01T00:00:00+00:00, -1000000000-01-01T00:00:00Z, -999999999-01-01T00:00:00Z",
+        "-999999999-01-01T00:00:00+00:00/P-1Y, -1000000000-01-01T00:00:00Z, -999999999-01-01T00:00:00Z",
         "+999999999-01-01T00:00:00+00:00/P1Y, +999999999-01-01T00:00:00Z, +1000000000-01-01T00:00:00Z",
         "P-1Y/+999999999-01-01T00:00:00+00:00, +999999999-01-01T00:00:00Z, +1000000000-01-01T00:00:00Z",
     })
@@ -292,7 +292,7 @@ public class TestInterval {
         assertEquals(Interval.of(Instant.parse(start), Instant.parse(end)), Interval.parse(interval));
     }
 
-    @Disabled("not implemented yet")
+    @Disabled("not implemented")
     @ParameterizedTest
     @CsvSource({
         "-1000000000-01-01T00:00:00Z/P2000000000Y11M30DT23H59M59.999999999S, -1000000000-01-01T00:00:00Z, +1000000000-12-31T23:59:59.999999999Z",
