@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.7.2" date="SNAPSHOT" description="v1.7.2">
+    <release version="1.7.2" date="2022-12-18" description="v1.7.2">
       <action dev="Clockwork-Muse" type="add">
         Adds offset for AccountingChronology, which is essential for some retail calendars, particularly the NRF.
         Fixes #223, #201.
