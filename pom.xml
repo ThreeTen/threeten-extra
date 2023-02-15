@@ -916,7 +916,7 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Dependencies -->
-    <joda-convert.version>2.2.2</joda-convert.version>
+    <joda-convert.version>2.2.3</joda-convert.version>
     <junit.version>5.9.1</junit.version>
     <pioneer.version>1.9.1</pioneer.version>
     <guava.version>31.1-jre</guava.version>
