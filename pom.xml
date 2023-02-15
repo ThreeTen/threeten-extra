@@ -809,6 +809,7 @@
             <!-- setup defaults for compile and testCompile -->
             <configuration>
               <release>8</release>
+              <createMissingPackageInfoClass>false</createMissingPackageInfoClass>
             </configuration>
           </plugin>
         </plugins>
