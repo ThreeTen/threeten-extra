@@ -35,15 +35,11 @@ import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAmount;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -96,35 +92,35 @@ public final class AmountFormats {
     /**
      * The property file key for the word "year".
      */
-    private static final String WORDBASED_YEAR = "WordBased.year";
+    public static final String WORDBASED_YEAR = "WordBased.year";
     /**
      * The property file key for the word "month".
      */
-    private static final String WORDBASED_MONTH = "WordBased.month";
+    public static final String WORDBASED_MONTH = "WordBased.month";
     /**
      * The property file key for the word "week".
      */
-    private static final String WORDBASED_WEEK = "WordBased.week";
+    public static final String WORDBASED_WEEK = "WordBased.week";
     /**
      * The property file key for the word "day".
      */
-    private static final String WORDBASED_DAY = "WordBased.day";
+    public static final String WORDBASED_DAY = "WordBased.day";
     /**
      * The property file key for the word "hour".
      */
-    private static final String WORDBASED_HOUR = "WordBased.hour";
+    public static final String WORDBASED_HOUR = "WordBased.hour";
     /**
      * The property file key for the word "minute".
      */
-    private static final String WORDBASED_MINUTE = "WordBased.minute";
+    public static final String WORDBASED_MINUTE = "WordBased.minute";
     /**
      * The property file key for the word "second".
      */
-    private static final String WORDBASED_SECOND = "WordBased.second";
+    public static final String WORDBASED_SECOND = "WordBased.second";
     /**
      * The property file key for the word "millisecond".
      */
-    private static final String WORDBASED_MILLISECOND = "WordBased.millisecond";
+    public static final String WORDBASED_MILLISECOND = "WordBased.millisecond";
     /**
      * The predicate that matches 1 or -1.
      */
@@ -301,6 +297,69 @@ public final class AmountFormats {
             normPeriod.getYears(), normPeriod.getMonths(), weeks, days,
             (int) hours, mins, secs, millis};
         return wb.format(values);
+    }
+
+    /**
+     * Formats a period and duration to a string in a localized word-based format using the provided list of formats.
+     * <p>
+     * This returns a word-based format for the period and duration and only includes the provided formats.
+     * The year and month are printed as supplied unless the signs differ, in which case they are normalized.
+     * The words are configured in a resource bundle text file -
+     * {@code org.threeten.extra.wordbased.properties} - with overrides per language.
+     *
+     * @param period  the period to format
+     * @param duration  the duration to format
+     * @param formats  a list of formats to include in the result
+     * @param locale  the locale to use
+     * @return the localized word-based format for the period and duration
+     */
+    public static String wordBasedWithFormats(Period period, Duration duration, List<String> formats, Locale locale) {
+        Objects.requireNonNull(period, "period must not be null");
+        Objects.requireNonNull(duration, "duration must not be null");
+        Objects.requireNonNull(formats, "formats must not be null");
+        Objects.requireNonNull(locale, "locale must not be null");
+        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+
+        WordBased wb = new WordBased(formats.stream().map(f -> UnitFormat.of(bundle, f)).toArray(UnitFormat[]::new), bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
+
+        Period normPeriod = oppositeSigns(period.getMonths(), period.getYears()) ? period.normalized() : period;
+        int weeks = 0;
+        int days = 0;
+        if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
+            weeks = normPeriod.getDays() / DAYS_PER_WEEK;
+        } else {
+            days = normPeriod.getDays();
+        }
+        long totalHours = duration.toHours();
+        days += (int) (totalHours / HOURS_PER_DAY);
+
+        List<Integer> values = new ArrayList<>();
+        if (formats.contains(WORDBASED_YEAR)) {
+            values.add(normPeriod.getYears());
+        }
+        if (formats.contains(WORDBASED_MONTH)) {
+            values.add(normPeriod.getMonths());
+        }
+        if (formats.contains(WORDBASED_WEEK)) {
+            values.add(weeks);
+        }
+        if (formats.contains(WORDBASED_DAY)) {
+            values.add(days);
+        }
+        if (formats.contains(WORDBASED_HOUR)) {
+            values.add((int) (totalHours % HOURS_PER_DAY));
+        }
+        if (formats.contains(WORDBASED_MINUTE)) {
+            values.add((int) (duration.toMinutes() % MINUTES_PER_HOUR));
+        }
+        if (formats.contains(WORDBASED_SECOND)) {
+            values.add((int) (duration.getSeconds() % SECONDS_PER_MINUTE));
+        }
+        if (formats.contains(WORDBASED_MILLISECOND)) {
+            values.add(duration.getNano() / NANOS_PER_MILLIS);
+        }
+
+        return wb.format(values.stream().mapToInt(Integer::intValue).toArray());
     }
 
     // are the signs opposite
