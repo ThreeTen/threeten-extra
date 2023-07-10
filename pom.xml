@@ -919,7 +919,7 @@
     <joda-convert.version>2.2.2</joda-convert.version>
     <junit.version>5.9.1</junit.version>
     <pioneer.version>1.9.1</pioneer.version>
-    <guava.version>31.1-jre</guava.version>
+    <guava.version>32.1.1-jre</guava.version>
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
