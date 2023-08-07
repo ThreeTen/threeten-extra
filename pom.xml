@@ -918,7 +918,7 @@
     <!-- Dependencies -->
     <joda-convert.version>2.2.2</joda-convert.version>
     <junit.version>5.9.1</junit.version>
-    <pioneer.version>1.9.1</pioneer.version>
+    <pioneer.version>2.0.1</pioneer.version>
     <guava.version>32.1.2-jre</guava.version>
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
