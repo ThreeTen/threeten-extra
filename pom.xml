@@ -925,7 +925,7 @@
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
+    <maven-clean-plugin.version>3.3.1</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
     <maven-dependency-plugin.version>3.4.0</maven-dependency-plugin.version>
