@@ -129,7 +129,7 @@ public class TestInterval {
 
     @Test
     public void test_of_Instant_Instant_nullStart() {
-        assertThrows(NullPointerException.class, () -> Interval.of(null, NOW2));
+        assertThrows(NullPointerException.class, () -> Interval.of((Instant) null, NOW2));
     }
 
     @Test
@@ -165,6 +165,36 @@ public class TestInterval {
     @Test
     public void test_of_Instant_Duration_nullDuration() {
         assertThrows(NullPointerException.class, () -> Interval.of(NOW1, (Duration) null));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_of_Duration_Instant() {
+        Interval test = Interval.of(Duration.ofSeconds(60), NOW2);
+        assertEquals(NOW1, test.getStart());
+        assertEquals(NOW2, test.getEnd());
+    }
+
+    @Test
+    public void test_of_Duration_Instant_zero() {
+        Interval test = Interval.of(Duration.ZERO, NOW1);
+        assertEquals(NOW1, test.getStart());
+        assertEquals(NOW1, test.getEnd());
+    }
+
+    @Test
+    public void test_of_Duration_Instant_negative() {
+        assertThrows(DateTimeException.class, () -> Interval.of(Duration.ofSeconds(-1), NOW2));
+    }
+
+    @Test
+    public void test_of_Duration_Instant_nullInstant() {
+        assertThrows(NullPointerException.class, () -> Interval.of(Duration.ZERO, null));
+    }
+
+    @Test
+    public void test_of_Duration_Instant_nullDuration() {
+        assertThrows(NullPointerException.class, () -> Interval.of((Duration) null, NOW1));
     }
 
     //-----------------------------------------------------------------------
