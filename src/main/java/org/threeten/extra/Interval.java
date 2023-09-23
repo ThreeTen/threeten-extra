@@ -130,6 +130,28 @@ public final class Interval
     }
 
     /**
+     * Obtains an instance of {@code Interval} from the duration and the end.
+     * <p>
+     * The start instant is calculated as the end minus the duration.
+     * The duration must not be negative.
+     *
+     * @param duration  the duration from the start to the end, not null
+     * @param endExclusive  the end instant, exclusive, not null
+     * @return the interval, not null
+     * @throws DateTimeException if the end is before the start,
+     *  or if the duration addition cannot be made
+     * @throws ArithmeticException if numeric overflow occurs when subtracting the duration
+     */
+    public static Interval of(Duration duration, Instant endExclusive) {
+        Objects.requireNonNull(duration, "duration");
+        Objects.requireNonNull(endExclusive, "endExclusive");
+        if (duration.isNegative()) {
+            throw new DateTimeException("Duration must not be negative");
+        }
+        return new Interval(endExclusive.minus(duration), endExclusive);
+    }
+
+    /**
      * Obtains an instance of {@code Interval} with the specified start instant and unbounded end.
      *
      * @param startInclusive the start instant, inclusive, not null

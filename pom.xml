@@ -919,7 +919,7 @@
     <joda-convert.version>2.2.3</joda-convert.version>
     <junit.version>5.9.1</junit.version>
     <pioneer.version>1.9.1</pioneer.version>
-    <guava.version>31.1-jre</guava.version>
+    <guava.version>32.1.2-jre</guava.version>
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
@@ -947,7 +947,7 @@
     <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <!-- Other plugins -->
-    <github-api.version>1.313</github-api.version>
+    <github-api.version>1.314</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
