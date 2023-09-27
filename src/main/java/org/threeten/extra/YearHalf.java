@@ -39,9 +39,9 @@ import static java.time.temporal.ChronoUnit.DECADES;
 import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.MILLENNIA;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
-import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
-import static java.time.temporal.IsoFields.QUARTER_YEARS;
+import static org.threeten.extra.TemporalFields.DAY_OF_HALF;
+import static org.threeten.extra.TemporalFields.HALF_OF_YEAR;
+import static org.threeten.extra.TemporalFields.HALF_YEARS;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -59,7 +59,6 @@ import java.time.format.DateTimeParseException;
 import java.time.format.SignStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -78,15 +77,15 @@ import org.joda.convert.FromString;
 import org.joda.convert.ToString;
 
 /**
- * A year-quarter in the ISO-8601 calendar system, such as {@code 2007-Q2}.
+ * A year-half in the ISO-8601 calendar system, such as {@code 2007-H2}.
  * <p>
- * {@code YearQuarter} is an immutable date-time object that represents the combination
- * of a year and quarter. Any field that can be derived from a year and quarter can be obtained.
- * A quarter is defined by {@link Quarter} and {@link Month#firstMonthOfQuarter()} - Q1, Q2, Q3 and Q4.
- * Q1 is January to March, Q2 is April to June, Q3 is July to September and Q4 is October to December.
+ * {@code YearHalf} is an immutable date-time object that represents the combination
+ * of a year and a half-year. Any field that can be derived from a year and a half-year can be obtained.
+ * A half is defined by {@link Half} - H1 and H2.
+ * H1 is January to June, H2 is July to December.
  * <p>
  * This class does not store or represent a day, time or time-zone.
- * For example, the value "2nd quarter 2007" can be stored in a {@code YearQuarter}.
+ * For example, the value "2nd half 2007" can be stored in a {@code YearHalf}.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
@@ -94,7 +93,7 @@ import org.joda.convert.ToString;
  * For most applications written today, the ISO-8601 rules are entirely suitable.
  * However, any application that makes use of historical dates, and requires them
  * to be accurate will find the ISO-8601 approach unsuitable.
- * Note that the ISO-8601 standard does not define or refer to quarters.
+ * Note that the ISO-8601 standard does not define or refer to halfs.
  *
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
@@ -102,13 +101,13 @@ import org.joda.convert.ToString;
  * This class must be treated as a value type. Do not synchronize, rely on the
  * identity hash code or use the distinction between equals() and ==.
  */
-public final class YearQuarter
-        implements Temporal, TemporalAdjuster, Comparable<YearQuarter>, Serializable {
+public final class YearHalf
+        implements Temporal, TemporalAdjuster, Comparable<YearHalf>, Serializable {
 
     /**
      * Serialization version.
      */
-    private static final long serialVersionUID = 4183400860270640070L;
+    private static final long serialVersionUID = 782467825761518L;
     /**
      * Parser.
      */
@@ -116,8 +115,8 @@ public final class YearQuarter
             .parseCaseInsensitive()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
-            .appendLiteral('Q')
-            .appendValue(QUARTER_OF_YEAR, 1)
+            .appendLiteral('H')
+            .appendValue(HALF_OF_YEAR, 1)
             .toFormatter();
 
     /**
@@ -125,132 +124,132 @@ public final class YearQuarter
      */
     private final int year;
     /**
-     * The quarter-of-year, not null.
+     * The half-of-year, not null.
      */
-    private final Quarter quarter;
+    private final Half half;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains the current year-quarter from the system clock in the default time-zone.
+     * Obtains the current year-half from the system clock in the default time-zone.
      * <p>
      * This will query the {@link java.time.Clock#systemDefaultZone() system clock} in the default
-     * time-zone to obtain the current year-quarter.
+     * time-zone to obtain the current year-half.
      * The zone and offset will be set based on the time-zone in the clock.
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current year-quarter using the system clock and default time-zone, not null
+     * @return the current year-half using the system clock and default time-zone, not null
      */
-    public static YearQuarter now() {
+    public static YearHalf now() {
         return now(Clock.systemDefaultZone());
     }
 
     /**
-     * Obtains the current year-quarter from the system clock in the specified time-zone.
+     * Obtains the current year-half from the system clock in the specified time-zone.
      * <p>
-     * This will query the {@link Clock#system(java.time.ZoneId) system clock} to obtain the current year-quarter.
+     * This will query the {@link Clock#system(java.time.ZoneId) system clock} to obtain the current year-half.
      * Specifying the time-zone avoids dependence on the default time-zone.
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
      * @param zone  the zone ID to use, not null
-     * @return the current year-quarter using the system clock, not null
+     * @return the current year-half using the system clock, not null
      */
-    public static YearQuarter now(ZoneId zone) {
+    public static YearHalf now(ZoneId zone) {
         return now(Clock.system(zone));
     }
 
     /**
-     * Obtains the current year-quarter from the specified clock.
+     * Obtains the current year-half from the specified clock.
      * <p>
-     * This will query the specified clock to obtain the current year-quarter.
+     * This will query the specified clock to obtain the current year-half.
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param clock  the clock to use, not null
-     * @return the current year-quarter, not null
+     * @return the current year-half, not null
      */
-    public static YearQuarter now(Clock clock) {
+    public static YearHalf now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
-        return YearQuarter.of(now.getYear(), Quarter.from(now.getMonth()));
+        return YearHalf.of(now.getYear(), Half.from(now.getMonth()));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearQuarter} from a year and quarter.
+     * Obtains an instance of {@code YearHalf} from a year and half.
      *
      * @param year  the year to represent, not null
-     * @param quarter  the quarter-of-year to represent, not null
-     * @return the year-quarter, not null
+     * @param half  the half-of-year to represent, not null
+     * @return the year-half, not null
      */
-    public static YearQuarter of(Year year, Quarter quarter) {
-        return of(year.getValue(), quarter);
+    public static YearHalf of(Year year, Half half) {
+        return of(year.getValue(), half);
     }
 
     /**
-     * Obtains an instance of {@code YearQuarter} from a year and quarter.
+     * Obtains an instance of {@code YearHalf} from a year and half.
      *
      * @param year  the year to represent, not null
-     * @param quarter  the quarter-of-year to represent, from 1 to 4
-     * @return the year-quarter, not null
-     * @throws DateTimeException if the quarter value is invalid
+     * @param half  the half-of-year to represent, from 1 to 2
+     * @return the year-half, not null
+     * @throws DateTimeException if the half value is invalid
      */
-    public static YearQuarter of(Year year, int quarter) {
-        return of(year.getValue(), Quarter.of(quarter));
+    public static YearHalf of(Year year, int half) {
+        return of(year.getValue(), Half.of(half));
     }
 
     /**
-     * Obtains an instance of {@code YearQuarter} from a year and quarter.
+     * Obtains an instance of {@code YearHalf} from a year and half.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param quarter  the quarter-of-year to represent, not null
-     * @return the year-quarter, not null
+     * @param half  the half-of-year to represent, not null
+     * @return the year-half, not null
      * @throws DateTimeException if the year value is invalid
      */
-    public static YearQuarter of(int year, Quarter quarter) {
+    public static YearHalf of(int year, Half half) {
         YEAR.checkValidValue(year);
-        Objects.requireNonNull(quarter, "quarter");
-        return new YearQuarter(year, quarter);
+        Objects.requireNonNull(half, "half");
+        return new YearHalf(year, half);
     }
 
     /**
-     * Obtains an instance of {@code YearQuarter} from a year and quarter.
+     * Obtains an instance of {@code YearHalf} from a year and half.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param quarter  the quarter-of-year to represent, from 1 to 4
-     * @return the year-quarter, not null
+     * @param half  the half-of-year to represent, from 1 to 2
+     * @return the year-half, not null
      * @throws DateTimeException if either field value is invalid
      */
-    public static YearQuarter of(int year, int quarter) {
+    public static YearHalf of(int year, int half) {
         YEAR.checkValidValue(year);
-        return new YearQuarter(year, Quarter.of(quarter));
+        return new YearHalf(year, Half.of(half));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearQuarter} from a temporal object.
+     * Obtains an instance of {@code YearHalf} from a temporal object.
      * <p>
-     * This obtains a year-quarter based on the specified temporal.
+     * This obtains a year-half based on the specified temporal.
      * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
-     * which this factory converts to an instance of {@code YearQuarter}.
+     * which this factory converts to an instance of {@code YearHalf}.
      * <p>
      * The conversion extracts the {@link ChronoField#YEAR YEAR} and
-     * {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} fields.
+     * {@link TemporalFields#HALF_OF_YEAR HALF_OF_YEAR} fields.
      * The extraction is only permitted if the temporal object has an ISO
      * chronology, or can be converted to a {@code LocalDate}.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
-     * allowing it to be used in queries via method reference, {@code YearQuarter::from}.
+     * allowing it to be used in queries via method reference, {@code YearHalf::from}.
      *
      * @param temporal  the temporal object to convert, not null
-     * @return the year-quarter, not null
-     * @throws DateTimeException if unable to convert to a {@code YearQuarter}
+     * @return the year-half, not null
+     * @throws DateTimeException if unable to convert to a {@code YearHalf}
      */
-    public static YearQuarter from(TemporalAccessor temporal) {
-        if (temporal instanceof YearQuarter) {
-            return (YearQuarter) temporal;
+    public static YearHalf from(TemporalAccessor temporal) {
+        if (temporal instanceof YearHalf) {
+            return (YearHalf) temporal;
         }
         Objects.requireNonNull(temporal, "temporal");
         try {
@@ -258,44 +257,44 @@ public final class YearQuarter
                     !IsoChronology.INSTANCE.equals(Chronology.from(temporal)) ? LocalDate.from(temporal) : temporal;
             // need to use getLong() as JDK Parsed class get() doesn't work properly
             int year = Math.toIntExact(adjusted.getLong(YEAR));
-            int qoy = Math.toIntExact(adjusted.getLong(QUARTER_OF_YEAR));
-            return of(year, qoy);
+            int hoy = Math.toIntExact(adjusted.getLong(HALF_OF_YEAR));
+            return of(year, hoy);
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain YearQuarter from TemporalAccessor: " +
+            throw new DateTimeException("Unable to obtain YearHalf from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearQuarter} from a text string such as {@code 2007-Q2}.
+     * Obtains an instance of {@code YearHalf} from a text string such as {@code 2007-H2}.
      * <p>
-     * The string must represent a valid year-quarter.
+     * The string must represent a valid year-half.
      * The format must be {@code uuuu-'Q'Q} where the 'Q' is case insensitive.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
-     * @param text  the text to parse such as "2007-Q2", not null
-     * @return the parsed year-quarter, not null
+     * @param text  the text to parse such as "2007-H2", not null
+     * @return the parsed year-half, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
     @FromString
-    public static YearQuarter parse(CharSequence text) {
+    public static YearHalf parse(CharSequence text) {
         return parse(text, PARSER);
     }
 
     /**
-     * Obtains an instance of {@code YearQuarter} from a text string using a specific formatter.
+     * Obtains an instance of {@code YearHalf} from a text string using a specific formatter.
      * <p>
-     * The text is parsed using the formatter, returning a year-quarter.
+     * The text is parsed using the formatter, returning a year-half.
      *
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
-     * @return the parsed year-quarter, not null
+     * @return the parsed year-half, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
-    public static YearQuarter parse(CharSequence text, DateTimeFormatter formatter) {
+    public static YearHalf parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, YearQuarter::from);
+        return formatter.parse(text, YearHalf::from);
     }
 
     //-----------------------------------------------------------------------
@@ -303,11 +302,11 @@ public final class YearQuarter
      * Constructor.
      *
      * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param quarter  the quarter-of-year to represent, validated not null
+     * @param half  the half-of-year to represent, validated not null
      */
-    private YearQuarter(int year, Quarter quarter) {
+    private YearHalf(int year, Half half) {
         this.year = year;
-        this.quarter = quarter;
+        this.half = half;
     }
 
     /**
@@ -316,29 +315,29 @@ public final class YearQuarter
      * @return the valid object, not null
      */
     private Object readResolve() {
-        return of(year, quarter);
+        return of(year, half);
     }
 
     /**
-     * Returns a copy of this year-quarter with the new year and quarter, checking
+     * Returns a copy of this year-half with the new year and half, checking
      * to see if a new object is in fact required.
      *
      * @param newYear  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param newQuarter  the quarter-of-year to represent, validated not null
-     * @return the year-quarter, not null
+     * @param newHalf  the half-of-year to represent, validated not null
+     * @return the year-half, not null
      */
-    private YearQuarter with(int newYear, Quarter newQuarter) {
-        if (year == newYear && quarter == newQuarter) {
+    private YearHalf with(int newYear, Half newHalf) {
+        if (year == newYear && half == newHalf) {
             return this;
         }
-        return new YearQuarter(newYear, newQuarter);
+        return new YearHalf(newYear, newHalf);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified field is supported.
      * <p>
-     * This checks if this year-quarter can be queried for the specified field.
+     * This checks if this year-half can be queried for the specified field.
      * If false, then calling the {@link #range(TemporalField) range},
      * {@link #get(TemporalField) get} and {@link #with(TemporalField, long)}
      * methods will throw an exception.
@@ -346,7 +345,7 @@ public final class YearQuarter
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The supported fields are:
      * <ul>
-     * <li>{@code QUARTER_OF_YEAR}
+     * <li>{@code HALF_OF_YEAR}
      * <li>{@code YEAR_OF_ERA}
      * <li>{@code YEAR}
      * <li>{@code ERA}
@@ -359,11 +358,11 @@ public final class YearQuarter
      * Whether the field is supported is determined by the field.
      *
      * @param field  the field to check, null returns false
-     * @return true if the field is supported on this year-quarter, false if not
+     * @return true if the field is supported on this year-half, false if not
      */
     @Override
     public boolean isSupported(TemporalField field) {
-        if (field == QUARTER_OF_YEAR) {
+        if (field == HALF_OF_YEAR) {
             return true;
         } else if (field instanceof ChronoField) {
             return field == YEAR || field == YEAR_OF_ERA || field == ERA;
@@ -374,14 +373,14 @@ public final class YearQuarter
     /**
      * Checks if the specified unit is supported.
      * <p>
-     * This checks if the specified unit can be added to, or subtracted from, this year-quarter.
+     * This checks if the specified unit can be added to, or subtracted from, this year-half.
      * If false, then calling the {@link #plus(long, TemporalUnit)} and
      * {@link #minus(long, TemporalUnit) minus} methods will throw an exception.
      * <p>
      * If the unit is a {@link ChronoUnit} then the query is implemented here.
      * The supported units are:
      * <ul>
-     * <li>{@code QUARTER_YEARS}
+     * <li>{@code HALF_YEARS}
      * <li>{@code YEARS}
      * <li>{@code DECADES}
      * <li>{@code CENTURIES}
@@ -400,7 +399,7 @@ public final class YearQuarter
      */
     @Override
     public boolean isSupported(TemporalUnit unit) {
-        if (unit == QUARTER_YEARS) {
+        if (unit == HALF_YEARS) {
             return true;
         } else if (unit instanceof ChronoUnit) {
             return unit == YEARS || unit == DECADES || unit == CENTURIES || unit == MILLENNIA || unit == ERAS;
@@ -413,7 +412,7 @@ public final class YearQuarter
      * Gets the range of valid values for the specified field.
      * <p>
      * The range object expresses the minimum and maximum valid values for a field.
-     * This year-quarter is used to enhance the accuracy of the returned range.
+     * This year-half is used to enhance the accuracy of the returned range.
      * If it is not possible to return the range, because the field is not supported
      * or for some other reason, an exception is thrown.
      * <p>
@@ -434,8 +433,8 @@ public final class YearQuarter
      */
     @Override
     public ValueRange range(TemporalField field) {
-        if (field == QUARTER_OF_YEAR) {
-            return QUARTER_OF_YEAR.range();
+        if (field == HALF_OF_YEAR) {
+            return HALF_OF_YEAR.range();
         }
         if (field == YEAR_OF_ERA) {
             return (getYear() <= 0 ? ValueRange.of(1, Year.MAX_VALUE + 1) : ValueRange.of(1, Year.MAX_VALUE));
@@ -444,16 +443,16 @@ public final class YearQuarter
     }
 
     /**
-     * Gets the value of the specified field from this year-quarter as an {@code int}.
+     * Gets the value of the specified field from this year-half as an {@code int}.
      * <p>
-     * This queries this year-quarter for the value for the specified field.
+     * This queries this year-half for the value for the specified field.
      * The returned value will always be within the valid range of values for the field.
      * If it is not possible to return the value, because the field is not supported
      * or for some other reason, an exception is thrown.
      * <p>
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this year-quarter,.
+     * values based on this year-half,.
      * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
@@ -471,8 +470,8 @@ public final class YearQuarter
      */
     @Override
     public int get(TemporalField field) {
-        if (field == QUARTER_OF_YEAR) {
-            return quarter.getValue();
+        if (field == HALF_OF_YEAR) {
+            return half.getValue();
         } else if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case YEAR_OF_ERA:
@@ -489,15 +488,15 @@ public final class YearQuarter
     }
 
     /**
-     * Gets the value of the specified field from this year-quarter as a {@code long}.
+     * Gets the value of the specified field from this year-half as a {@code long}.
      * <p>
-     * This queries this year-quarter for the value for the specified field.
+     * This queries this year-half for the value for the specified field.
      * If it is not possible to return the value, because the field is not supported
      * or for some other reason, an exception is thrown.
      * <p>
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this year-quarter.
+     * values based on this year-half.
      * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
@@ -513,8 +512,8 @@ public final class YearQuarter
      */
     @Override
     public long getLong(TemporalField field) {
-        if (field == QUARTER_OF_YEAR) {
-            return quarter.getValue();
+        if (field == HALF_OF_YEAR) {
+            return half.getValue();
         } else if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case YEAR_OF_ERA:
@@ -530,8 +529,8 @@ public final class YearQuarter
         return field.getFrom(this);
     }
 
-    private long getProlepticQuarter() {
-        return year * 4L + (quarter.getValue() - 1);
+    private long getProlepticHalf() {
+        return year * 2L + (half.getValue() - 1);
     }
 
     //-----------------------------------------------------------------------
@@ -549,32 +548,32 @@ public final class YearQuarter
     }
 
     /**
-     * Gets the quarter-of-year field from 1 to 4.
+     * Gets the half-of-year field from 1 to 2.
      * <p>
-     * This method returns the quarter as an {@code int} from 1 to 4.
-     * Application code is frequently clearer if the enum {@link Quarter}
-     * is used by calling {@link #getQuarter()}.
+     * This method returns the half as an {@code int} from 1 to 2.
+     * Application code is frequently clearer if the enum {@link Half}
+     * is used by calling {@link #getHalf()}.
      *
-     * @return the quarter-of-year, from 1 to 4
-     * @see #getQuarter()
+     * @return the half-of-year, from 1 to 2
+     * @see #getHalf()
      */
-    public int getQuarterValue() {
-        return quarter.getValue();
+    public int getHalfValue() {
+        return half.getValue();
     }
 
     /**
-     * Gets the quarter-of-year field using the {@code Quarter} enum.
+     * Gets the half-of-year field using the {@code Half} enum.
      * <p>
-     * This method returns the enum {@link Quarter} for the quarter.
+     * This method returns the enum {@link Half} for the half.
      * This avoids confusion as to what {@code int} values mean.
      * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link Quarter#getValue() int value}.
+     * provides the {@link Half#getValue() int value}.
      *
-     * @return the quarter-of-year, not null
-     * @see #getQuarterValue()
+     * @return the half-of-year, not null
+     * @see #getHalfValue()
      */
-    public Quarter getQuarter() {
-        return quarter;
+    public Half getHalf() {
+        return half;
     }
 
     //-----------------------------------------------------------------------
@@ -601,27 +600,27 @@ public final class YearQuarter
     }
 
     /**
-     * Checks if the day-of-quarter is valid for this year-quarter.
+     * Checks if the day-of-half is valid for this year-half.
      * <p>
-     * This method checks whether this year and quarter and the input day form
+     * This method checks whether this year and half and the input day form
      * a valid date.
      *
-     * @param dayOfQuarter  the day-of-quarter to validate, from 1 to 92, invalid value returns false
-     * @return true if the day is valid for this year-quarter
+     * @param dayOfHalf  the day-of-half to validate, from 1 to 181, 182 or 184, invalid value returns false
+     * @return true if the day is valid for this year-half
      */
-    public boolean isValidDay(int dayOfQuarter) {
-        return dayOfQuarter >= 1 && dayOfQuarter <= lengthOfQuarter();
+    public boolean isValidDay(int dayOfHalf) {
+        return dayOfHalf >= 1 && dayOfHalf <= lengthOfHalf();
     }
 
     /**
-     * Returns the length of the quarter, taking account of the year.
+     * Returns the length of the half, taking account of the year.
      * <p>
-     * This returns the length of the quarter in days.
+     * This returns the length of the half in days.
      *
-     * @return the length of the quarter in days, from 90 to 92
+     * @return the length of the half in days, 181, 182 or 184
      */
-    public int lengthOfQuarter() {
-        return quarter.length(isLeapYear());
+    public int lengthOfHalf() {
+        return half.length(isLeapYear());
     }
 
     /**
@@ -637,14 +636,14 @@ public final class YearQuarter
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an adjusted copy of this year-quarter.
+     * Returns an adjusted copy of this year-half.
      * <p>
-     * This returns a {@code YearQuarter} based on this one, with the year-quarter adjusted.
+     * This returns a {@code YearHalf} based on this one, with the year-half adjusted.
      * The adjustment takes place using the specified adjuster strategy object.
      * Read the documentation of the adjuster to understand what adjustment will be made.
      * <p>
      * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the year-quarter to the next quarter that
+     * A more complex adjuster might set the year-half to the next half that
      * Halley's comet will pass the Earth.
      * <p>
      * The result of this method is obtained by invoking the
@@ -654,39 +653,39 @@ public final class YearQuarter
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster the adjuster to use, not null
-     * @return a {@code YearQuarter} based on {@code this} with the adjustment made, not null
+     * @return a {@code YearHalf} based on {@code this} with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public YearQuarter with(TemporalAdjuster adjuster) {
-        return (YearQuarter) adjuster.adjustInto(this);
+    public YearHalf with(TemporalAdjuster adjuster) {
+        return (YearHalf) adjuster.adjustInto(this);
     }
 
     /**
-     * Returns a copy of this year-quarter with the specified field set to a new value.
+     * Returns a copy of this year-half with the specified field set to a new value.
      * <p>
-     * This returns a {@code YearQuarter} based on this one, with the value
+     * This returns a {@code YearHalf} based on this one, with the value
      * for the specified field changed.
-     * This can be used to change any supported field, such as the year or quarter.
+     * This can be used to change any supported field, such as the year or half.
      * If it is not possible to set the value, because the field is not supported or for
      * some other reason, an exception is thrown.
      * <p>
      * If the field is a {@link ChronoField} then the adjustment is implemented here.
      * The supported fields behave as follows:
      * <ul>
-     * <li>{@code QUARTER_OF_YEAR} -
-     *  Returns a {@code YearQuarter} with the specified quarter-of-year.
+     * <li>{@code HALF_OF_YEAR} -
+     *  Returns a {@code YearHalf} with the specified half-of-year.
      *  The year will be unchanged.
      * <li>{@code YEAR_OF_ERA} -
-     *  Returns a {@code YearQuarter} with the specified year-of-era
-     *  The quarter and era will be unchanged.
+     *  Returns a {@code YearHalf} with the specified year-of-era
+     *  The half and era will be unchanged.
      * <li>{@code YEAR} -
-     *  Returns a {@code YearQuarter} with the specified year.
-     *  The quarter will be unchanged.
+     *  Returns a {@code YearHalf} with the specified year.
+     *  The half will be unchanged.
      * <li>{@code ERA} -
-     *  Returns a {@code YearQuarter} with the specified era.
-     *  The quarter and year-of-era will be unchanged.
+     *  Returns a {@code YearHalf} with the specified era.
+     *  The half and year-of-era will be unchanged.
      * </ul>
      * <p>
      * In all cases, if the new value is outside the valid range of values for the field
@@ -703,15 +702,15 @@ public final class YearQuarter
      *
      * @param field  the field to set in the result, not null
      * @param newValue  the new value of the field in the result
-     * @return a {@code YearQuarter} based on {@code this} with the specified field set, not null
+     * @return a {@code YearHalf} based on {@code this} with the specified field set, not null
      * @throws DateTimeException if the field cannot be set
      * @throws UnsupportedTemporalTypeException if the field is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public YearQuarter with(TemporalField field, long newValue) {
-        if (field == QUARTER_OF_YEAR) {
-            return withQuarter(QUARTER_OF_YEAR.range().checkValidIntValue(newValue, QUARTER_OF_YEAR));
+    public YearHalf with(TemporalField field, long newValue) {
+        if (field == HALF_OF_YEAR) {
+            return withHalf(HALF_OF_YEAR.range().checkValidIntValue(newValue, HALF_OF_YEAR));
         } else if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
@@ -731,38 +730,38 @@ public final class YearQuarter
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code YearQuarter} with the year altered.
+     * Returns a copy of this {@code YearHalf} with the year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the returned year-quarter, from MIN_YEAR to MAX_YEAR
-     * @return a {@code YearQuarter} based on this year-quarter with the requested year, not null
+     * @param year  the year to set in the returned year-half, from MIN_YEAR to MAX_YEAR
+     * @return a {@code YearHalf} based on this year-half with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */
-    public YearQuarter withYear(int year) {
+    public YearHalf withYear(int year) {
         YEAR.checkValidValue(year);
-        return with(year, quarter);
+        return with(year, half);
     }
 
     /**
-     * Returns a copy of this {@code YearQuarter} with the quarter-of-year altered.
+     * Returns a copy of this {@code YearHalf} with the half-of-year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param quarter  the quarter-of-year to set in the returned year-quarter, from 1 to 4
-     * @return a {@code YearQuarter} based on this year-quarter with the requested quarter, not null
-     * @throws DateTimeException if the quarter-of-year value is invalid
+     * @param half  the half-of-year to set in the returned year-half, from 1 to 2
+     * @return a {@code YearHalf} based on this year-half with the requested half, not null
+     * @throws DateTimeException if the half-of-year value is invalid
      */
-    public YearQuarter withQuarter(int quarter) {
-        QUARTER_OF_YEAR.range().checkValidValue(quarter, QUARTER_OF_YEAR);
-        return with(year, Quarter.of(quarter));
+    public YearHalf withHalf(int half) {
+        HALF_OF_YEAR.range().checkValidValue(half, HALF_OF_YEAR);
+        return with(year, Half.of(half));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this year-quarter with the specified amount added.
+     * Returns a copy of this year-half with the specified amount added.
      * <p>
-     * This returns a {@code YearQuarter} based on this one, with the specified amount added.
+     * This returns a {@code YearHalf} based on this one, with the specified amount added.
      * The amount is typically {@link Period} but may be any other type implementing
      * the {@link TemporalAmount} interface.
      * <p>
@@ -775,45 +774,45 @@ public final class YearQuarter
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code YearQuarter} based on this year-quarter with the addition made, not null
+     * @return a {@code YearHalf} based on this year-half with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public YearQuarter plus(TemporalAmount amountToAdd) {
-        return (YearQuarter) amountToAdd.addTo(this);
+    public YearHalf plus(TemporalAmount amountToAdd) {
+        return (YearHalf) amountToAdd.addTo(this);
     }
 
     /**
-     * Returns a copy of this year-quarter with the specified amount added.
+     * Returns a copy of this year-half with the specified amount added.
      * <p>
-     * This returns a {@code YearQuarter} based on this one, with the amount
+     * This returns a {@code YearHalf} based on this one, with the amount
      * in terms of the unit added. If it is not possible to add the amount, because the
      * unit is not supported or for some other reason, an exception is thrown.
      * <p>
      * If the field is a {@link ChronoUnit} then the addition is implemented here.
      * The supported fields behave as follows:
      * <ul>
-     * <li>{@code QUARTER_YEARS} -
-     *  Returns a {@code YearQuarter} with the specified number of quarters added.
-     *  This is equivalent to {@link #plusQuarters(long)}.
+     * <li>{@code HALF_YEARS} -
+     *  Returns a {@code YearHalf} with the specified number of halves added.
+     *  This is equivalent to {@link #plusHalfs(long)}.
      * <li>{@code YEARS} -
-     *  Returns a {@code YearQuarter} with the specified number of years added.
+     *  Returns a {@code YearHalf} with the specified number of years added.
      *  This is equivalent to {@link #plusYears(long)}.
      * <li>{@code DECADES} -
-     *  Returns a {@code YearQuarter} with the specified number of decades added.
+     *  Returns a {@code YearHalf} with the specified number of decades added.
      *  This is equivalent to calling {@link #plusYears(long)} with the amount
      *  multiplied by 10.
      * <li>{@code CENTURIES} -
-     *  Returns a {@code YearQuarter} with the specified number of centuries added.
+     *  Returns a {@code YearHalf} with the specified number of centuries added.
      *  This is equivalent to calling {@link #plusYears(long)} with the amount
      *  multiplied by 100.
      * <li>{@code MILLENNIA} -
-     *  Returns a {@code YearQuarter} with the specified number of millennia added.
+     *  Returns a {@code YearHalf} with the specified number of millennia added.
      *  This is equivalent to calling {@link #plusYears(long)} with the amount
      *  multiplied by 1,000.
      * <li>{@code ERAS} -
-     *  Returns a {@code YearQuarter} with the specified number of eras added.
+     *  Returns a {@code YearHalf} with the specified number of eras added.
      *  Only two eras are supported so the amount must be one, zero or minus one.
      *  If the amount is non-zero then the year is changed such that the year-of-era
      *  is unchanged.
@@ -830,15 +829,15 @@ public final class YearQuarter
      *
      * @param amountToAdd  the amount of the unit to add to the result, may be negative
      * @param unit  the unit of the amount to add, not null
-     * @return a {@code YearQuarter} based on this year-quarter with the specified amount added, not null
+     * @return a {@code YearHalf} based on this year-half with the specified amount added, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws UnsupportedTemporalTypeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public YearQuarter plus(long amountToAdd, TemporalUnit unit) {
-        if (unit == QUARTER_YEARS) {
-            return plusQuarters(amountToAdd);
+    public YearHalf plus(long amountToAdd, TemporalUnit unit) {
+        if (unit == HALF_YEARS) {
+            return plusHalfs(amountToAdd);
         } else if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
                 case YEARS:
@@ -859,47 +858,47 @@ public final class YearQuarter
     }
 
     /**
-     * Returns a copy of this year-quarter with the specified period in years added.
+     * Returns a copy of this year-half with the specified period in years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param yearsToAdd  the years to add, may be negative
-     * @return a {@code YearQuarter} based on this year-quarter with the years added, not null
+     * @return a {@code YearHalf} based on this year-half with the years added, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearQuarter plusYears(long yearsToAdd) {
+    public YearHalf plusYears(long yearsToAdd) {
         if (yearsToAdd == 0) {
             return this;
         }
         int newYear = YEAR.checkValidIntValue(year + yearsToAdd);  // safe overflow
-        return with(newYear, quarter);
+        return with(newYear, half);
     }
 
     /**
-     * Returns a copy of this year-quarter with the specified period in quarters added.
+     * Returns a copy of this year-half with the specified period in halves added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param quartersToAdd  the quarters to add, may be negative
-     * @return a {@code YearQuarter} based on this year-quarter with the quarters added, not null
+     * @param halvesToAdd  the halves to add, may be negative
+     * @return a {@code YearHalf} based on this year-half with the halves added, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearQuarter plusQuarters(long quartersToAdd) {
-        if (quartersToAdd == 0) {
+    public YearHalf plusHalfs(long halvesToAdd) {
+        if (halvesToAdd == 0) {
             return this;
         }
-        long quarterCount = year * 4L + (quarter.getValue() - 1);
-        long calcQuarters = quarterCount + quartersToAdd;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcQuarters, 4));
-        int newQuarter = (int) Math.floorMod(calcQuarters, 4L) + 1;
-        return with(newYear, Quarter.of(newQuarter));
+        long halfCount = year * 2L + (half.getValue() - 1);
+        long calcHalfs = halfCount + halvesToAdd;  // safe overflow
+        int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcHalfs, 2));
+        int newHalf = (int) Math.floorMod(calcHalfs, 2L) + 1;
+        return with(newYear, Half.of(newHalf));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this year-quarter with the specified amount subtracted.
+     * Returns a copy of this year-half with the specified amount subtracted.
      * <p>
-     * This returns a {@code YearQuarter} based on this one, with the specified amount subtracted.
+     * This returns a {@code YearHalf} based on this one, with the specified amount subtracted.
      * The amount is typically {@link Period} but may be any other type implementing
      * the {@link TemporalAmount} interface.
      * <p>
@@ -912,19 +911,19 @@ public final class YearQuarter
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToSubtract  the amount to subtract, not null
-     * @return a {@code YearQuarter} based on this year-quarter with the subtraction made, not null
+     * @return a {@code YearHalf} based on this year-half with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public YearQuarter minus(TemporalAmount amountToSubtract) {
-        return (YearQuarter) amountToSubtract.subtractFrom(this);
+    public YearHalf minus(TemporalAmount amountToSubtract) {
+        return (YearHalf) amountToSubtract.subtractFrom(this);
     }
 
     /**
-     * Returns a copy of this year-quarter with the specified amount subtracted.
+     * Returns a copy of this year-half with the specified amount subtracted.
      * <p>
-     * This returns a {@code YearQuarter} based on this one, with the amount
+     * This returns a {@code YearHalf} based on this one, with the amount
      * in terms of the unit subtracted. If it is not possible to subtract the amount,
      * because the unit is not supported or for some other reason, an exception is thrown.
      * <p>
@@ -935,47 +934,47 @@ public final class YearQuarter
      *
      * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
      * @param unit  the unit of the amount to subtract, not null
-     * @return a {@code YearQuarter} based on this year-quarter with the specified amount subtracted, not null
+     * @return a {@code YearHalf} based on this year-half with the specified amount subtracted, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws UnsupportedTemporalTypeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public YearQuarter minus(long amountToSubtract, TemporalUnit unit) {
+    public YearHalf minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     /**
-     * Returns a copy of this year-quarter with the specified period in years subtracted.
+     * Returns a copy of this year-half with the specified period in years subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param yearsToSubtract  the years to subtract, may be negative
-     * @return a {@code YearQuarter} based on this year-quarter with the years subtracted, not null
+     * @return a {@code YearHalf} based on this year-half with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearQuarter minusYears(long yearsToSubtract) {
+    public YearHalf minusYears(long yearsToSubtract) {
         return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
     /**
-     * Returns a copy of this year-quarter with the specified period in quarters subtracted.
+     * Returns a copy of this year-half with the specified period in halves subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param quartersToSubtract  the quarters to subtract, may be negative
-     * @return a {@code YearQuarter} based on this year-quarter with the quarters subtracted, not null
+     * @param halvesToSubtract  the halves to subtract, may be negative
+     * @return a {@code YearHalf} based on this year-half with the halves subtracted, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearQuarter minusQuarters(long quartersToSubtract) {
-        return (quartersToSubtract == Long.MIN_VALUE ? plusQuarters(Long.MAX_VALUE).plusQuarters(1) : plusQuarters(-quartersToSubtract));
+    public YearHalf minusHalfs(long halvesToSubtract) {
+        return (halvesToSubtract == Long.MIN_VALUE ? plusHalfs(Long.MAX_VALUE).plusHalfs(1) : plusHalfs(-halvesToSubtract));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Queries this year-quarter using the specified query.
+     * Queries this year-half using the specified query.
      * <p>
-     * This queries this year-quarter using the specified query strategy object.
+     * This queries this year-half using the specified query strategy object.
      * The {@code TemporalQuery} object defines the logic to be used to
      * obtain the result. Read the documentation of the query to understand
      * what the result of this method will be.
@@ -996,19 +995,19 @@ public final class YearQuarter
         if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
-            return (R) QUARTER_YEARS;
+            return (R) HALF_YEARS;
         }
         return Temporal.super.query(query);
     }
 
     /**
-     * Adjusts the specified temporal object to have this year-quarter.
+     * Adjusts the specified temporal object to have this year-half.
      * <p>
      * This returns a temporal object of the same observable type as the input
-     * with the year and quarter changed to be the same as this.
+     * with the year and half changed to be the same as this.
      * <p>
      * The adjustment is equivalent to using {@link Temporal#plus(long, TemporalUnit)}
-     * passing the number of quarters to adjust by.
+     * passing the number of halves to adjust by.
      * If the specified temporal object does not use the ISO calendar system then
      * a {@code DateTimeException} is thrown.
      * <p>
@@ -1016,8 +1015,8 @@ public final class YearQuarter
      * {@link Temporal#with(TemporalAdjuster)}:
      * <pre>
      *   // these two lines are equivalent, but the second approach is recommended
-     *   temporal = thisYearQuarter.adjustInto(temporal);
-     *   temporal = temporal.with(thisYearQuarter);
+     *   temporal = thisYearHalf.adjustInto(temporal);
+     *   temporal = temporal.with(thisYearHalf);
      * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1032,40 +1031,40 @@ public final class YearQuarter
         if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        long newProlepticQuarter = getProlepticQuarter();
-        long oldProlepticQuarter = temporal.get(YEAR) * 4L + (temporal.get(QUARTER_OF_YEAR) - 1);
-        return temporal.plus(newProlepticQuarter - oldProlepticQuarter, QUARTER_YEARS);
+        long newProlepticHalf = getProlepticHalf();
+        long oldProlepticHalf = temporal.get(YEAR) * 2L + (temporal.get(HALF_OF_YEAR) - 1);
+        return temporal.plus(newProlepticHalf - oldProlepticHalf, HALF_YEARS);
     }
 
     /**
-     * Calculates the amount of time until another year-quarter in terms of the specified unit.
+     * Calculates the amount of time until another year-half in terms of the specified unit.
      * <p>
-     * This calculates the amount of time between two {@code YearQuarter}
+     * This calculates the amount of time between two {@code YearHalf}
      * objects in terms of a single {@code TemporalUnit}.
-     * The start and end points are {@code this} and the specified year-quarter.
+     * The start and end points are {@code this} and the specified year-half.
      * The result will be negative if the end is before the start.
      * The {@code Temporal} passed to this method is converted to a
-     * {@code YearQuarter} using {@link #from(TemporalAccessor)}.
-     * For example, the period in years between two year-quarters can be calculated
-     * using {@code startYearQuarter.until(endYearQuarter, YEARS)}.
+     * {@code YearHalf} using {@link #from(TemporalAccessor)}.
+     * For example, the period in years between two year-halves can be calculated
+     * using {@code startYearHalf.until(endYearHalf, YEARS)}.
      * <p>
      * The calculation returns a whole number, representing the number of
-     * complete units between the two year-quarters.
-     * For example, the period in decades between 2012-Q3 and 2032-Q2
-     * will only be one decade as it is one quarter short of two decades.
+     * complete units between the two year-halves.
+     * For example, the period in decades between 2012-H2 and 2032-H1
+     * will only be one decade as it is one half short of two decades.
      * <p>
      * There are two equivalent ways of using this method.
      * The first is to invoke this method.
      * The second is to use {@link TemporalUnit#between(Temporal, Temporal)}:
      * <pre>
      *   // these two lines are equivalent
-     *   amount = start.until(end, QUARTER_YEARS);
-     *   amount = QUARTER_YEARS.between(start, end);
+     *   amount = start.until(end, HALF_YEARS);
+     *   amount = HALF_YEARS.between(start, end);
      * </pre>
      * The choice should be made based on which makes the code more readable.
      * <p>
      * The calculation is implemented in this method for {@link ChronoUnit}.
-     * The units {@code QUARTER_YEARS}, {@code YEARS}, {@code DECADES},
+     * The units {@code HALF_YEARS}, {@code YEARS}, {@code DECADES},
      * {@code CENTURIES}, {@code MILLENNIA} and {@code ERAS} are supported.
      * Other {@code ChronoUnit} values will throw an exception.
      * <p>
@@ -1076,30 +1075,30 @@ public final class YearQuarter
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endExclusive  the end date, exclusive, which is converted to a {@code YearQuarter}, not null
+     * @param endExclusive  the end date, exclusive, which is converted to a {@code YearHalf}, not null
      * @param unit  the unit to measure the amount in, not null
-     * @return the amount of time between this year-quarter and the end year-quarter
+     * @return the amount of time between this year-half and the end year-half
      * @throws DateTimeException if the amount cannot be calculated, or the end
-     *  temporal cannot be converted to a {@code YearQuarter}
+     *  temporal cannot be converted to a {@code YearHalf}
      * @throws UnsupportedTemporalTypeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
-        YearQuarter end = YearQuarter.from(endExclusive);
-        long quartersUntil = end.getProlepticQuarter() - getProlepticQuarter();  // no overflow
-        if (unit == QUARTER_YEARS) {
-            return quartersUntil;
+        YearHalf end = YearHalf.from(endExclusive);
+        long halvesUntil = end.getProlepticHalf() - getProlepticHalf();  // no overflow
+        if (unit == HALF_YEARS) {
+            return halvesUntil;
         } else if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
                 case YEARS:
-                    return quartersUntil / 4;
+                    return halvesUntil / 2;
                 case DECADES:
-                    return quartersUntil / 40;
+                    return halvesUntil / 20;
                 case CENTURIES:
-                    return quartersUntil / 400;
+                    return halvesUntil / 200;
                 case MILLENNIA:
-                    return quartersUntil / 4000;
+                    return halvesUntil / 2000;
                 case ERAS:
                     return end.getLong(ERA) - getLong(ERA);
                 default:
@@ -1110,30 +1109,30 @@ public final class YearQuarter
     }
 
     /**
-     * Returns a sequential ordered stream of year-quarter. The returned stream starts from this year-quarter
-     * (inclusive) and goes to {@code endExclusive} (exclusive) by an incremental step of 1 {@code QUARTER_YEARS}.
+     * Returns a sequential ordered stream of year-half. The returned stream starts from this year-half
+     * (inclusive) and goes to {@code endExclusive} (exclusive) by an incremental step of 1 {@code HALF_YEARS}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      * 
-     * @param endExclusive  the end year-quarter, exclusive, not null
-     * @return a sequential {@code Stream} for the range of {@code YearQuarter} values
-     * @throws IllegalArgumentException if end year-quarter is before this year-quarter
+     * @param endExclusive  the end year-half, exclusive, not null
+     * @return a sequential {@code Stream} for the range of {@code YearHalf} values
+     * @throws IllegalArgumentException if end year-half is before this year-half
      */
-    public Stream<YearQuarter> quartersUntil(YearQuarter endExclusive) {
+    public Stream<YearHalf> halvesUntil(YearHalf endExclusive) {
         if (endExclusive.isBefore(this)) {
             throw new IllegalArgumentException(endExclusive + " < " + this);
         }
-        long intervalLength = until(endExclusive, QUARTER_YEARS);
-        return LongStream.range(0, intervalLength).mapToObj(n -> plusQuarters(n));
+        long intervalLength = until(endExclusive, HALF_YEARS);
+        return LongStream.range(0, intervalLength).mapToObj(n -> plusHalfs(n));
     }
 
     /**
-     * Formats this year-quarter using the specified formatter.
+     * Formats this year-half using the specified formatter.
      * <p>
-     * This year-quarter will be passed to the formatter to produce a string.
+     * This year-half will be passed to the formatter to produce a string.
      *
      * @param formatter  the formatter to use, not null
-     * @return the formatted year-quarter string, not null
+     * @return the formatted year-half string, not null
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
@@ -1143,27 +1142,27 @@ public final class YearQuarter
 
     //-----------------------------------------------------------------------
     /**
-     * Combines this year-quarter with a day-of-quarter to create a {@code LocalDate}.
+     * Combines this year-half with a day-of-half to create a {@code LocalDate}.
      * <p>
-     * This returns a {@code LocalDate} formed from this year-quarter and the specified day-of-quarter.
+     * This returns a {@code LocalDate} formed from this year-half and the specified day-of-half.
      * <p>
-     * The day-of-quarter value must be valid for the year-quarter.
+     * The day-of-half value must be valid for the year-half.
      * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
-     *  LocalDate date = yearQuarter.atDay(day);
+     *  LocalDate date = yearHalf.atDay(day);
      * </pre>
      *
-     * @param dayOfQuarter  the day-of-quarter to use, from 1 to 92
-     * @return the date formed from this year-quarter and the specified day, not null
-     * @throws DateTimeException if the day is invalid for the year-quarter
+     * @param dayOfHalf  the day-of-half to use, from 1 to 184
+     * @return the date formed from this year-half and the specified day, not null
+     * @throws DateTimeException if the day is invalid for the year-half
      * @see #isValidDay(int)
      */
-    public LocalDate atDay(int dayOfQuarter) {
-        ValueRange.of(1, lengthOfQuarter()).checkValidValue(dayOfQuarter, DAY_OF_QUARTER);
+    public LocalDate atDay(int dayOfHalf) {
+        ValueRange.of(1, lengthOfHalf()).checkValidValue(dayOfHalf, DAY_OF_HALF);
         boolean leap = Year.isLeap(year);
-        Month month = quarter.firstMonth();
-        int dom = dayOfQuarter;
+        Month month = half.firstMonth();
+        int dom = dayOfHalf;
         while (dom > month.length(leap)) {
             dom -= month.length(leap);
             month = month.plus(1);
@@ -1172,101 +1171,99 @@ public final class YearQuarter
     }
 
     /**
-     * Returns a {@code LocalDate} at the end of the quarter.
+     * Returns a {@code LocalDate} at the end of the half.
      * <p>
-     * This returns a {@code LocalDate} based on this year-quarter.
-     * The day-of-quarter is set to the last valid day of the quarter, taking
+     * This returns a {@code LocalDate} based on this year-half.
+     * The day-of-half is set to the last valid day of the half, taking
      * into account leap years.
      * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
-     *  LocalDate date = year.atQuarter(quarter).atEndOfQuarter();
+     *  LocalDate date = year.atHalf(half).atEndOfHalf();
      * </pre>
      *
-     * @return the last valid date of this year-quarter, not null
+     * @return the last valid date of this year-half, not null
      */
-    public LocalDate atEndOfQuarter() {
-        Month month = quarter.firstMonth().plus(2);
+    public LocalDate atEndOfHalf() {
+        Month month = half.firstMonth().plus(5);
         return LocalDate.of(year, month, month.maxLength());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this year-quarter to another
+     * Compares this year-half to another
      * <p>
-     * The comparison is based first on the value of the year, then on the value of the quarter.
+     * The comparison is based first on the value of the year, then on the value of the half.
      * It is "consistent with equals", as defined by {@link Comparable}.
      *
-     * @param other  the other year-quarter to compare to, not null
+     * @param other  the other year-half to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(YearQuarter other) {
+    public int compareTo(YearHalf other) {
         int cmp = (year - other.year);
         if (cmp == 0) {
-            cmp = quarter.compareTo(other.quarter);
+            cmp = half.compareTo(other.half);
         }
         return cmp;
     }
 
     /**
-     * Is this year-quarter after the specified year-quarter.
+     * Is this year-half after the specified year-half.
      *
-     * @param other  the other year-quarter to compare to, not null
-     * @return true if this is after the specified year-quarter
+     * @param other  the other year-half to compare to, not null
+     * @return true if this is after the specified year-half
      */
-    public boolean isAfter(YearQuarter other) {
+    public boolean isAfter(YearHalf other) {
         return compareTo(other) > 0;
     }
 
     /**
-     * Is this year-quarter before the specified year-quarter.
+     * Is this year-half before the specified year-half.
      *
-     * @param other  the other year-quarter to compare to, not null
-     * @return true if this point is before the specified year-quarter
+     * @param other  the other year-half to compare to, not null
+     * @return true if this point is before the specified year-half
      */
-    public boolean isBefore(YearQuarter other) {
+    public boolean isBefore(YearHalf other) {
         return compareTo(other) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this year-quarter is equal to another year-quarter.
+     * Checks if this year-half is equal to another year-half.
      * <p>
-     * The comparison is based on the time-line position of the year-quarters.
+     * The comparison is based on the time-line position of the year-halves.
      *
      * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other year-quarter
+     * @return true if this is equal to the other year-half
      */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof YearQuarter) {
-            YearQuarter other = (YearQuarter) obj;
-            return year == other.year && quarter == other.quarter;
+        if (obj instanceof YearHalf) {
+            YearHalf other = (YearHalf) obj;
+            return year == other.year && half == other.half;
         }
         return false;
     }
 
     /**
-     * A hash code for this year-quarter.
+     * A hash code for this year-half.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return year ^ (quarter.getValue() << 27);
+        return year ^ (half.getValue() << 28);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this year-quarter as a {@code String}, such as {@code 2007-Q2}.
-     * <p>
-     * The output will be in the format {@code uuuu-'Q'Q}:
+     * Outputs this year-half as a {@code String}, such as {@code 2007-H2}.
      *
-     * @return a string representation of this year-quarter, not null
+     * @return a string representation of this year-half, not null
      */
     @Override
     @ToString
@@ -1285,7 +1282,7 @@ public final class YearQuarter
             }
             buf.append(year);
         }
-        return buf.append('-').append(quarter).toString();
+        return buf.append('-').append(half).toString();
     }
 
 }

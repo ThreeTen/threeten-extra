@@ -32,8 +32,8 @@
 package org.threeten.extra;
 
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
-import static java.time.temporal.IsoFields.QUARTER_YEARS;
+import static org.threeten.extra.TemporalFields.HALF_OF_YEAR;
+import static org.threeten.extra.TemporalFields.HALF_YEARS;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -43,7 +43,6 @@ import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
-import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -55,139 +54,120 @@ import java.time.temporal.ValueRange;
 import java.util.Locale;
 
 /**
- * A quarter-of-year, such as 'Q2'.
+ * A half-of-year, such as 'H2'.
  * <p>
- * {@code Quarter} is an enum representing the 4 quarters of the year - Q1, Q2, Q3 and Q4.
- * These are defined as January to March, April to June, July to September and October to December.
+ * {@code Half} is an enum representing the 2 halves of the year - H1 and H2.
+ * These are defined as January to June and July to December.
  * <p>
- * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
+ * The {@code int} value follows the half, from 1 (H1) to 2 (H2).
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code Quarter}.
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code Half}.
  * Use {@code getValue()} instead.</b>
- * <p>
- * This enum represents a common concept that is found in many calendar systems.
- * As such, this enum may be used by any calendar system that has the quarter-of-year
- * concept defined exactly equivalent to the ISO calendar system.
  *
  * <h3>Implementation Requirements:</h3>
  * This is an immutable and thread-safe enum.
  */
-public enum Quarter implements TemporalAccessor, TemporalAdjuster {
+public enum Half implements TemporalAccessor, TemporalAdjuster {
 
     /**
-     * The singleton instance for the first quarter-of-year, from January to March.
+     * The singleton instance for the first half-of-year, from January to June.
      * This has the numeric value of {@code 1}.
      */
-    Q1,
+    H1,
     /**
-     * The singleton instance for the second quarter-of-year, from April to June.
+     * The singleton instance for the second half-of-year, from July to December.
      * This has the numeric value of {@code 2}.
      */
-    Q2,
-    /**
-     * The singleton instance for the third quarter-of-year, from July to September.
-     * This has the numeric value of {@code 3}.
-     */
-    Q3,
-    /**
-     * The singleton instance for the fourth quarter-of-year, from October to December.
-     * This has the numeric value of {@code 4}.
-     */
-    Q4;
+    H2;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Quarter} from an {@code int} value.
+     * Obtains an instance of {@code Half} from an {@code int} value.
      * <p>
-     * {@code Quarter} is an enum representing the 4 quarters of the year.
+     * {@code Half} is an enum representing the 2 halves of the year.
      * This factory allows the enum to be obtained from the {@code int} value.
-     * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
+     * The {@code int} value follows the half, from 1 (H1) to 2 (H2).
      *
-     * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
-     * @return the quarter-of-year, not null
-     * @throws DateTimeException if the quarter-of-year is invalid
+     * @param halfOfYear  the half-of-year to represent, from 1 (H1) to 2 (H2)
+     * @return the half-of-year, not null
+     * @throws DateTimeException if the half-of-year is invalid
      */
-    public static Quarter of(int quarterOfYear) {
-        switch (quarterOfYear) {
+    public static Half of(int halfOfYear) {
+        switch (halfOfYear) {
             case 1:
-                return Q1;
+                return H1;
             case 2:
-                return Q2;
-            case 3:
-                return Q3;
-            case 4:
-                return Q4;
+                return H2;
             default:
-                throw new DateTimeException("Invalid value for Quarter: " + quarterOfYear);
+                throw new DateTimeException("Invalid value for Half: " + halfOfYear);
         }
     }
 
     /**
-     * Obtains an instance of {@code Quarter} from a month-of-year.
+     * Obtains an instance of {@code Half} from a month-of-year.
      * <p>
-     * {@code Quarter} is an enum representing the 4 quarters of the year.
+     * {@code Half} is an enum representing the 2 halves of the year.
      * This factory allows the enum to be obtained from the {@code Month} value.
      * <p>
-     * January to March are Q1, April to June are Q2, July to September are Q3
-     * and October to December are Q4.
+     * January to June are H1 and July to December are H2.
      *
      * @param monthOfYear  the month-of-year to convert from, from 1 to 12
-     * @return the quarter-of-year, not null
+     * @return the half-of-year, not null
      * @throws DateTimeException if the month-of-year is invalid
      */
-    public static Quarter ofMonth(int monthOfYear) {
+    public static Half ofMonth(int monthOfYear) {
         MONTH_OF_YEAR.range().checkValidValue(monthOfYear, MONTH_OF_YEAR);
-        return of((monthOfYear - 1) / 3 + 1);
+        return of(monthOfYear <= 6 ? 1 : 2);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Quarter} from a temporal object.
+     * Obtains an instance of {@code Half} from a temporal object.
      * <p>
-     * This obtains a quarter based on the specified temporal.
+     * This obtains a half based on the specified temporal.
      * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
-     * which this factory converts to an instance of {@code Quarter}.
+     * which this factory converts to an instance of {@code Half}.
      * <p>
-     * The conversion extracts the {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} field.
+     * The conversion extracts the {@link TemporalFields#HALF_OF_YEAR HALF_OF_YEAR} field.
      * The extraction is only permitted if the temporal object has an ISO
      * chronology, or can be converted to a {@code LocalDate}.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
-     * allowing it to be used in queries via method reference, {@code Quarter::from}.
+     * allowing it to be used in queries via method reference, {@code Half::from}.
      *
      * @param temporal  the temporal-time object to convert, not null
-     * @return the quarter-of-year, not null
-     * @throws DateTimeException if unable to convert to a {@code Quarter}
+     * @return the half-of-year, not null
+     * @throws DateTimeException if unable to convert to a {@code Half}
      */
-    public static Quarter from(TemporalAccessor temporal) {
-        if (temporal instanceof Quarter) {
-            return (Quarter) temporal;
+    public static Half from(TemporalAccessor temporal) {
+        if (temporal instanceof Half) {
+            return (Half) temporal;
         } else if (temporal instanceof Month) {
             Month month = (Month) temporal;
-            return of(month.ordinal() / 3 + 1);
+            return of(month.ordinal() / 6 + 1);
         }
         try {
             TemporalAccessor adjusted =
                     !IsoChronology.INSTANCE.equals(Chronology.from(temporal)) ? LocalDate.from(temporal) : temporal;
             // need to use getLong() as JDK Parsed class get() doesn't work properly
-            int qoy = Math.toIntExact(adjusted.getLong(QUARTER_OF_YEAR));
+            int qoy = Math.toIntExact(adjusted.getLong(HALF_OF_YEAR));
             return of(qoy);
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain Quarter from TemporalAccessor: " +
+            throw new DateTimeException("Unable to obtain Half from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the quarter-of-year {@code int} value.
+     * Gets the half-of-year {@code int} value.
      * <p>
      * The values are numbered following the ISO-8601 standard,
-     * from 1 (Q1) to 4 (Q4).
+     * from 1 (H1) to 2 (H2).
      *
-     * @return the quarter-of-year, from 1 (Q1) to 4 (Q4)
+     * @return the half-of-year, from 1 (H1) to 2 (H2)
      */
     public int getValue() {
         return ordinal() + 1;
@@ -195,9 +175,9 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the textual representation, such as 'Q1' or '4th quarter'.
+     * Gets the textual representation, such as 'H1' or '4th half'.
      * <p>
-     * This returns the textual name used to identify the quarter-of-year,
+     * This returns the textual name used to identify the half-of-year,
      * suitable for presentation to the user.
      * The parameters control the style of the returned text and the locale.
      * <p>
@@ -205,21 +185,21 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      *
      * @param style  the length of the text required, not null
      * @param locale  the locale to use, not null
-     * @return the text value of the quarter-of-year, not null
+     * @return the text value of the half-of-year, not null
      */
     public String getDisplayName(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendText(QUARTER_OF_YEAR, style).toFormatter(locale).format(this);
+        return new DateTimeFormatterBuilder().appendText(HALF_OF_YEAR, style).toFormatter(locale).format(this);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified field is supported.
      * <p>
-     * This checks if this quarter-of-year can be queried for the specified field.
+     * This checks if this half-of-year can be queried for the specified field.
      * If false, then calling the {@link #range(TemporalField) range} and
      * {@link #get(TemporalField) get} methods will throw an exception.
      * <p>
-     * If the field is {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} then
+     * If the field is {@link TemporalFields#HALF_OF_YEAR HALF_OF_YEAR} then
      * this method returns true.
      * All {@code ChronoField} instances will return false.
      * <p>
@@ -229,11 +209,11 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      * Whether the field is supported is determined by the field.
      *
      * @param field  the field to check, null returns false
-     * @return true if the field is supported on this quarter-of-year, false if not
+     * @return true if the field is supported on this half-of-year, false if not
      */
     @Override
     public boolean isSupported(TemporalField field) {
-        if (field == QUARTER_OF_YEAR) {
+        if (field == HALF_OF_YEAR) {
             return true;
         } else if (field instanceof ChronoField) {
             return false;
@@ -245,12 +225,12 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      * Gets the range of valid values for the specified field.
      * <p>
      * The range object expresses the minimum and maximum valid values for a field.
-     * This quarter is used to enhance the accuracy of the returned range.
+     * This half is used to enhance the accuracy of the returned range.
      * If it is not possible to return the range, because the field is not supported
      * or for some other reason, an exception is thrown.
      * <p>
-     * If the field is {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} then the
-     * range of the quarter-of-year, from 1 to 4, will be returned.
+     * If the field is {@link TemporalFields#HALF_OF_YEAR HALF_OF_YEAR} then the
+     * range of the half-of-year, from 1 to 2, will be returned.
      * All {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
@@ -265,7 +245,7 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      */
     @Override
     public ValueRange range(TemporalField field) {
-        if (field == QUARTER_OF_YEAR) {
+        if (field == HALF_OF_YEAR) {
             return field.range();
         } else if (field instanceof ChronoField) {
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
@@ -274,15 +254,15 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
     }
 
     /**
-     * Gets the value of the specified field from this quarter-of-year as an {@code int}.
+     * Gets the value of the specified field from this half-of-year as an {@code int}.
      * <p>
-     * This queries this quarter for the value for the specified field.
+     * This queries this half for the value for the specified field.
      * The returned value will always be within the valid range of values for the field.
      * If it is not possible to return the value, because the field is not supported
      * or for some other reason, an exception is thrown.
      * <p>
-     * If the field is {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} then the
-     * value of the quarter-of-year, from 1 to 4, will be returned.
+     * If the field is {@link TemporalFields#HALF_OF_YEAR HALF_OF_YEAR} then the
+     * value of the half-of-year, from 1 to 2, will be returned.
      * All {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
@@ -300,7 +280,7 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      */
     @Override
     public int get(TemporalField field) {
-        if (field == QUARTER_OF_YEAR) {
+        if (field == HALF_OF_YEAR) {
             return getValue();
         } else if (field instanceof ChronoField) {
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
@@ -309,14 +289,14 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
     }
 
     /**
-     * Gets the value of the specified field from this quarter-of-year as a {@code long}.
+     * Gets the value of the specified field from this half-of-year as a {@code long}.
      * <p>
-     * This queries this quarter for the value for the specified field.
+     * This queries this half for the value for the specified field.
      * If it is not possible to return the value, because the field is not supported
      * or for some other reason, an exception is thrown.
      * <p>
-     * If the field is {@link IsoFields#QUARTER_OF_YEAR QUARTER_OF_YEAR} then the
-     * value of the quarter-of-year, from 1 to 4, will be returned.
+     * If the field is {@link TemporalFields#HALF_OF_YEAR HALF_OF_YEAR} then the
+     * value of the half-of-year, from 1 to 2, will be returned.
      * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
@@ -332,7 +312,7 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      */
     @Override
     public long getLong(TemporalField field) {
-        if (field == QUARTER_OF_YEAR) {
+        if (field == HALF_OF_YEAR) {
             return getValue();
         } else if (field instanceof ChronoField) {
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
@@ -342,94 +322,70 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the quarter that is the specified number of quarters after this one.
+     * Returns the half that is the specified number of halves after this one.
      * <p>
-     * The calculation rolls around the end of the year from Q4 to Q1.
+     * The calculation rolls around the end of the year from H2 to H1.
      * The specified period may be negative.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param quarters  the quarters to add, positive or negative
-     * @return the resulting quarter, not null
+     * @param halves  the halves to add, positive or negative
+     * @return the resulting half, not null
      */
-    public Quarter plus(long quarters) {
-        int amount = (int) quarters % 4;
-        return values()[(ordinal() + (amount + 4)) % 4];
+    public Half plus(long halves) {
+        int amount = (int) halves % 2;
+        return values()[(ordinal() + (amount + 2)) % 2];
     }
 
     /**
-     * Returns the quarter that is the specified number of quarters before this one.
+     * Returns the half that is the specified number of halves before this one.
      * <p>
-     * The calculation rolls around the start of the year from Q1 to Q4.
+     * The calculation rolls around the start of the year from H1 to H2.
      * The specified period may be negative.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param quarters  the quarters to subtract, positive or negative
-     * @return the resulting quarter, not null
+     * @param halves  the halves to subtract, positive or negative
+     * @return the resulting half, not null
      */
-    public Quarter minus(long quarters) {
-        return plus(-(quarters % 4));
+    public Half minus(long halves) {
+        return plus(-(halves % 2));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the length of this quarter in days.
+     * Gets the length of this half in days.
      * <p>
      * This takes a flag to determine whether to return the length for a leap year or not.
      * <p>
-     * Q1 has 90 in a standard year and 91 days in a leap year.
-     * Q2 has 91 days.
-     * Q3 and Q4 have 92 days.
+     * H1 has 181 in a standard year and 182 days in a leap year.
+     * H2 has 184 days.
      *
      * @param leapYear  true if the length is required for a leap year
      * @return the length of this month in days, from 90 to 92
      */
     public int length(boolean leapYear) {
-        switch (this) {
-            case Q1:
-                return (leapYear ? 91 : 90);
-            case Q2:
-                return 91;
-            default:
-                return 92;
-        }
+        return this == H1 ? (leapYear ? 182 : 181) : 184;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the first of the three months that this quarter refers to.
+     * Gets the first of the six months that this half refers to.
      * <p>
-     * Q1 will return January.<br>
-     * Q2 will return April.<br>
-     * Q3 will return July.<br>
-     * Q4 will return October.
-     * <p>
-     * To obtain the other two months of the quarter, simply use {@link Month#plus(long)}
-     * on the returned month.
+     * H1 will return January.<br>
+     * H2 will return July.
      *
-     * @return the first month in the quarter, not null
+     * @return the first month in the half, not null
      */
     public Month firstMonth() {
-        switch (this) {
-            case Q1:
-                return Month.JANUARY;
-            case Q2:
-                return Month.APRIL;
-            case Q3:
-                return Month.JULY;
-            case Q4:
-                return Month.OCTOBER;
-            default:
-                throw new IllegalStateException("Unreachable");
-        }
+        return this == H1 ? Month.JANUARY : Month.JULY;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Queries this quarter-of-year using the specified query.
+     * Queries this half-of-year using the specified query.
      * <p>
-     * This queries this quarter-of-year using the specified query strategy object.
+     * This queries this half-of-year using the specified query strategy object.
      * The {@code TemporalQuery} object defines the logic to be used to
      * obtain the result. Read the documentation of the query to understand
      * what the result of this method will be.
@@ -450,19 +406,19 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
         if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
-            return (R) QUARTER_YEARS;
+            return (R) HALF_YEARS;
         }
         return TemporalAccessor.super.query(query);
     }
 
     /**
-     * Adjusts the specified temporal object to have this quarter-of-year.
+     * Adjusts the specified temporal object to have this half-of-year.
      * <p>
      * This returns a temporal object of the same observable type as the input
-     * with the quarter-of-year changed to be the same as this.
+     * with the half-of-year changed to be the same as this.
      * <p>
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
-     * passing {@link IsoFields#QUARTER_OF_YEAR} as the field.
+     * passing {@link TemporalFields#HALF_OF_YEAR} as the field.
      * If the specified temporal object does not use the ISO calendar system then
      * a {@code DateTimeException} is thrown.
      * <p>
@@ -470,16 +426,14 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      * {@link Temporal#with(TemporalAdjuster)}:
      * <pre>
      *   // these two lines are equivalent, but the second approach is recommended
-     *   temporal = thisQuarter.adjustInto(temporal);
-     *   temporal = temporal.with(thisQuarter);
+     *   temporal = thisHalf.adjustInto(temporal);
+     *   temporal = temporal.with(thisHalf);
      * </pre>
      * <p>
      * For example, given a date in May, the following are output:
      * <pre>
-     *   dateInMay.with(Q1);    // three months earlier
-     *   dateInMay.with(Q2);    // no change
-     *   dateInMay.with(Q3);    // three months later
-     *   dateInMay.with(Q4);    // six months later
+     *   dateInMay.with(H1);    // no change
+     *   dateInMay.with(H2);    // six months later
      * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -494,7 +448,7 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
         if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        return temporal.with(QUARTER_OF_YEAR, getValue());
+        return temporal.with(HALF_OF_YEAR, getValue());
     }
 
 }
