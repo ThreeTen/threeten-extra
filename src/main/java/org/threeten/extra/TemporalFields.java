@@ -250,7 +250,7 @@ public final class TemporalFields {
 
     //-------------------------------------------------------------------------
     /**
-     * Implementation of day-of-half.
+     * Implementation of half-of-year.
      */
     private static enum HalfOfYearField implements TemporalField {
         INSTANCE;
@@ -319,7 +319,7 @@ public final class TemporalFields {
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the unit.
+     * Implementation of the half-year unit.
      */
     private static enum HalfUnit implements TemporalUnit {
 

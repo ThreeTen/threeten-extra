@@ -362,7 +362,7 @@ public enum Half implements TemporalAccessor, TemporalAdjuster {
      * H2 has 184 days.
      *
      * @param leapYear  true if the length is required for a leap year
-     * @return the length of this month in days, from 90 to 92
+     * @return the length of this month in days, 181, 182 or 184
      */
     public int length(boolean leapYear) {
         return this == H1 ? (leapYear ? 182 : 181) : 184;
