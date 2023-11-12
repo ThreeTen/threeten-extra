@@ -311,7 +311,7 @@ public final class PeriodDuration
      *
      * @param startInclusive  the start, inclusive, not null
      * @param endExclusive  the end, exclusive, not null
-     * @return the number of days between this date and the end date, not null
+     * @return the period-duration between this date and the end date, not null
      */
     public static PeriodDuration between(Temporal startInclusive, Temporal endExclusive) {
         LocalDate startDate = startInclusive.query(TemporalQueries.localDate());

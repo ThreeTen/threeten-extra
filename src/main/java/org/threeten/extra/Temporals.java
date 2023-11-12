@@ -43,12 +43,26 @@ import java.math.RoundingMode;
 import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
@@ -193,6 +207,161 @@ public final class Temporals {
                     default:
                         return temporal;
                 }
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Returns a query that can obtain the elapsed period-duration since the natural epcoh of the temporal.
+     * <p>
+     * This returns a period-duration equivalent to the temporal, but expressed as units rather than fields.
+     * For example, {@link LocalDate} will return a period of years, months and days since 0000-01-01,
+     * while a {@link LocalTime} will return a duration since midnight 00:00.
+     * Null is returned if unable to determine.
+     *
+     * @return a query that can obtain the elapsed period-duration, not null
+     * @throws DateTimeException if unable to round
+     */
+    public static TemporalQuery<PeriodDuration> elapsedDuration() {
+        // TODO: implement on all ThreeTen Extra value classes
+        return temporal -> {
+            LocalDateTime ldt = elapsedLocalDateTime(temporal);
+            if (ldt == null) {
+                return null;
+            }
+            Period period = Period.of(ldt.getYear(), ldt.getMonthValue() - 1, ldt.getDayOfMonth() - 1);
+            Duration duration = Duration.ofNanos(ldt.toLocalTime().toNanoOfDay());
+            return PeriodDuration.of(period, duration);
+        };
+    }
+
+    private static LocalDateTime elapsedLocalDateTime(TemporalAccessor temporal) {
+        if (temporal instanceof LocalDateTime) {
+            return (LocalDateTime) temporal;
+        } else if (temporal instanceof LocalDate) {
+            return ((LocalDate) temporal).atStartOfDay();
+        } else if (temporal instanceof LocalTime) {
+            return ((LocalTime) temporal).atDate(LocalDate.of(0, 1, 1));
+        } else if (temporal instanceof Year) {
+            return ((Year) temporal).atDay(1).atTime(LocalTime.MIDNIGHT);
+        } else if (temporal instanceof YearMonth) {
+            return ((YearMonth) temporal).atDay(1).atTime(LocalTime.MIDNIGHT);
+        } else if (temporal instanceof MonthDay) {
+            return ((MonthDay) temporal).atYear(0).atTime(LocalTime.MIDNIGHT);
+        } else if (temporal instanceof Month) {
+            return LocalDate.of(0, (Month) temporal, 1).atTime(LocalTime.MIDNIGHT);
+        } else if (temporal instanceof OffsetTime) {
+            return ((OffsetTime) temporal).atDate(LocalDate.of(0, 1, 1)).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+        } else if (temporal instanceof OffsetDateTime) {
+            return ((OffsetDateTime) temporal).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+        } else if (temporal instanceof ZonedDateTime) {
+            return ((ZonedDateTime) temporal).toOffsetDateTime().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+        } else {
+            // TODO: ChronoLocalDate etc
+            return null; // eras are not handled
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Returns an adjuster that rounds time to the nearest whole amount of the unit.
+     * <p>
+     * The unit must have an exact duration and be a time-base unit or {@link ChronoUnit#DAYS}.
+     * The temporal must have a precision of DAYS, HOURS, MINUTES, SECONDS or a fraction of a SECOND.
+     * For example, {@code time = time.with(roundNearest(MINUTE));}.
+     *
+     * @param unit the unit to round to
+     * @return the adjuster that performs the rounding, not null
+     * @throws DateTimeException if unable to round
+     */
+    public static TemporalAdjuster roundNearest(TemporalUnit unit) {
+        return new RoundingAdjuster(RoundingMode.HALF_UP, unit);
+    }
+
+    /**
+     * Returns an adjuster that rounds time down (truncates).
+     * <p>
+     * The unit must have an exact duration and be a time-base unit or {@link ChronoUnit#DAYS}.
+     * The temporal must have a precision of DAYS, HOURS, MINUTES, SECONDS or a fraction of a SECOND.
+     * For example, {@code time = time.with(roundDown(MINUTE));}.
+     *
+     * @param unit the unit to round to
+     * @return the adjuster that performs the rounding, not null
+     * @throws DateTimeException if unable to round
+     */
+    public static TemporalAdjuster roundDown(TemporalUnit unit) {
+        return new RoundingAdjuster(RoundingMode.DOWN, unit);
+    }
+
+    /**
+     * Returns an adjuster that rounds time up.
+     * <p>
+     * The unit must have an exact duration and be a time-base unit or {@link ChronoUnit#DAYS}.
+     * The temporal must have a precision of DAYS, HOURS, MINUTES, SECONDS or a fraction of a SECOND.
+     * For example, {@code time = time.with(roundUp(MINUTE));}.
+     *
+     * @param unit the unit to round to
+     * @return the adjuster that performs the rounding, not null
+     * @throws DateTimeException if unable to round
+     */
+    public static TemporalAdjuster roundUp(TemporalUnit unit) {
+        return new RoundingAdjuster(RoundingMode.UP, unit);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rounding adjuster.
+     */
+    private static class RoundingAdjuster implements TemporalAdjuster {
+        private final RoundingMode roundingMode;
+        private final TemporalUnit unit;
+
+        private RoundingAdjuster(RoundingMode roundingMode, TemporalUnit unit) {
+            this.roundingMode = roundingMode;
+            this.unit = Objects.requireNonNull(unit, "unit");
+            if ((!unit.isTimeBased() && unit != ChronoUnit.DAYS) || unit.isDurationEstimated()) {
+                throw new DateTimeException("Unit " + unit.toString() + " is unsuitable for rounding");
+            }
+        }
+
+        @Override
+        public Temporal adjustInto(Temporal temporal) {
+            // TODO: handle DAYS and maybe bigger?
+
+            long durationNanos = unit.getDuration().toNanos();
+
+            // find the precision of the temporal and validate it - we must add/subtract in this unit
+            TemporalUnit precision = temporal.query(TemporalQueries.precision());
+            if (precision == null) {
+                throw new DateTimeException("Unable to round " + temporal.getClass().getSimpleName());
+            }
+            long precisionNanos = precision.getDuration().toNanos();
+            if (durationNanos == precisionNanos) {
+                return temporal;
+            }
+            if ((durationNanos % precisionNanos) != 0) {
+                throw new DateTimeException(
+                        "Unit " + unit.toString() + " cannot be used to round " + temporal.getClass().getSimpleName());
+            }
+
+            // find the elapsed period-duration of the temporal - converting temporal fields to temporal units
+            PeriodDuration elapsed = temporal.query(elapsedDuration());
+            if (elapsed == null) {
+                throw new DateTimeException("Unable to round " + temporal.getClass().getSimpleName());
+            }
+            long elapsedNanos = elapsed.getDuration().toNanos();
+
+            // actually round
+            if (roundingMode == RoundingMode.DOWN) {
+                long result = Math.floorDiv(elapsedNanos, durationNanos) * durationNanos;
+                long diffInPrecision = (result - elapsedNanos) / precisionNanos;
+                return temporal.plus(diffInPrecision, precision);
+
+            } else if (roundingMode == RoundingMode.UP) {
+                return temporal;
+            } else {
+                return temporal;
             }
         }
     }
