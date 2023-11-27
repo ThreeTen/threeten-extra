@@ -54,10 +54,8 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -77,6 +75,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import com.google.common.testing.EqualsTester;
 
 /**
  * Test.
@@ -704,26 +704,16 @@ public class TestEthiopicChronology {
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        EthiopicDate a1 = EthiopicDate.of(2004, 1, 3);
-        EthiopicDate a2 = EthiopicDate.of(2004, 1, 3);
-        EthiopicDate b = EthiopicDate.of(2004, 1, 4);
-        EthiopicDate c = EthiopicDate.of(2004, 2, 3);
-        EthiopicDate d = EthiopicDate.of(2005, 1, 3);
-
-        assertEquals(true, a1.equals(a1));
-        assertEquals(true, a1.equals(a2));
-        assertEquals(false, a1.equals(b));
-        assertEquals(false, a1.equals(c));
-        assertEquals(false, a1.equals(d));
-
-        assertFalse(a1.equals(null));
-        assertFalse(a1.equals((Object) ""));
-
-        assertTrue(a1.hashCode() == a2.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(EthiopicDate.of(2004, 1, 3), EthiopicDate.of(2004, 1, 3))
+            .addEqualityGroup(EthiopicDate.of(2004, 1, 4), EthiopicDate.of(2004, 1, 4))
+            .addEqualityGroup(EthiopicDate.of(2004, 2, 3), EthiopicDate.of(2004, 2, 3))
+            .addEqualityGroup(EthiopicDate.of(2005, 1, 3), EthiopicDate.of(2005, 1, 3))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

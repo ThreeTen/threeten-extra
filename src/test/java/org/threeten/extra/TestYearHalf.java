@@ -79,7 +79,6 @@ import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.threeten.extra.Half.H1;
@@ -116,6 +115,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+
+import com.google.common.testing.EqualsTester;
 
 /**
  * Test YearHalf.
@@ -946,34 +947,16 @@ public class TestYearHalf {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        for (int year1 = -100; year1 < 100; year1++) {
-            for (Half half1 : Half.values()) {
-                YearHalf a = YearHalf.of(year1, half1);
-                for (int year2 = -100; year2 < 100; year2++) {
-                    for (Half half2 : Half.values()) {
-                        YearHalf b = YearHalf.of(year2, half2);
-                        if (year1 == year2 && half1 == half2) {
-                            assertTrue(a.equals(b));
-                            assertEquals(a.hashCode(), b.hashCode());
-                        } else {
-                            assertFalse(a.equals(b));
-                        }
-                    }
-                }
+    public void test_equals_and_hashCode() {
+        EqualsTester tester = new EqualsTester();
+        for (int year = -100; year <= 100; year++) {
+            for (Half half : Half.values()) {
+                YearHalf instance1 = YearHalf.of(year, half);
+                YearHalf instance2 = YearHalf.of(year, half);
+                tester.addEqualityGroup(instance1, instance2);
             }
         }
-    }
-
-    @Test
-    public void test_equals_nullYearHalf() {
-        assertFalse(TEST.equals(null));
-    }
-
-    @Test
-    public void test_equals_incorrectType() {
-        Object obj = "Incorrect type";
-        assertFalse(TEST.equals(obj));
+        tester.testEquals();
     }
 
     //-----------------------------------------------------------------------

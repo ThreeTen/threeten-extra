@@ -56,6 +56,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test class.
  */
@@ -475,34 +477,11 @@ public class TestWeeks {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        Weeks test5 = Weeks.of(5);
-        Weeks test6 = Weeks.of(6);
-        assertEquals(true, test5.equals(test5));
-        assertEquals(false, test5.equals(test6));
-        assertEquals(false, test6.equals(test5));
-    }
-
-    @Test
-    public void test_equals_null() {
-        Weeks test5 = Weeks.of(5);
-        assertEquals(false, test5.equals(null));
-    }
-
-    @Test
-    public void test_equals_otherClass() {
-        Weeks test5 = Weeks.of(5);
-        Object obj = "";
-        assertEquals(false, test5.equals(obj));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_hashCode() {
-        Weeks test5 = Weeks.of(5);
-        Weeks test6 = Weeks.of(6);
-        assertEquals(true, test5.hashCode() == test5.hashCode());
-        assertEquals(false, test5.hashCode() == test6.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(Weeks.of(5), Weeks.of(5))
+            .addEqualityGroup(Weeks.of(6), Weeks.of(6))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

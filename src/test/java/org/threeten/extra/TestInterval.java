@@ -55,6 +55,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test class.
  */
@@ -916,18 +918,12 @@ public class TestInterval {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        Interval a = Interval.of(NOW1, NOW2);
-        Interval a2 = Interval.of(NOW1, NOW2);
-        Interval b = Interval.of(NOW1, NOW3);
-        Interval c = Interval.of(NOW2, NOW2);
-        assertEquals(true, a.equals(a));
-        assertEquals(true, a.equals(a2));
-        assertEquals(false, a.equals(b));
-        assertEquals(false, a.equals(c));
-        assertEquals(false, a.equals(null));
-        assertEquals(false, a.equals((Object) ""));
-        assertEquals(true, a.hashCode() == a2.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(Interval.of(NOW1, NOW2), Interval.of(NOW1, NOW2))
+            .addEqualityGroup(Interval.of(NOW1, NOW3), Interval.of(NOW1, NOW3))
+            .addEqualityGroup(Interval.of(NOW2, NOW2), Interval.of(NOW2, NOW2))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

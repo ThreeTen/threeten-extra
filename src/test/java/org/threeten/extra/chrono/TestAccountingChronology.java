@@ -54,9 +54,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -78,6 +76,8 @@ import java.util.function.IntPredicate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import com.google.common.testing.EqualsTester;
 
 /**
  * Test.
@@ -742,46 +742,24 @@ public class TestAccountingChronology {
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        AccountingDate a1 = INSTANCE.date(2000, 1, 3);
-        AccountingDate a2 = INSTANCE.date(2000, 1, 3);
-        AccountingDate b = INSTANCE.date(2000, 1, 4);
-        AccountingDate c = INSTANCE.date(2000, 2, 3);
-        AccountingDate d = INSTANCE.date(2001, 1, 3);
-
-        AccountingDate other = new AccountingChronologyBuilder().endsOn(DayOfWeek.WEDNESDAY)
-                .nearestEndOf(Month.AUGUST).leapWeekInMonth(13)
-                .withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS)
-                .accountingYearEndsInIsoYear()
-                .toChronology().date(2000, 1, 3);
-
-        assertEquals(true, a1.equals(a1));
-        assertEquals(true, a1.equals(a2));
-        assertEquals(false, a1.equals(b));
-        assertEquals(false, a1.equals(c));
-        assertEquals(false, a1.equals(d));
-
-        assertFalse(a1.equals(null));
-        assertFalse(a1.equals((Object) ""));
-        assertEquals(false, a1.getChronology().equals(other.getChronology()));
-        assertEquals(false, a1.equals(other));
-
-        assertTrue(a1.hashCode() == a1.hashCode());
-
-        AccountingDate startChronologyDate = new AccountingChronologyBuilder().endsOn(DayOfWeek.WEDNESDAY)
-        .nearestEndOf(Month.AUGUST).leapWeekInMonth(13)
-        .withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS)
-        .accountingYearStartsInIsoYear()
-        .toChronology().date(2000, 1, 3);
-
-
-        assertEquals(false, a1.getChronology().equals(startChronologyDate.getChronology()));
-        assertEquals(false, a1.equals(startChronologyDate));
-        assertEquals(false, other.getChronology().equals(startChronologyDate.getChronology()));
-        assertEquals(false, other.equals(startChronologyDate));
+    public void test_equals_and_hashCode() {
+        AccountingChronology other = new AccountingChronologyBuilder()
+            .endsOn(DayOfWeek.WEDNESDAY)
+            .nearestEndOf(Month.AUGUST)
+            .leapWeekInMonth(13)
+            .withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS)
+            .accountingYearEndsInIsoYear()
+            .toChronology();
+        new EqualsTester()
+            .addEqualityGroup(INSTANCE.date(2000, 1, 3), INSTANCE.date(2000, 1, 3))
+            .addEqualityGroup(INSTANCE.date(2000, 1, 4), INSTANCE.date(2000, 1, 4))
+            .addEqualityGroup(INSTANCE.date(2000, 2, 3), INSTANCE.date(2000, 2, 3))
+            .addEqualityGroup(INSTANCE.date(2001, 1, 3), INSTANCE.date(2001, 1, 3))
+            .addEqualityGroup(other.date(2000, 1, 3), other.date(2000, 1, 3))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

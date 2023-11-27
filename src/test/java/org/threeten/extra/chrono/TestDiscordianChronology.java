@@ -55,10 +55,8 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -80,6 +78,8 @@ import java.util.function.IntPredicate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import com.google.common.testing.EqualsTester;
 
 /**
  * Test.
@@ -957,26 +957,16 @@ public class TestDiscordianChronology {
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        DiscordianDate a1 = DiscordianDate.of(2000, 1, 3);
-        DiscordianDate a2 = DiscordianDate.of(2000, 1, 3);
-        DiscordianDate b = DiscordianDate.of(2000, 1, 4);
-        DiscordianDate c = DiscordianDate.of(2000, 2, 3);
-        DiscordianDate d = DiscordianDate.of(2001, 1, 3);
-
-        assertEquals(true, a1.equals(a1));
-        assertEquals(true, a1.equals(a2));
-        assertEquals(false, a1.equals(b));
-        assertEquals(false, a1.equals(c));
-        assertEquals(false, a1.equals(d));
-
-        assertFalse(a1.equals(null));
-        assertFalse(a1.equals((Object) ""));
-
-        assertTrue(a1.hashCode() == a2.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(DiscordianDate.of(2000, 1, 3), DiscordianDate.of(2000, 1, 3))
+            .addEqualityGroup(DiscordianDate.of(2000, 1, 4), DiscordianDate.of(2000, 1, 4))
+            .addEqualityGroup(DiscordianDate.of(2000, 2, 3), DiscordianDate.of(2000, 2, 3))
+            .addEqualityGroup(DiscordianDate.of(2001, 1, 3), DiscordianDate.of(2001, 1, 3))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------
