@@ -79,6 +79,7 @@ import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.threeten.extra.Half.H1;
@@ -643,13 +644,13 @@ public class TestYearHalf {
     }
 
     //-----------------------------------------------------------------------
-    // plusHalfs(int)
+    // plusHalves(int)
     //-----------------------------------------------------------------------
     @Test
-    public void test_plusHalfs() {
-        assertEquals(YearHalf.of(2010, H1), YearHalf.of(2007, H2).plusHalfs(5));
-        assertEquals(YearHalf.of(2007, H2), YearHalf.of(2007, H2).plusHalfs(0));
-        assertEquals(YearHalf.of(2005, H1), YearHalf.of(2007, H2).plusHalfs(-5));
+    public void test_plusHalves() {
+        assertEquals(YearHalf.of(2010, H1), YearHalf.of(2007, H2).plusHalves(5));
+        assertEquals(YearHalf.of(2007, H2), YearHalf.of(2007, H2).plusHalves(0));
+        assertEquals(YearHalf.of(2005, H1), YearHalf.of(2007, H2).plusHalves(-5));
     }
 
     //-----------------------------------------------------------------------
@@ -676,13 +677,13 @@ public class TestYearHalf {
     }
 
     //-----------------------------------------------------------------------
-    // minusHalfs(int)
+    // minusHalves(int)
     //-----------------------------------------------------------------------
     @Test
-    public void test_minusHalfs() {
-        assertEquals(YearHalf.of(2005, H1), YearHalf.of(2007, H2).minusHalfs(5));
-        assertEquals(YearHalf.of(2007, H2), YearHalf.of(2007, H2).minusHalfs(0));
-        assertEquals(YearHalf.of(2010, H1), YearHalf.of(2007, H2).minusHalfs(-5));
+    public void test_minusHalves() {
+        assertEquals(YearHalf.of(2005, H1), YearHalf.of(2007, H2).minusHalves(5));
+        assertEquals(YearHalf.of(2007, H2), YearHalf.of(2007, H2).minusHalves(0));
+        assertEquals(YearHalf.of(2010, H1), YearHalf.of(2007, H2).minusHalves(-5));
     }
 
     //-----------------------------------------------------------------------
@@ -953,8 +954,10 @@ public class TestYearHalf {
                     for (Half half2 : Half.values()) {
                         YearHalf b = YearHalf.of(year2, half2);
                         if (year1 == year2 && half1 == half2) {
-                            assertEquals(a, b);
+                            assertTrue(a.equals(b));
                             assertEquals(a.hashCode(), b.hashCode());
+                        } else {
+                            assertFalse(a.equals(b));
                         }
                     }
                 }
@@ -964,13 +967,13 @@ public class TestYearHalf {
 
     @Test
     public void test_equals_nullYearHalf() {
-        assertEquals(false, TEST.equals(null));
+        assertFalse(TEST.equals(null));
     }
 
     @Test
     public void test_equals_incorrectType() {
         Object obj = "Incorrect type";
-        assertEquals(false, TEST.equals(obj));
+        assertFalse(TEST.equals(obj));
     }
 
     //-----------------------------------------------------------------------
