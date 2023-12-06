@@ -111,6 +111,8 @@ import java.time.temporal.ValueRange;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.RetryingTest;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test DayOfMonth.
  */
@@ -731,29 +733,12 @@ public class TestDayOfMonth {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
+    public void test_equals_and_hashCode() {
+        EqualsTester equalsTester = new EqualsTester();
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth a = DayOfMonth.of(i);
-            for (int j = 1; j <= MAX_LENGTH; j++) {
-                DayOfMonth b = DayOfMonth.of(j);
-                assertEquals(i == j, a.equals(b));
-                assertEquals(i == j, a.hashCode() == b.hashCode());
-            }
+            equalsTester.addEqualityGroup(DayOfMonth.of(i), DayOfMonth.of(i));
         }
-    }
-
-    @Test
-    public void test_equals_nullDayOfMonth() {
-        DayOfMonth dom = null;
-        DayOfMonth test = DayOfMonth.of(1);
-        assertEquals(false, test.equals(dom));
-    }
-
-    @Test
-    public void test_equals_incorrectType() {
-        DayOfMonth test = DayOfMonth.of(1);
-        Object obj = "Incorrect type";
-        assertEquals(false, test.equals(obj));
+        equalsTester.testEquals();
     }
 
     //-----------------------------------------------------------------------

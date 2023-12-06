@@ -91,6 +91,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.RetryingTest;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test OffsetDate.
  */
@@ -403,11 +405,14 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     public static Object[][] data_sampleDates() {
         return new Object[][] {
+            {2008, 7, 5, OFFSET_PONE},
             {2008, 7, 5, OFFSET_PTWO},
             {2007, 7, 5, OFFSET_PONE},
-            {2006, 7, 5, OFFSET_PTWO},
-            {2005, 7, 5, OFFSET_PONE},
-            {2004, 1, 1, OFFSET_PTWO},
+            {2007, 7, 5, OFFSET_PTWO},
+            {2007, 6, 5, OFFSET_PONE},
+            {2007, 6, 5, OFFSET_PTWO},
+            {2007, 6, 4, OFFSET_PONE},
+            {2007, 6, 4, OFFSET_PTWO},
             {-1, 1, 2, OFFSET_PONE},
             {999999, 11, 20, ZoneOffset.ofHoursMinutesSeconds(6, 9, 12)},
         };
@@ -1814,55 +1819,17 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
-    @ParameterizedTest
-    @MethodSource("data_sampleDates")
-    public void test_equals_true(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.of(y, m, d, offset);
-        OffsetDate b = OffsetDate.of(y, m, d, offset);
-        assertTrue(a.equals(b));
-        assertTrue(a.hashCode() == b.hashCode());
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_sampleDates")
-    public void test_equals_false_year_differs(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.of(y, m, d, offset);
-        OffsetDate b = OffsetDate.of(y + 1, m, d, offset);
-        assertFalse(a.equals(b));
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_sampleDates")
-    public void test_equals_false_month_differs(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.of(y, m, d, offset);
-        OffsetDate b = OffsetDate.of(y, m + 1, d, offset);
-        assertFalse(a.equals(b));
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_sampleDates")
-    public void test_equals_false_day_differs(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.of(y, m, d, offset);
-        OffsetDate b = OffsetDate.of(y, m, d + 1, offset);
-        assertFalse(a.equals(b));
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_sampleDates")
-    public void test_equals_false_offset_differs(int y, int m, int d, ZoneOffset ignored) {
-        OffsetDate a = OffsetDate.of(y, m, d, OFFSET_PONE);
-        OffsetDate b = OffsetDate.of(y, m, d, OFFSET_PTWO);
-        assertFalse(a.equals(b));
-    }
-
     @Test
-    public void test_equals_itself_true() {
-        assertTrue(TEST_2007_07_15_PONE.equals(TEST_2007_07_15_PONE));
-    }
-
-    @Test
-    public void test_equals_string_false() {
-        assertFalse(TEST_2007_07_15_PONE.equals((Object) "2007-07-15"));
+    public void test_equals_and_hashCode() {
+        EqualsTester equalsTester = new EqualsTester();
+        for (Object[] sample : data_sampleDates()) {
+            int y = (int) sample[0];
+            int m = (int) sample[1];
+            int d = (int) sample[2];
+            ZoneOffset offset = (ZoneOffset) sample[3];
+            equalsTester.addEqualityGroup(OffsetDate.of(y, m, d, offset), OffsetDate.of(y, m, d, offset));
+        }
+        equalsTester.testEquals();
     }
 
     //-----------------------------------------------------------------------

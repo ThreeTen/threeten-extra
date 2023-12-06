@@ -81,6 +81,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test.
  */
@@ -1332,30 +1334,21 @@ public class TestInternationalFixedChronology {
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // equals() / hashCode()
     //-----------------------------------------------------------------------
-    public static Object[][] data_equals() {
-        return new Object[][] {
-            {InternationalFixedDate.of(2000, 1, 3),
-                InternationalFixedDate.of(2000, 1, 4), InternationalFixedDate.of(2000, 2, 3), InternationalFixedDate.of(2001, 1, 3)},
-            {InternationalFixedDate.of(2000, 13, 29),
-                InternationalFixedDate.of(2000, 13, 28), InternationalFixedDate.of(2001, 1, 1), InternationalFixedDate.of(2001, 13, 29)},
-            {InternationalFixedDate.of(2000, 6, 29),
-                InternationalFixedDate.of(2000, 6, 28), InternationalFixedDate.of(2000, 7, 1), InternationalFixedDate.of(2004, 6, 29)},
-        };
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_equals")
-    public void test_equals(InternationalFixedDate a1, InternationalFixedDate b, InternationalFixedDate c,
-                                    InternationalFixedDate d) {
-        assertTrue(a1.equals(a1));
-        assertFalse(a1.equals(b));
-        assertFalse(a1.equals(c));
-        assertFalse(a1.equals(d));
-
-        assertFalse(a1.equals(null));
-        assertFalse(a1.equals((Object) ""));
+    @Test
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(InternationalFixedDate.of(2000,  1,  3), InternationalFixedDate.of(2000,  1,  3))
+            .addEqualityGroup(InternationalFixedDate.of(2000,  1,  4), InternationalFixedDate.of(2000,  1,  4))
+            .addEqualityGroup(InternationalFixedDate.of(2000,  2,  3), InternationalFixedDate.of(2000,  2,  3))
+            .addEqualityGroup(InternationalFixedDate.of(2000,  6, 28), InternationalFixedDate.of(2000,  6, 28))
+            .addEqualityGroup(InternationalFixedDate.of(2000,  6, 29), InternationalFixedDate.of(2000,  6, 29))
+            .addEqualityGroup(InternationalFixedDate.of(2000, 13, 28), InternationalFixedDate.of(2000, 13, 28))
+            .addEqualityGroup(InternationalFixedDate.of(2001,  1,  1), InternationalFixedDate.of(2001,  1,  1))
+            .addEqualityGroup(InternationalFixedDate.of(2001, 13, 29), InternationalFixedDate.of(2001, 13, 29))
+            .addEqualityGroup(InternationalFixedDate.of(2004,  6, 29), InternationalFixedDate.of(2004,  6, 29))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

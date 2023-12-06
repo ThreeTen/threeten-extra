@@ -49,6 +49,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test TaiInstant.
  */
@@ -765,64 +767,15 @@ public class TestTaiInstant {
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        TaiInstant test5a = TaiInstant.ofTaiSeconds(5L, 20);
-        TaiInstant test5b = TaiInstant.ofTaiSeconds(5L, 20);
-        TaiInstant test5n = TaiInstant.ofTaiSeconds(5L, 30);
-        TaiInstant test6 = TaiInstant.ofTaiSeconds(6L, 20);
-
-        assertEquals(true, test5a.equals(test5a));
-        assertEquals(true, test5a.equals(test5b));
-        assertEquals(false, test5a.equals(test5n));
-        assertEquals(false, test5a.equals(test6));
-
-        assertEquals(true, test5b.equals(test5a));
-        assertEquals(true, test5b.equals(test5b));
-        assertEquals(false, test5b.equals(test5n));
-        assertEquals(false, test5b.equals(test6));
-
-        assertEquals(false, test5n.equals(test5a));
-        assertEquals(false, test5n.equals(test5b));
-        assertEquals(true, test5n.equals(test5n));
-        assertEquals(false, test5n.equals(test6));
-
-        assertEquals(false, test6.equals(test5a));
-        assertEquals(false, test6.equals(test5b));
-        assertEquals(false, test6.equals(test5n));
-        assertEquals(true, test6.equals(test6));
-    }
-
-    @Test
-    public void test_equals_null() {
-        TaiInstant test5 = TaiInstant.ofTaiSeconds(5L, 20);
-        assertEquals(false, test5.equals(null));
-    }
-
-    @Test
-    public void test_equals_otherClass() {
-        TaiInstant test5 = TaiInstant.ofTaiSeconds(5L, 20);
-        assertEquals(false, test5.equals((Object) ""));
-    }
-
-    //-----------------------------------------------------------------------
-    // hashCode()
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_hashCode() {
-        TaiInstant test5a = TaiInstant.ofTaiSeconds(5L, 20);
-        TaiInstant test5b = TaiInstant.ofTaiSeconds(5L, 20);
-        TaiInstant test5n = TaiInstant.ofTaiSeconds(5L, 30);
-        TaiInstant test6 = TaiInstant.ofTaiSeconds(6L, 20);
-
-        assertEquals(true, test5a.hashCode() == test5a.hashCode());
-        assertEquals(true, test5a.hashCode() == test5b.hashCode());
-        assertEquals(true, test5b.hashCode() == test5b.hashCode());
-
-        assertEquals(false, test5a.hashCode() == test5n.hashCode());
-        assertEquals(false, test5a.hashCode() == test6.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(TaiInstant.ofTaiSeconds(5L, 20), TaiInstant.ofTaiSeconds(5L, 20))
+            .addEqualityGroup(TaiInstant.ofTaiSeconds(5L, 30), TaiInstant.ofTaiSeconds(5L, 30))
+            .addEqualityGroup(TaiInstant.ofTaiSeconds(6L, 20), TaiInstant.ofTaiSeconds(6L, 20))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

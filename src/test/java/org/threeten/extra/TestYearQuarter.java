@@ -114,6 +114,8 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test YearQuarter.
  */
@@ -972,31 +974,16 @@ public class TestYearQuarter {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        for (int year1 = -100; year1 < 100; year1++) {
-            for (Quarter quarter1 : Quarter.values()) {
-                YearQuarter a = YearQuarter.of(year1, quarter1);
-                for (int year2 = -100; year2 < 100; year2++) {
-                    for (Quarter quarter2 : Quarter.values()) {
-                        YearQuarter b = YearQuarter.of(year2, quarter2);
-                        if (year1 == year2 && quarter1 == quarter2) {
-                            assertEquals(a, b);
-                            assertEquals(a.hashCode(), b.hashCode());
-                        }
-                    }
-                }
+    public void test_equals_and_hashCode() {
+        EqualsTester tester = new EqualsTester();
+        for (int year = -100; year <= 100; year++) {
+            for (Quarter quarter : Quarter.values()) {
+                YearQuarter instance1 = YearQuarter.of(year, quarter);
+                YearQuarter instance2 = YearQuarter.of(year, quarter);
+                tester.addEqualityGroup(instance1, instance2);
             }
         }
-    }
-
-    @Test
-    public void test_equals_nullYearQuarter() {
-        assertEquals(false, TEST.equals(null));
-    }
-
-    @Test
-    public void test_equals_incorrectType() {
-        assertEquals(false, TEST.equals((Object) "Incorrect type"));
+        tester.testEquals();
     }
 
     //-----------------------------------------------------------------------

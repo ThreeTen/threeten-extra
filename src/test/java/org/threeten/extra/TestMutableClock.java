@@ -63,6 +63,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test class.
  */
@@ -262,12 +264,11 @@ public class TestMutableClock {
         MutableClock withOtherZone = clock.withZone(ZoneOffset.MIN);
         MutableClock withSameZone = withOtherZone.withZone(ZoneOffset.UTC);
         MutableClock independent = MutableClock.epochUTC();
-        assertEquals(clock, clock);
-        assertNotEquals(null, clock);
-        assertNotEquals("", clock);
-        assertNotEquals(withOtherZone, clock);
-        assertEquals(clock, withSameZone);
-        assertNotEquals(clock, independent);
+        new EqualsTester()
+            .addEqualityGroup(clock, clock, withSameZone)
+            .addEqualityGroup(withOtherZone)
+            .addEqualityGroup(independent)
+            .testEquals();
     }
 
     @Test

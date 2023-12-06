@@ -57,6 +57,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.collect.Range;
+import com.google.common.testing.EqualsTester;
 
 /**
  * Test date range.
@@ -1190,18 +1191,12 @@ public class TestLocalDateRange {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        LocalDateRange a = LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_29);
-        LocalDateRange a2 = LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_29);
-        LocalDateRange b = LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_30);
-        LocalDateRange c = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_29);
-        assertEquals(true, a.equals(a));
-        assertEquals(true, a.equals(a2));
-        assertEquals(false, a.equals(b));
-        assertEquals(false, a.equals(c));
-        assertEquals(false, a.equals(null));
-        assertEquals(false, a.equals((Object) ""));
-        assertEquals(true, a.hashCode() == a2.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_29), LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_29))
+            .addEqualityGroup(LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_30), LocalDateRange.of(DATE_2012_07_27, DATE_2012_07_30))
+            .addEqualityGroup(LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_29), LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_29))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------
