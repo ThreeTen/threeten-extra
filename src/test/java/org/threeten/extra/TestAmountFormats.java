@@ -37,6 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
@@ -157,10 +159,36 @@ public class TestAmountFormats {
         };
     }
 
+    public static Object[][] period_duration_wordBasedWithFormats() {
+        return new Object[][] {
+            {Period.ofDays(1), Duration.ofMinutes(180 + 2), Arrays.asList(AmountFormats.WORDBASED_DAY, AmountFormats.WORDBASED_HOUR), Locale.ROOT, "1 day and 3 hours"},
+            {Period.ofDays(2), Duration.ofSeconds(180), Arrays.asList(AmountFormats.WORDBASED_DAY, AmountFormats.WORDBASED_MINUTE), Locale.ROOT, "2 days and 3 minutes"},
+            {Period.ofDays(7), Duration.ofMinutes(80), Arrays.asList(AmountFormats.WORDBASED_WEEK, AmountFormats.WORDBASED_MINUTE), Locale.ROOT, "1 week and 20 minutes"},
+            {Period.ZERO, Duration.ofMillis(1_000), Arrays.asList(AmountFormats.WORDBASED_SECOND), Locale.ROOT, "1 second"},
+
+            {Period.ofMonths(0), Duration.ofSeconds(0), Arrays.asList(AmountFormats.WORDBASED_MILLISECOND), Locale.ENGLISH, "0 milliseconds"},
+            {Period.ofMonths(0), Duration.ofHours(9), Arrays.asList(AmountFormats.WORDBASED_HOUR), Locale.ENGLISH, "9 hours"},
+            {Period.ofMonths(1), Duration.ZERO, Arrays.asList(AmountFormats.WORDBASED_MONTH), Locale.ENGLISH, "1 month"},
+            {Period.ofMonths(4), Duration.ZERO, Arrays.asList(AmountFormats.WORDBASED_MONTH), Locale.ENGLISH, "4 months"},
+            {Period.of(1, 2, 5), Duration.ofHours(4),Arrays.asList(AmountFormats.WORDBASED_YEAR, AmountFormats.WORDBASED_MONTH, AmountFormats.WORDBASED_DAY, AmountFormats.WORDBASED_HOUR), Locale.ENGLISH, "1 year, 2 months, 5 days and 4 hours"},
+            {Period.ofDays(5), Duration.ofDays(2).plusHours(6), Arrays.asList(AmountFormats.WORDBASED_DAY, AmountFormats.WORDBASED_HOUR), Locale.ENGLISH, "7 days and 6 hours"},
+            {Period.ofDays(5), Duration.ofDays(-2).plusHours(-6), Arrays.asList(AmountFormats.WORDBASED_DAY, AmountFormats.WORDBASED_HOUR), Locale.ENGLISH, "3 days and -6 hours"},
+
+            {Period.ofDays(1), Duration.ofHours(5).plusMinutes(6).plusSeconds(7).plusNanos(8_000_000L), Arrays.asList(AmountFormats.WORDBASED_DAY, AmountFormats.WORDBASED_HOUR, AmountFormats.WORDBASED_MINUTE, AmountFormats.WORDBASED_SECOND, AmountFormats.WORDBASED_MILLISECOND), PL,
+                "1 dzie\u0144, 5 godzin, 6 minut, 7 sekund i 8 milisekund"},
+        };
+    }
+
     @ParameterizedTest
     @MethodSource("period_duration_wordBased")
     public void test_wordBased(Period period, Duration duration, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(period, duration, locale));
+    }
+
+    @ParameterizedTest
+    @MethodSource("period_duration_wordBasedWithFormats")
+    public void test_wordBasedWithFormats(Period period, Duration duration, List<String> formats, Locale locale, String expected) {
+        assertEquals(expected, AmountFormats.wordBasedWithFormats(period, duration, formats, locale));
     }
 
     //-----------------------------------------------------------------------
