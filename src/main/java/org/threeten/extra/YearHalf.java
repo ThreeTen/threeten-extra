@@ -93,7 +93,7 @@ import org.joda.convert.ToString;
  * For most applications written today, the ISO-8601 rules are entirely suitable.
  * However, any application that makes use of historical dates, and requires them
  * to be accurate will find the ISO-8601 approach unsuitable.
- * Note that the ISO-8601 standard does not define or refer to halfs.
+ * Note that the ISO-8601 standard does not define or refer to halves.
  *
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
@@ -795,7 +795,7 @@ public final class YearHalf
      * <ul>
      * <li>{@code HALF_YEARS} -
      *  Returns a {@code YearHalf} with the specified number of halves added.
-     *  This is equivalent to {@link #plusHalfs(long)}.
+     *  This is equivalent to {@link #plusHalves(long)}.
      * <li>{@code YEARS} -
      *  Returns a {@code YearHalf} with the specified number of years added.
      *  This is equivalent to {@link #plusYears(long)}.
@@ -837,7 +837,7 @@ public final class YearHalf
     @Override
     public YearHalf plus(long amountToAdd, TemporalUnit unit) {
         if (unit == HALF_YEARS) {
-            return plusHalfs(amountToAdd);
+            return plusHalves(amountToAdd);
         } else if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
                 case YEARS:
@@ -883,14 +883,14 @@ public final class YearHalf
      * @return a {@code YearHalf} based on this year-half with the halves added, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearHalf plusHalfs(long halvesToAdd) {
+    public YearHalf plusHalves(long halvesToAdd) {
         if (halvesToAdd == 0) {
             return this;
         }
         long halfCount = year * 2L + (half.getValue() - 1);
-        long calcHalfs = halfCount + halvesToAdd;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcHalfs, 2));
-        int newHalf = (int) Math.floorMod(calcHalfs, 2L) + 1;
+        long calcHalves = halfCount + halvesToAdd;  // safe overflow
+        int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcHalves, 2));
+        int newHalf = (int) Math.floorMod(calcHalves, 2L) + 1;
         return with(newYear, Half.of(newHalf));
     }
 
@@ -966,8 +966,8 @@ public final class YearHalf
      * @return a {@code YearHalf} based on this year-half with the halves subtracted, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public YearHalf minusHalfs(long halvesToSubtract) {
-        return (halvesToSubtract == Long.MIN_VALUE ? plusHalfs(Long.MAX_VALUE).plusHalfs(1) : plusHalfs(-halvesToSubtract));
+    public YearHalf minusHalves(long halvesToSubtract) {
+        return (halvesToSubtract == Long.MIN_VALUE ? plusHalves(Long.MAX_VALUE).plusHalves(1) : plusHalves(-halvesToSubtract));
     }
 
     //-----------------------------------------------------------------------
@@ -1123,7 +1123,7 @@ public final class YearHalf
             throw new IllegalArgumentException(endExclusive + " < " + this);
         }
         long intervalLength = until(endExclusive, HALF_YEARS);
-        return LongStream.range(0, intervalLength).mapToObj(n -> plusHalfs(n));
+        return LongStream.range(0, intervalLength).mapToObj(n -> plusHalves(n));
     }
 
     /**
