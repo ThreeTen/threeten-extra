@@ -21,7 +21,9 @@ The following features are included:
 * [`Quarter`](apidocs/org.threeten.extra/org/threeten/extra/Quarter.html) - the four quarters, Q1, Q2, Q3 and Q4
 * [`YearQuarter`](apidocs/org.threeten.extra/org/threeten/extra/YearQuarter.html) - combines year and quarter, 2014-Q4
 * [`YearWeek`](apidocs/org.threeten.extra/org/threeten/extra/YearWeek.html) - a week in a week-based-year, 2014-W06
+* [`YearHalf`](apidocs/org.threeten.extra/org/threeten/extra/YearHalf.html) - a half-year, 2014-H1
 * [`OffsetDate`](apidocs/org.threeten.extra/org/threeten/extra/OffsetDate.html) - combines `LocalDate` and `ZoneOffset`
+* [`HourMinute`](apidocs/org.threeten.extra/org/threeten/extra/HourMinute.html) - time to minute precision, 10:24
 * [`Seconds`](apidocs/org.threeten.extra/org/threeten/extra/Seconds.html),
 [`Minutes`](apidocs/org.threeten.extra/org/threeten/extra/Minutes.html),
 [`Hours`](apidocs/org.threeten.extra/org/threeten/extra/Hours.html),
