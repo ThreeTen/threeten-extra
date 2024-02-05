@@ -226,6 +226,70 @@ public abstract class UtcRules {
      */
     public abstract UtcInstant convertToUtc(TaiInstant taiInstant);
 
+    /**
+     * Converts a {@code MispInstant} to a {@code UtcInstant}.
+     * <p>
+     * This method converts from the MISP time scale to the UTC time scale using the
+     * leap-second rules of the implementation.
+     *
+     * @param mispInstant  the MISP instant to convert, not null
+     * @return the converted UTC instant, not null
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public abstract UtcInstant convertToUtc(MispInstant mispInstant);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts a {@code UtcInstant} to a {@code MispInstant}.
+     * <p>
+     * This method converts from the UTC to the MISP time-scale using the
+     * leap-second rules of the implementation.
+     *
+     * @param utcInstant  the UTC instant to convert, not null
+     * @return the converted MISP instant, not null
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public MispInstant convertToMisp(UtcInstant utcInstant) {
+        TaiInstant tai = convertToTai(utcInstant);
+        return MispInstant.of(tai);
+    }
+
+    /**
+     * Converts a {@code MispInstant} to an {@code Instant}.
+     * <p>
+     * This method converts from the MISP time-scale to one with 86400 subdivisions
+     * per day using the leap-second rules of the implementation.
+     * <p>
+     * The standard implementation uses UTC-SLS. It uses
+     * {@link #convertToUtc(MispInstant)} and {@link #convertToInstant(UtcInstant)}.
+     *
+     * @param mispInstant  the MISP instant to convert, not null
+     * @return the converted instant, not null
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public Instant convertToInstant(MispInstant mispInstant) {
+        return convertToInstant(convertToUtc(mispInstant));
+    }
+
+    /**
+     * Converts an {@code Instant} to a {@code MispInstant}.
+     * <p>
+     * This method converts from UTC-SLS to the MISP time-scale using the
+     * leap-second rules of the implementation.
+     *
+     * @param instant  the Instant to convert, not null
+     * @return the converted MISP instant, not null
+     * @throws DateTimeException if the valid range is exceeded
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    public MispInstant convertToMisp(Instant instant) {
+        TaiInstant tai = convertToTai(instant);
+        return MispInstant.of(tai);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts a {@code UtcInstant} to an {@code Instant}.
