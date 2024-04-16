@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.8.0" date="SNAPSHOT" description="v1.8.0">
+    <release version="1.8.0" date="2024-04-16" description="v1.8.0">
       <action dev="jodastephen" type="add">
         Add HourMinute. New class representing time but constrained to hours and minutes only.
       </action>
