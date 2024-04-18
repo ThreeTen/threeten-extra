@@ -76,6 +76,22 @@ final class SystemUtcRules extends UtcRules implements Serializable {
     static final SystemUtcRules INSTANCE = new SystemUtcRules();
 
     /**
+     * Seconds part of the difference between TAI and MISP.
+     *
+     * <p>This is the number of seconds between 1958-01-01T00:00:00(TAI) and
+     * 1970-01-01T00:00.00(UTC).
+     */
+    private static final long TAI_OFFSET_SEC = 378691208;
+
+    /**
+     * Nanoseconds part of the difference between TAI and MISP.
+     *
+     * <p>This is the fractional part of the number of seconds between
+     * 1958-01-01T00:00:00(TAI) and 1970-01-01T00:00.00(UTC).
+     */
+    private static final long TAI_OFFSET_NANOS  = 82000;
+
+    /**
      * The table of leap second dates.
      */
     private AtomicReference<Data> dataRef = new AtomicReference<Data>(loadLeapSeconds());
@@ -204,6 +220,14 @@ final class SystemUtcRules extends UtcRules implements Serializable {
             nod = SECS_PER_DAY * NANOS_PER_SECOND + (nod / NANOS_PER_SECOND) * NANOS_PER_SECOND + nod % NANOS_PER_SECOND;
         }
         return UtcInstant.ofModifiedJulianDay(mjd, nod);
+    }
+
+    @Override
+    public UtcInstant convertToUtc(MispInstant mispInstant) {
+        long secs = mispInstant.getMispSeconds() + TAI_OFFSET_SEC;
+        long nos = mispInstant.getNano() + TAI_OFFSET_NANOS;
+        TaiInstant tai = TaiInstant.ofTaiSeconds(secs, nos);
+        return convertToUtc(tai);
     }
 
     //-----------------------------------------------------------------------
