@@ -965,7 +965,7 @@
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <!-- Other plugins -->
     <github-api.version>1.321</github-api.version>
-    <github-release-plugin.version>1.4.0</github-release-plugin.version>
+    <github-release-plugin.version>1.6.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <reflow-velocity-tools.version>1.2</reflow-velocity-tools.version>
