@@ -51,8 +51,10 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.testing.EqualsTester;
@@ -262,8 +264,8 @@ public class TestInterval {
     }
 
     /* Lower and upper bound for Intervals */
-    private static final Instant MIN_OFFSET_DATE_TIME = OffsetDateTime.MIN.plusDays(1L).toInstant();
-    private static final Instant MAX_OFFSET_DATE_TIME = OffsetDateTime.MAX.minusDays(1L).toInstant();
+    private static final Instant MIN_OFFSET_DATE_TIME = OffsetDateTime.MIN.toInstant();
+    private static final Instant MAX_OFFSET_DATE_TIME = OffsetDateTime.MAX.toInstant();
 
     //-----------------------------------------------------------------------
     public static Object[][] data_parseValid() {
@@ -297,6 +299,39 @@ public class TestInterval {
         Interval test = Interval.parse(input);
         assertEquals(start, test.getStart());
         assertEquals(end, test.getEnd());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "-1000000000-01-31T00:00:00Z/P1M, -1000000000-01-31T00:00:00Z, -1000000000-02-29T00:00:00Z",
+        "-1000000000-01-31T00:00:00Z/P2M, -1000000000-01-31T00:00:00Z, -1000000000-03-31T00:00:00Z",
+        "P5M/+1000000000-12-31T23:59:59.999999999Z, +1000000000-07-31T23:59:59.999999999Z, +1000000000-12-31T23:59:59.999999999Z",
+        "P10M/+1000000000-12-31T23:59:59.999999999Z, +1000000000-02-29T23:59:59.999999999Z, +1000000000-12-31T23:59:59.999999999Z",
+    })
+    public void data_parse_outside_bounds(String interval, String start, String end) {
+        assertEquals(Interval.of(Instant.parse(start), Instant.parse(end)), Interval.parse(interval));
+    }
+
+    @Disabled("not implemented")
+    @ParameterizedTest
+    @CsvSource({
+        "P1Y/-999999999-01-01T00:00:00+00:00, -1000000000-01-01T00:00:00Z, -999999999-01-01T00:00:00Z",
+        "-999999999-01-01T00:00:00+00:00/P-1Y, -1000000000-01-01T00:00:00Z, -999999999-01-01T00:00:00Z",
+        "+999999999-01-01T00:00:00+00:00/P1Y, +999999999-01-01T00:00:00Z, +1000000000-01-01T00:00:00Z",
+        "P-1Y/+999999999-01-01T00:00:00+00:00, +999999999-01-01T00:00:00Z, +1000000000-01-01T00:00:00Z",
+    })
+    public void data_parse_crossing_bounds(String interval, String start, String end) {
+        assertEquals(Interval.of(Instant.parse(start), Instant.parse(end)), Interval.parse(interval));
+    }
+
+    @Disabled("not implemented")
+    @ParameterizedTest
+    @CsvSource({
+        "-1000000000-01-01T00:00:00Z/P2000000000Y11M30DT23H59M59.999999999S, -1000000000-01-01T00:00:00Z, +1000000000-12-31T23:59:59.999999999Z",
+        "P2000000000Y11M30DT23H59M59.999999999S/+1000000000-12-31T23:59:59.999999999Z, -1000000000-01-01T00:00:00Z, +1000000000-12-31T23:59:59.999999999Z",
+    })
+    public void data_parse_crossing_bounds_twice(String interval, String start, String end) {
+        assertEquals(Interval.of(Instant.parse(start), Instant.parse(end)), Interval.parse(interval));
     }
 
     @Test

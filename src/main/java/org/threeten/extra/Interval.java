@@ -40,7 +40,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAccessor;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.Objects;
 
 import org.joda.convert.FromString;
@@ -77,6 +78,11 @@ public final class Interval
      * Serialization version.
      */
     private static final long serialVersionUID = 8375285238652L;
+
+    /**
+     * Leap year cycle length.
+     */
+    private static final Duration leapYearCycleLength = Duration.ofHours(3506328L);
 
     /**
      * The start instant (inclusive).
@@ -202,80 +208,94 @@ public final class Interval
         Objects.requireNonNull(text, "text");
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '/') {
-                return parseSplit(text.subSequence(0, i), text.subSequence(i + 1, text.length()));
+                CharSequence startStr = text.subSequence(0, i);
+                CharSequence endStr = text.subSequence(i + 1, text.length());
+                if (startStr.charAt(0) == 'P' || startStr.charAt(0) == 'p') {
+                    // duration followed by temporal
+                    TemporalAmount duration = parseDuration(startStr);
+                    Temporal temporal = parseTemporal(endStr);
+                    return Interval.of(Instant.from(minus(temporal, duration)), Instant.from(temporal));
+                } else if (endStr.charAt(0) == 'P' || endStr.charAt(0) == 'p') {
+                    // temporal followed by duration
+                    Temporal temporal = parseTemporal(startStr);
+                    TemporalAmount duration = parseDuration(endStr);
+                    return Interval.of(Instant.from(temporal), Instant.from(plus(temporal, duration)));
+                } else {
+                    // temporal followed by temporal
+                    Temporal start = parseTemporal(startStr);
+                    Temporal end = parseTemporal(endStr);
+                    if (start instanceof LocalDateTime) {
+                        // can *not* use zone offset from end instant (see ISO 8601-1:2019)
+                        throw new DateTimeParseException("Interval cannot be parsed, start instant must contain zone offset", text, 0);
+                    }
+                    if (end instanceof LocalDateTime) {
+                        // can use zone offset from start instant (see ISO 8601-1:2019)
+                        return Interval.of(Instant.from(start), ((LocalDateTime) end).atOffset(ZoneOffset.from(start)).toInstant());
+                    }
+                    return Interval.of(Instant.from(start), Instant.from(end));
+                }
             }
         }
         throw new DateTimeParseException("Interval cannot be parsed, no forward slash found", text, 0);
     }
 
-    private static Interval parseSplit(CharSequence startStr, CharSequence endStr) {
-        char firstChar = startStr.charAt(0);
-        if (firstChar == 'P' || firstChar == 'p') {
-            // duration followed by instant
-            PeriodDuration amount = PeriodDuration.parse(startStr);
-            try {
-                OffsetDateTime end = OffsetDateTime.parse(endStr);
-                return Interval.of(end.minus(amount).toInstant(), end.toInstant());
-            } catch (DateTimeParseException ex) {
-                // handle case where Instant is outside the bounds of OffsetDateTime
-                Instant end = Instant.parse(endStr);
-                // addition of PeriodDuration only supported by OffsetDateTime,
-                // but to make that work need to move point being subtracted from closer to EPOCH
-                long move = end.isBefore(Instant.EPOCH) ? 1000 * 86400 : -1000 * 86400;
-                Instant start = end.plusSeconds(move).atOffset(ZoneOffset.UTC).minus(amount).toInstant().minusSeconds(move);
-                return Interval.of(start, end);
-            }
-        }
-        // instant followed by instant or duration
-        OffsetDateTime start;
+    /**
+     * Obtains an instance of {@code Temporal} from a text string.
+     *
+     * @param text the text to parse, validated not null
+     * @return the parsed temporal, not null
+     */
+    private static Temporal parseTemporal(CharSequence text) {
         try {
-            start = OffsetDateTime.parse(startStr);
-        } catch (DateTimeParseException ex) {
-            return parseStartExtended(startStr, endStr);
+            // temporal within date-time bounds
+            return (Temporal) DateTimeFormatter.ISO_DATE_TIME.parseBest(text, OffsetDateTime::from, LocalDateTime::from);
+        } catch (DateTimeParseException exception) {
+            // temporal outside date-time bounds
+            return Instant.parse(text);
         }
-        if (endStr.length() > 0) {
-            char c = endStr.charAt(0);
-            if (c == 'P' || c == 'p') {
-                PeriodDuration amount = PeriodDuration.parse(endStr);
-                return Interval.of(start.toInstant(), start.plus(amount).toInstant());
-            }
-        }
-        return parseEndDateTime(start.toInstant(), start.getOffset(), endStr);
     }
 
-    // handle case where Instant is outside the bounds of OffsetDateTime
-    private static Interval parseStartExtended(CharSequence startStr, CharSequence endStr) {
-        Instant start = Instant.parse(startStr);
-        if (endStr.length() > 0) {
-            char c = endStr.charAt(0);
-            if (c == 'P' || c == 'p') {
-                PeriodDuration amount = PeriodDuration.parse(endStr);
-                // addition of PeriodDuration only supported by OffsetDateTime,
-                // but to make that work need to move point being added to closer to EPOCH
-                long move = start.isBefore(Instant.EPOCH) ? 1000 * 86400 : -1000 * 86400;
-                Instant end = start.plusSeconds(move).atOffset(ZoneOffset.UTC).plus(amount).toInstant().minusSeconds(move);
-                return Interval.of(start, end);
-            }
-        }
-        // infer offset from start if not specified by end
-        return parseEndDateTime(start, ZoneOffset.UTC, endStr);
+    /**
+     * Obtains an instance of {@code TemporalAmount} from a text string.
+     *
+     * @param text the text to parse, validated not null
+     * @return the parsed temporal amount, not null
+     */
+    private static TemporalAmount parseDuration(CharSequence text) {
+        return PeriodDuration.parse(text);
     }
 
-    // parse when there are two date-times
-    private static Interval parseEndDateTime(Instant start, ZoneOffset offset, CharSequence endStr) {
-        try {
-            TemporalAccessor temporal = DateTimeFormatter.ISO_DATE_TIME.parseBest(endStr, OffsetDateTime::from, LocalDateTime::from);
-            if (temporal instanceof OffsetDateTime) {
-                OffsetDateTime odt = (OffsetDateTime) temporal;
-                return Interval.of(start, odt.toInstant());
-            } else {
-                // infer offset from start if not specified by end
-                LocalDateTime ldt = (LocalDateTime) temporal;
-                return Interval.of(start, ldt.toInstant(offset));
-            }
-        } catch (DateTimeParseException ex) {
-            Instant end = Instant.parse(endStr);
-            return Interval.of(start, end);
+    /**
+     * Returns a copy of given temporal with the specified amount added.
+     *
+     * @param temporal  the temporal, validated not null
+     * @param amount  the amount to add, validated not null
+     * @return a {@code Temporal} based on given temporal with the addition made, not null
+     */
+    private static Temporal plus(Temporal temporal, TemporalAmount amount) {
+        if (temporal instanceof Instant) {
+            Instant instant = (Instant) temporal;
+            TemporalAmount shift = instant.isBefore(Instant.EPOCH) ? leapYearCycleLength : leapYearCycleLength.negated();
+            return instant.plus(shift).atOffset(ZoneOffset.UTC).plus(amount).toInstant().minus(shift);
+        } else {
+            return temporal.plus(amount);
+        }
+    }
+
+    /**
+     * Returns a copy of given temporal with the specified amount subtracted.
+     *
+     * @param temporal  the temporal, validated not null
+     * @param amount  the amount to subtract, validated not null
+     * @return a {@code Temporal} based on given temporal with the subtraction made, not null
+     */
+    private static Temporal minus(Temporal temporal, TemporalAmount amount) {
+        if (temporal instanceof Instant) {
+            Instant instant = (Instant) temporal;
+            TemporalAmount shift = instant.isBefore(Instant.EPOCH) ? leapYearCycleLength : leapYearCycleLength.negated();
+            return instant.plus(shift).atOffset(ZoneOffset.UTC).minus(amount).toInstant().minus(shift);
+        } else {
+            return temporal.minus(amount);
         }
     }
 
