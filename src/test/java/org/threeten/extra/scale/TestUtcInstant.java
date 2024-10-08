@@ -49,6 +49,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test UtcInstant.
  */
@@ -517,64 +519,15 @@ public class TestUtcInstant {
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        UtcInstant test5a = UtcInstant.ofModifiedJulianDay(5L, 20);
-        UtcInstant test5b = UtcInstant.ofModifiedJulianDay(5L, 20);
-        UtcInstant test5n = UtcInstant.ofModifiedJulianDay(5L, 30);
-        UtcInstant test6 = UtcInstant.ofModifiedJulianDay(6L, 20);
-
-        assertEquals(true, test5a.equals(test5a));
-        assertEquals(true, test5a.equals(test5b));
-        assertEquals(false, test5a.equals(test5n));
-        assertEquals(false, test5a.equals(test6));
-
-        assertEquals(true, test5b.equals(test5a));
-        assertEquals(true, test5b.equals(test5b));
-        assertEquals(false, test5b.equals(test5n));
-        assertEquals(false, test5b.equals(test6));
-
-        assertEquals(false, test5n.equals(test5a));
-        assertEquals(false, test5n.equals(test5b));
-        assertEquals(true, test5n.equals(test5n));
-        assertEquals(false, test5n.equals(test6));
-
-        assertEquals(false, test6.equals(test5a));
-        assertEquals(false, test6.equals(test5b));
-        assertEquals(false, test6.equals(test5n));
-        assertEquals(true, test6.equals(test6));
-    }
-
-    @Test
-    public void test_equals_null() {
-        UtcInstant test5 = UtcInstant.ofModifiedJulianDay(5L, 20);
-        assertEquals(false, test5.equals(null));
-    }
-
-    @Test
-    public void test_equals_otherClass() {
-        UtcInstant test5 = UtcInstant.ofModifiedJulianDay(5L, 20);
-        assertEquals(false, test5.equals((Object) ""));
-    }
-
-    //-----------------------------------------------------------------------
-    // hashCode()
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_hashCode() {
-        UtcInstant test5a = UtcInstant.ofModifiedJulianDay(5L, 20);
-        UtcInstant test5b = UtcInstant.ofModifiedJulianDay(5L, 20);
-        UtcInstant test5n = UtcInstant.ofModifiedJulianDay(5L, 30);
-        UtcInstant test6 = UtcInstant.ofModifiedJulianDay(6L, 20);
-
-        assertEquals(true, test5a.hashCode() == test5a.hashCode());
-        assertEquals(true, test5a.hashCode() == test5b.hashCode());
-        assertEquals(true, test5b.hashCode() == test5b.hashCode());
-
-        assertEquals(false, test5a.hashCode() == test5n.hashCode());
-        assertEquals(false, test5a.hashCode() == test6.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(UtcInstant.ofModifiedJulianDay(5L, 20), UtcInstant.ofModifiedJulianDay(5L, 20))
+            .addEqualityGroup(UtcInstant.ofModifiedJulianDay(5L, 30), UtcInstant.ofModifiedJulianDay(5L, 30))
+            .addEqualityGroup(UtcInstant.ofModifiedJulianDay(6L, 20), UtcInstant.ofModifiedJulianDay(6L, 20))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

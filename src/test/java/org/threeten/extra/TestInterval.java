@@ -55,6 +55,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test class.
  */
@@ -129,7 +131,7 @@ public class TestInterval {
 
     @Test
     public void test_of_Instant_Instant_nullStart() {
-        assertThrows(NullPointerException.class, () -> Interval.of(null, NOW2));
+        assertThrows(NullPointerException.class, () -> Interval.of((Instant) null, NOW2));
     }
 
     @Test
@@ -165,6 +167,36 @@ public class TestInterval {
     @Test
     public void test_of_Instant_Duration_nullDuration() {
         assertThrows(NullPointerException.class, () -> Interval.of(NOW1, (Duration) null));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_of_Duration_Instant() {
+        Interval test = Interval.of(Duration.ofSeconds(60), NOW2);
+        assertEquals(NOW1, test.getStart());
+        assertEquals(NOW2, test.getEnd());
+    }
+
+    @Test
+    public void test_of_Duration_Instant_zero() {
+        Interval test = Interval.of(Duration.ZERO, NOW1);
+        assertEquals(NOW1, test.getStart());
+        assertEquals(NOW1, test.getEnd());
+    }
+
+    @Test
+    public void test_of_Duration_Instant_negative() {
+        assertThrows(DateTimeException.class, () -> Interval.of(Duration.ofSeconds(-1), NOW2));
+    }
+
+    @Test
+    public void test_of_Duration_Instant_nullInstant() {
+        assertThrows(NullPointerException.class, () -> Interval.of(Duration.ZERO, null));
+    }
+
+    @Test
+    public void test_of_Duration_Instant_nullDuration() {
+        assertThrows(NullPointerException.class, () -> Interval.of((Duration) null, NOW1));
     }
 
     //-----------------------------------------------------------------------
@@ -886,18 +918,12 @@ public class TestInterval {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        Interval a = Interval.of(NOW1, NOW2);
-        Interval a2 = Interval.of(NOW1, NOW2);
-        Interval b = Interval.of(NOW1, NOW3);
-        Interval c = Interval.of(NOW2, NOW2);
-        assertEquals(true, a.equals(a));
-        assertEquals(true, a.equals(a2));
-        assertEquals(false, a.equals(b));
-        assertEquals(false, a.equals(c));
-        assertEquals(false, a.equals(null));
-        assertEquals(false, a.equals((Object) ""));
-        assertEquals(true, a.hashCode() == a2.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(Interval.of(NOW1, NOW2), Interval.of(NOW1, NOW2))
+            .addEqualityGroup(Interval.of(NOW1, NOW3), Interval.of(NOW1, NOW3))
+            .addEqualityGroup(Interval.of(NOW2, NOW2), Interval.of(NOW2, NOW2))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

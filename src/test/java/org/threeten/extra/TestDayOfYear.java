@@ -96,6 +96,8 @@ import java.time.temporal.ValueRange;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.RetryingTest;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test DayOfYear.
  */
@@ -581,29 +583,12 @@ public class TestDayOfYear {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
+    public void test_equals_and_hashCode() {
+        EqualsTester equalsTester = new EqualsTester();
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear a = DayOfYear.of(i);
-            for (int j = 1; j <= LEAP_YEAR_LENGTH; j++) {
-                DayOfYear b = DayOfYear.of(j);
-                assertEquals(i == j, a.equals(b));
-                assertEquals(i == j, a.hashCode() == b.hashCode());
-            }
+            equalsTester.addEqualityGroup(DayOfYear.of(i), DayOfYear.of(i));
         }
-    }
-
-    @Test
-    public void test_equals_nullDayOfYear() {
-        DayOfYear doy = null;
-        DayOfYear test = DayOfYear.of(1);
-        assertEquals(false, test.equals(doy));
-    }
-
-    @Test
-    public void test_equals_incorrectType() {
-        DayOfYear test = DayOfYear.of(1);
-        Object obj = "Incorrect type";
-        assertEquals(false, test.equals(obj));
+        equalsTester.testEquals();
     }
 
     //-----------------------------------------------------------------------

@@ -85,6 +85,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test.
  */
@@ -961,26 +963,24 @@ public class TestSymmetry010Chronology {
     }
 
     //-----------------------------------------------------------------------
-    // Symmetry010Date.equals
+    // equals() / hashCode()
     //-----------------------------------------------------------------------
-    public static Object[][] data_equals() {
-        return new Object[][] {
-            {Symmetry010Date.of(2000, 1, 3), Symmetry010Date.of(2000, 1, 4), Symmetry010Date.of(2000, 2, 3), Symmetry010Date.of(2001, 1, 3)},
-            {Symmetry010Date.of(2000, 12, 28), Symmetry010Date.of(2000, 12, 25), Symmetry010Date.of(2001, 1, 1), Symmetry010Date.of(2001, 12, 28)},
-            {Symmetry010Date.of(2000, 6, 28), Symmetry010Date.of(2000, 6, 23), Symmetry010Date.of(2000, 7, 1), Symmetry010Date.of(2004, 6, 28)},
-        };
-    }
-
-    @ParameterizedTest
-    @MethodSource("data_equals")
-    public void test_equals(Symmetry010Date a1, Symmetry010Date b, Symmetry010Date c, Symmetry010Date d) {
-        assertTrue(a1.equals(a1));
-        assertFalse(a1.equals(b));
-        assertFalse(a1.equals(c));
-        assertFalse(a1.equals(d));
-
-        assertFalse(a1.equals(null));
-        assertFalse(a1.equals((Object) ""));
+    @Test
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(Symmetry010Date.of(2000,  1,  3), Symmetry010Date.of(2000,  1,  3))
+            .addEqualityGroup(Symmetry010Date.of(2000,  1,  4), Symmetry010Date.of(2000,  1,  4))
+            .addEqualityGroup(Symmetry010Date.of(2000,  2,  3), Symmetry010Date.of(2000,  2,  3))
+            .addEqualityGroup(Symmetry010Date.of(2000,  6, 23), Symmetry010Date.of(2000,  6, 23))
+            .addEqualityGroup(Symmetry010Date.of(2000,  6, 28), Symmetry010Date.of(2000,  6, 28))
+            .addEqualityGroup(Symmetry010Date.of(2000,  7,  1), Symmetry010Date.of(2000,  7,  1))
+            .addEqualityGroup(Symmetry010Date.of(2000, 12, 25), Symmetry010Date.of(2000, 12, 25))
+            .addEqualityGroup(Symmetry010Date.of(2000, 12, 28), Symmetry010Date.of(2000, 12, 28))
+            .addEqualityGroup(Symmetry010Date.of(2001,  1,  1), Symmetry010Date.of(2001,  1,  1))
+            .addEqualityGroup(Symmetry010Date.of(2001,  1,  3), Symmetry010Date.of(2001,  1,  3))
+            .addEqualityGroup(Symmetry010Date.of(2001, 12, 28), Symmetry010Date.of(2001, 12, 28))
+            .addEqualityGroup(Symmetry010Date.of(2004,  6, 28), Symmetry010Date.of(2004,  6, 28))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

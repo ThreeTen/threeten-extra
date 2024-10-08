@@ -56,6 +56,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test class.
  */
@@ -480,34 +482,11 @@ public class TestYears {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        Years test5 = Years.of(5);
-        Years test6 = Years.of(6);
-        assertEquals(true, test5.equals(test5));
-        assertEquals(false, test5.equals(test6));
-        assertEquals(false, test6.equals(test5));
-    }
-
-    @Test
-    public void test_equals_null() {
-        Years test5 = Years.of(5);
-        assertEquals(false, test5.equals(null));
-    }
-
-    @Test
-    public void test_equals_otherClass() {
-        Years test5 = Years.of(5);
-        Object obj = "";
-        assertEquals(false, test5.equals(obj));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_hashCode() {
-        Years test5 = Years.of(5);
-        Years test6 = Years.of(6);
-        assertEquals(true, test5.hashCode() == test5.hashCode());
-        assertEquals(false, test5.hashCode() == test6.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(Years.of(0), Years.of(0))
+            .addEqualityGroup(Years.of(1), Years.of(1))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

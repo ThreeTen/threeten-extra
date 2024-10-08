@@ -10,7 +10,7 @@
   <artifactId>threeten-extra</artifactId>
   <packaging>jar</packaging>
   <name>ThreeTen-Extra</name>
-  <version>1.7.3-SNAPSHOT</version>
+  <version>1.8.1-SNAPSHOT</version>
   <description>Additional functionality that enhances JSR-310 dates and times in Java SE 8 and later</description>
   <url>https://www.threeten.org/threeten-extra</url>
 
@@ -143,6 +143,10 @@
       <url>https://github.com/TristonianJones</url>
     </contributor>
     <contributor>
+      <name>Roberto Tyley</name>
+      <url>https://github.com/rtyley</url>
+    </contributor>
+    <contributor>
       <name>Dimo Velev</name>
       <url>https://github.com/dimovelev</url>
     </contributor>
@@ -193,7 +197,7 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
-      <!-- Enforce Maven 3.5.0 -->
+      <!-- Enforce Maven 3.6.0 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -206,7 +210,7 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.5.0</version>
+                  <version>3.6.0</version>
                 </requireMavenVersion>
               </rules>
             </configuration>
@@ -533,6 +537,12 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-testlib</artifactId>
+      <version>${guava.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
@@ -541,6 +551,12 @@
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
       <version>${pioneer.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -903,9 +919,9 @@
             <configuration>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
               <serverId>sonatype-joda-staging</serverId>
-              <description>Releasing ${project.groupId}:${project.artifactId}:${project.version}</description>
               <autoReleaseAfterClose>true</autoReleaseAfterClose>
               <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+              <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
             </configuration>
           </plugin>
         </plugins>
@@ -916,43 +932,44 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Dependencies -->
-    <joda-convert.version>2.2.2</joda-convert.version>
-    <junit.version>5.9.1</junit.version>
+    <assertj.version>3.24.2</assertj.version>
+    <joda-convert.version>2.2.3</joda-convert.version>
+    <junit.version>5.10.1</junit.version>
     <pioneer.version>1.9.1</pioneer.version>
-    <guava.version>31.1-jre</guava.version>
+    <guava.version>32.1.3-jre</guava.version>
     <!-- Plugin version numbers -->
-    <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
+    <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-    <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
-    <maven-dependency-plugin.version>3.4.0</maven-dependency-plugin.version>
-    <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
-    <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+    <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+    <maven-dependency-plugin.version>3.6.1</maven-dependency-plugin.version>
+    <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
+    <maven-gpg-plugin.version>3.2.3</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+    <maven-jar-plugin.version>3.4.0</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.3.0</maven-jxr-plugin.version>
-    <maven-plugin-plugin.version>3.7.0</maven-plugin-plugin.version>
-    <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
-    <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
-    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-plugin-plugin.version>3.12.0</maven-plugin-plugin.version>
+    <maven-pmd-plugin.version>3.21.2</maven-pmd-plugin.version>
+    <maven-project-info-reports-plugin.version>3.5.0</maven-project-info-reports-plugin.version>
+    <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
-    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
+    <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.2.5</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <!-- Other plugins -->
-    <github-api.version>1.313</github-api.version>
+    <github-api.version>1.321</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
-    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <reflow-velocity-tools.version>1.2</reflow-velocity-tools.version>
-    <spotbugs-maven-plugin.version>4.7.3.0</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.8.4.0</spotbugs-maven-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
     <maven.compiler.source>1.8</maven.compiler.source>

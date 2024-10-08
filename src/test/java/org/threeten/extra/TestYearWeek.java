@@ -86,7 +86,6 @@ import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
 import static java.time.temporal.IsoFields.WEEK_BASED_YEARS;
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -128,6 +127,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.RetryingTest;
+
+import com.google.common.testing.EqualsTester;
 
 public class TestYearWeek {
 
@@ -1066,37 +1067,13 @@ public class TestYearWeek {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
-    @ParameterizedTest
-    @MethodSource("data_sampleYearWeeks")
-    public void test_equalsAndHashCodeContract(int year, int week) {
-        YearWeek a = YearWeek.of(year, week);
-        YearWeek b = YearWeek.of(year, week);
-        assertTrue(a.equals(b));
-        assertTrue(b.equals(a));
-        assertTrue(a.hashCode() == b.hashCode());
-    }
-
     @Test
-    public void test_equals() {
-        YearWeek a = YearWeek.of(2015, 4);
-        YearWeek b = YearWeek.of(2015, 6);
-        YearWeek c = YearWeek.of(2016, 6);
-        assertFalse(a.equals(b));
-        assertFalse(a.equals(c));
-        assertFalse(b.equals(a));
-        assertFalse(b.equals(c));
-        assertFalse(c.equals(a));
-        assertFalse(c.equals(b));
-    }
-
-    @Test
-    public void test_equals_null() {
-        assertEquals(false, TEST.equals(null));
-    }
-
-    @Test
-    public void test_equals_incorrectType() {
-        assertEquals(false, TEST.equals((Object) "Incorrect type"));
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(YearWeek.of(2015, 4), YearWeek.of(2015, 4))
+            .addEqualityGroup(YearWeek.of(2015, 6), YearWeek.of(2015, 6))
+            .addEqualityGroup(YearWeek.of(2016, 6), YearWeek.of(2016, 6))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

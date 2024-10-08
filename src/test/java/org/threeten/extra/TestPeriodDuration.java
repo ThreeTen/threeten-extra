@@ -59,6 +59,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test class.
  */
@@ -380,33 +382,11 @@ public class TestPeriodDuration {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        PeriodDuration test5 = PeriodDuration.of(P1Y2M3D, DUR_5);
-        PeriodDuration test6 = PeriodDuration.of(P1Y2M3D, DUR_6);
-        assertEquals(true, test5.equals(test5));
-        assertEquals(false, test5.equals(test6));
-        assertEquals(false, test6.equals(test5));
-    }
-
-    @Test
-    public void test_equals_null() {
-        PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
-        assertEquals(false, test.equals(null));
-    }
-
-    @Test
-    public void test_equals_otherClass() {
-        PeriodDuration test = PeriodDuration.of(P1Y2M3D, DUR_5);
-        assertEquals(false, test.equals((Object) ""));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_hashCode() {
-        PeriodDuration test5 = PeriodDuration.of(P1Y2M3D, DUR_5);
-        PeriodDuration test6 = PeriodDuration.of(P1Y2M3D, DUR_6);
-        assertEquals(true, test5.hashCode() == test5.hashCode());
-        assertEquals(false, test5.hashCode() == test6.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(PeriodDuration.of(P1Y2M3D, DUR_5), PeriodDuration.of(P1Y2M3D, DUR_5))
+            .addEqualityGroup(PeriodDuration.of(P1Y2M3D, DUR_6), PeriodDuration.of(P1Y2M3D, DUR_6))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

@@ -56,6 +56,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.google.common.testing.EqualsTester;
+
 /**
  * Test class.
  */
@@ -538,34 +540,11 @@ public class TestDays {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        Days test5 = Days.of(5);
-        Days test6 = Days.of(6);
-        assertEquals(true, test5.equals(test5));
-        assertEquals(false, test5.equals(test6));
-        assertEquals(false, test6.equals(test5));
-    }
-
-    @Test
-    public void test_equals_null() {
-        Days test5 = Days.of(5);
-        assertEquals(false, test5.equals(null));
-    }
-
-    @Test
-    public void test_equals_otherClass() {
-        Days test5 = Days.of(5);
-        Object obj = "";
-        assertEquals(false, test5.equals(obj));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_hashCode() {
-        Days test5 = Days.of(5);
-        Days test6 = Days.of(6);
-        assertEquals(true, test5.hashCode() == test5.hashCode());
-        assertEquals(false, test5.hashCode() == test6.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(Days.of(5), Days.of(5))
+            .addEqualityGroup(Days.of(6), Days.of(6))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

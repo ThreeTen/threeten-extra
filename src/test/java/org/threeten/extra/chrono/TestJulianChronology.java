@@ -54,10 +54,8 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -78,6 +76,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import com.google.common.testing.EqualsTester;
 
 /**
  * Test.
@@ -710,26 +710,16 @@ public class TestJulianChronology {
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // equals() / hashCode()
     //-----------------------------------------------------------------------
     @Test
-    public void test_equals() {
-        JulianDate a1 = JulianDate.of(2000, 1, 3);
-        JulianDate a2 = JulianDate.of(2000, 1, 3);
-        JulianDate b = JulianDate.of(2000, 1, 4);
-        JulianDate c = JulianDate.of(2000, 2, 3);
-        JulianDate d = JulianDate.of(2001, 1, 3);
-
-        assertEquals(true, a1.equals(a1));
-        assertEquals(true, a1.equals(a2));
-        assertEquals(false, a1.equals(b));
-        assertEquals(false, a1.equals(c));
-        assertEquals(false, a1.equals(d));
-
-        assertFalse(a1.equals(null));
-        assertFalse(a1.equals((Object) ""));
-
-        assertTrue(a1.hashCode() == a2.hashCode());
+    public void test_equals_and_hashCode() {
+        new EqualsTester()
+            .addEqualityGroup(JulianDate.of(2000, 1, 3), JulianDate.of(2000, 1, 3))
+            .addEqualityGroup(JulianDate.of(2000, 1, 4), JulianDate.of(2000, 1, 4))
+            .addEqualityGroup(JulianDate.of(2000, 2, 3), JulianDate.of(2000, 2, 3))
+            .addEqualityGroup(JulianDate.of(2001, 1, 3), JulianDate.of(2001, 1, 3))
+            .testEquals();
     }
 
     //-----------------------------------------------------------------------

@@ -17,7 +17,7 @@ Various documentation is available:
 
 
 ### Releases
-Release 1.7.2 is the current release.
+Release 1.8.0 is the current release.
 This release is considered stable and worthy of the 1.x tag as per [SemVer](https://semver.org/spec/v2.0.0.html).
 
 ThreeTen-Extra requires Java SE 8 or later and has no dependencies.
@@ -28,7 +28,7 @@ Available in the [Maven Central repository](https://search.maven.org/search?q=g:
 <dependency>
   <groupId>org.threeten</groupId>
   <artifactId>threeten-extra</artifactId>
-  <version>1.7.2</version>
+  <version>1.8.0</version>
 </dependency>
 ```
 
