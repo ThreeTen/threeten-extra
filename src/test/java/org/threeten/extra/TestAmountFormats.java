@@ -48,7 +48,9 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 public class TestAmountFormats {
 
+    private static final Locale FA = new Locale("fa");
     private static final Locale PL = new Locale("pl");
+    private static final Locale RO = new Locale("ro");
     private static final Locale RU = new Locale("ru");
 
     //-----------------------------------------------------------------------
@@ -85,14 +87,14 @@ public class TestAmountFormats {
             {Period.ofDays(7), Locale.ENGLISH, "1 week"},
             {Period.ofDays(-1), Locale.ENGLISH, "-1 day"},
 
-            {Period.ofDays(1), new Locale("ro"), "1 zi"},
-            {Period.ofDays(2), new Locale("ro"), "2 zile"},
-            {Period.ofDays(5), new Locale("ro"), "5 zile"},
-            {Period.ofDays(7), new Locale("ro"), "1 săptămână"},
-            {Period.ofWeeks(3), new Locale("ro"), "3 săptămâni"},
-            {Period.ofMonths(14).normalized(), new Locale("ro"), "1 an și 2 luni"},
-            {Period.ofMonths(1), new Locale("ro"), "1 lună"},
-            {Period.ofYears(2), new Locale("ro"), "2 ani"},
+            {Period.ofDays(1), RO, "1 zi"},
+            {Period.ofDays(2), RO, "2 zile"},
+            {Period.ofDays(5), RO, "5 zile"},
+            {Period.ofDays(7), RO, "1 săptămână"},
+            {Period.ofWeeks(3), RO, "3 săptămâni"},
+            {Period.ofMonths(14).normalized(), RO, "1 an și 2 luni"},
+            {Period.ofMonths(1), RO, "1 lună"},
+            {Period.ofYears(2), RO, "2 ani"},
         };
     }
 
@@ -116,18 +118,17 @@ public class TestAmountFormats {
             {Duration.ofNanos(1_000_000), Locale.ENGLISH, "1 millisecond"},
             {Duration.ofNanos(1000_000_000 + 2_000_000), Locale.ENGLISH, "1 second and 2 milliseconds"},
 
-            {Duration.ofMinutes(60 + 1), new Locale("ro"), "1 oră și 1 minut"},
-            {Duration.ofMinutes(180 + 2), new Locale("ro"), "3 ore și 2 minute"},
-            {Duration.ofMinutes(-60 - 40), new Locale("ro"), "-1 oră și -40 minute"},
-            {Duration.ofSeconds(-90), new Locale("ro"), "-1 minut și -30 secunde"},
-            {Duration.ofNanos(1_000_000), new Locale("ro"), "1 milisecundă"},
-            {Duration.ofNanos(1000_000_000 + 2_000_000), new Locale("ro"), "1 secundă și 2 milisecunde"},
+            {Duration.ofMinutes(60 + 1), RO, "1 oră și 1 minut"},
+            {Duration.ofMinutes(180 + 2), RO, "3 ore și 2 minute"},
+            {Duration.ofMinutes(-60 - 40), RO, "-1 oră și -40 minute"},
+            {Duration.ofSeconds(-90), RO, "-1 minut și -30 secunde"},
+            {Duration.ofNanos(1_000_000), RO, "1 milisecundă"},
+            {Duration.ofNanos(1000_000_000 + 2_000_000), RO, "1 secundă și 2 milisecunde"},
 
             {Duration.ofHours(5).plusMinutes(6).plusSeconds(7).plusNanos(8_000_000L), PL,
                 "5 godzin, 6 minut, 7 sekund i 8 milisekund"},
 
-            {Duration.ofMinutes(60 + 1), new Locale("fa"),
-                "1 \u0633\u0627\u0639\u062A \u0648 1 \u062f\u0642\u06cc\u0642\u0647"}
+            {Duration.ofMinutes(60 + 1), FA, "1 \u0633\u0627\u0639\u062A \u0648 1 \u062f\u0642\u06cc\u0642\u0647"}
         };
     }
 
@@ -161,6 +162,7 @@ public class TestAmountFormats {
     @MethodSource("period_duration_wordBased")
     public void test_wordBased(Period period, Duration duration, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(period, duration, locale));
+        assertEquals(expected, AmountFormats.wordBased(PeriodDuration.of(period, duration), locale));
     }
 
     //-----------------------------------------------------------------------

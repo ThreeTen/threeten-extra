@@ -1,6 +1,6 @@
 name: Build
 
-on: 
+on:
   push:
     branches:
       - '*'
@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         java: [8, 11, 21]
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
