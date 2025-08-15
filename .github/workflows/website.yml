@@ -1,0 +1,77 @@
+name: Website
+
+on:
+  push:
+    tags:
+      - 'website*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        ref: ${{ github.ref }}
+        fetch-tags: true
+
+    - name: Setup git
+      run: |
+        git config --global user.name "Stephen Colebourne (CI)"
+        git config --global user.email "scolebourne@joda.org"
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: 21
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Maven version
+      run: |
+        mkdir -p ./.mvn
+        echo "-e" >> ./.mvn/maven.config
+        echo "-B" >> ./.mvn/maven.config
+        echo "-ntp" >> ./.mvn/maven.config
+        echo "-DtrimStackTrace=false" >> ./.mvn/maven.config
+        echo "--settings" >> ./.mvn/maven.config
+        echo "$( pwd )/.github/maven-settings.xml" >> ./.mvn/maven.config
+        mvn --version
+        mkdir -p target
+
+    #------------------------------------------------------------------------
+    - name: Maven site
+      run: |
+        mvn install site
+
+    - name: Checkout website
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        repository: ThreeTen/threeten.github.io
+        path: target/threeten.github.io
+        ref: "main"
+
+    - name: Update website
+      run: |
+        cd target/threeten.github.io
+        git status
+  
+        rm -rf threeten-extra/
+        cp -R ../site threeten-extra/
+  
+        git add -A
+        git status
+        git commit --message "Update threeten-extra from CI: $GITHUB_RUN_ID"
+  
+        git push origin main
+
+    - name: Delete website tag
+      if: "always()"
+      run: |
+        git tag --delete "${GITHUB_REF_NAME}" || true
+        git push --delete origin "${GITHUB_REF_NAME}" || true
