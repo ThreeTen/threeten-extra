@@ -33,6 +33,8 @@ package org.threeten.extra;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.ERAS;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -378,6 +380,51 @@ public class TestPeriodDuration {
     public void test_subtractFrom() {
         LocalDateTime base = LocalDateTime.of(2012, 6, 20, 11, 30, 0);
         assertEquals(LocalDateTime.of(2011, 4, 17, 11, 29, 55), PeriodDuration.of(P1Y2M3D, DUR_5).subtractFrom(base));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_truncatedTo() {
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, DUR_5), 
+                PeriodDuration.of(P1Y2M3D, DUR_5).truncatedTo(NANOS));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofNanos(-2_000_000)), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofNanos(-2_000_456)).truncatedTo(MILLIS));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, DUR_5), 
+                PeriodDuration.of(P1Y2M3D, DUR_5).truncatedTo(SECONDS));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ZERO), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(0)).truncatedTo(MINUTES));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ZERO), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(1)).truncatedTo(MINUTES));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ZERO), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(59)).truncatedTo(MINUTES));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofMinutes(1)), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(60)).truncatedTo(MINUTES));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofMinutes(1)), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(61)).truncatedTo(MINUTES));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofMinutes(1)), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(119)).truncatedTo(MINUTES));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofMinutes(2)), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(120)).truncatedTo(MINUTES));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofDays(0)), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofMinutes(24 * 60 - 1)).truncatedTo(DAYS));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofDays(1)), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofHours(24)).truncatedTo(DAYS));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofDays(2)), 
+                PeriodDuration.of(P1Y2M3D, Duration.ofHours(51)).truncatedTo(DAYS));
+        assertThrows(DateTimeException.class, () ->  PeriodDuration.of(P1Y2M3D, Duration.ofHours(51)).truncatedTo(MONTHS));
     }
 
     //-----------------------------------------------------------------------

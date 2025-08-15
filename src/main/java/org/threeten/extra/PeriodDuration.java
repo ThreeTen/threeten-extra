@@ -102,6 +102,14 @@ public final class PeriodDuration
      * The number of seconds per day.
      */
     private static final long SECONDS_PER_DAY = 86400;
+    /**
+     * The number of nanoseconds per second.
+     */
+    private static final long NANOS_PER_SECOND = 1_000_000_000L;
+    /**
+     * The number of nanoseconds per day.
+     */
+    private static final long NANOS_PER_DAY = SECONDS_PER_DAY * NANOS_PER_SECOND;
 
     /**
      * The period.
@@ -618,6 +626,47 @@ public final class PeriodDuration
     @Override
     public Temporal subtractFrom(Temporal temporal) {
         return temporal.minus(period).minus(duration);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this period-duration truncated to the specified unit.
+     * <p>
+     * This method truncates (rounds down) the duration part of this period-duration
+     * to the specified unit. The period part is unaffected.
+     * For example, truncating to {@link ChronoUnit#MINUTES MINUTES} will drop the seconds and nanoseconds.
+     * See {@link Duration#truncatedTo(TemporalUnit)} for more details.
+     * <p>
+     * Note that the unit must be a {@linkplain ChronoUnit#isTimeBased() time-based unit}
+     * that divides evenly into the length of a standard day.
+     * The unit {@link ChronoUnit#DAYS DAYS} may also be used to truncate the duration to whole days.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param unit the unit to use for truncation, not null
+     * @return a {@code PeriodDuration} based on this one with the duration truncated, not null
+     * @throws DateTimeException if the unit is invalid for truncation
+     */
+    public PeriodDuration truncatedTo(TemporalUnit unit) {
+        // Duration.truncatedTo(TemporalUnit) was only added in Java 9, so we implement it here
+        Objects.requireNonNull(unit, "unit");
+        if (unit == ChronoUnit.NANOS) {
+            return this;
+        }
+        Duration unitDuration = unit.getDuration();
+        if (unitDuration.getSeconds() > SECONDS_PER_DAY) {
+            throw new UnsupportedTemporalTypeException("Unit duration exceeds one day and cannot be used for truncation");
+        }
+        long unitNanos = unitDuration.toNanos();
+        if ((NANOS_PER_DAY % unitNanos) != 0) {
+            throw new UnsupportedTemporalTypeException("Unit must divide into a standard day without remainder");
+        }
+        long seconds = duration.getSeconds();
+        long nanos = duration.getNano();
+        long nod = ((seconds % SECONDS_PER_DAY) * NANOS_PER_SECOND) + nanos;
+        long result = (nod / unitNanos) * unitNanos;
+        Duration adjusted = duration.plusNanos(result - nod);
+        return new PeriodDuration(period, adjusted);
     }
 
     //-----------------------------------------------------------------------
