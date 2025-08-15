@@ -53,7 +53,7 @@ import java.util.Map;
  * <p>
  * This chronology defines the rules of the Ethiopic calendar system.
  * This calendar system is primarily used in Ethiopia.
- * Dates are aligned such that {@code 0001-01-01 (Ethiopic)} is {@code 0284-08-29 (ISO)}.
+ * Dates are aligned such that {@code 0001-01-01 (Ethiopic)} is {@code 0008-08-27 (ISO)}.
  * <p>
  * The fields are defined as follows:
  * <ul>
