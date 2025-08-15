@@ -168,9 +168,8 @@ public final class AmountFormats {
     /**
      * Formats a period and duration to a string in ISO-8601 format.
      * <p>
-     * To obtain the ISO-8601 format of a {@code Period} or {@code Duration}
-     * individually, simply call {@code toString()}.
-     * See also {@link PeriodDuration}.
+     * To obtain the ISO-8601 format of a {@link Period}, {@link Duration} or {@link PeriodDuration}
+     * simply call {@code toString()}.
      *
      * @param period  the period to format
      * @param duration  the duration to format
@@ -306,6 +305,24 @@ public final class AmountFormats {
     // are the signs opposite
     private static boolean oppositeSigns(int a, int b) {
         return a < 0 ? (b >= 0) : (b < 0);
+    }
+
+    /**
+     * Formats a period-duration to a string in a localized word-based format.
+     * <p>
+     * This returns a word-based format for the period-duration.
+     * The year and month are printed as supplied unless the signs differ, in which case they are normalized.
+     * The words are configured in a resource bundle text file -
+     * {@code org.threeten.extra.wordbased.properties} - with overrides per language.
+     *
+     * @param periodDuration  the period-duration to format
+     * @param locale  the locale to use
+     * @return the localized word-based format for the period-duration
+     */
+    public static String wordBased(PeriodDuration periodDuration, Locale locale) {
+        Objects.requireNonNull(periodDuration, "periodDuration must not be null");
+        Objects.requireNonNull(locale, "locale must not be null");
+        return wordBased(periodDuration.getPeriod(), periodDuration.getDuration(), locale);
     }
 
     // -------------------------------------------------------------------------
