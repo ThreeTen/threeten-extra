@@ -42,7 +42,7 @@ import java.time.chrono.Era;
  * All previous years, zero or earlier in the proleptic count or one and greater
  * in the year-of-era count, are part of the 'Before Incarnation Era' era.
  * <p>
- * The start of the Ethiopic epoch {@code 0001-01-01 (Ethiopic)} is {@code 0284-08-29 (ISO)}.
+ * The start of the Ethiopic epoch {@code 0001-01-01 (Ethiopic)} is {@code 0008-08-27 (ISO)}.
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code EthiopicEra}.
  * Use {@code getValue()} instead.</b>
