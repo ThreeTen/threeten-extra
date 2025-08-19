@@ -519,6 +519,18 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @Test
+    public void test_query_localDate() {
+        assertEquals(TEST_2007_07_15_PONE.toLocalDate(), TEST_2007_07_15_PONE.query(TemporalQueries.localDate()));
+        assertEquals(TEST_2007_07_15_PONE.toLocalDate(), TemporalQueries.localDate().queryFrom(TEST_2007_07_15_PONE));
+    }
+
+    @Test
+    public void test_query_localTime() {
+        assertNull(TEST_2007_07_15_PONE.query(TemporalQueries.localTime()));
+        assertNull(TemporalQueries.localTime().queryFrom(TEST_2007_07_15_PONE));
+    }
+
+    @Test
     public void test_query_null() {
         assertThrows(NullPointerException.class, () -> TEST_2007_07_15_PONE.query(null));
     }

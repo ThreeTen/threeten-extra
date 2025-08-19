@@ -383,7 +383,7 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      * Q3 and Q4 have 92 days.
      *
      * @param leapYear  true if the length is required for a leap year
-     * @return the length of this month in days, from 90 to 92
+     * @return the length of this quarter in days, from 90 to 92
      */
     public int length(boolean leapYear) {
         switch (this) {
@@ -429,14 +429,9 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
     /**
      * Queries this quarter-of-year using the specified query.
      * <p>
-     * This queries this quarter-of-year using the specified query strategy object.
-     * The {@code TemporalQuery} object defines the logic to be used to
-     * obtain the result. Read the documentation of the query to understand
-     * what the result of this method will be.
-     * <p>
-     * The result of this method is obtained by invoking the
-     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
-     * specified query passing {@code this} as the argument.
+     * {@link TemporalQueries#chronology()} and {@link TemporalQueries#precision()} are directly supported.
+     * Otherwise, the result of this method is obtained by invoking
+     * {@link TemporalAccessor#query(TemporalQuery)} on the parent interface.
      *
      * @param <R> the type of the result
      * @param query  the query to invoke, not null
