@@ -31,6 +31,8 @@
  */
 package org.threeten.extra;
 
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SUNDAY;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.ERAS;
@@ -43,13 +45,21 @@ import java.math.RoundingMode;
 import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
@@ -62,7 +72,8 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * This includes:
  * <ul>
- * <li>adjusters that ignore Saturday/Sunday weekends
+ * <li>additional temporal adjusters
+ * <li>additional temporal queries
  * <li>conversion between {@code TimeUnit} and {@code ChronoUnit}
  * <li>converting an amount to another unit
  * </ul>
@@ -201,6 +212,94 @@ public final class Temporals {
 
     //-------------------------------------------------------------------------
     /**
+     * Returns a {@code TemporalQuery} that extracts the effective start date of the temporal.
+     * <p>
+     * This query extracts the effective start date from the temporal if the temporal represents a date or date-time.
+     * For example, {@link LocalDate} will return itself, a {@link LocalDateTime} will return the date part,
+     * and a {@code YearMonth} will return the date at the first day of the month.
+     * Some temporals will return null when queried, such as {@link LocalTime} and {@link MonthDay}.
+     * <p>
+     * This method returns a result for {@link Year}, {@link YearMonth}, {@code YearHalf}, {@code YearQuarter} and
+     * {@code YearWeek}, as well as any other temporal where {@code TemporalQueries.localDate()} returns a date.
+     *
+     * @return a query that extracts the effective start date of the temporal, not null
+     */
+    public static TemporalQuery<LocalDate> localDateAtStart() {
+        return LOCAL_DATE_AT_START_QUERY;
+    }
+
+    // query expressed as a constant so it can be compared with ==
+    private static final TemporalQuery<LocalDate> LOCAL_DATE_AT_START_QUERY = new TemporalQuery<LocalDate>() {
+        @Override
+        public LocalDate queryFrom(TemporalAccessor temporal) {
+            if (temporal instanceof LocalDate) {
+                return ((LocalDate) temporal);
+            } else if (temporal instanceof Year) {
+                return ((Year) temporal).atDay(1);
+            } else if (temporal instanceof YearMonth) {
+                return ((YearMonth) temporal).atDay(1);
+            } else if (temporal instanceof YearHalf) {
+                return ((YearHalf) temporal).atDay(1);
+            } else if (temporal instanceof YearQuarter) {
+                return ((YearQuarter) temporal).atDay(1);
+            } else if (temporal instanceof YearWeek) {
+                return ((YearWeek) temporal).atDay(MONDAY);
+            }
+            return temporal.query(TemporalQueries.localDate());
+        }
+
+        @Override
+        public String toString() {
+            return "LocalDateAtStart";
+        }
+    };
+
+    //-------------------------------------------------------------------------
+    /**
+     * Returns a {@code TemporalQuery} that extracts the effective end date of the temporal.
+     * <p>
+     * This query extracts the effective end date from the temporal if the temporal represents a date or date-time.
+     * For example, {@link LocalDate} will return itself, a {@link LocalDateTime} will return the date part,
+     * and a {@code YearMonth} will return the date at the last day of the month.
+     * Some temporals will return null when queried, such as {@link LocalTime} and {@link MonthDay}.
+     * <p>
+     * This method returns a result for {@link Year}, {@link YearMonth}, {@code YearHalf}, {@code YearQuarter} and
+     * {@code YearWeek}, as well as any other temporal where {@code TemporalQueries.localDate()} returns a date.
+     *
+     * @return a query that extracts the effective end date of the temporal, not null
+     */
+    public static TemporalQuery<LocalDate> localDateAtEnd() {
+        return LOCAL_DATE_AT_END_QUERY;
+    }
+
+    // query expressed as a constant so it can be compared with ==
+    private static final TemporalQuery<LocalDate> LOCAL_DATE_AT_END_QUERY = new TemporalQuery<LocalDate>() {
+        @Override
+        public LocalDate queryFrom(TemporalAccessor temporal) {
+            if (temporal instanceof LocalDate) {
+                return ((LocalDate) temporal);
+            } else if (temporal instanceof Year) {
+                return ((Year) temporal).atMonth(12).atEndOfMonth();
+            } else if (temporal instanceof YearMonth) {
+                return ((YearMonth) temporal).atEndOfMonth();
+            } else if (temporal instanceof YearHalf) {
+                return ((YearHalf) temporal).atEndOfHalf();
+            } else if (temporal instanceof YearQuarter) {
+                return ((YearQuarter) temporal).atEndOfQuarter();
+            } else if (temporal instanceof YearWeek) {
+                return ((YearWeek) temporal).atDay(SUNDAY);
+            }
+            return temporal.query(TemporalQueries.localDate());
+        }
+
+        @Override
+        public String toString() {
+            return "LocalDateAtEnd";
+        }
+    };
+
+    //-------------------------------------------------------------------------
+    /**
      * Parses the text using one of the formatters.
      * <p>
      * This will try each formatter in turn, attempting to fully parse the specified text.
@@ -249,6 +348,7 @@ public final class Temporals {
      * Converts a {@code TimeUnit} to a {@code ChronoUnit}.
      * <p>
      * This handles the seven units declared in {@code TimeUnit}.
+     * From Java SE 9 onwards, use {@code TimeUnit.toChronoUnit()}.
      * 
      * @param unit  the unit to convert, not null
      * @return the converted unit, not null
@@ -279,6 +379,7 @@ public final class Temporals {
      * Converts a {@code ChronoUnit} to a {@code TimeUnit}.
      * <p>
      * This handles the seven units declared in {@code TimeUnit}.
+     * From Java SE 9 onwards, use {@code TimeUnit.of(ChronoUnit)}.
      * 
      * @param unit  the unit to convert, not null
      * @return the converted unit, not null

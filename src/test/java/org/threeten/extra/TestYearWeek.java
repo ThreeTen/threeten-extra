@@ -1073,6 +1073,10 @@ public class TestYearWeek {
         assertEquals(ChronoUnit.WEEKS, TEST.query(TemporalQueries.precision()));
         assertEquals(null, TEST.query(TemporalQueries.zone()));
         assertEquals(null, TEST.query(TemporalQueries.zoneId()));
+        assertEquals(TEST.atDay(MONDAY), TEST.query(Temporals.localDateAtStart()));
+        assertEquals(TEST.atDay(MONDAY), Temporals.localDateAtStart().queryFrom(TEST));
+        assertEquals(TEST.atDay(SUNDAY), TEST.query(Temporals.localDateAtEnd()));
+        assertEquals(TEST.atDay(SUNDAY), Temporals.localDateAtEnd().queryFrom(TEST));
     }
 
     //-----------------------------------------------------------------------

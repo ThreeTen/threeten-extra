@@ -37,7 +37,11 @@ import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
+import static java.time.temporal.ChronoField.CLOCK_HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoField.MICRO_OF_SECOND;
+import static java.time.temporal.ChronoField.NANO_OF_DAY;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.DECADES;
@@ -52,10 +56,6 @@ import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static java.time.temporal.ChronoField.CLOCK_HOUR_OF_DAY;
-import static java.time.temporal.ChronoField.HOUR_OF_DAY;
-import static java.time.temporal.ChronoField.NANO_OF_DAY;
-import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -74,7 +74,14 @@ import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -89,7 +96,7 @@ import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
-
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -364,6 +371,38 @@ public class TestTemporals {
         LocalDate saturday = LocalDate.of(2011, JANUARY, 1);
         test = Temporals.previousWorkingDayOrSame().adjustInto(saturday);
         assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
+    }
+
+    //-----------------------------------------------------------------------
+    // localDateAtStart()
+    //-----------------------------------------------------------------------
+    public static @Nullable Object[][] data_localDateAtStartAndEnd() {
+        return new @Nullable Object[][]{
+                {LocalDate.of(2026, 9, 15), LocalDate.of(2026, 9, 15)},
+                {LocalDateTime.of(2026, 9, 15, 12, 30), LocalDate.of(2026, 9, 15)},
+                {OffsetDateTime.of(2026, 9, 15, 12, 30, 0, 0, ZoneOffset.ofHours(1)), LocalDate.of(2026, 9, 15)},
+                {ZonedDateTime.of(2026, 9, 15, 12, 30, 0, 0, ZoneOffset.ofHours(1)), LocalDate.of(2026, 9, 15)},
+                {MonthDay.of(9, 15), null},
+                {DECEMBER, null},
+                {MONDAY, null},
+                {LocalTime.of(12, 30), null},
+                {OffsetTime.of(12, 30, 0, 0, ZoneOffset.ofHours(1)), null},
+                {HourMinute.of(12, 30), null},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_localDateAtStartAndEnd")
+    public void test_localDateAtStart(TemporalAccessor temporal, @Nullable LocalDate expected) {
+        assertEquals(expected, temporal.query(Temporals.localDateAtStart()));
+        assertEquals(expected, Temporals.localDateAtStart().queryFrom(temporal));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_localDateAtStartAndEnd")
+    public void test_localDateAtEnd(TemporalAccessor temporal, @Nullable LocalDate expected) {
+        assertEquals(expected, temporal.query(Temporals.localDateAtEnd()));
+        assertEquals(expected, Temporals.localDateAtEnd().queryFrom(temporal));
     }
 
     //-----------------------------------------------------------------------

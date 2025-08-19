@@ -727,6 +727,10 @@ public class TestYearQuarter {
         assertEquals(QUARTER_YEARS, TEST.query(TemporalQueries.precision()));
         assertEquals(null, TEST.query(TemporalQueries.zone()));
         assertEquals(null, TEST.query(TemporalQueries.zoneId()));
+        assertEquals(TEST.atDay(1), TEST.query(Temporals.localDateAtStart()));
+        assertEquals(TEST.atDay(1), Temporals.localDateAtStart().queryFrom(TEST));
+        assertEquals(TEST.atEndOfQuarter(), TEST.query(Temporals.localDateAtEnd()));
+        assertEquals(TEST.atEndOfQuarter(), Temporals.localDateAtEnd().queryFrom(TEST));
     }
 
     //-----------------------------------------------------------------------

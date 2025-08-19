@@ -540,6 +540,14 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @Test
+    public void test_query_other() {
+        assertEquals(TEST_2007_07_15_PONE.toLocalDate(), TEST_2007_07_15_PONE.query(Temporals.localDateAtStart()));
+        assertEquals(TEST_2007_07_15_PONE.toLocalDate(), Temporals.localDateAtStart().queryFrom(TEST_2007_07_15_PONE));
+        assertEquals(TEST_2007_07_15_PONE.toLocalDate(), TEST_2007_07_15_PONE.query(Temporals.localDateAtEnd()));
+        assertEquals(TEST_2007_07_15_PONE.toLocalDate(), Temporals.localDateAtEnd().queryFrom(TEST_2007_07_15_PONE));
+    }
+
+    @Test
     public void test_query_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST_2007_07_15_PONE.query(null));
