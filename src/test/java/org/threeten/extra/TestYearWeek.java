@@ -1059,7 +1059,7 @@ public class TestYearWeek {
         assertEquals(null, TEST.query(TemporalQueries.localDate()));
         assertEquals(null, TEST.query(TemporalQueries.localTime()));
         assertEquals(null, TEST.query(TemporalQueries.offset()));
-        assertEquals(null, TEST.query(TemporalQueries.precision()));
+        assertEquals(ChronoUnit.WEEKS, TEST.query(TemporalQueries.precision()));
         assertEquals(null, TEST.query(TemporalQueries.zone()));
         assertEquals(null, TEST.query(TemporalQueries.zoneId()));
     }

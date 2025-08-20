@@ -270,7 +270,7 @@ public final class YearHalf
      * Obtains an instance of {@code YearHalf} from a text string such as {@code 2007-H2}.
      * <p>
      * The string must represent a valid year-half.
-     * The format must be {@code uuuu-'Q'Q} where the 'Q' is case insensitive.
+     * The format must be {@code uuuu-'H'H} where the 'H' is case insensitive.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-H2", not null
@@ -452,7 +452,7 @@ public final class YearHalf
      * <p>
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this year-half,.
+     * values based on this year-half.
      * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
@@ -974,14 +974,9 @@ public final class YearHalf
     /**
      * Queries this year-half using the specified query.
      * <p>
-     * This queries this year-half using the specified query strategy object.
-     * The {@code TemporalQuery} object defines the logic to be used to
-     * obtain the result. Read the documentation of the query to understand
-     * what the result of this method will be.
-     * <p>
-     * The result of this method is obtained by invoking the
-     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
-     * specified query passing {@code this} as the argument.
+     * {@link TemporalQueries#chronology()} and {@link TemporalQueries#precision()} are directly supported.
+     * Otherwise, the result of this method is obtained by invoking
+     * {@link TemporalAccessor#query(TemporalQuery)} on the parent interface.
      *
      * @param <R> the type of the result
      * @param query  the query to invoke, not null

@@ -1050,14 +1050,10 @@ public final class OffsetDate
     /**
      * Queries this date using the specified query.
      * <p>
-     * This queries this date using the specified query strategy object.
-     * The {@code TemporalQuery} object defines the logic to be used to
-     * obtain the result. Read the documentation of the query to understand
-     * what the result of this method will be.
-     * <p>
-     * The result of this method is obtained by invoking the
-     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
-     * specified query passing {@code this} as the argument.
+     * {@link TemporalQueries#localDate()}, {@link TemporalQueries#chronology()}, {@link TemporalQueries#offset()},
+     * {@link TemporalQueries#zone()} and {@link TemporalQueries#precision()} are directly supported.
+     * Otherwise, the result of this method is obtained by invoking
+     * {@link TemporalAccessor#query(TemporalQuery)} on the parent interface.
      *
      * @param <R> the type of the result
      * @param query  the query to invoke, not null
@@ -1068,7 +1064,9 @@ public final class OffsetDate
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chronology()) {
+        if (query == TemporalQueries.localDate()) {
+            return (R) date;
+        } else if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
             return (R) DAYS;

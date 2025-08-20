@@ -42,6 +42,7 @@ import java.time.ZoneId;
 import java.time.chrono.Chronology;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -350,7 +351,7 @@ public final class DayOfYear
     /**
      * Checks if the year is valid for this day-of-year.
      * <p>
-     * This method checks whether this day-of-yearand the input year form
+     * This method checks whether this day-of-year and the input year form
      * a valid date. This can only return false for day-of-year 366.
      *
      * @param year  the year to validate
@@ -364,14 +365,9 @@ public final class DayOfYear
     /**
      * Queries this day-of-year using the specified query.
      * <p>
-     * This queries this day-of-year using the specified query strategy object.
-     * The {@code TemporalQuery} object defines the logic to be used to
-     * obtain the result. Read the documentation of the query to understand
-     * what the result of this method will be.
-     * <p>
-     * The result of this method is obtained by invoking the
-     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
-     * specified query passing {@code this} as the argument.
+     * {@link TemporalQueries#chronology()} and {@link TemporalQueries#precision()} are directly supported.
+     * Otherwise, the result of this method is obtained by invoking
+     * {@link TemporalAccessor#query(TemporalQuery)} on the parent interface.
      *
      * @param <R> the type of the result
      * @param query  the query to invoke, not null
@@ -384,6 +380,8 @@ public final class DayOfYear
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
+        } else if (query == TemporalQueries.precision()) {
+            return (R) ChronoUnit.DAYS;
         }
         return TemporalAccessor.super.query(query);
     }
