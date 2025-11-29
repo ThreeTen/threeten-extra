@@ -286,8 +286,11 @@ public class TestInterval {
             {NOW1.atOffset(ZoneOffset.ofHours(2)) + "/" + NOW2.atOffset(ZoneOffset.ofHours(2)).toLocalDateTime(), NOW1, NOW2},
             {MIN_OFFSET_DATE_TIME.toString() + "/" + MAX_OFFSET_DATE_TIME, MIN_OFFSET_DATE_TIME, MAX_OFFSET_DATE_TIME},
             {NOW1 + "/" + Instant.MAX, NOW1, Instant.MAX},
-            {Instant.MIN.toString() + "/" + NOW2, Instant.MIN, NOW2},
-            {Instant.MIN.toString() + "/" + Instant.MAX, Instant.MIN, Instant.MAX}
+            {Instant.MIN + "/" + NOW2, Instant.MIN, NOW2},
+            {Instant.MIN + "/" + Instant.MAX, Instant.MIN, Instant.MAX},
+            {"../" + NOW2, Instant.MIN, NOW2},
+            {NOW1 + "/..", NOW1, Instant.MAX},
+            {"../..", Instant.MIN, Instant.MAX}
         };
     }
 
@@ -302,6 +305,16 @@ public class TestInterval {
     @Test
     public void test_parse_CharSequence_badOrder() {
         assertThrows(DateTimeException.class, () -> Interval.parse(NOW2 + "/" + NOW1));
+    }
+
+    @Test
+    public void test_parse_CharSequence_illegalOpenStartDuration() {
+        assertThrows(DateTimeException.class, () -> Interval.parse("../PT1H"));
+    }
+
+    @Test
+    public void test_parse_CharSequence_illegalDurationOpenEnd() {
+        assertThrows(DateTimeException.class, () -> Interval.parse("PT1H/.."));
     }
 
     @Test
@@ -931,6 +944,22 @@ public class TestInterval {
     public void test_toString() {
         Interval test = Interval.of(NOW1, NOW2);
         assertEquals(NOW1 + "/" + NOW2, test.toString());
+    }
+
+    @Test
+    public void test_toString_open_end() {
+        Interval test = Interval.ALL.withStart(NOW1);
+        assertEquals(NOW1 + "/..", test.toString());
+    }
+    @Test
+    public void test_toString_open_start() {
+        Interval test = Interval.ALL.withEnd(NOW2);
+        assertEquals("../" + NOW2, test.toString());
+    }
+    @Test
+    public void test_toString_open_all() {
+        Interval test = Interval.ALL;
+        assertEquals("../..", test.toString());
     }
 
 }

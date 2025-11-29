@@ -227,6 +227,9 @@ public final class Interval
             }
         }
         // instant followed by instant or duration
+        if (isUnbounded(startStr)) {
+            return parseEndDateTime(Instant.MIN, ZoneOffset.UTC, endStr);
+        }
         OffsetDateTime start;
         try {
             start = OffsetDateTime.parse(startStr);
@@ -241,6 +244,10 @@ public final class Interval
             }
         }
         return parseEndDateTime(start.toInstant(), start.getOffset(), endStr);
+    }
+
+    private static boolean isUnbounded(CharSequence sequence) {
+        return sequence.length() == 2 && sequence.charAt(0) == '.' && sequence.charAt(1) == '.';
     }
 
     // handle case where Instant is outside the bounds of OffsetDateTime
@@ -263,6 +270,10 @@ public final class Interval
 
     // parse when there are two date-times
     private static Interval parseEndDateTime(Instant start, ZoneOffset offset, CharSequence endStr) {
+        if (isUnbounded(endStr)) {
+            return Interval.of(start, Instant.MAX);
+        }
+
         try {
             TemporalAccessor temporal = DateTimeFormatter.ISO_DATE_TIME.parseBest(endStr, OffsetDateTime::from, LocalDateTime::from);
             if (temporal instanceof OffsetDateTime) {
@@ -752,13 +763,15 @@ public final class Interval
      * <p>
      * The output will be the ISO-8601 format formed by combining the
      * {@code toString()} methods of the two instants, separated by a forward slash.
+     * Unbounded intervals will have its open end represented by two periods, as in
+     * {@code 2007-12-03T10:15:30/..}.
      *
-     * @return a string representation of this instant, not null
+     * @return a string representation of this interval, not null
      */
     @Override
     @ToString
     public String toString() {
-        return start.toString() + '/' + end.toString();
+        return (isUnboundedStart() ? ".." : getStart()) + "/" + (isUnboundedEnd() ? ".." : getEnd());
     }
 
 }
