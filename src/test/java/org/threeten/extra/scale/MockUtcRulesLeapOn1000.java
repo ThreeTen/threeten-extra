@@ -66,4 +66,9 @@ public class MockUtcRulesLeapOn1000 extends UtcRules {
         return null;
     }
 
+    @Override
+    public UtcInstant convertToUtc(MispInstant mispInstant) {
+        return null;
+    }
+
 }
