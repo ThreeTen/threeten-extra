@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'website*'
+  workflow_dispatch:
 
 permissions:
   contents: write
