@@ -646,6 +646,7 @@ public final class PeriodDuration
      * @param unit the unit to use for truncation, not null
      * @return a {@code PeriodDuration} based on this one with the duration truncated, not null
      * @throws DateTimeException if the unit is invalid for truncation
+     * @since 1.9.0
      */
     public PeriodDuration truncatedTo(TemporalUnit unit) {
         // Duration.truncatedTo(TemporalUnit) was only added in Java 9, so we implement it here

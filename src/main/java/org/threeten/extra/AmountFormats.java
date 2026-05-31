@@ -318,6 +318,7 @@ public final class AmountFormats {
      * @param periodDuration  the period-duration to format
      * @param locale  the locale to use
      * @return the localized word-based format for the period-duration
+     * @since 1.9.0
      */
     public static String wordBased(PeriodDuration periodDuration, Locale locale) {
         Objects.requireNonNull(periodDuration, "periodDuration must not be null");
