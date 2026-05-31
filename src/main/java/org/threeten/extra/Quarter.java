@@ -54,6 +54,8 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A quarter-of-year, such as 'Q2'.
  * <p>
@@ -232,7 +234,7 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      * @return true if the field is supported on this quarter-of-year, false if not
      */
     @Override
-    public boolean isSupported(TemporalField field) {
+    public boolean isSupported(@Nullable TemporalField field) {
         if (field == QUARTER_OF_YEAR) {
             return true;
         } else if (field instanceof ChronoField) {

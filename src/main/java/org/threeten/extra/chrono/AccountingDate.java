@@ -57,6 +57,8 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A date in an Accounting calendar system.
  * <p>
@@ -480,7 +482,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @return true if this is equal to the other date
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

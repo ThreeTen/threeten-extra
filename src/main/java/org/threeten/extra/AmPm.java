@@ -50,6 +50,8 @@ import java.time.temporal.ValueRange;
 import java.util.Calendar;
 import java.util.Locale;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
  * <p>
@@ -202,7 +204,7 @@ public enum AmPm implements TemporalAccessor, TemporalAdjuster {
      * @return true if the field is supported on this am-pm, false if not
      */
     @Override
-    public boolean isSupported(TemporalField field) {
+    public boolean isSupported(@Nullable TemporalField field) {
         if (field instanceof ChronoField) {
             return field == AMPM_OF_DAY;
         }

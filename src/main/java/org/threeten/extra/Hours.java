@@ -50,6 +50,7 @@ import java.util.regex.Pattern;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An hour-based amount of time, such as '4 hours'.
@@ -570,7 +571,7 @@ public final class Hours
      * @return true if the other amount is equal to this one
      */
     @Override
-    public boolean equals(Object otherAmount) {
+    public boolean equals(@Nullable Object otherAmount) {
         if (this == otherAmount) {
             return true;
         }

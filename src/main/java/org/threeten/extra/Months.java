@@ -50,6 +50,7 @@ import java.util.regex.Pattern;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A month-based amount of time, such as '12 months'.
@@ -574,7 +575,7 @@ public final class Months
      * @return true if the other amount is equal to this one
      */
     @Override
-    public boolean equals(Object otherAmount) {
+    public boolean equals(@Nullable Object otherAmount) {
         if (this == otherAmount) {
             return true;
         }

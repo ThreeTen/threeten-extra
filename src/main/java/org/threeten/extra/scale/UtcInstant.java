@@ -49,6 +49,7 @@ import java.time.temporal.TemporalAccessor;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale
@@ -129,7 +130,7 @@ public final class UtcInstant
     /**
      * A cache of the result from {@link #toString()} 
      */
-    private transient String toString;
+    private transient @Nullable String toString;
 
     //-----------------------------------------------------------------------
     /**
@@ -462,7 +463,7 @@ public final class UtcInstant
      * @return true if the other instant is equal to this one
      */
     @Override
-    public boolean equals(Object otherInstant) {
+    public boolean equals(@Nullable Object otherInstant) {
         if (this == otherInstant) {
             return true;
         }

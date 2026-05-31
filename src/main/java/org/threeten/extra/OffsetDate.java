@@ -69,6 +69,7 @@ import java.util.Objects;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A date with an offset from UTC/Greenwich in the ISO-8601 calendar system,
@@ -369,7 +370,7 @@ public final class OffsetDate
      * @return true if the field is supported on this date, false if not
      */
     @Override
-    public boolean isSupported(TemporalField field) {
+    public boolean isSupported(@Nullable TemporalField field) {
         if (field instanceof ChronoField) {
             return field.isDateBased() || field == OFFSET_SECONDS;
         }
@@ -406,7 +407,7 @@ public final class OffsetDate
      * @return true if the unit can be added/subtracted, false if not
      */
     @Override
-    public boolean isSupported(TemporalUnit unit) {
+    public boolean isSupported(@Nullable TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             return unit.isDateBased();
         }
@@ -1328,7 +1329,7 @@ public final class OffsetDate
      * @return true if this is equal to the other date
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

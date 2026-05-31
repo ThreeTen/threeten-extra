@@ -34,6 +34,7 @@ package org.threeten.extra.chrono;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Month;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Builder to create Accounting calendars.
@@ -63,7 +64,7 @@ public final class AccountingChronologyBuilder {
     /**
      * The day of the week on which a given Accounting year ends.
      */
-    private DayOfWeek endsOn;
+    private @Nullable DayOfWeek endsOn;
     /**
      * Whether the calendar ends in the last week of a given Gregorian/ISO month,
      * or nearest to the last day of the month (will sometimes be in the next month).
@@ -72,11 +73,11 @@ public final class AccountingChronologyBuilder {
     /**
      * Which Gregorian/ISO end-of-month the year ends in/is nearest to.
      */
-    private Month end;
+    private @Nullable Month end;
     /**
      * How to divide an accounting year.
      */
-    private AccountingYearDivision division;
+    private @Nullable AccountingYearDivision division;
     /**
      * The month which will have the leap-week added.
      */

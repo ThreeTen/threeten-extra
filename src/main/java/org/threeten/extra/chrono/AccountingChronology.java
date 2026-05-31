@@ -54,6 +54,8 @@ import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * An Accounting calendar system.
  * <p>
@@ -279,7 +281,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @see #getId()
      */
     @Override
-    public String getCalendarType() {
+    public @Nullable String getCalendarType() {
         return null;
     }
 
@@ -554,7 +556,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
 
     //-------------------------------------------------------------------------
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

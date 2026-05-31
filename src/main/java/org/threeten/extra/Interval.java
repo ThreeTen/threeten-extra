@@ -45,6 +45,7 @@ import java.util.Objects;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An immutable interval of time between two instants.
@@ -725,7 +726,7 @@ public final class Interval
      * @return true if this is equal to the other interval
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

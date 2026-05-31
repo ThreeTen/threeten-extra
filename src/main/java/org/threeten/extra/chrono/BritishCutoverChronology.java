@@ -52,6 +52,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * The British Julian-Gregorian cutover calendar system.
  * <p>
@@ -204,7 +206,7 @@ public final class BritishCutoverChronology
      * @see #getId()
      */
     @Override
-    public String getCalendarType() {
+    public @Nullable String getCalendarType() {
         return null;
     }
 

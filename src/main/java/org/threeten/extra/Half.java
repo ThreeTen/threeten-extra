@@ -53,6 +53,8 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A half-of-year, such as 'H2'.
  * <p>
@@ -212,7 +214,7 @@ public enum Half implements TemporalAccessor, TemporalAdjuster {
      * @return true if the field is supported on this half-of-year, false if not
      */
     @Override
-    public boolean isSupported(TemporalField field) {
+    public boolean isSupported(@Nullable TemporalField field) {
         if (field == HALF_OF_YEAR) {
             return true;
         } else if (field instanceof ChronoField) {

@@ -32,4 +32,8 @@
 /**
  * Value types and utilities that extend {@code java.time.*}.
  */
+@NullMarked
 package org.threeten.extra;
+
+import org.jspecify.annotations.NullMarked;
+

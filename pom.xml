@@ -506,6 +506,13 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>${jspecify.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional><!-- mandatory in Scala -->
+    </dependency>
+    <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
       <version>${joda-convert.version}</version>
@@ -928,6 +935,7 @@
     <!-- Dependencies -->
     <assertj.version>3.27.7</assertj.version>
     <joda-convert.version>2.2.4</joda-convert.version>
+    <jspecify.version>1.0.0</jspecify.version>
     <junit.version>5.13.4</junit.version>
     <pioneer.version>1.9.1</pioneer.version><!-- 2.x is Java 11 based -->
     <guava.version>33.6.0-jre</guava.version>

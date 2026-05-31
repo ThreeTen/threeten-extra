@@ -47,6 +47,7 @@ import java.util.stream.StreamSupport;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A range of local dates.
@@ -608,8 +609,8 @@ public final class LocalDateRange
                 Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT | Spliterator.ORDERED |
                         Spliterator.SORTED | Spliterator.SIZED | Spliterator.SUBSIZED) {
 
-            private LocalDate current = start;
-            
+            private @Nullable LocalDate current = start;
+
             @Override
             public boolean tryAdvance(Consumer<? super LocalDate> action) {
                 if (current != null) {
@@ -628,7 +629,7 @@ public final class LocalDateRange
             }
             
             @Override
-            public Comparator<? super LocalDate> getComparator() {
+            public @Nullable Comparator<? super LocalDate> getComparator() {
                 return null;
             }
         };
@@ -735,7 +736,7 @@ public final class LocalDateRange
      * @return true if this is equal to the other range
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

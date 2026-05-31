@@ -56,6 +56,8 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A date in the British Cutover calendar system.
  * <p>
@@ -527,7 +529,7 @@ public final class BritishCutoverDate
 
     //-------------------------------------------------------------------------
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }
