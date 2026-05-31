@@ -930,7 +930,7 @@
     <joda-convert.version>2.2.3</joda-convert.version>
     <junit.version>5.11.4</junit.version>
     <pioneer.version>1.9.1</pioneer.version>
-    <guava.version>33.4.8-jre</guava.version>
+    <guava.version>33.6.0-jre</guava.version>
 
     <!-- Common control parameters -->
     <joda.publish.auto>true</joda.publish.auto><!-- false/true -->
