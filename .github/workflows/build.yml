@@ -7,11 +7,10 @@ on:
   pull_request:
     branches:
       - 'main'
-  schedule:
-    - cron: '41 19 * * 2'
 
 permissions:
   contents: read
+
 
 jobs:
   build:
