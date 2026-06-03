@@ -66,7 +66,7 @@ import java.util.List;
  * <li>era - Same eras as used in the Gregorian calendar: 'Before Common Era' (BCE) and 'Common Era' (CE).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year 1.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the current era.
- * <li>month-of-year - There are 12 months in an Symmetry010 year, numbered from 1 to 12.
+ * <li>month-of-year - There are 12 months in a Symmetry010 year, numbered from 1 to 12.
  * <li>day-of-month - There are 30 days in a standard Symmetry010 month, numbered from 1 to 30, except for the middle-month
  * in each quarter, which spans 31 days: February, May, August, November.
  * In leap years, December has 37 days.
@@ -76,7 +76,7 @@ import java.util.List;
  *     (52 &gt; ((52 * year + 146) % 293)).
  * <li>Week day - every year and every quarter starts on a Monday.
  *   In each quarter, the first month starts on a Monday, the second month on a Wednesday and the 3rd on a Saturday.
- *   There are no days outside of the week or month.
+ *   There are no days outside the week or month.
  * </ul>
  *
  * <h3>Implementation Requirements</h3>
@@ -96,11 +96,11 @@ public final class Symmetry010Chronology
     private static final long serialVersionUID = -1287766365831162587L;
 
     /**
-     * Standard 7 day weeks.
+     * Standard 7-day weeks.
      */
     static final int DAYS_IN_WEEK = 7;
     /**
-     * Standard 12 month years.
+     * Standard 12-month years.
      */
     static final int MONTHS_IN_YEAR = 12;
     /**
@@ -135,10 +135,6 @@ public final class Symmetry010Chronology
      * 52 weeks in a normal year.
      */
     static final int WEEKS_IN_YEAR = DAYS_IN_YEAR / DAYS_IN_WEEK;
-    /**
-     * 53 weeks in a leap year.
-     */
-    static final int WEEKS_IN_YEAR_LONG = DAYS_IN_YEAR_LONG / DAYS_IN_WEEK;
     /**
      * Number of years in a cycle.
      */
@@ -187,10 +183,6 @@ public final class Symmetry010Chronology
      * Range of eras.
      */
     static final ValueRange ERA_RANGE = ValueRange.of(0, 1);
-    /**
-     * Empty range: [0, 0].
-     */
-    static final ValueRange EMPTY_RANGE = ValueRange.of(0, 0);
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
@@ -457,7 +449,7 @@ public final class Symmetry010Chronology
      */
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(IsoEra.values());
+        return Arrays.asList(IsoEra.values());
     }
 
     //-----------------------------------------------------------------------

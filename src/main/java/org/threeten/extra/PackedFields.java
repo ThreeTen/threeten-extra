@@ -181,7 +181,7 @@ public final class PackedFields {
         }
 
         private LocalDate toDate(long newValue) {
-            if (range().isValidValue(newValue) == false) {
+            if (!range().isValidValue(newValue)) {
                 throw new DateTimeException("Invalid value: PackedDate " + newValue);
             }
             int val = (int) newValue;
@@ -271,7 +271,7 @@ public final class PackedFields {
             int mod = temporal.get(MINUTE_OF_DAY);
             int hour = mod / 60;
             int min = mod % 60;
-            return hour * 100 + min;
+            return hour * 100L + min;
         }
 
         @SuppressWarnings("unchecked")
@@ -363,7 +363,7 @@ public final class PackedFields {
             int hour = sod / 3600;
             int min = (sod / 60) % 60;
             int sec = sod % 60;
-            return hour * 10000 + min * 100 + sec;
+            return hour * 10000L + min * 100 + sec;
         }
 
         @SuppressWarnings("unchecked")
@@ -413,7 +413,7 @@ public final class PackedFields {
             long changeValue) {
         
         Long old = fieldValues.put(changeField, changeValue);
-        if (old != null && changeValue != old.longValue()) {
+        if (old != null && changeValue != old) {
             throw new DateTimeException(
                     "Conflict found: " + changeField + " " + old +
                     " differs from " + changeField + " " + changeValue +

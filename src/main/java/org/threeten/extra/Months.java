@@ -561,9 +561,7 @@ public final class Months
      */
     @Override
     public int compareTo(Months otherAmount) {
-        int thisValue = this.months;
-        int otherValue = otherAmount.months;
-        return Integer.compare(thisValue, otherValue);
+        return Integer.compare(this.months, otherAmount.months);
     }
 
     //-----------------------------------------------------------------------

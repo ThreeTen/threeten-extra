@@ -270,7 +270,7 @@ public final class YearHalf
      * Obtains an instance of {@code YearHalf} from a text string such as {@code 2007-H2}.
      * <p>
      * The string must represent a valid year-half.
-     * The format must be {@code uuuu-'H'H} where the 'H' is case insensitive.
+     * The format must be {@code uuuu-'H'H} where the 'H' is case-insensitive.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-H2", not null
@@ -583,8 +583,8 @@ public final class YearHalf
      * <p>
      * This method applies the current rules for leap years across the whole time-line.
      * In general, a year is a leap year if it is divisible by four without
-     * remainder. However, years divisible by 100, are not leap years, with
-     * the exception of years divisible by 400 which are.
+     * remainder. However, years divisible by 100, are not leap years,
+     * except for years divisible by 400 which are.
      * <p>
      * For example, 1904 is a leap year it is divisible by 4.
      * 1900 was not a leap year as it is divisible by 100, however 2000 was a
@@ -1023,7 +1023,7 @@ public final class YearHalf
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
+        if (!Chronology.from(temporal).equals(IsoChronology.INSTANCE)) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         long newProlepticHalf = getProlepticHalf();
@@ -1118,7 +1118,7 @@ public final class YearHalf
             throw new IllegalArgumentException(endExclusive + " < " + this);
         }
         long intervalLength = until(endExclusive, HALF_YEARS);
-        return LongStream.range(0, intervalLength).mapToObj(n -> plusHalves(n));
+        return LongStream.range(0, intervalLength).mapToObj(this::plusHalves);
     }
 
     /**

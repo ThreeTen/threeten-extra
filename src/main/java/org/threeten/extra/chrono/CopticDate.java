@@ -201,7 +201,7 @@ public final class CopticDate
     static CopticDate ofYearDay(int prolepticYear, int dayOfYear) {
         CopticChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         DAY_OF_YEAR.range().checkValidValue(dayOfYear, DAY_OF_YEAR);
-        if (dayOfYear == 366 && CopticChronology.INSTANCE.isLeapYear(prolepticYear) == false) {
+        if (dayOfYear == 366 && !CopticChronology.INSTANCE.isLeapYear(prolepticYear)) {
             throw new DateTimeException("Invalid date 'Nasie 6' as '" + prolepticYear + "' is not a leap year");
         }
         return new CopticDate(prolepticYear, (dayOfYear - 1) / 30 + 1, (dayOfYear - 1) % 30 + 1);

@@ -577,9 +577,7 @@ public final class Minutes
      */
     @Override
     public int compareTo(Minutes otherAmount) {
-        int thisValue = this.minutes;
-        int otherValue = otherAmount.minutes;
-        return Integer.compare(thisValue, otherValue);
+        return Integer.compare(this.minutes, otherAmount.minutes);
     }
 
     //-----------------------------------------------------------------------

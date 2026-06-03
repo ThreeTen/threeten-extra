@@ -78,7 +78,7 @@ final class SystemUtcRules extends UtcRules implements Serializable {
     /**
      * The table of leap second dates.
      */
-    private AtomicReference<Data> dataRef = new AtomicReference<Data>(loadLeapSeconds());
+    private final AtomicReference<Data> dataRef = new AtomicReference<>(loadLeapSeconds());
 
     /** Data holder. */
     private static final class Data implements Serializable {
@@ -154,7 +154,7 @@ final class SystemUtcRules extends UtcRules implements Serializable {
         offsets[offsets.length - 1] = offset;
         taiSeconds[taiSeconds.length - 1] = tai(mjDay, offset);
         Data newData = new Data(dates, offsets, taiSeconds);
-        if (dataRef.compareAndSet(data, newData) == false) {
+        if (!dataRef.compareAndSet(data, newData)) {
             throw new ConcurrentModificationException("Unable to update leap second rules as they have already been updated");
         }
     }
@@ -211,7 +211,7 @@ final class SystemUtcRules extends UtcRules implements Serializable {
      * Loads the rules from files in the class loader, often jar files.
      *
      * @return the list of loaded rules, not null
-     * @throws Exception if an error occurs
+     * @throws RuntimeException if an error occurs
      */
     private static Data loadLeapSeconds() {
         Data bestData = null;
@@ -258,9 +258,10 @@ final class SystemUtcRules extends UtcRules implements Serializable {
      * Loads the leap second rules from a URL, often in a jar file.
      *
      * @param url  the jar file to load, not null
-     * @throws Exception if an error occurs
+     * @throws RuntimeException if an error occurs
+     * @throws IOException if an error occurs
      */
-    private static Data loadLeapSeconds(URL url) throws ClassNotFoundException, IOException {
+    private static Data loadLeapSeconds(URL url) throws IOException {
         List<String> lines;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
             lines = reader.lines().collect(Collectors.toList());
@@ -273,7 +274,7 @@ final class SystemUtcRules extends UtcRules implements Serializable {
                 continue;
             }
             Matcher matcher = LEAP_FILE_FORMAT.matcher(line);
-            if (matcher.matches() == false) {
+            if (!matcher.matches()) {
                 throw new StreamCorruptedException("Invalid leap second file");
             }
             dates.add(LocalDate.parse(matcher.group(1)).getLong(JulianFields.MODIFIED_JULIAN_DAY));

@@ -135,7 +135,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     private final int yearOffset;
 
     /**
-     * Difference in days between accounting year end and ISO month end, in ISO year 0.
+     * Difference in days between accounting year-end and ISO month end, in ISO year 0.
      */
     private final transient int yearZeroDifference;
     /**
@@ -180,8 +180,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
         }
 
         // Derive cached information.
-        LocalDate endingLimit = inLastWeek ? LocalDate.of(0 + yearOffset, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
-                LocalDate.of(0 + yearOffset, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
+        LocalDate endingLimit = inLastWeek ? LocalDate.of(yearOffset, end, 1).with(TemporalAdjusters.lastDayOfMonth()) :
+                LocalDate.of(yearOffset, end, 1).with(TemporalAdjusters.lastDayOfMonth()).plusDays(3);
         LocalDate yearZeroEnd = endingLimit.with(TemporalAdjusters.previousOrSame(endsOn));
         int yearZeroDifference = (int) yearZeroEnd.until(endingLimit, ChronoUnit.DAYS);
         // Longest/shortest month lengths and related
@@ -193,8 +193,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
             longestMonthLength = Math.max(longestMonthLength, monthLength + (month == leapWeekInMonth ? 1 : 0));
         }
         ValueRange alignedWeekOfMonthRange = ValueRange.of(1, shortestMonthLength, longestMonthLength);
-        ValueRange dayOfMonthRange = ValueRange.of(1, shortestMonthLength * 7, longestMonthLength * 7);
-        int daysToEpoch = Math.toIntExact(0 - yearZeroEnd.plusDays(1).toEpochDay());
+        ValueRange dayOfMonthRange = ValueRange.of(1, shortestMonthLength * 7L, longestMonthLength * 7L);
+        int daysToEpoch = Math.toIntExact(-yearZeroEnd.plusDays(1).toEpochDay());
 
         return new AccountingChronology(endsOn, end, inLastWeek, division, leapWeekInMonth, yearZeroDifference,
                 alignedWeekOfMonthRange, dayOfMonthRange, daysToEpoch, yearOffset);
@@ -209,7 +209,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @param inLastWeek  Whether the year ends in the last week of the month, or nearest the end-of-month.
      * @param division  How the year is divided.
      * @param leapWeekInMonth  The month in which the leap-week resides.
-     * @param yearZeroDifference  Difference in days between accounting year end and ISO month end, in ISO year 0.
+     * @param yearZeroDifference  Difference in days between accounting year-end and ISO month end, in ISO year 0.
      * @param alignedWeekOfMonthRange  Range of weeks in month.
      * @param dayOfMonthRange  Range of days in month.
      * @param daysToEpoch  The number of days between the start of Accounting 1 and ISO 1970.
@@ -412,7 +412,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains a Accounting local date from another date-time object.
+     * Obtains an Accounting local date from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the Accounting local date, not null
@@ -424,7 +424,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     }
 
     /**
-     * Obtains a Accounting local date-time from another date-time object.
+     * Obtains an Accounting local date-time from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the Accounting local date-time, not null
@@ -437,7 +437,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     }
 
     /**
-     * Obtains a Accounting zoned date-time from another date-time object.
+     * Obtains an Accounting zoned date-time from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the Accounting zoned date-time, not null
@@ -450,7 +450,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
     }
 
     /**
-     * Obtains a Accounting zoned date-time in this chronology from an {@code Instant}.
+     * Obtains an Accounting zoned date-time in this chronology from an {@code Instant}.
      *
      * @param instant  the instant to create the date-time from, not null
      * @param zone  the time-zone, not null
@@ -527,7 +527,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
 
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(AccountingEra.values());
+        return Arrays.asList(AccountingEra.values());
     }
 
     //-----------------------------------------------------------------------
@@ -585,8 +585,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
 
     @Override
     public String toString() {
-        StringBuilder bld = new StringBuilder(30);
-        bld.append(getId())
+        StringBuilder buf = new StringBuilder(30);
+        buf.append(getId())
                 .append(" calendar ends on ")
                 .append(endsOn)
                 .append(inLastWeek ? " in last week of " : " nearest end of ")
@@ -596,7 +596,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
                 .append(" with leap-week in month ")
                 .append(leapWeekInMonth)
                 .append(yearOffset == 0 ? " ending in the given ISO year" : " starting in the given ISO year");
-        return bld.toString();
+        return buf.toString();
     }
 
 }

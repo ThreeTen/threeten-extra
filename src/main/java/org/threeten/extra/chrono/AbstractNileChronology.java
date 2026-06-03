@@ -68,14 +68,6 @@ abstract class AbstractNileChronology
      * Range of days.
      */
     static final ValueRange DOM_RANGE = ValueRange.of(1, 5, 30);
-    /**
-     * Range of days.
-     */
-    static final ValueRange DOM_RANGE_NONLEAP = ValueRange.of(1, 5);
-    /**
-     * Range of days.
-     */
-    static final ValueRange DOM_RANGE_LEAP = ValueRange.of(1, 6);
 
     /**
      * Private constructor.

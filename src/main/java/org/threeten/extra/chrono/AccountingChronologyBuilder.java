@@ -43,7 +43,7 @@ import java.time.Month;
  * <ul>
  * <li>ending day-of-week - The day-of-week on which a given accounting year ends.
  * <li>last-in-month vs. nearest-end-of-month - Whether the ending day-of-week is the last in the month,
- * or the nearest to the end of the month (will sometimes be in the <i>next</i> month.
+ * or the nearest to the end of the month (will sometimes be in the <i>next</i> month).
  * <li>month end - Which Gregorian/ISO end-of-month the year ends in/is nearest to.
  * <li>year division - How many 'months' (periods) to divide the accounting year into,
  * and how many weeks are in each.

@@ -375,7 +375,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * Checks if the specified year is a leap year.
      * <p>
      * In general, a year is a leap year if the last two digits are divisible by 6 without remainder, or are 99. 
-     * Years with the last two digits of 00 are also leap years, with the exception of years divisible by 400, which are not.
+     * Years with the last two digits of 00 are also leap years, except for years divisible by 400, which are not.
      * <p>
      * For example, 2012 is a leap year because the last two digits (12) are divisible by 6. 
      * 1999 is a leap year as the last two digits are both 9's (99). 
@@ -388,7 +388,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
     @Override
     public boolean isLeapYear(long prolepticYear) {
         long lastTwoDigits = prolepticYear % 100;
-        return Math.abs(lastTwoDigits) == 99 || (prolepticYear % 400 != 0 && (lastTwoDigits == 0 || lastTwoDigits % 6 == 0));
+        return Math.abs(lastTwoDigits) == 99 || (prolepticYear % 400 != 0 && (lastTwoDigits % 6 == 0));
     }
 
     @Override
@@ -406,7 +406,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
 
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(PaxEra.values());
+        return Arrays.asList(PaxEra.values());
     }
 
     //-----------------------------------------------------------------------

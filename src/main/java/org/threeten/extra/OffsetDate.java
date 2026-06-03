@@ -708,7 +708,7 @@ public final class OffsetDate
      * <p>
      * In some cases, changing the specified field can cause the resulting date to become invalid,
      * such as changing the month from 31st January to February would make the day-of-month invalid.
-     * In cases like this, the field is responsible for resolving the date. Typically it will choose
+     * In cases like this, the field is responsible for resolving the date. Typically, it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      * <p>
      * If the field is a {@link ChronoField} then the adjustment is implemented here.
@@ -718,7 +718,7 @@ public final class OffsetDate
      * then a {@code DateTimeException} will be thrown.
      * <p>
      * The other {@link #isSupported(TemporalField) supported fields} will behave as per
-     * the matching method on {@link LocalDate#with(TemporalField, long)} LocalDate}.
+     * the matching method on {@link LocalDate#with(TemporalField, long) LocalDate}.
      * In this case, the offset is not part of the calculation and will be unchanged.
      * <p>
      * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.

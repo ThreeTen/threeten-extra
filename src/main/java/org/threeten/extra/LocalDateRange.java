@@ -529,7 +529,7 @@ public final class LocalDateRange
      */
     public LocalDateRange intersection(LocalDateRange other) {
         Objects.requireNonNull(other, "other");
-        if (isConnected(other) == false) {
+        if (!isConnected(other)) {
             throw new DateTimeException("Ranges do not connect: " + this + " and " + other);
         }
         int cmpStart = start.compareTo(other.start);
@@ -557,7 +557,7 @@ public final class LocalDateRange
      */
     public LocalDateRange union(LocalDateRange other) {
         Objects.requireNonNull(other, "other");
-        if (isConnected(other) == false) {
+        if (!isConnected(other)) {
             throw new DateTimeException("Ranges do not connect: " + this + " and " + other);
         }
         int cmpStart = start.compareTo(other.start);
@@ -602,6 +602,7 @@ public final class LocalDateRange
      */
     public Stream<LocalDate> stream() {
         long count = end.toEpochDay() - start.toEpochDay() + (isUnboundedEnd() ? 1 : 0);
+        // type parameter needed for inner class in Java 8
         Spliterator<LocalDate> spliterator = new Spliterators.AbstractSpliterator<LocalDate>(
                 count,
                 Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT | Spliterator.ORDERED |

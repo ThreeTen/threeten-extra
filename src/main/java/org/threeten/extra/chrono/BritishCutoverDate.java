@@ -355,7 +355,7 @@ public final class BritishCutoverDate
         if (isCutoverMonth()) {
             return ValueRange.of(1, 3);
         }
-        return ValueRange.of(1, getMonth() == 2 && isLeapYear() == false ? 4 : 5);
+        return ValueRange.of(1, getMonth() == 2 && !isLeapYear() ? 4 : 5);
     }
 
     @Override

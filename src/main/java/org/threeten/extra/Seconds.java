@@ -612,9 +612,7 @@ public final class Seconds
      */
     @Override
     public int compareTo(Seconds otherAmount) {
-        int thisValue = this.seconds;
-        int otherValue = otherAmount.seconds;
-        return Integer.compare(thisValue, otherValue);
+        return Integer.compare(this.seconds, otherAmount.seconds);
     }
 
     //-----------------------------------------------------------------------

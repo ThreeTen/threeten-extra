@@ -177,7 +177,7 @@ abstract class AbstractDate
     }
 
     long getProlepticMonth() {
-        return getProlepticYear() * lengthOfYearInMonths() + getMonth() - 1;
+        return ((long) getProlepticYear()) * lengthOfYearInMonths() + getMonth() - 1;
     }
 
     int getYearOfEra() {
@@ -298,11 +298,11 @@ abstract class AbstractDate
                 case YEARS:
                     return monthsUntil(end) / lengthOfYearInMonths();
                 case DECADES:
-                    return monthsUntil(end) / (lengthOfYearInMonths() * 10);
+                    return monthsUntil(end) / (lengthOfYearInMonths() * 10L);
                 case CENTURIES:
-                    return monthsUntil(end) / (lengthOfYearInMonths() * 100);
+                    return monthsUntil(end) / (lengthOfYearInMonths() * 100L);
                 case MILLENNIA:
-                    return monthsUntil(end) / (lengthOfYearInMonths() * 1000);
+                    return monthsUntil(end) / (lengthOfYearInMonths() * 1000L);
                 case ERAS:
                     return end.getLong(ERA) - getLong(ERA);
                 default:

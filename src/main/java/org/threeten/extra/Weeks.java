@@ -517,9 +517,7 @@ public final class Weeks
      */
     @Override
     public int compareTo(Weeks otherAmount) {
-        int thisValue = this.weeks;
-        int otherValue = otherAmount.weeks;
-        return Integer.compare(thisValue, otherValue);
+        return Integer.compare(this.weeks, otherAmount.weeks);
     }
 
     //-----------------------------------------------------------------------

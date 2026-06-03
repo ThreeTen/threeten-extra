@@ -443,7 +443,7 @@ public final class Interval
      */
     public Interval intersection(Interval other) {
         Objects.requireNonNull(other, "other");
-        if (isConnected(other) == false) {
+        if (!isConnected(other)) {
             throw new DateTimeException("Intervals do not connect: " + this + " and " + other);
         }
         int cmpStart = start.compareTo(other.start);
@@ -471,7 +471,7 @@ public final class Interval
      */
     public Interval union(Interval other) {
         Objects.requireNonNull(other, "other");
-        if (isConnected(other) == false) {
+        if (!isConnected(other)) {
             throw new DateTimeException("Intervals do not connect: " + this + " and " + other);
         }
         int cmpStart = start.compareTo(other.start);

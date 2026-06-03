@@ -48,7 +48,7 @@ import java.time.Instant;
  * <p>
  * The principal methods are defined to allow the throwing of an exception.
  * In normal use, no exceptions will be thrown, however one possible implementation would be to
- * obtain the time from a central time server across the network. Obviously, in this case the
+ * obtain the time from a central time-server across the network. Obviously, in this case the
  * lookup could fail, and so the method is permitted to throw an exception.
  * <p>
  * Subclass implementations should implement {@code Serializable} wherever possible.

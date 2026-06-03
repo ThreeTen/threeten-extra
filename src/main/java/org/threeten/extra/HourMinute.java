@@ -176,7 +176,7 @@ public final class HourMinute
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code HourMinute} from a hour and minute.
+     * Obtains an instance of {@code HourMinute} from an hour and minute.
      *
      * @param hour  the hour to represent, from 0 to 23
      * @param minute  the minute-of-hour to represent, from 0 to 59
@@ -193,7 +193,7 @@ public final class HourMinute
     /**
      * Obtains an instance of {@code HourMinute} from a temporal object.
      * <p>
-     * This obtains a hour-minute based on the specified temporal.
+     * This obtains an hour-minute based on the specified temporal.
      * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
      * which this factory converts to an instance of {@code HourMinute}.
      * <p>
@@ -242,7 +242,7 @@ public final class HourMinute
     /**
      * Obtains an instance of {@code HourMinute} from a text string using a specific formatter.
      * <p>
-     * The text is parsed using the formatter, returning a hour-minute.
+     * The text is parsed using the formatter, returning an hour-minute.
      *
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
@@ -590,7 +590,7 @@ public final class HourMinute
                 case MINUTE_OF_HOUR:
                     return withMinute((int) newValue);
                 case MINUTE_OF_DAY:
-                    return plusMinutes(newValue - (hour * MINUTES_PER_HOUR + minute));
+                    return plusMinutes(newValue - ((long) hour * MINUTES_PER_HOUR + minute));
                 case HOUR_OF_AMPM:
                     return plusHours(newValue - (hour % 12));
                 case CLOCK_HOUR_OF_AMPM:
@@ -891,7 +891,7 @@ public final class HourMinute
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        return temporal.with(MINUTE_OF_DAY, hour * MINUTES_PER_HOUR + minute);
+        return temporal.with(MINUTE_OF_DAY, (long) hour * MINUTES_PER_HOUR + minute);
     }
 
     /**
@@ -928,7 +928,7 @@ public final class HourMinute
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
         HourMinute end = HourMinute.from(endExclusive);
-        long minutesUntil = (end.hour * MINUTES_PER_HOUR + end.minute) - (hour * MINUTES_PER_HOUR + minute);  // no overflow
+        long minutesUntil = ((long) end.hour * MINUTES_PER_HOUR + end.minute) - ((long) hour * MINUTES_PER_HOUR + minute);  // no overflow
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
                 case MINUTES:

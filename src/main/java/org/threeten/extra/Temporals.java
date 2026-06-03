@@ -360,7 +360,7 @@ public final class Temporals {
             if (unit.equals(ERAS) || unit.equals(FOREVER)) {
                 throw new UnsupportedTemporalTypeException("Unsupported TemporalUnit: " + unit);
             }
-        } else if (unit.equals(IsoFields.QUARTER_YEARS) == false) {
+        } else if (!unit.equals(IsoFields.QUARTER_YEARS)) {
             throw new UnsupportedTemporalTypeException("Unsupported TemporalUnit: " + unit);
         }
     }

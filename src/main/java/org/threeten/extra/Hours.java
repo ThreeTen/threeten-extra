@@ -52,7 +52,7 @@ import org.joda.convert.FromString;
 import org.joda.convert.ToString;
 
 /**
- * A hour-based amount of time, such as '4 hours'.
+ * An hour-based amount of time, such as '4 hours'.
  * <p>
  * This class models a quantity or amount of time in terms of hours.
  * It is a type-safe way of representing a number of hours in an application.
@@ -557,9 +557,7 @@ public final class Hours
      */
     @Override
     public int compareTo(Hours otherAmount) {
-        int thisValue = this.hours;
-        int otherValue = otherAmount.hours;
-        return Integer.compare(thisValue, otherValue);
+        return Integer.compare(this.hours, otherAmount.hours);
     }
 
     //-----------------------------------------------------------------------
