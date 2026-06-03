@@ -185,7 +185,7 @@ public final class DayOfMonth
         }
         Objects.requireNonNull(temporal, "temporal");
         try {
-            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
+            if (!IsoChronology.INSTANCE.equals(Chronology.from(temporal))) {
                 temporal = LocalDate.from(temporal);
             }
             return of(temporal.get(DAY_OF_MONTH));
@@ -416,7 +416,7 @@ public final class DayOfMonth
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
+        if (!Chronology.from(temporal).equals(IsoChronology.INSTANCE)) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(DAY_OF_MONTH, day);

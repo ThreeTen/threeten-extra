@@ -86,7 +86,7 @@ import java.time.temporal.ValueRange;
  * The year shares the 12 months with the Gregorian calendar.
  * The months February, May, August, November span 31 days, all other months consist of 30 days.
  * In leap years, December is extended with a full week, the so-called "leap week".
- * Thus December in a leap year has 37.
+ * Thus, December in a leap year has 37.
  * Since each month is made of full weeks, the calendar is perennial, with every date fixed always on the same weekday.
  * Each month starts on a Monday and ends on a Sunday; so does each year.
  * The 13th day of a month is always a Saturday.
@@ -325,7 +325,7 @@ public final class Symmetry010Date
                 if (!INSTANCE.isLeapYear(prolepticYear)) {
                     throw new DateTimeException("Invalid Leap Day as '" + prolepticYear + "' is not a leap year");
                 }
-            } else if (((month % 3 == 2) && dayOfMonth > DAYS_IN_MONTH_LONG) || (month % 3 != 2)) {
+            } else if (month % 3 != 2 || dayOfMonth > DAYS_IN_MONTH_LONG) {
                 throw new DateTimeException("Invalid date: " + prolepticYear + '/' + month + '/' + dayOfMonth);
             }
         }
@@ -389,7 +389,7 @@ public final class Symmetry010Date
     }
 
     long getProlepticWeek() {
-        return prolepticYear * WEEKS_IN_YEAR +
+        return ((long) prolepticYear) * WEEKS_IN_YEAR +
                Symmetry010Chronology.getLeapYearsBefore(prolepticYear) +
                ((dayOfYear - 1) / DAYS_IN_WEEK) - 1;
     }
@@ -625,13 +625,9 @@ public final class Symmetry010Date
     //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
-        long epochDay =
-                (long) (this.prolepticYear - 1) * DAYS_IN_YEAR +
+        return (long) (this.prolepticYear - 1) * DAYS_IN_YEAR +
                 Symmetry010Chronology.getLeapYearsBefore(this.prolepticYear) * DAYS_IN_WEEK +
-                this.dayOfYear -
-                DAYS_0001_TO_1970 - 1;
-
-        return epochDay;
+                this.dayOfYear - DAYS_0001_TO_1970 - 1;
     }
 
     /**

@@ -517,9 +517,7 @@ public final class Years
      */
     @Override
     public int compareTo(Years otherAmount) {
-        int thisValue = this.years;
-        int otherValue = otherAmount.years;
-        return Integer.compare(thisValue, otherValue);
+        return Integer.compare(this.years, otherAmount.years);
     }
 
     //-----------------------------------------------------------------------

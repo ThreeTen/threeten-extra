@@ -88,7 +88,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
     /**
      * Number of days in a long (400-year) cycle.
      */
-    private static final int DAYS_PER_LONG_CYCLE = 400 * 365 + 3 * 24 + 1 * 25;
+    private static final int DAYS_PER_LONG_CYCLE = 400 * 365 + 3 * 24 + 25;
 
     /**
      * The chronology for manipulating this date.

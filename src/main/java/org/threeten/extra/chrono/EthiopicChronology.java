@@ -62,7 +62,7 @@ import java.util.Map;
  *  For the previous era the year increases from one as time goes backwards.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
  *  current era. For the previous era, years have zero, then negative values.
- * <li>month-of-year - There are 13 months in a Ethiopic year, numbered from 1 to 13.
+ * <li>month-of-year - There are 13 months in an Ethiopic year, numbered from 1 to 13.
  * <li>day-of-month - There are 30 days in each of the first 12 Ethiopic months, numbered 1 to 30.
  *  The 13th month has 5 days, or 6 in a leap year, numbered 1 to 5 or 1 to 6.
  * <li>day-of-year - There are 365 days in a standard Ethiopic year and 366 in a leap year.
@@ -265,7 +265,7 @@ public final class EthiopicChronology
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains a Ethiopic local date from another date-time object.
+     * Obtains an Ethiopic local date from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the Ethiopic local date, not null
@@ -277,7 +277,7 @@ public final class EthiopicChronology
     }
 
     /**
-     * Obtains a Ethiopic local date-time from another date-time object.
+     * Obtains an Ethiopic local date-time from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the Ethiopic local date-time, not null
@@ -290,7 +290,7 @@ public final class EthiopicChronology
     }
 
     /**
-     * Obtains a Ethiopic zoned date-time from another date-time object.
+     * Obtains an Ethiopic zoned date-time from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the Ethiopic zoned date-time, not null
@@ -303,7 +303,7 @@ public final class EthiopicChronology
     }
 
     /**
-     * Obtains a Ethiopic zoned date-time in this chronology from an {@code Instant}.
+     * Obtains an Ethiopic zoned date-time in this chronology from an {@code Instant}.
      *
      * @param instant  the instant to create the date-time from, not null
      * @param zone  the time-zone, not null
@@ -319,7 +319,7 @@ public final class EthiopicChronology
     //-----------------------------------------------------------------------
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
-        if (era instanceof EthiopicEra == false) {
+        if (!(era instanceof EthiopicEra)) {
             throw new ClassCastException("Era must be EthiopicEra");
         }
         return (era == EthiopicEra.INCARNATION ? yearOfEra : 1 - yearOfEra);
@@ -332,7 +332,7 @@ public final class EthiopicChronology
 
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(EthiopicEra.values());
+        return Arrays.asList(EthiopicEra.values());
     }
 
     //-----------------------------------------------------------------------

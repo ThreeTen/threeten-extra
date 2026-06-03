@@ -187,7 +187,7 @@ public final class TemporalFields {
 
         @Override
         public long getFrom(TemporalAccessor temporal) {
-            if (isSupportedBy(temporal) == false) {
+            if (!isSupportedBy(temporal)) {
                 throw new UnsupportedTemporalTypeException("Unsupported field: DayOfHalf");
             }
             int doy = temporal.get(DAY_OF_YEAR);
@@ -295,7 +295,7 @@ public final class TemporalFields {
 
         @Override
         public long getFrom(TemporalAccessor temporal) {
-            if (isSupportedBy(temporal) == false) {
+            if (!isSupportedBy(temporal)) {
                 throw new UnsupportedTemporalTypeException("Unsupported field: HalfOfYear");
             }
             long qoy = temporal.get(QUARTER_OF_YEAR);

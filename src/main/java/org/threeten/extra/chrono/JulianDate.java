@@ -84,7 +84,7 @@ public final class JulianDate
      */
     private static final int JULIAN_0001_TO_ISO_1970 = 678577 + 40587;  // MJD values
     /**
-     * The days per 4 year cycle.
+     * The days per 4-year cycle.
      */
     private static final int DAYS_PER_CYCLE = (365 * 4) + 1;
 
@@ -209,7 +209,7 @@ public final class JulianDate
         JulianChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         DAY_OF_YEAR.checkValidValue(dayOfYear);
         boolean leap = JulianChronology.INSTANCE.isLeapYear(prolepticYear);
-        if (dayOfYear == 366 && leap == false) {
+        if (dayOfYear == 366 && !leap) {
             throw new DateTimeException("Invalid date 'DayOfYear 366' as '" + prolepticYear + "' is not a leap year");
         }
         Month moy = Month.of((dayOfYear - 1) / 31 + 1);
@@ -347,7 +347,7 @@ public final class JulianDate
 
     @Override
     ValueRange rangeAlignedWeekOfMonth() {
-        return ValueRange.of(1, month == 2 && isLeapYear() == false ? 4 : 5);
+        return ValueRange.of(1, month == 2 && !isLeapYear() ? 4 : 5);
     }
 
     @Override
@@ -457,7 +457,7 @@ public final class JulianDate
     //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
-        long year = (long) prolepticYear;
+        long year = prolepticYear;
         long julianEpochDay = ((year - 1) * 365) + Math.floorDiv((year - 1), 4) + (getDayOfYear() - 1);
         return julianEpochDay - JULIAN_0001_TO_ISO_1970;
     }

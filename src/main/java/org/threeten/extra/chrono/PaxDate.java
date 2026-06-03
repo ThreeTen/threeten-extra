@@ -93,17 +93,17 @@ public final class PaxDate
      */
     private static final int PAX_0001_TO_ISO_1970 = 719163;
     /**
-     * The days per 400 year cycle.
+     * The days per 400-year cycle.
      */
     private static final int DAYS_PER_LONG_CYCLE = (DAYS_IN_YEAR * 400) + (DAYS_IN_WEEK * 71);
     /**
-     * The days per 100 year cycle.
+     * The days per 100-year cycle.
      */
     private static final int DAYS_PER_CYCLE = (DAYS_IN_YEAR * 100) + (DAYS_IN_WEEK * 18);
     /**
-     * The days per 6 year cycle.
+     * The days per 6-year cycle.
      */
-    private static final int DAYS_PER_SIX_CYCLE = (DAYS_IN_YEAR * 6) + (DAYS_IN_WEEK * 1);
+    private static final int DAYS_PER_SIX_CYCLE = (DAYS_IN_YEAR * 6) + DAYS_IN_WEEK;
     /**
      * Number of years in a decade.
      */
@@ -285,7 +285,7 @@ public final class PaxDate
         long paxEpochDay = epochDay + PAX_0001_TO_ISO_1970;
         int longCycle = (int) Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
         int cycle = (int) (paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE;
-        int dayOfCycle = (int) Math.floorMod(paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
+        int dayOfCycle = (int) Math.floorMod(paxEpochDay - ((long) longCycle) * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
         if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
             // Is in the century year
             int dayOfYear = dayOfCycle - (DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) + 1;
@@ -492,12 +492,10 @@ public final class PaxDate
      */
     @Override
     public int lengthOfMonth() {
-        switch (month) {
-            case 13:
-                return (isLeapYear() ? DAYS_IN_WEEK : DAYS_IN_MONTH);
-            default:
-                return DAYS_IN_MONTH;
+        if (month == 13) {
+            return (isLeapYear() ? DAYS_IN_WEEK : DAYS_IN_MONTH);
         }
+        return DAYS_IN_MONTH;
     }
 
     @Override

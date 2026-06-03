@@ -643,13 +643,9 @@ public final class Symmetry454Date
     //-----------------------------------------------------------------------
     @Override
     public long toEpochDay() {
-        long epochDay =
-                (long) (this.prolepticYear - 1) * DAYS_IN_YEAR +
+        return (long) (this.prolepticYear - 1) * DAYS_IN_YEAR +
                 Symmetry454Chronology.getLeapYearsBefore(this.prolepticYear) * DAYS_IN_WEEK +
-                this.dayOfYear -
-                DAYS_0001_TO_1970 - 1;
-
-        return epochDay;
+                this.dayOfYear - DAYS_0001_TO_1970 - 1;
     }
 
     /**

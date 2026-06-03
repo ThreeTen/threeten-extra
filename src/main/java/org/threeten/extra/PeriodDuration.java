@@ -70,7 +70,7 @@ import org.joda.convert.ToString;
  * A duration is a time-based amount of time, consisting of seconds and nanoseconds.
  * See the {@link Period} and {@link Duration} classes for more details.
  * <p>
- * The days in a period take account of daylight saving changes (23 or 25 hour days).
+ * The days in a period take account of daylight saving changes (23 or 25-hour days).
  * When performing calculations, the period is added first, then the duration.
  * <p>
  * The model is of a directed amount, meaning that the amount may be negative.
@@ -193,7 +193,7 @@ public final class PeriodDuration
             return PeriodDuration.of((Duration) amount);
         }
         if (amount instanceof ChronoPeriod) {
-            if (IsoChronology.INSTANCE.equals(((ChronoPeriod) amount).getChronology()) == false) {
+            if (!IsoChronology.INSTANCE.equals(((ChronoPeriod) amount).getChronology())) {
                 throw new DateTimeException("Period requires ISO chronology: " + amount);
             }
         }

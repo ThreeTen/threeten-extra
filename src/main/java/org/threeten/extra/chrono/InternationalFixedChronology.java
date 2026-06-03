@@ -115,7 +115,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      */
     static final int WEEKS_IN_YEAR = DAYS_IN_YEAR / DAYS_IN_WEEK;
     /**
-     * The number of days in a 400 year cycle.
+     * The number of days in a 400-year cycle.
      */
     static final int DAYS_PER_CYCLE = 146097;
     /**
@@ -337,7 +337,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains a International Fixed local date from another date-time object.
+     * Obtains an International Fixed local date from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the International Fixed local date, not null
@@ -349,7 +349,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     }
 
     /**
-     * Obtains a International Fixed local date-time from another date-time object.
+     * Obtains an International Fixed local date-time from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the International Fixed local date-time, not null
@@ -362,7 +362,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     }
 
     /**
-     * Obtains a International Fixed zoned date-time from another date-time object.
+     * Obtains an International Fixed zoned date-time from another date-time object.
      *
      * @param temporal  the date-time object to convert, not null
      * @return the International Fixed zoned date-time, not null
@@ -375,7 +375,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     }
 
     /**
-     * Obtains a International Fixed zoned date-time in this chronology from an {@code Instant}.
+     * Obtains an International Fixed zoned date-time in this chronology from an {@code Instant}.
      *
      * @param instant  the instant to create the date-time from, not null
      * @param zone  the time-zone, not null
@@ -427,7 +427,7 @@ public final class InternationalFixedChronology extends AbstractChronology imple
      */
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(InternationalFixedEra.values());
+        return Arrays.asList(InternationalFixedEra.values());
     }
 
     //-----------------------------------------------------------------------

@@ -66,14 +66,14 @@ import java.util.List;
  * <li>era - Same eras as used in the Gregorian calendar: 'Before Common Era' (BCE) and 'Common Era' (CE).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year 1.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the current era.
- * <li>month-of-year - There are 12 months in an Symmetry454 year, numbered from 1 to 12.
+ * <li>month-of-year - There are 12 months in a Symmetry454 year, numbered from 1 to 12.
  * <li>day-of-month - There are 28 days in a standard Symmetry454 month, numbered from 1 to 28, except for the middle-month
  * in each quarter, which spans 35 days: February, May, August, November; and December in leap years.
  * <li>day-of-year - There are 364 days in a standard Symmetry454 year and 371 days in a leap year.
  *  The days are numbered accordingly.
  * <li>leap-year - Leap years occur every 5 or 6 years, evenly spread over 293 years according the formula:
  *     (52 &gt; ((52 * year + 146) % 293)).
- * <li>Week day - every month starts on a Monday.  There are no days outside of the week or month.
+ * <li>Week day - every month starts on a Monday.  There are no days outside the week or month.
  * </ul>
  *
  * <h3>Implementation Requirements</h3>
@@ -93,11 +93,11 @@ public final class Symmetry454Chronology
     private static final long serialVersionUID = -1287766365831162587L;
 
     /**
-     * Standard 7 day weeks.
+     * Standard 7-day weeks.
      */
     static final int DAYS_IN_WEEK = 7;
     /**
-     * Standard 12 month years.
+     * Standard 12-month years.
      */
     static final int MONTHS_IN_YEAR = 12;
     /**
@@ -180,10 +180,6 @@ public final class Symmetry454Chronology
      * Range of eras.
      */
     static final ValueRange ERA_RANGE = ValueRange.of(0, 1);
-    /**
-     * Empty range: [0, 0].
-     */
-    static final ValueRange EMPTY_RANGE = ValueRange.of(0, 0);
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
@@ -450,7 +446,7 @@ public final class Symmetry454Chronology
      */
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(IsoEra.values());
+        return Arrays.asList(IsoEra.values());
     }
 
     //-----------------------------------------------------------------------

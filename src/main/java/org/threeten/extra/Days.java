@@ -561,9 +561,7 @@ public final class Days
      */
     @Override
     public int compareTo(Days otherAmount) {
-        int thisValue = this.days;
-        int otherValue = otherAmount.days;
-        return Integer.compare(thisValue, otherValue);
+        return Integer.compare(this.days, otherAmount.days);
     }
 
     //-----------------------------------------------------------------------

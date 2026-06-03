@@ -70,12 +70,10 @@ public enum DiscordianEra implements Era {
      * @throws DateTimeException if the value is invalid
      */
     public static DiscordianEra of(int era) {
-        switch (era) {
-            case 1:
-                return YOLD;
-            default:
-                throw new DateTimeException("Invalid era: " + era);
+        if (era == 1) {
+            return YOLD;
         }
+        throw new DateTimeException("Invalid era: " + era);
     }
 
     //-----------------------------------------------------------------------

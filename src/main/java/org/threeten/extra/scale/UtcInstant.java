@@ -73,7 +73,7 @@ import org.joda.convert.ToString;
  * <p>
  * The duration between two points on the UTC time-scale is calculated solely using this class.
  * Do not use the {@code between} method on {@code Duration} as that will lose information.
- * Instead use {@link #durationUntil(UtcInstant)} on this class.
+ * Instead, use {@link #durationUntil(UtcInstant)} on this class.
  * <p>
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
@@ -481,7 +481,7 @@ public final class UtcInstant
      */
     @Override
     public int hashCode() {
-        return ((int) (mjDay ^ (mjDay >>> 32))) + 51 * ((int) (nanoOfDay ^ (nanoOfDay >>> 32)));
+        return (Long.hashCode(mjDay)) + 51 * (Long.hashCode(nanoOfDay));
     }
 
     //-----------------------------------------------------------------------

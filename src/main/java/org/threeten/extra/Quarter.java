@@ -486,7 +486,7 @@ public enum Quarter implements TemporalAccessor, TemporalAdjuster {
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
+        if (!Chronology.from(temporal).equals(IsoChronology.INSTANCE)) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(QUARTER_OF_YEAR, getValue());

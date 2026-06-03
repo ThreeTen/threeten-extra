@@ -207,7 +207,7 @@ public enum AccountingYearDivision {
 
         int month = Arrays.binarySearch(elapsedWeeks, weeksElapsed);
         // Binary search returns 0-indexed if found, negative - 1 for insert position if not.
-        month = (month >= 0 ? month + 1 : 0 - month - 1);
+        month = (month >= 0 ? month + 1 : -month - 1);
         // Need to move to previous month if there was a leap week and in the first week.
         return leapWeekInMonth == 0 || month <= leapWeekInMonth || weeksElapsed > elapsedWeeks[month - 1] ? month : month - 1;
     }

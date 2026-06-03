@@ -45,8 +45,8 @@ import java.util.ConcurrentModificationException;
  * These are used by default in {@code UtcInstant} and {@code TaiInstant}.
  * Using other rules requires manual use of this class.
  * <p>
- * The system rules can be updated using a {@code LeapSeconds.txt}} file.
- * You can create your own version of this file and place it in on the classpath
+ * The system rules can be updated using a {@code LeapSeconds.txt} file.
+ * You can create your own version of this file, place it on the classpath,
  * and it will be used. Due to Java 9 module restrictions, the file is located
  * under META-INF to avoid module encapsulation problems -
  * {@code META-INF/org/threeten/extra/scale/LeapSeconds.txt}.

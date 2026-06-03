@@ -91,11 +91,11 @@ public final class DiscordianDate
      */
     private static final int DISCORDIAN_1167_TO_ISO_1970 = 719162;
     /**
-     * The days per short 4 year cycle.
+     * The days per short 4-year cycle.
      */
     private static final int DAYS_PER_SHORT_CYCLE = (365 * 4) + 1;
     /**
-     * The days per 100 year cycle.
+     * The days per 100-year cycle.
      */
     private static final int DAYS_PER_CYCLE = (DAYS_PER_SHORT_CYCLE * 25) - 1;
     /**
@@ -288,18 +288,16 @@ public final class DiscordianDate
     }
 
     private static DiscordianDate resolvePreviousValid(int prolepticYear, int month, int day) {
-        switch (month) {
-            case 0:
-                day = 0;
-                if (DiscordianChronology.INSTANCE.isLeapYear(prolepticYear)) {
-                    break;
-                }
-                month = 1;
-                // fall through
-            default:
-                if (day == 0) {
-                    day = ST_TIBS_OFFSET;
-                }
+        if (month == 0) {
+            day = 0;
+            if (DiscordianChronology.INSTANCE.isLeapYear(prolepticYear)) {
+                return new DiscordianDate(prolepticYear, month, day);
+            }
+            month = 1;
+            // fall through
+        }
+        if (day == 0) {
+            day = ST_TIBS_OFFSET;
         }
         return new DiscordianDate(prolepticYear, month, day);
     }
@@ -474,7 +472,7 @@ public final class DiscordianDate
     @Override
     long getProlepticMonth() {
         // Consider St. Tib's day to be part of the 1st month for this count.
-        return prolepticYear * MONTHS_IN_YEAR + (month == 0 ? 1 : month) - 1;
+        return ((long) prolepticYear) * MONTHS_IN_YEAR + (month == 0 ? 1 : month) - 1;
     }
 
     long getProlepticWeek() {
@@ -676,11 +674,8 @@ public final class DiscordianDate
     @Override
     long until(AbstractDate end, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
-            switch ((ChronoUnit) unit) {
-                case WEEKS:
-                    return weeksUntil(DiscordianDate.from(end));
-                default:
-                    break;
+            if (unit == ChronoUnit.WEEKS) {
+                return weeksUntil(DiscordianDate.from(end));
             }
         }
         return super.until(end, unit);
@@ -729,7 +724,7 @@ public final class DiscordianDate
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(30);
-        buf.append(DiscordianChronology.INSTANCE.toString())
+        buf.append(DiscordianChronology.INSTANCE)
                 .append(" ")
                 .append(DiscordianEra.YOLD)
                 .append(" ")

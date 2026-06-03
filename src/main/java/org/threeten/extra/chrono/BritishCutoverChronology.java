@@ -422,7 +422,7 @@ public final class BritishCutoverChronology
 
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
-        if (era instanceof JulianEra == false) {
+        if (!(era instanceof JulianEra)) {
             throw new ClassCastException("Era must be JulianEra");
         }
         return (era == JulianEra.AD ? yearOfEra : 1 - yearOfEra);
@@ -435,7 +435,7 @@ public final class BritishCutoverChronology
 
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(JulianEra.values());
+        return Arrays.asList(JulianEra.values());
     }
 
     //-----------------------------------------------------------------------

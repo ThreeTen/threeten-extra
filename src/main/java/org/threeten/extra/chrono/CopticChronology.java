@@ -319,7 +319,7 @@ public final class CopticChronology
     //-----------------------------------------------------------------------
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
-        if (era instanceof CopticEra == false) {
+        if (!(era instanceof CopticEra)) {
             throw new ClassCastException("Era must be CopticEra");
         }
         return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
@@ -332,7 +332,7 @@ public final class CopticChronology
 
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(CopticEra.values());
+        return Arrays.asList(CopticEra.values());
     }
 
     //-----------------------------------------------------------------------

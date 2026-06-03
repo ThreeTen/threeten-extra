@@ -74,7 +74,7 @@ import java.time.temporal.ValueRange;
  * A date in the International fixed calendar system.
  * <p>
  * Implements a pure International Fixed calendar (also known as the Cotsworth plan, the Eastman plan,
- * the 13 Month calendar or the Equal Month calendar) a solar calendar proposal for calendar reform designed by
+ * the 13-Month calendar or the Equal Month calendar) a solar calendar proposal for calendar reform designed by
  * Moses B. Cotsworth, who presented it in 1902.
  * <p>
  * It provides for a year of 13 months of 28 days each.
@@ -717,7 +717,7 @@ public final class InternationalFixedDate
 
         // When both Leap Day and Year Day start / end the period, the intra-month difference can be +- 28 days,
         // because internally day-of-month as 1 (Leap Day) or 29 (Year Day) for calculations.
-        // Thus we have to compensate the difference accordingly.
+        // Thus, we have to compensate the difference accordingly.
         if ((!isYearDay && !isLeapDay) && !(end.isYearDay && !end.isLeapDay)) {
             if (days == DAYS_IN_MONTH) {
                 days = 0;

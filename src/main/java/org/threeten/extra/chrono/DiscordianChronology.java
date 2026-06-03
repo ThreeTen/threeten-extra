@@ -412,7 +412,7 @@ public final class DiscordianChronology
 
     @Override
     public List<Era> eras() {
-        return Arrays.<Era>asList(DiscordianEra.values());
+        return Arrays.asList(DiscordianEra.values());
     }
 
     //-----------------------------------------------------------------------

@@ -183,7 +183,7 @@ public final class DayOfYear
         }
         Objects.requireNonNull(temporal, "temporal");
         try {
-            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
+            if (!IsoChronology.INSTANCE.equals(Chronology.from(temporal))) {
                 temporal = LocalDate.from(temporal);
             }
             return of(temporal.get(DAY_OF_YEAR));
@@ -414,7 +414,7 @@ public final class DayOfYear
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
+        if (!Chronology.from(temporal).equals(IsoChronology.INSTANCE)) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(DAY_OF_YEAR, day);

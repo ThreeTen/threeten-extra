@@ -62,7 +62,7 @@ import org.joda.convert.ToString;
  * <p>
  * The duration between two points on the TAI time-scale is calculated solely using this class.
  * Do not use the {@code between} method on {@code Duration} as that will lose information.
- * Instead use {@link #durationUntil(TaiInstant)} on this class.
+ * Instead, use {@link #durationUntil(TaiInstant)} on this class.
  * <p>
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
@@ -122,7 +122,7 @@ public final class TaiInstant
      * This method allows an arbitrary number of nanoseconds to be passed in.
      * The factory will alter the values of the second and nanosecond in order
      * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
-     * For example, the following will result in the exactly the same instant:
+     * For example, the following will result in exactly the same instant:
      * <pre>
      *  TaiInstant.ofTaiSeconds(3, 1);
      *  TaiInstant.ofTaiSeconds(4, -999999999);
@@ -468,7 +468,7 @@ public final class TaiInstant
     @Override
     public int hashCode() {
         // TODO: Evaluate hash code
-        return ((int) (seconds ^ (seconds >>> 32))) + 51 * nanos;
+        return (Long.hashCode(seconds)) + 51 * nanos;
     }
 
     //-----------------------------------------------------------------------

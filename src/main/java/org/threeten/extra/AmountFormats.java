@@ -298,13 +298,13 @@ public final class AmountFormats {
         int millis = duration.getNano() / NANOS_PER_MILLIS;
         int[] values = {
             normPeriod.getYears(), normPeriod.getMonths(), weeks, days,
-            (int) hours, mins, secs, millis};
+            hours, mins, secs, millis};
         return wb.format(values);
     }
 
     // are the signs opposite
     private static boolean oppositeSigns(int a, int b) {
-        return a < 0 ? (b >= 0) : (b < 0);
+        return (a < 0) == (b >= 0);
     }
 
     /**
@@ -491,7 +491,6 @@ public final class AmountFormats {
     // find the duration unit at the beginning of the input text, if present.
     private static Optional<DurationUnit> findUnit(CharSequence text) {
         return DURATION_UNITS.stream()
-            .sequential()
             .filter(du -> du.prefixMatchesUnit(text))
             .findFirst();
     }
@@ -525,8 +524,8 @@ public final class AmountFormats {
         String format(int[] values) {
             StringBuilder buf = new StringBuilder(32);
             int nonZeroCount = 0;
-            for (int i = 0; i < values.length; i++) {
-                if (values[i] != 0) {
+            for (int value : values) {
+                if (value != 0) {
                     nonZeroCount++;
                 }
             }
@@ -592,7 +591,7 @@ public final class AmountFormats {
                 throw new IllegalStateException("Invalid word-based resource");
             }
             this.predicates = Stream.of(predicateStrs)
-                    .map(predicateStr -> findPredicate(predicateStr))
+                    .map(this::findPredicate)
                     .toArray(IntPredicate[]::new);
             this.text = text;
         }
@@ -632,7 +631,7 @@ public final class AmountFormats {
         // whether the input text starts with the unit abbreviation.
         boolean prefixMatchesUnit(CharSequence text) {
             return text.length() >= abbrev.length()
-                    && abbrev.equals(text.subSequence(0, abbrev.length()));
+                    && abbrev.contentEquals(text.subSequence(0, abbrev.length()));
         }
 
         // consume the duration unit and returning the remaining text.
