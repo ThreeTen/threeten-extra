@@ -86,7 +86,7 @@ import java.time.temporal.ValueRange;
  * The year shares the 12 months with the Gregorian calendar.
  * The months February, May, August, November span 31 days, all other months consist of 30 days.
  * In leap years, December is extended with a full week, the so-called "leap week".
- * Thus, December in a leap year has 37.
+ * Thus, December in a leap year has 37 days.
  * Since each month is made of full weeks, the calendar is perennial, with every date fixed always on the same weekday.
  * Each month starts on a Monday and ends on a Sunday; so does each year.
  * The 13th day of a month is always a Saturday.
