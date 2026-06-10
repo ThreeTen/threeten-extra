@@ -190,9 +190,7 @@ public final class AccountingChronologyBuilder {
      * @throws DateTimeException if the chronology cannot be built.
      */
     public AccountingChronology toChronology() {
-        Objects.requireNonNull(endsOn, "endsOn");
-        Objects.requireNonNull(end, "end");
-        Objects.requireNonNull(division, "division");
+        //noinspection DataFlowIssue - nullness checked in the constructor of AccountingChronology
         return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInMonth, yearOffset);
     }
 
