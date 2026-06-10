@@ -316,6 +316,8 @@ public final class OffsetDate
      * @return the valid object, not null
      */
     private Object readResolve() {
+        Objects.requireNonNull(date, "date");
+        Objects.requireNonNull(offset, "offset");
         return of(date, offset);
     }
 

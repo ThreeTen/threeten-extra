@@ -341,6 +341,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      * @return the resolved date, not null
      */
     private Object readResolve() {
+        Objects.requireNonNull(chronology, "chronology");
         return AccountingDate.create(chronology, prolepticYear, month, day);
     }
 

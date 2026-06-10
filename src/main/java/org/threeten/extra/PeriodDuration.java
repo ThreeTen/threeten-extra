@@ -355,6 +355,8 @@ public final class PeriodDuration
      * @return the singleton instance
      */
     private Object readResolve() {
+        Objects.requireNonNull(period, "period");
+        Objects.requireNonNull(duration, "duration");
         return PeriodDuration.of(period, duration);
     }
 

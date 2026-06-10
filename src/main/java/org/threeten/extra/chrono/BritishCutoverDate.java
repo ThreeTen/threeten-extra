@@ -83,7 +83,7 @@ public final class BritishCutoverDate
     /**
      * The underlying Julian date if before the cutover.
      */
-    private final transient JulianDate julianDate;
+    private final transient @Nullable JulianDate julianDate;
 
     //-----------------------------------------------------------------------
     /**
@@ -271,6 +271,7 @@ public final class BritishCutoverDate
      * @return the resolved date, not null
      */
     private Object readResolve() {
+        Objects.requireNonNull(isoDate, "isoDate");
         return new BritishCutoverDate(isoDate);
     }
 

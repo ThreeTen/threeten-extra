@@ -54,6 +54,7 @@ import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -236,6 +237,8 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * @return a built, validated instance.
      */
     private Object readResolve() {
+        Objects.requireNonNull(endsOn, "endsOn");
+        Objects.requireNonNull(end, "end");
         return AccountingChronology.create(endsOn, end, inLastWeek, getDivision(), leapWeekInMonth, yearOffset);
     }
 

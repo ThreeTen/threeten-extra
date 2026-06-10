@@ -316,6 +316,7 @@ public final class YearHalf
      * @return the valid object, not null
      */
     private Object readResolve() {
+        Objects.requireNonNull(half, "half");
         return of(year, half);
     }
 

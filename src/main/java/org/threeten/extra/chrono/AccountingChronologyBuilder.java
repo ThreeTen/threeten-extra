@@ -34,6 +34,7 @@ package org.threeten.extra.chrono;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Month;
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -189,6 +190,9 @@ public final class AccountingChronologyBuilder {
      * @throws DateTimeException if the chronology cannot be built.
      */
     public AccountingChronology toChronology() {
+        Objects.requireNonNull(endsOn, "endsOn");
+        Objects.requireNonNull(end, "end");
+        Objects.requireNonNull(division, "division");
         return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInMonth, yearOffset);
     }
 

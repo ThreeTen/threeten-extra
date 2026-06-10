@@ -317,6 +317,7 @@ public final class YearQuarter
      * @return the valid object, not null
      */
     private Object readResolve() {
+        Objects.requireNonNull(quarter, "quarter");
         return of(year, quarter);
     }
 
