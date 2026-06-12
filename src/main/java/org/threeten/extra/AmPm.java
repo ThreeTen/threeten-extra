@@ -324,7 +324,7 @@ public enum AmPm implements TemporalAccessor, TemporalAdjuster {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.precision()) {
             return (R) HALF_DAYS;
         }

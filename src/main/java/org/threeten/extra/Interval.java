@@ -423,7 +423,7 @@ public final class Interval
      * <p>
      * This is equivalent to {@code (isConnected(other) && !abuts(other))}.
      *
-     * @param other  the time interval to compare to, null means a zero length interval now
+     * @param other  the time interval to compare to, not null
      * @return true if the time intervals overlap
      */
     public boolean overlaps(Interval other) {

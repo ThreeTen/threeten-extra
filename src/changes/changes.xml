@@ -10,7 +10,8 @@
     <release version="1.10.0" date="SNAPSHOT" description="v1.10.0">
       <action dev="jodastephen" type="add" issue="379">
         Add JSpecify nullness annotations.
-        See also #170
+        This causes AccountingChronology to throw NullPointerException instead of IllegalStateException when null is passed in.
+        See also #170.
       </action>
     </release>
     <release version="1.9.0" date="2026-05-31" description="v1.9.0">

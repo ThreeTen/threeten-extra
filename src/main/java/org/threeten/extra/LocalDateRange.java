@@ -509,7 +509,7 @@ public final class LocalDateRange
      * <p>
      * This is equivalent to {@code (isConnected(other) && !abuts(other))}.
      *
-     * @param other  the time range to compare to, null means a zero length range now
+     * @param other  the time range to compare to, null
      * @return true if the time ranges overlap
      */
     public boolean overlaps(LocalDateRange other) {

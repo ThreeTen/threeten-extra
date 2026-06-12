@@ -988,7 +988,7 @@ public final class YearHalf
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {

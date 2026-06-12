@@ -159,23 +159,26 @@ public final class AccountingChronology extends AbstractChronology implements Se
      * Creates an {@code AccountingChronology} validating the input.
      * Package private as only meant to be called from the builder.
      *
-     * @param endsOn  The day-of-week a given year ends on.
-     * @param end The  month-end the year is based on.
-     * @param inLastWeek  Whether the year ends in the last week of the month, or nearest the end-of-month.
-     * @param division  How the year is divided.
-     * @param leapWeekInMonth  The month in which the leap-week resides.
-     * @return The created Chronology, not null.
-     * @throws DateTimeException if the chronology cannot be built.
+     * @param endsOn  the day-of-week a given year ends on, not null
+     * @param end  the month-end the year is based on, not null
+     * @param inLastWeek  whether the year ends in the last week of the month, or nearest the end-of-month
+     * @param division  how the year is divided, not null
+     * @param leapWeekInMonth  the month in which the leap-week resides, valid for {@code division}, not zero
+     * @return the created Chronology, not null
+     * @throws DateTimeException if the chronology cannot be built
      */
-    static AccountingChronology create(DayOfWeek endsOn, Month end, boolean inLastWeek, AccountingYearDivision division,
-            int leapWeekInMonth, int yearOffset) {
-        if (endsOn == null || end == null || division == null || leapWeekInMonth == 0) {
-            throw new IllegalStateException("AccountingCronology cannot be built: "
-                    + (endsOn == null ? "| ending day-of-week |" : "")
-                    + (end == null ? "| month ending in/nearest to |" : "")
-                    + (division == null ? "| how year divided |" : "")
-                    + (leapWeekInMonth == 0 ? "| leap-week month |" : "")
-                    + " not set.");
+    static AccountingChronology create(
+            DayOfWeek endsOn,
+            Month end,
+            boolean inLastWeek,
+            AccountingYearDivision division,
+            int leapWeekInMonth,
+            int yearOffset) {
+        Objects.requireNonNull(endsOn, "endsOn");
+        Objects.requireNonNull(end, "end");
+        Objects.requireNonNull(division, "division");
+        if (leapWeekInMonth == 0) {
+            throw new IllegalStateException("AccountingChronology leapWeekInMonth cannot be zero");
         }
         if (!division.getMonthsInYearRange().isValidValue(leapWeekInMonth)) {
             throw new IllegalStateException("Leap week cannot not be placed in non-existent month " + leapWeekInMonth

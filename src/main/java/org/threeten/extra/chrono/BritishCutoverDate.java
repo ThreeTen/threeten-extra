@@ -521,7 +521,7 @@ public final class BritishCutoverDate
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.localDate()) {
             return (R) isoDate;
         }

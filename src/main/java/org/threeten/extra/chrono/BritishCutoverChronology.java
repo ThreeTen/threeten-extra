@@ -464,7 +464,7 @@ public final class BritishCutoverChronology
 
     //-----------------------------------------------------------------------
     @Override  // override for return type
-    public BritishCutoverDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    public @Nullable BritishCutoverDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (BritishCutoverDate) super.resolveDate(fieldValues, resolverStyle);
     }
 

@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The Coptic calendar system.
@@ -337,7 +338,7 @@ public final class CopticChronology
 
     //-----------------------------------------------------------------------
     @Override  // override for return type
-    public CopticDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    public @Nullable CopticDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (CopticDate) super.resolveDate(fieldValues, resolverStyle);
     }
 

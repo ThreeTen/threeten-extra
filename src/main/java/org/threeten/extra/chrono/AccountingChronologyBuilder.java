@@ -104,7 +104,7 @@ public final class AccountingChronologyBuilder {
      * @return this, for chaining, not null.
      */
     public AccountingChronologyBuilder endsOn(DayOfWeek endsOn) {
-        this.endsOn = endsOn;
+        this.endsOn = Objects.requireNonNull(endsOn, "endsOn");
         return this;
     }
 
@@ -119,7 +119,7 @@ public final class AccountingChronologyBuilder {
      */
     public AccountingChronologyBuilder nearestEndOf(Month end) {
         this.inLastWeek = false;
-        this.end = end;
+        this.end = Objects.requireNonNull(end, "end");
         return this;
     }
 
@@ -134,7 +134,7 @@ public final class AccountingChronologyBuilder {
      */
     public AccountingChronologyBuilder inLastWeekOf(Month end) {
         this.inLastWeek = true;
-        this.end = end;
+        this.end = Objects.requireNonNull(end, "end");
         return this;
     }
 
@@ -146,7 +146,7 @@ public final class AccountingChronologyBuilder {
      * @return this, for chaining, not null.
      */
     public AccountingChronologyBuilder withDivision(AccountingYearDivision division) {
-        this.division = division;
+        this.division = Objects.requireNonNull(division, "division");
         return this;
     }
 

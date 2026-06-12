@@ -49,6 +49,7 @@ import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The Julian calendar system.
@@ -386,7 +387,7 @@ public final class JulianChronology extends AbstractChronology implements Serial
 
     //-----------------------------------------------------------------------
     @Override  // override for return type
-    public JulianDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    public @Nullable JulianDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (JulianDate) super.resolveDate(fieldValues, resolverStyle);
     }
 

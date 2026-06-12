@@ -855,7 +855,7 @@ public final class HourMinute
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.localTime()) {
             return (R) toLocalTime();
         } else if (query == TemporalQueries.precision()) {

@@ -438,10 +438,7 @@ public class TestAccountingChronologyBuilder {
                 arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 14),
                 arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_4_4_5_WEEKS, 13),
                 arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_4_5_4_WEEKS, 13),
-                arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 13),
-                arguments(DayOfWeek.MONDAY, Month.JANUARY, null, 13),
-                arguments(DayOfWeek.MONDAY, null, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13),
-                arguments(null, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13));
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, AccountingYearDivision.QUARTERS_OF_PATTERN_5_4_4_WEEKS, 13));
     }
 
     @ParameterizedTest
@@ -457,6 +454,31 @@ public class TestAccountingChronologyBuilder {
     @MethodSource("data_badChronology")
     public void test_badChronology_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
         assertThrows(IllegalStateException.class,
+                () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
+                        .withDivision(division).leapWeekInMonth(leapWeekInMonth)
+                        .toChronology());
+    }
+
+    public static Stream<Arguments> data_nullPassedIn() {
+        return Stream.of(
+                arguments(DayOfWeek.MONDAY, Month.JANUARY, null, 13),
+                arguments(DayOfWeek.MONDAY, null, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13),
+                arguments(null, Month.JANUARY, AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS, 13));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_nullPassedIn")
+    public void test_nullPassedIn_nearestEndOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
+        assertThrows(NullPointerException.class,
+                () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).nearestEndOf(ending)
+                        .withDivision(division).leapWeekInMonth(leapWeekInMonth)
+                        .toChronology());
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_nullPassedIn")
+    public void test_nullPassedIn_inLastWeekOf(DayOfWeek dayOfWeek, Month ending, AccountingYearDivision division, int leapWeekInMonth) {
+        assertThrows(NullPointerException.class,
                 () -> new AccountingChronologyBuilder().endsOn(dayOfWeek).inLastWeekOf(ending)
                         .withDivision(division).leapWeekInMonth(leapWeekInMonth)
                         .toChronology());

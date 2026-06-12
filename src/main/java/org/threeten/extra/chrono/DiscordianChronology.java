@@ -49,6 +49,7 @@ import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The Discordian calendar system.
@@ -449,7 +450,7 @@ public final class DiscordianChronology
 
     //-----------------------------------------------------------------------
     @Override  // override for return type
-    public DiscordianDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    public @Nullable DiscordianDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (DiscordianDate) super.resolveDate(fieldValues, resolverStyle);
     }
 
