@@ -505,13 +505,24 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
+    <!-- annotation dependencies, marked as optional -->
+    <!-- there is much debate, and little conclusion, in the Java community about whether this is correct or not -->
+    <!-- this library takes the view that these annotations are not required at runtime, therefore they are optional -->
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>${jspecify.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
       <version>${joda-convert.version}</version>
       <scope>compile</scope>
-      <optional>true</optional><!-- mandatory in Scala -->
+      <optional>true</optional>
     </dependency>
+    <!-- test dependencies -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -928,6 +939,7 @@
     <!-- Dependencies -->
     <assertj.version>3.27.7</assertj.version>
     <joda-convert.version>2.2.4</joda-convert.version>
+    <jspecify.version>1.0.0</jspecify.version>
     <junit.version>5.13.4</junit.version>
     <pioneer.version>1.9.1</pioneer.version><!-- 2.x is Java 11 based -->
     <guava.version>33.6.0-jre</guava.version>

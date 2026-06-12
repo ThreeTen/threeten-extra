@@ -45,6 +45,7 @@ import java.util.Objects;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An immutable interval of time between two instants.
@@ -422,7 +423,7 @@ public final class Interval
      * <p>
      * This is equivalent to {@code (isConnected(other) && !abuts(other))}.
      *
-     * @param other  the time interval to compare to, null means a zero length interval now
+     * @param other  the time interval to compare to, not null
      * @return true if the time intervals overlap
      */
     public boolean overlaps(Interval other) {
@@ -725,7 +726,7 @@ public final class Interval
      * @return true if this is equal to the other interval
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

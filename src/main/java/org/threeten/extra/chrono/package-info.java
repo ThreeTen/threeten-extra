@@ -32,4 +32,7 @@
 /**
  * Additional chronologies (calendar systems) that extend {@code java.time.*}.
  */
+@NullMarked
 package org.threeten.extra.chrono;
+
+import org.jspecify.annotations.NullMarked;

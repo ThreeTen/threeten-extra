@@ -71,6 +71,7 @@ import java.util.Objects;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An hour-minute, such as {@code 12:31}.
@@ -321,7 +322,7 @@ public final class HourMinute
      * @return true if the field is supported on this hour-minute, false if not
      */
     @Override
-    public boolean isSupported(TemporalField field) {
+    public boolean isSupported(@Nullable TemporalField field) {
         if (field instanceof ChronoField) {
             return field == MINUTE_OF_HOUR ||
                     field == MINUTE_OF_DAY ||
@@ -359,7 +360,7 @@ public final class HourMinute
      * @return true if the unit can be added/subtracted, false if not
      */
     @Override
-    public boolean isSupported(TemporalUnit unit) {
+    public boolean isSupported(@Nullable TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             return unit == MINUTES || unit == HOURS || unit == HALF_DAYS;
         }
@@ -854,7 +855,7 @@ public final class HourMinute
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.localTime()) {
             return (R) toLocalTime();
         } else if (query == TemporalQueries.precision()) {
@@ -1046,7 +1047,7 @@ public final class HourMinute
      * @return true if this is equal to the other hour-minute
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

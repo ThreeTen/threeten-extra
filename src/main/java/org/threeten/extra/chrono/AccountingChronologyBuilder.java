@@ -34,6 +34,8 @@ package org.threeten.extra.chrono;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Month;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Builder to create Accounting calendars.
@@ -63,7 +65,7 @@ public final class AccountingChronologyBuilder {
     /**
      * The day of the week on which a given Accounting year ends.
      */
-    private DayOfWeek endsOn;
+    private @Nullable DayOfWeek endsOn;
     /**
      * Whether the calendar ends in the last week of a given Gregorian/ISO month,
      * or nearest to the last day of the month (will sometimes be in the next month).
@@ -72,11 +74,11 @@ public final class AccountingChronologyBuilder {
     /**
      * Which Gregorian/ISO end-of-month the year ends in/is nearest to.
      */
-    private Month end;
+    private @Nullable Month end;
     /**
      * How to divide an accounting year.
      */
-    private AccountingYearDivision division;
+    private @Nullable AccountingYearDivision division;
     /**
      * The month which will have the leap-week added.
      */
@@ -102,7 +104,7 @@ public final class AccountingChronologyBuilder {
      * @return this, for chaining, not null.
      */
     public AccountingChronologyBuilder endsOn(DayOfWeek endsOn) {
-        this.endsOn = endsOn;
+        this.endsOn = Objects.requireNonNull(endsOn, "endsOn");
         return this;
     }
 
@@ -117,7 +119,7 @@ public final class AccountingChronologyBuilder {
      */
     public AccountingChronologyBuilder nearestEndOf(Month end) {
         this.inLastWeek = false;
-        this.end = end;
+        this.end = Objects.requireNonNull(end, "end");
         return this;
     }
 
@@ -132,7 +134,7 @@ public final class AccountingChronologyBuilder {
      */
     public AccountingChronologyBuilder inLastWeekOf(Month end) {
         this.inLastWeek = true;
-        this.end = end;
+        this.end = Objects.requireNonNull(end, "end");
         return this;
     }
 
@@ -144,7 +146,7 @@ public final class AccountingChronologyBuilder {
      * @return this, for chaining, not null.
      */
     public AccountingChronologyBuilder withDivision(AccountingYearDivision division) {
-        this.division = division;
+        this.division = Objects.requireNonNull(division, "division");
         return this;
     }
 
@@ -188,6 +190,7 @@ public final class AccountingChronologyBuilder {
      * @throws DateTimeException if the chronology cannot be built.
      */
     public AccountingChronology toChronology() {
+        //noinspection DataFlowIssue - nullness checked in the constructor of AccountingChronology
         return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInMonth, yearOffset);
     }
 
