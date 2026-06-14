@@ -45,6 +45,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -126,6 +127,7 @@ public class TestTaiInstant {
 
     @Test
     public void factory_of_Instant_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TaiInstant.of((Instant) null));
     }
 
@@ -145,6 +147,7 @@ public class TestTaiInstant {
 
     @Test
     public void factory_of_UtcInstant_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TaiInstant.of((UtcInstant) null));
     }
 
@@ -182,7 +185,8 @@ public class TestTaiInstant {
 
     @Test
     public void factory_parse_CharSequence_null() {
-        assertThrows(NullPointerException.class, () -> TaiInstant.parse((String) null));
+        //noinspection DataFlowIssue - testing nulls
+        assertThrows(NullPointerException.class, () -> TaiInstant.parse(null));
     }
 
     //-----------------------------------------------------------------------
@@ -210,25 +214,25 @@ public class TestTaiInstant {
     //-----------------------------------------------------------------------
     // withNano()
     //-----------------------------------------------------------------------
-    public static Object[][] data_withNano() {
-        return new Object[][] {
+    public static @Nullable Object[][] data_withNano() {
+        return new @Nullable Object[][] {
             {0L, 12345L, 1, 0L, 1L},
             {7L, 12345L, 2, 7L, 2L},
             {-99L, 12345L, 3, -99L, 3L},
             {-99L, 12345L, 999999999, -99L, 999999999L},
-            {-99L, 12345L, -1, null, null},
-            {-99L, 12345L, 1000000000, null, null},
+            {-99L, 12345L, -1, null, 0L},
+            {-99L, 12345L, 1000000000, null, 0L},
         };
     }
 
     @ParameterizedTest
     @MethodSource("data_withNano")
-    public void test_withNano(long tai, long nanos, int newNano, Long expectedTai, Long expectedNanos) {
+    public void test_withNano(long tai, long nanos, int newNano, @Nullable Long expectedTai, long expectedNanos) {
         TaiInstant i = TaiInstant.ofTaiSeconds(tai, nanos);
         if (expectedTai != null) {
             TaiInstant withNano = i.withNano(newNano);
             assertEquals(expectedTai.longValue(), withNano.getTaiSeconds());
-            assertEquals(expectedNanos.longValue(), withNano.getNano());
+            assertEquals(expectedNanos, withNano.getNano());
         } else {
             assertThrows(IllegalArgumentException.class, () -> i.withNano(newNano));
         }
@@ -756,6 +760,7 @@ public class TestTaiInstant {
     @Test
     public void test_compareTo_ObjectNull() {
         TaiInstant a = TaiInstant.ofTaiSeconds(0L, 0);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> a.compareTo(null));
     }
 

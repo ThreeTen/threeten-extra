@@ -131,11 +131,13 @@ public class TestInterval {
 
     @Test
     public void test_of_Instant_Instant_nullStart() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.of((Instant) null, NOW2));
     }
 
     @Test
     public void test_of_Instant_Instant_nullEnd() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.of(NOW1, (Instant) null));
     }
 
@@ -161,11 +163,13 @@ public class TestInterval {
 
     @Test
     public void test_of_Instant_Duration_nullInstant() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.of(null, Duration.ZERO));
     }
 
     @Test
     public void test_of_Instant_Duration_nullDuration() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.of(NOW1, (Duration) null));
     }
 
@@ -191,11 +195,13 @@ public class TestInterval {
 
     @Test
     public void test_of_Duration_Instant_nullInstant() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.of(Duration.ZERO, null));
     }
 
     @Test
     public void test_of_Duration_Instant_nullDuration() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.of((Duration) null, NOW1));
     }
 
@@ -227,6 +233,7 @@ public class TestInterval {
 
     @Test
     public void test_startingAt_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.startingAt(null));
     }
 
@@ -258,6 +265,7 @@ public class TestInterval {
 
     @Test
     public void test_endingAt_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.endingAt(null));
     }
 
@@ -311,6 +319,7 @@ public class TestInterval {
 
     @Test
     public void test_parse_CharSequence_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Interval.parse(null));
     }
 
@@ -332,6 +341,7 @@ public class TestInterval {
     @Test
     public void test_withStart_null() {
         Interval base = Interval.of(NOW1, NOW2);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.withStart(null));
     }
 
@@ -353,6 +363,7 @@ public class TestInterval {
     @Test
     public void test_withEnd_null() {
         Interval base = Interval.of(NOW1, NOW2);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.withEnd(null));
     }
 
@@ -396,6 +407,7 @@ public class TestInterval {
     @Test
     public void test_contains_Instant_null() {
         Interval base = Interval.of(NOW1, NOW2);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.contains((Instant) null));
     }
 
@@ -438,6 +450,7 @@ public class TestInterval {
     @Test
     public void test_encloses_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.encloses((Interval) null));
     }
 
@@ -479,6 +492,7 @@ public class TestInterval {
     @Test
     public void test_abuts_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.abuts((Interval) null));
     }
 
@@ -520,6 +534,7 @@ public class TestInterval {
     @Test
     public void test_isConnected_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.isConnected((Interval) null));
     }
 
@@ -561,6 +576,7 @@ public class TestInterval {
     @Test
     public void test_overlaps_Interval_null() {
         Interval base = Interval.of(NOW1, NOW2);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.overlaps((Interval) null));
     }
 
@@ -742,9 +758,13 @@ public class TestInterval {
     @Test
     public void test_starts_Instant_null() {
         Interval base = Interval.of(NOW12, NOW14);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.startsBefore((Instant) null));
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.startsAtOrBefore((Instant) null));
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.startsAfter((Instant) null));
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.startsAtOrAfter((Instant) null));
     }
 
@@ -795,9 +815,13 @@ public class TestInterval {
     @Test
     public void test_ends_Instant_null() {
         Interval base = Interval.of(NOW12, NOW14);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.endsBefore((Instant) null));
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.endsAtOrBefore((Instant) null));
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.endsAfter((Instant) null));
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> base.endsAtOrAfter((Instant) null));
     }
 

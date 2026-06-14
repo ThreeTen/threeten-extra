@@ -199,11 +199,13 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void now_Clock_nullZoneId() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.now((ZoneId) null));
     }
 
     @Test
     public void now_Clock_nullClock() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.now((Clock) null));
     }
 
@@ -258,6 +260,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void factory_of_ints_nullOffset() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.of(2007, 1, 1, (ZoneOffset) null));
     }
 
@@ -271,12 +274,14 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void factory_of_LocalDateZoneOffset_nullDate() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.of((LocalDate) null, OFFSET_PONE));
     }
 
     @Test
     public void factory_of_LocalDateZoneOffset_nullOffset() {
         LocalDate localDate = LocalDate.of(2008, 6, 30);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.of(localDate, (ZoneOffset) null));
     }
 
@@ -301,6 +306,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_from_TemporalAccessor_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.from((TemporalAccessor) null));
     }
 
@@ -357,6 +363,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void factory_parse_nullText() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.parse((String) null));
     }
 
@@ -373,11 +380,13 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     @Test
     public void factory_parse_formatter_nullText() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d");
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.parse((String) null, f));
     }
 
     @Test
     public void factory_parse_formatter_nullFormatter() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.parse("ANY", null));
     }
 
@@ -532,6 +541,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_query_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST_2007_07_15_PONE.query(null));
     }
 
@@ -598,6 +608,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_withOffsetSameLocal_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST_2007_07_15_PONE.withOffsetSameLocal(null));
     }
 
@@ -652,6 +663,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_with_adjustment_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST_2007_07_15_PONE.with((TemporalAdjuster) null));
     }
 
@@ -672,6 +684,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_with_TemporalField_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST_2007_07_15_PONE.with((TemporalField) null, 0));
     }
 
@@ -809,6 +822,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_plus_PlusAdjuster_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST_2007_07_15_PONE.plus((TemporalAmount) null));
     }
 
@@ -1232,6 +1246,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_plus_MinusAdjuster_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST_2007_07_15_PONE.minus((TemporalAmount) null));
     }
 
@@ -1642,6 +1657,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @Test
     public void test_format_formatter_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> OffsetDate.of(2010, 12, 3, OFFSET_PONE).format(null));
     }
 
@@ -1658,6 +1674,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     @Test
     public void test_atTime_Local_nullLocalTime() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> t.atTime((LocalTime) null));
     }
 
@@ -1731,6 +1748,7 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     @Test
     public void test_compareTo_null() {
         OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> a.compareTo(null));
     }
 
@@ -1813,18 +1831,21 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     @Test
     public void test_isBefore_null() {
         OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> a.isBefore(null));
     }
 
     @Test
     public void test_isAfter_null() {
         OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> a.isAfter(null));
     }
 
     @Test
     public void test_isEqual_null() {
         OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> a.isEqual(null));
     }
 

@@ -54,8 +54,10 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -268,21 +270,21 @@ public class TestEthiopicChronology {
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(8));
-        assertEquals(true, EthiopicChronology.INSTANCE.isLeapYear(7));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(6));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(5));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(4));
-        assertEquals(true, EthiopicChronology.INSTANCE.isLeapYear(3));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(2));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(1));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(0));
-        assertEquals(true, EthiopicChronology.INSTANCE.isLeapYear(-1));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(-2));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(-3));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(-4));
-        assertEquals(true, EthiopicChronology.INSTANCE.isLeapYear(-5));
-        assertEquals(false, EthiopicChronology.INSTANCE.isLeapYear(-6));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(8));
+        assertTrue(EthiopicChronology.INSTANCE.isLeapYear(7));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(6));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(5));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(4));
+        assertTrue(EthiopicChronology.INSTANCE.isLeapYear(3));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(2));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(1));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(0));
+        assertTrue(EthiopicChronology.INSTANCE.isLeapYear(-1));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(-2));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(-3));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(-4));
+        assertTrue(EthiopicChronology.INSTANCE.isLeapYear(-5));
+        assertFalse(EthiopicChronology.INSTANCE.isLeapYear(-6));
     }
 
     public static Object[][] data_lengthOfMonth() {
@@ -368,8 +370,8 @@ public class TestEthiopicChronology {
     public void test_Chronology_eras() {
         List<Era> eras = EthiopicChronology.INSTANCE.eras();
         assertEquals(2, eras.size());
-        assertEquals(true, eras.contains(EthiopicEra.BEFORE_INCARNATION));
-        assertEquals(true, eras.contains(EthiopicEra.INCARNATION));
+        assertTrue(eras.contains(EthiopicEra.BEFORE_INCARNATION));
+        assertTrue(eras.contains(EthiopicEra.INCARNATION));
     }
 
     //-----------------------------------------------------------------------

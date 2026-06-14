@@ -58,12 +58,12 @@ public class MockUtcRulesLeapOn1000 extends UtcRules {
 
     @Override
     public TaiInstant convertToTai(UtcInstant utcInstant) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public UtcInstant convertToUtc(TaiInstant taiInstant) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 }

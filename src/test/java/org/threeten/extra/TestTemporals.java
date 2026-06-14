@@ -414,6 +414,7 @@ public class TestTemporals {
 
     @Test
     public void test_timeUnit_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Temporals.timeUnit(null));
     }
 
@@ -425,6 +426,7 @@ public class TestTemporals {
 
     @Test
     public void test_chronoUnit_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Temporals.chronoUnit(null));
     }
 

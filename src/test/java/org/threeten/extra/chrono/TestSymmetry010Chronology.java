@@ -58,6 +58,7 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -90,7 +91,7 @@ import com.google.common.testing.EqualsTester;
 /**
  * Test.
  */
-@SuppressWarnings({"static-method", "javadoc"})
+@SuppressWarnings({"static-method"})
 public class TestSymmetry010Chronology {
 
     //-----------------------------------------------------------------------
@@ -102,7 +103,7 @@ public class TestSymmetry010Chronology {
         assertNotNull(chrono);
         assertEquals(Symmetry010Chronology.INSTANCE, chrono);
         assertEquals("Sym010", chrono.getId());
-        assertEquals(null, chrono.getCalendarType());
+        assertNull(chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------

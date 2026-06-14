@@ -177,6 +177,7 @@ public class TestHalf {
 
     @Test
     public void test_from_TemporalAccessor_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Half.from((TemporalAccessor) null));
     }
 
@@ -199,11 +200,13 @@ public class TestHalf {
 
     @Test
     public void test_getDisplayName_nullStyle() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Half.H1.getDisplayName(null, Locale.US));
     }
 
     @Test
     public void test_getDisplayName_nullLocale() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Half.H1.getDisplayName(TextStyle.FULL, null));
     }
 
@@ -263,6 +266,7 @@ public class TestHalf {
 
     @Test
     public void test_range_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Half.H1.range(null));
     }
 
@@ -282,6 +286,7 @@ public class TestHalf {
 
     @Test
     public void test_get_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Half.H2.get(null));
     }
 
@@ -301,6 +306,7 @@ public class TestHalf {
 
     @Test
     public void test_getLong_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Half.H2.getLong(null));
     }
 

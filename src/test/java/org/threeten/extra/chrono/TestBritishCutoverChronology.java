@@ -54,8 +54,11 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -103,7 +106,7 @@ public class TestBritishCutoverChronology {
         assertNotNull(chrono);
         assertEquals(BritishCutoverChronology.INSTANCE, chrono);
         assertEquals("BritishCutover", chrono.getId());
-        assertEquals(null, chrono.getCalendarType());
+        assertNull(chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -297,21 +300,21 @@ public class TestBritishCutoverChronology {
 
     @Test
     public void test_Chronology_isLeapYear_specific() {
-        assertEquals(true, BritishCutoverChronology.INSTANCE.isLeapYear(8));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(7));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(6));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(5));
-        assertEquals(true, BritishCutoverChronology.INSTANCE.isLeapYear(4));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(3));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(2));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(1));
-        assertEquals(true, BritishCutoverChronology.INSTANCE.isLeapYear(0));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(-1));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(-2));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(-3));
-        assertEquals(true, BritishCutoverChronology.INSTANCE.isLeapYear(-4));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(-5));
-        assertEquals(false, BritishCutoverChronology.INSTANCE.isLeapYear(-6));
+        assertTrue(BritishCutoverChronology.INSTANCE.isLeapYear(8));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(7));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(6));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(5));
+        assertTrue(BritishCutoverChronology.INSTANCE.isLeapYear(4));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(3));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(2));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(1));
+        assertTrue(BritishCutoverChronology.INSTANCE.isLeapYear(0));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(-1));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(-2));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(-3));
+        assertTrue(BritishCutoverChronology.INSTANCE.isLeapYear(-4));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(-5));
+        assertFalse(BritishCutoverChronology.INSTANCE.isLeapYear(-6));
     }
 
     //-----------------------------------------------------------------------
@@ -520,8 +523,8 @@ public class TestBritishCutoverChronology {
     public void test_Chronology_eras() {
         List<Era> eras = BritishCutoverChronology.INSTANCE.eras();
         assertEquals(2, eras.size());
-        assertEquals(true, eras.contains(JulianEra.BC));
-        assertEquals(true, eras.contains(JulianEra.AD));
+        assertTrue(eras.contains(JulianEra.BC));
+        assertTrue(eras.contains(JulianEra.AD));
     }
 
     //-----------------------------------------------------------------------
@@ -1247,6 +1250,7 @@ public class TestBritishCutoverChronology {
 
     @Test
     public void test_atTime_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> BritishCutoverDate.of(2014, 5, 26).atTime(null));
     }
 

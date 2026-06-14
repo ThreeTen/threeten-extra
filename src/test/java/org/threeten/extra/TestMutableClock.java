@@ -61,6 +61,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.testing.EqualsTester;
@@ -94,11 +95,13 @@ public class TestMutableClock {
 
     @Test
     public void test_of_nullInstant() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> MutableClock.of(null, ZoneOffset.UTC));
     }
 
     @Test
     public void test_of_nullZone() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> MutableClock.of(Instant.EPOCH, null));
     }
 
@@ -122,6 +125,7 @@ public class TestMutableClock {
 
     @Test
     public void test_setInstant_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().setInstant(null));
     }
 
@@ -146,6 +150,7 @@ public class TestMutableClock {
 
     @Test
     public void test_add_amountOnly_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().add(null));
     }
 
@@ -170,6 +175,7 @@ public class TestMutableClock {
 
     @Test
     public void test_add_amountAndUnit_nullUnit() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().add(0, null));
     }
 
@@ -193,6 +199,7 @@ public class TestMutableClock {
 
     @Test
     public void test_set_adjuster_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().set(null));
     }
 
@@ -214,6 +221,7 @@ public class TestMutableClock {
 
     @Test
     public void test_set_fieldAndValue_nullField() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().set(null, 0));
     }
 
@@ -243,6 +251,7 @@ public class TestMutableClock {
 
     @Test
     public void test_withZone_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> MutableClock.epochUTC().withZone(null));
     }
 
@@ -336,7 +345,7 @@ public class TestMutableClock {
     public void test_updatesAreAtomic() throws Exception {
         MutableClock clock = MutableClock.epochUTC();
         Duration increment = Duration.ofSeconds(1);
-        Callable<Void> applyOneUpdate = () -> {
+        Callable<@Nullable Void> applyOneUpdate = () -> {
             clock.add(increment);
             return null;
         };

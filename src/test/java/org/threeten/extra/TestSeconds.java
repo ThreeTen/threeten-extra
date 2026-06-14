@@ -254,6 +254,7 @@ public class TestSeconds {
 
     @Test
     public void test_parse_CharSequence_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Seconds.parse((CharSequence) null));
     }
 
@@ -280,6 +281,7 @@ public class TestSeconds {
 
     @Test
     public void test_plus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Seconds.of(Integer.MIN_VALUE + 1).plus(null));
     }
 
@@ -327,6 +329,7 @@ public class TestSeconds {
 
     @Test
     public void test_minus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Seconds.of(Integer.MIN_VALUE + 1).minus(null));
     }
 
@@ -468,6 +471,7 @@ public class TestSeconds {
     @Test
     public void test_compareTo_null() {
         Seconds test5 = Seconds.of(5);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 

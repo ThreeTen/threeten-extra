@@ -182,6 +182,7 @@ public class TestHourMinute {
             }
         }
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> HourMinute.from(LocalDate.of(2020, 6, 3)));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> HourMinute.from((TemporalAccessor) null));
     }
 
@@ -207,6 +208,7 @@ public class TestHourMinute {
 
     @Test
     public void test_parse_CharSequence_invalid() {
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> HourMinute.parse((CharSequence) null));
     }
 
@@ -220,7 +222,9 @@ public class TestHourMinute {
 
     @Test
     public void test_parse_CharSequenceDateTimeFormatter_invalid() {
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> HourMinute.parse((CharSequence) null, DateTimeFormatter.ISO_OFFSET_TIME));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> HourMinute.parse("23:59", (DateTimeFormatter) null));
     }
 
@@ -310,6 +314,7 @@ public class TestHourMinute {
     public void test_range_invalid() {
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.range(SECOND_OF_MINUTE));
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.range(NANO_OF_SECOND));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.range((TemporalField) null));
     }
 
@@ -331,6 +336,7 @@ public class TestHourMinute {
     public void test_get_invalid() {
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.get(SECOND_OF_MINUTE));
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.get(NANO_OF_SECOND));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.get((TemporalField) null));
     }
 
@@ -352,6 +358,7 @@ public class TestHourMinute {
     public void test_getLong_invalid() {
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.getLong(SECOND_OF_MINUTE));
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.getLong(NANO_OF_SECOND));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.getLong((TemporalField) null));
     }
 
@@ -367,6 +374,7 @@ public class TestHourMinute {
     @Test
     public void test_with_TemporalAdjuster_invalid() {
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.with(LocalTime.of(9, 10, 11)));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.with((TemporalAdjuster) null));
     }
 
@@ -388,6 +396,7 @@ public class TestHourMinute {
     public void test_with_TemporalFieldlong_invalid() {
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.with(SECOND_OF_MINUTE, 1));
         assertThatExceptionOfType(UnsupportedTemporalTypeException.class).isThrownBy(() -> TEST.with(NANO_OF_SECOND, 1));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.with((TemporalField) null, 1));
     }
 
@@ -421,6 +430,7 @@ public class TestHourMinute {
     public void test_plus_TemporalAmount_invalid() {
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.plus(Days.of(1)));
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.plus(Seconds.of(3)));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.plus(null));
     }
 
@@ -438,6 +448,7 @@ public class TestHourMinute {
     public void test_plus_longTemporalUnit_invalid() {
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.plus(1, DAYS));
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.plus(1, SECONDS));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.plus(1, null));
     }
 
@@ -465,6 +476,7 @@ public class TestHourMinute {
     public void test_minus_TemporalAmount_invalid() {
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.minus(Days.of(1)));
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.minus(Seconds.of(3)));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.minus(null));
     }
 
@@ -482,6 +494,7 @@ public class TestHourMinute {
     public void test_minus_longTemporalUnit_invalid() {
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.minus(1, DAYS));
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.minus(1, SECONDS));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.minus(1, null));
     }
 
@@ -520,6 +533,7 @@ public class TestHourMinute {
 
     @Test
     public void test_adjustInto_Temporal_invalid() {
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.adjustInto((Temporal) null));
     }
 
@@ -549,7 +563,9 @@ public class TestHourMinute {
     public void test_until_TemporalTemporalUnit_invalid() {
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.until(HourMinute.of(0, 0), DAYS));
         assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.until(HourMinute.of(0, 0), SECONDS));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.until(null, HOURS));
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.until(HourMinute.of(0, 0), null));
     }
 
@@ -569,6 +585,7 @@ public class TestHourMinute {
 
     @Test
     public void test_format_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.format(null));
     }
 
@@ -583,6 +600,7 @@ public class TestHourMinute {
 
     @Test
     public void test_atDate_LocalDate_invalid() {
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.atDate(null));
     }
 
@@ -597,6 +615,7 @@ public class TestHourMinute {
 
     @Test
     public void test_atOffset_ZoneOffset_invalid() {
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.atOffset(null));
     }
 
@@ -649,6 +668,7 @@ public class TestHourMinute {
 
     @Test
     public void test_compareTo_nullHourMinute() {
+        //noinspection DataFlowIssue - testing nulls
         assertThatNullPointerException().isThrownBy(() -> TEST.compareTo(null));
     }
 

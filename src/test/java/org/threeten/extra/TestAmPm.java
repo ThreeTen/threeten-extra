@@ -153,6 +153,7 @@ public class TestAmPm {
 
     @Test
     public void test_from_TemporalAccessor_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AmPm.from((TemporalAccessor) null));
     }
 
@@ -166,11 +167,13 @@ public class TestAmPm {
 
     @Test
     public void test_getDisplayName_nullStyle() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AmPm.AM.getDisplayName(null, Locale.US));
     }
 
     @Test
     public void test_getDisplayName_nullLocale() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AmPm.AM.getDisplayName(TextStyle.FULL, null));
     }
 
@@ -228,6 +231,7 @@ public class TestAmPm {
 
     @Test
     public void test_range_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AmPm.AM.range(null));
     }
 
@@ -247,6 +251,7 @@ public class TestAmPm {
 
     @Test
     public void test_get_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AmPm.PM.get(null));
     }
 
@@ -266,6 +271,7 @@ public class TestAmPm {
 
     @Test
     public void test_getLong_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AmPm.PM.getLong(null));
     }
 

@@ -183,6 +183,7 @@ public class TestQuarter {
 
     @Test
     public void test_from_TemporalAccessor_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Quarter.from((TemporalAccessor) null));
     }
 
@@ -202,11 +203,13 @@ public class TestQuarter {
 
     @Test
     public void test_getDisplayName_nullStyle() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Quarter.Q1.getDisplayName(null, Locale.US));
     }
 
     @Test
     public void test_getDisplayName_nullLocale() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Quarter.Q1.getDisplayName(TextStyle.FULL, null));
     }
 
@@ -265,6 +268,7 @@ public class TestQuarter {
 
     @Test
     public void test_range_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Quarter.Q1.range(null));
     }
 
@@ -286,6 +290,7 @@ public class TestQuarter {
 
     @Test
     public void test_get_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Quarter.Q2.get(null));
     }
 
@@ -307,6 +312,7 @@ public class TestQuarter {
 
     @Test
     public void test_getLong_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Quarter.Q2.getLong(null));
     }
 

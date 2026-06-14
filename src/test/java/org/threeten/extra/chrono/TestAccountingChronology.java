@@ -54,7 +54,10 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -84,8 +87,12 @@ import com.google.common.testing.EqualsTester;
  */
 public class TestAccountingChronology {
 
-    private static AccountingChronology INSTANCE = new AccountingChronologyBuilder().endsOn(DayOfWeek.SUNDAY).nearestEndOf(Month.AUGUST).
-            withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS).leapWeekInMonth(13).toChronology();
+    private static final AccountingChronology INSTANCE = new AccountingChronologyBuilder()
+            .endsOn(DayOfWeek.SUNDAY)
+            .nearestEndOf(Month.AUGUST)
+            .withDivision(AccountingYearDivision.THIRTEEN_EVEN_MONTHS_OF_4_WEEKS)
+            .leapWeekInMonth(13)
+            .toChronology();
 
     //-----------------------------------------------------------------------
     // Chronology.of(String)
@@ -97,7 +104,7 @@ public class TestAccountingChronology {
 
     @Test
     public void test_chronology_of_name_id() {
-        assertEquals(null, INSTANCE.getCalendarType());
+        assertNull(INSTANCE.getCalendarType());
     }
 
     //-----------------------------------------------------------------------
@@ -270,31 +277,37 @@ public class TestAccountingChronology {
 
     @Test
     public void test_date_create_no_chronology() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AccountingDate.create(null, 2012, 1, 1));
     }
 
     @Test
     public void test_date_from_no_chronology() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AccountingDate.from(null, LocalDate.of(2012, 1, 1)));
     }
 
     @Test
     public void test_date_now_no_chronology() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AccountingDate.now(null));
     }
 
     @Test
     public void test_date_of_no_chronology() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AccountingDate.of(null, 2012, 1, 1));
     }
 
     @Test
     public void test_date_ofEpochDay_no_chronology() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AccountingDate.ofEpochDay(null, 0));
     }
 
     @Test
     public void test_date_ofYearDay_no_chronology() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AccountingDate.ofYearDay(null, 0, 1));
     }
 
@@ -317,21 +330,21 @@ public class TestAccountingChronology {
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(false, INSTANCE.isLeapYear(8));
-        assertEquals(false, INSTANCE.isLeapYear(7));
-        assertEquals(true, INSTANCE.isLeapYear(6));
-        assertEquals(false, INSTANCE.isLeapYear(5));
-        assertEquals(false, INSTANCE.isLeapYear(4));
-        assertEquals(false, INSTANCE.isLeapYear(3));
-        assertEquals(false, INSTANCE.isLeapYear(2));
-        assertEquals(false, INSTANCE.isLeapYear(1));
-        assertEquals(true, INSTANCE.isLeapYear(0));
-        assertEquals(false, INSTANCE.isLeapYear(-1));
-        assertEquals(false, INSTANCE.isLeapYear(-2));
-        assertEquals(false, INSTANCE.isLeapYear(-3));
-        assertEquals(false, INSTANCE.isLeapYear(-4));
-        assertEquals(true, INSTANCE.isLeapYear(-5));
-        assertEquals(false, INSTANCE.isLeapYear(-6));
+        assertFalse(INSTANCE.isLeapYear(8));
+        assertFalse(INSTANCE.isLeapYear(7));
+        assertTrue(INSTANCE.isLeapYear(6));
+        assertFalse(INSTANCE.isLeapYear(5));
+        assertFalse(INSTANCE.isLeapYear(4));
+        assertFalse(INSTANCE.isLeapYear(3));
+        assertFalse(INSTANCE.isLeapYear(2));
+        assertFalse(INSTANCE.isLeapYear(1));
+        assertTrue(INSTANCE.isLeapYear(0));
+        assertFalse(INSTANCE.isLeapYear(-1));
+        assertFalse(INSTANCE.isLeapYear(-2));
+        assertFalse(INSTANCE.isLeapYear(-3));
+        assertFalse(INSTANCE.isLeapYear(-4));
+        assertTrue(INSTANCE.isLeapYear(-5));
+        assertFalse(INSTANCE.isLeapYear(-6));
     }
 
     public static Object[][] data_lengthOfMonth() {
@@ -426,8 +439,8 @@ public class TestAccountingChronology {
     public void test_Chronology_eras() {
         List<Era> eras = INSTANCE.eras();
         assertEquals(2, eras.size());
-        assertEquals(true, eras.contains(AccountingEra.BCE));
-        assertEquals(true, eras.contains(AccountingEra.CE));
+        assertTrue(eras.contains(AccountingEra.BCE));
+        assertTrue(eras.contains(AccountingEra.CE));
     }
 
     //-----------------------------------------------------------------------

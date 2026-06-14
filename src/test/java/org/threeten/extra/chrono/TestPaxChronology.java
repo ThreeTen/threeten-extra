@@ -54,8 +54,10 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -84,7 +86,7 @@ import com.google.common.testing.EqualsTester;
 /**
  * Test.
  */
-@SuppressWarnings({"static-method", "javadoc"})
+@SuppressWarnings({"static-method"})
 public class TestPaxChronology {
 
     //-----------------------------------------------------------------------
@@ -327,26 +329,26 @@ public class TestPaxChronology {
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(400));
-        assertEquals(true, PaxChronology.INSTANCE.isLeapYear(100));
-        assertEquals(true, PaxChronology.INSTANCE.isLeapYear(99));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(7));
-        assertEquals(true, PaxChronology.INSTANCE.isLeapYear(6));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(5));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(4));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(3));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(2));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(1));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(0));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(-1));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(-2));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(-3));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(-4));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(-5));
-        assertEquals(true, PaxChronology.INSTANCE.isLeapYear(-6));
-        assertEquals(true, PaxChronology.INSTANCE.isLeapYear(-99));
-        assertEquals(true, PaxChronology.INSTANCE.isLeapYear(-100));
-        assertEquals(false, PaxChronology.INSTANCE.isLeapYear(-400));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(400));
+        assertTrue(PaxChronology.INSTANCE.isLeapYear(100));
+        assertTrue(PaxChronology.INSTANCE.isLeapYear(99));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(7));
+        assertTrue(PaxChronology.INSTANCE.isLeapYear(6));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(5));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(4));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(3));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(2));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(1));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(0));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(-1));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(-2));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(-3));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(-4));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(-5));
+        assertTrue(PaxChronology.INSTANCE.isLeapYear(-6));
+        assertTrue(PaxChronology.INSTANCE.isLeapYear(-99));
+        assertTrue(PaxChronology.INSTANCE.isLeapYear(-100));
+        assertFalse(PaxChronology.INSTANCE.isLeapYear(-400));
     }
 
     public static Object[][] data_lengthOfMonth() {
@@ -446,8 +448,8 @@ public class TestPaxChronology {
     public void test_Chronology_eras() {
         List<Era> eras = PaxChronology.INSTANCE.eras();
         assertEquals(2, eras.size());
-        assertEquals(true, eras.contains(PaxEra.BCE));
-        assertEquals(true, eras.contains(PaxEra.CE));
+        assertTrue(eras.contains(PaxEra.BCE));
+        assertTrue(eras.contains(PaxEra.CE));
     }
 
     //-----------------------------------------------------------------------

@@ -243,7 +243,7 @@ public class TestUtcRules {
         if (adjust != 0) {
             long[] leaps = rules.getLeapSecondDates();
             Arrays.sort(leaps);
-            assertEquals(true, Arrays.binarySearch(leaps, mjd) >= 0);
+            assertTrue(Arrays.binarySearch(leaps, mjd) >= 0);
         }
     }
 
@@ -347,11 +347,13 @@ public class TestUtcRules {
 
     @Test
     public void test_convertToUtc_TaiInstant_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> rules.convertToUtc((TaiInstant) null));
     }
 
     @Test
     public void test_convertToTai_UtcInstant_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> rules.convertToTai((UtcInstant) null));
     }
 
@@ -499,7 +501,7 @@ public class TestUtcRules {
         int adj = rules.getLeapSecondAdjustment(mjd);
         rules.register(mjd, adj);
         long[] test = rules.getLeapSecondDates();
-        assertEquals(true, Arrays.equals(test, dates));
+        assertTrue(Arrays.equals(test, dates));
         assertEquals(adj, rules.getLeapSecondAdjustment(mjd));
     }
 
@@ -510,7 +512,7 @@ public class TestUtcRules {
         int adj = rules.getLeapSecondAdjustment(mjd);
         rules.register(mjd, adj);
         long[] test = rules.getLeapSecondDates();
-        assertEquals(true, Arrays.equals(test, dates));
+        assertTrue(Arrays.equals(test, dates));
         assertEquals(adj, rules.getLeapSecondAdjustment(mjd));
     }
 

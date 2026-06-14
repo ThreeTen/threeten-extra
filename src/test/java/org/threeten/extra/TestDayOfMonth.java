@@ -325,6 +325,7 @@ public class TestDayOfMonth {
 
     @Test
     public void test_from_TemporalAccessor_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> DayOfMonth.from((TemporalAccessor) null));
     }
 
@@ -389,6 +390,7 @@ public class TestDayOfMonth {
 
     @Test
     public void test_range_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.range((TemporalField) null));
     }
 
@@ -407,6 +409,7 @@ public class TestDayOfMonth {
 
     @Test
     public void test_get_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.get((TemporalField) null));
     }
 
@@ -435,6 +438,7 @@ public class TestDayOfMonth {
 
     @Test
     public void test_getLong_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.getLong((TemporalField) null));
     }
 
@@ -564,6 +568,7 @@ public class TestDayOfMonth {
 
     @Test
     public void test_adjustInto_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.adjustInto((Temporal) null));
     }
 
@@ -606,6 +611,7 @@ public class TestDayOfMonth {
 
     @Test
     public void test_atMonth_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.atMonth((Month) null));
     }
 
@@ -696,6 +702,7 @@ public class TestDayOfMonth {
 
     @Test
     public void test_atYearMonth_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.atYearMonth((YearMonth) null));
     }
 
@@ -726,6 +733,7 @@ public class TestDayOfMonth {
     public void test_compareTo_nullDayOfMonth() {
         DayOfMonth dom = null;
         DayOfMonth test = DayOfMonth.of(1);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> test.compareTo(dom));
     }
 
