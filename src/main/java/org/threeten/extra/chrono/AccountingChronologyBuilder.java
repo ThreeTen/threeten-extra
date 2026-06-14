@@ -99,9 +99,8 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets the day-of-week on which a given Accounting calendar year ends.
      *
-     * @param endsOn The day-of-week on which a given Accounting calendar year ends.
-     *
-     * @return this, for chaining, not null.
+     * @param endsOn the day-of-week on which a given Accounting calendar year ends
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder endsOn(DayOfWeek endsOn) {
         this.endsOn = Objects.requireNonNull(endsOn, "endsOn");
@@ -113,9 +112,8 @@ public final class AccountingChronologyBuilder {
      * Calendars setup this way will occasionally end in the start of the <i>next</i> month.
      * For example, for July, the month ends on any day from July 28th to August 3rd.
      *
-     * @param end The Gregorian/ISO month-end a given Accounting calendar year ends nearest to.
-     *
-     * @return this, for chaining, not null.
+     * @param end the Gregorian/ISO month-end a given Accounting calendar year ends nearest to
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder nearestEndOf(Month end) {
         this.inLastWeek = false;
@@ -128,9 +126,8 @@ public final class AccountingChronologyBuilder {
      * Calendars setup this way will always end in the last week of the given month.
      * For example, for July, the month ends on any day from July 25th to July 31st.
      *
-     * @param end The Gregorian/ISO month-end a given Accounting calendar year ends in the last week of.
-     *
-     * @return this, for chaining, not null.
+     * @param end the Gregorian/ISO month-end a given Accounting calendar year ends in the last week of
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder inLastWeekOf(Month end) {
         this.inLastWeek = true;
@@ -141,9 +138,8 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets how a given Accounting year will be divided.
      *
-     * @param division How to divide a given calendar year.
-     *
-     * @return this, for chaining, not null.
+     * @param division how to divide a given calendar year
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder withDivision(AccountingYearDivision division) {
         this.division = Objects.requireNonNull(division, "division");
@@ -153,9 +149,8 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets the month in which the leap-week occurs.
      *
-     * @param leapWeekInMonth The month in which the leap-week occurs.
-     *
-     * @return this, for chaining, not null.
+     * @param leapWeekInMonth the month in which the leap-week occurs
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder leapWeekInMonth(int leapWeekInMonth) {
         this.leapWeekInMonth = leapWeekInMonth;
@@ -165,7 +160,7 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets the proleptic accounting year to end in the matching Iso year.
      *
-     * @return this, for chaining, not null.
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder accountingYearEndsInIsoYear() {
         this.yearOffset = 0;
@@ -176,7 +171,7 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets the proleptic accounting year to start in the matching Iso year.
      *
-     * @return this, for chaining, not null.
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder accountingYearStartsInIsoYear() {
         this.yearOffset = 1;
@@ -186,8 +181,9 @@ public final class AccountingChronologyBuilder {
     /**
      * Completes this builder by creating the {@code AccountingChronology}.
      *
-     * @return the created chronology, not null.
-     * @throws DateTimeException if the chronology cannot be built.
+     * @return the created chronology, not null
+     * @throws IllegalStateException if any of the required fields are invalid
+     * @throws DateTimeException if the chronology cannot be built
      */
     public AccountingChronology toChronology() {
         //noinspection DataFlowIssue - nullness checked in the constructor of AccountingChronology
