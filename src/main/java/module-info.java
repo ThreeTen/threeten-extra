@@ -41,6 +41,7 @@ module org.threeten.extra {
 
     // only annotations are used, thus they are optional
     requires static org.joda.convert;
+    requires static org.jspecify;
 
     // export all packages
     exports org.threeten.extra;

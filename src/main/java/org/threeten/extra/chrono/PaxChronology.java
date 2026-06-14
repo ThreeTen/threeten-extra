@@ -49,6 +49,7 @@ import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The Pax calendar system.
@@ -430,7 +431,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
 
     //-----------------------------------------------------------------------
     @Override
-    public PaxDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    public @Nullable PaxDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (PaxDate) super.resolveDate(fieldValues, resolverStyle);
     }
 

@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The Ethiopic calendar system.
@@ -337,7 +338,7 @@ public final class EthiopicChronology
 
     //-----------------------------------------------------------------------
     @Override  // override for return type
-    public EthiopicDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    public @Nullable EthiopicDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (EthiopicDate) super.resolveDate(fieldValues, resolverStyle);
     }
 

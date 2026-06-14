@@ -56,6 +56,8 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A date in the British Cutover calendar system.
  * <p>
@@ -81,7 +83,7 @@ public final class BritishCutoverDate
     /**
      * The underlying Julian date if before the cutover.
      */
-    private final transient JulianDate julianDate;
+    private final transient @Nullable JulianDate julianDate;
 
     //-----------------------------------------------------------------------
     /**
@@ -269,6 +271,7 @@ public final class BritishCutoverDate
      * @return the resolved date, not null
      */
     private Object readResolve() {
+        Objects.requireNonNull(isoDate, "isoDate");
         return new BritishCutoverDate(isoDate);
     }
 
@@ -518,7 +521,7 @@ public final class BritishCutoverDate
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.localDate()) {
             return (R) isoDate;
         }
@@ -527,7 +530,7 @@ public final class BritishCutoverDate
 
     //-------------------------------------------------------------------------
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

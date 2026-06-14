@@ -61,6 +61,7 @@ import java.util.Objects;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An amount of time in the ISO-8601 calendar system that combines a period and a duration.
@@ -354,6 +355,8 @@ public final class PeriodDuration
      * @return the singleton instance
      */
     private Object readResolve() {
+        Objects.requireNonNull(period, "period");
+        Objects.requireNonNull(duration, "duration");
         return PeriodDuration.of(period, duration);
     }
 
@@ -680,7 +683,7 @@ public final class PeriodDuration
      * @return true if the other amount is equal to this one
      */
     @Override
-    public boolean equals(Object otherAmount) {
+    public boolean equals(@Nullable Object otherAmount) {
         if (this == otherAmount) {
             return true;
         }

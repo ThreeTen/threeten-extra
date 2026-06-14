@@ -76,6 +76,7 @@ import java.util.stream.Stream;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A year-quarter in the ISO-8601 calendar system, such as {@code 2007-Q2}.
@@ -316,6 +317,7 @@ public final class YearQuarter
      * @return the valid object, not null
      */
     private Object readResolve() {
+        Objects.requireNonNull(quarter, "quarter");
         return of(year, quarter);
     }
 
@@ -362,7 +364,7 @@ public final class YearQuarter
      * @return true if the field is supported on this year-quarter, false if not
      */
     @Override
-    public boolean isSupported(TemporalField field) {
+    public boolean isSupported(@Nullable TemporalField field) {
         if (field == QUARTER_OF_YEAR) {
             return true;
         } else if (field instanceof ChronoField) {
@@ -399,7 +401,7 @@ public final class YearQuarter
      * @return true if the unit can be added/subtracted, false if not
      */
     @Override
-    public boolean isSupported(TemporalUnit unit) {
+    public boolean isSupported(@Nullable TemporalUnit unit) {
         if (unit == QUARTER_YEARS) {
             return true;
         } else if (unit instanceof ChronoUnit) {
@@ -987,7 +989,7 @@ public final class YearQuarter
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
@@ -1234,7 +1236,7 @@ public final class YearQuarter
      * @return true if this is equal to the other year-quarter
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

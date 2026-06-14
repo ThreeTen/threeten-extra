@@ -70,6 +70,7 @@ import java.util.Objects;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A year-week in the ISO week date system such as {@code 2015-W13}
@@ -360,7 +361,7 @@ public final class YearWeek
      * @return true if the field is supported on this year-week, false if not
      */
     @Override
-    public boolean isSupported(TemporalField field) {
+    public boolean isSupported(@Nullable TemporalField field) {
         if (field == WEEK_OF_WEEK_BASED_YEAR || field == WEEK_BASED_YEAR) {
             return true;
         } else if (field instanceof ChronoField) {
@@ -392,7 +393,7 @@ public final class YearWeek
      * @return true if the unit can be added/subtracted, false if not
      */
     @Override
-    public boolean isSupported(TemporalUnit unit) {
+    public boolean isSupported(@Nullable TemporalUnit unit) {
         if (unit == WEEKS || unit == WEEK_BASED_YEARS) {
             return true;
         } else if (unit instanceof ChronoUnit) {
@@ -854,7 +855,7 @@ public final class YearWeek
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
@@ -1066,7 +1067,7 @@ public final class YearWeek
      * @return true if this is equal to the other year-week
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

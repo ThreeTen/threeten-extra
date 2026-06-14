@@ -53,6 +53,8 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A day-of-year in the ISO-8601 calendar system.
  * <p>
@@ -247,7 +249,7 @@ public final class DayOfYear
      * @return true if the field is supported on this day-of-year, false if not
      */
     @Override
-    public boolean isSupported(TemporalField field) {
+    public boolean isSupported(@Nullable TemporalField field) {
         if (field instanceof ChronoField) {
             return field == DAY_OF_YEAR;
         }
@@ -377,7 +379,7 @@ public final class DayOfYear
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(TemporalQuery<R> query) {
+    public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
@@ -485,7 +487,7 @@ public final class DayOfYear
      * @return true if the day-of-year is the same
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

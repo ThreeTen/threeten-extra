@@ -46,6 +46,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An abstract date based on a year, month and day.
@@ -357,7 +358,7 @@ abstract class AbstractDate
      * @return true if this is equal to the other date
      */
     @Override  // override for performance
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

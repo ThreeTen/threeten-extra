@@ -53,6 +53,8 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Additional Temporal fields.
  * <p>
@@ -207,7 +209,7 @@ public final class TemporalFields {
 
         //-----------------------------------------------------------------------
         @Override
-        public ChronoLocalDate resolve(
+        public @Nullable ChronoLocalDate resolve(
                 Map<TemporalField, Long> fieldValues,
                 TemporalAccessor partialTemporal,
                 ResolverStyle resolverStyle) {

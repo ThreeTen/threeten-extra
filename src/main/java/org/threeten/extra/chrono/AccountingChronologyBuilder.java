@@ -34,6 +34,8 @@ package org.threeten.extra.chrono;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Month;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Builder to create Accounting calendars.
@@ -63,7 +65,7 @@ public final class AccountingChronologyBuilder {
     /**
      * The day of the week on which a given Accounting year ends.
      */
-    private DayOfWeek endsOn;
+    private @Nullable DayOfWeek endsOn;
     /**
      * Whether the calendar ends in the last week of a given Gregorian/ISO month,
      * or nearest to the last day of the month (will sometimes be in the next month).
@@ -72,11 +74,11 @@ public final class AccountingChronologyBuilder {
     /**
      * Which Gregorian/ISO end-of-month the year ends in/is nearest to.
      */
-    private Month end;
+    private @Nullable Month end;
     /**
      * How to divide an accounting year.
      */
-    private AccountingYearDivision division;
+    private @Nullable AccountingYearDivision division;
     /**
      * The month which will have the leap-week added.
      */
@@ -97,12 +99,11 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets the day-of-week on which a given Accounting calendar year ends.
      *
-     * @param endsOn The day-of-week on which a given Accounting calendar year ends.
-     *
-     * @return this, for chaining, not null.
+     * @param endsOn the day-of-week on which a given Accounting calendar year ends
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder endsOn(DayOfWeek endsOn) {
-        this.endsOn = endsOn;
+        this.endsOn = Objects.requireNonNull(endsOn, "endsOn");
         return this;
     }
 
@@ -111,13 +112,12 @@ public final class AccountingChronologyBuilder {
      * Calendars setup this way will occasionally end in the start of the <i>next</i> month.
      * For example, for July, the month ends on any day from July 28th to August 3rd.
      *
-     * @param end The Gregorian/ISO month-end a given Accounting calendar year ends nearest to.
-     *
-     * @return this, for chaining, not null.
+     * @param end the Gregorian/ISO month-end a given Accounting calendar year ends nearest to
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder nearestEndOf(Month end) {
         this.inLastWeek = false;
-        this.end = end;
+        this.end = Objects.requireNonNull(end, "end");
         return this;
     }
 
@@ -126,34 +126,31 @@ public final class AccountingChronologyBuilder {
      * Calendars setup this way will always end in the last week of the given month.
      * For example, for July, the month ends on any day from July 25th to July 31st.
      *
-     * @param end The Gregorian/ISO month-end a given Accounting calendar year ends in the last week of.
-     *
-     * @return this, for chaining, not null.
+     * @param end the Gregorian/ISO month-end a given Accounting calendar year ends in the last week of
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder inLastWeekOf(Month end) {
         this.inLastWeek = true;
-        this.end = end;
+        this.end = Objects.requireNonNull(end, "end");
         return this;
     }
 
     /**
      * Sets how a given Accounting year will be divided.
      *
-     * @param division How to divide a given calendar year.
-     *
-     * @return this, for chaining, not null.
+     * @param division how to divide a given calendar year
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder withDivision(AccountingYearDivision division) {
-        this.division = division;
+        this.division = Objects.requireNonNull(division, "division");
         return this;
     }
 
     /**
      * Sets the month in which the leap-week occurs.
      *
-     * @param leapWeekInMonth The month in which the leap-week occurs.
-     *
-     * @return this, for chaining, not null.
+     * @param leapWeekInMonth the month in which the leap-week occurs
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder leapWeekInMonth(int leapWeekInMonth) {
         this.leapWeekInMonth = leapWeekInMonth;
@@ -163,7 +160,7 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets the proleptic accounting year to end in the matching Iso year.
      *
-     * @return this, for chaining, not null.
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder accountingYearEndsInIsoYear() {
         this.yearOffset = 0;
@@ -174,7 +171,7 @@ public final class AccountingChronologyBuilder {
     /**
      * Sets the proleptic accounting year to start in the matching Iso year.
      *
-     * @return this, for chaining, not null.
+     * @return this, for chaining, not null
      */
     public AccountingChronologyBuilder accountingYearStartsInIsoYear() {
         this.yearOffset = 1;
@@ -184,10 +181,12 @@ public final class AccountingChronologyBuilder {
     /**
      * Completes this builder by creating the {@code AccountingChronology}.
      *
-     * @return the created chronology, not null.
-     * @throws DateTimeException if the chronology cannot be built.
+     * @return the created chronology, not null
+     * @throws IllegalStateException if any of the required fields are invalid
+     * @throws DateTimeException if the chronology cannot be built
      */
     public AccountingChronology toChronology() {
+        //noinspection DataFlowIssue - nullness checked in the constructor of AccountingChronology
         return AccountingChronology.create(endsOn, end, inLastWeek, division, leapWeekInMonth, yearOffset);
     }
 

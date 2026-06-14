@@ -50,6 +50,8 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A clock that does not advance on its own and that must be updated manually.
  * <p>
@@ -316,7 +318,7 @@ public final class MutableClock
      * @return {@code true} if this is equal to the other clock
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

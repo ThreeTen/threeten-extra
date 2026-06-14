@@ -48,6 +48,8 @@ import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * The Symmetry454 calendar system.
  * <p>
@@ -223,7 +225,7 @@ public final class Symmetry454Chronology
      * @see #getId()
      */
     @Override
-    public String getCalendarType() {
+    public @Nullable String getCalendarType() {
         return null;
     }
 

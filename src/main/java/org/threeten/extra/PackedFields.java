@@ -54,6 +54,8 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Temporal fields based on a packed representation.
  * <p>
@@ -286,7 +288,7 @@ public final class PackedFields {
 
         //-----------------------------------------------------------------------
         @Override
-        public ChronoLocalDate resolve(
+        public @Nullable ChronoLocalDate resolve(
                 Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
             long value = fieldValues.remove(this);
             long hour = value / 100;
@@ -382,7 +384,7 @@ public final class PackedFields {
 
         //-----------------------------------------------------------------------
         @Override
-        public ChronoLocalDate resolve(
+        public @Nullable ChronoLocalDate resolve(
                 Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
             long value = fieldValues.remove(this);
             long hour = value / 10000;

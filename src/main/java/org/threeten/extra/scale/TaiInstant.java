@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.
@@ -448,7 +449,7 @@ public final class TaiInstant
      * @return true if the other instant is equal to this one
      */
     @Override
-    public boolean equals(Object otherInstant) {
+    public boolean equals(@Nullable Object otherInstant) {
         if (this == otherInstant) {
             return true;
         }

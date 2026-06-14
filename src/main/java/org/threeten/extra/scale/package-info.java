@@ -32,4 +32,7 @@
 /**
  * Support for time scales that extend {@code java.time.*}.
  */
+@NullMarked
 package org.threeten.extra.scale;
+
+import org.jspecify.annotations.NullMarked;
