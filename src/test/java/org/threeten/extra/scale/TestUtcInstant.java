@@ -33,6 +33,7 @@ package org.threeten.extra.scale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,6 +46,7 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -97,7 +99,7 @@ public class TestUtcInstant {
                 UtcInstant t = UtcInstant.ofModifiedJulianDay(i, j);
                 assertEquals(i, t.getModifiedJulianDay());
                 assertEquals(j, t.getNanoOfDay());
-                assertEquals(false, t.isLeapSecond());
+                assertFalse(t.isLeapSecond());
             }
         }
     }
@@ -156,6 +158,7 @@ public class TestUtcInstant {
 
     @Test
     public void factory_of_Instant_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> UtcInstant.of((Instant) null));
     }
 
@@ -175,6 +178,7 @@ public class TestUtcInstant {
 
     @Test
     public void factory_of_TaiInstant_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> UtcInstant.of((TaiInstant) null));
     }
 
@@ -208,35 +212,36 @@ public class TestUtcInstant {
 
     @Test
     public void factory_parse_CharSequence_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> UtcInstant.parse((String) null));
     }
 
     //-----------------------------------------------------------------------
     // withModifiedJulianDay()
     //-----------------------------------------------------------------------
-    public static Object[][] data_withModifiedJulianDay() {
-        return new Object[][] {
+    public static @Nullable Object[][] data_withModifiedJulianDay() {
+        return new @Nullable Object[][] {
             {0L, 12345L, 1L, 1L, 12345L},
             {0L, 12345L, -1L, -1L, 12345L},
             {7L, 12345L, 2L, 2L, 12345L},
             {7L, 12345L, -2L, -2L, 12345L},
             {-99L, 12345L, 3L, 3L, 12345L},
             {-99L, 12345L, -3L, -3L, 12345L},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1972_12_30, null, null},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1972_12_30, null, 0L},
             {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1972_12_31_LEAP, MJD_1972_12_31_LEAP, NANOS_PER_DAY},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1973_01_01, null, null},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1973_01_01, null, 0L},
             {MJD_1972_12_31_LEAP, NANOS_PER_DAY, MJD_1973_12_31_LEAP, MJD_1973_12_31_LEAP, NANOS_PER_DAY},
         };
     }
 
     @ParameterizedTest
     @MethodSource("data_withModifiedJulianDay")
-    public void test_withModifiedJulianDay(long mjd, long nanos, long newMjd, Long expectedMjd, Long expectedNanos) {
+    public void test_withModifiedJulianDay(long mjd, long nanos, long newMjd, @Nullable Long expectedMjd, long expectedNanos) {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos);
         if (expectedMjd != null) {
             UtcInstant withModifiedJulianDay = i.withModifiedJulianDay(newMjd);
             assertEquals(expectedMjd.longValue(), withModifiedJulianDay.getModifiedJulianDay());
-            assertEquals(expectedNanos.longValue(), withModifiedJulianDay.getNanoOfDay());
+            assertEquals(expectedNanos, withModifiedJulianDay.getNanoOfDay());
         } else {
             assertThrows(DateTimeException.class, () -> i.withModifiedJulianDay(newMjd));
         }
@@ -245,35 +250,35 @@ public class TestUtcInstant {
     //-----------------------------------------------------------------------
     // withNanoOfDay()
     //-----------------------------------------------------------------------
-    public static Object[][] data_withNanoOfDay() {
-        return new Object[][] {
+    public static @Nullable Object[][] data_withNanoOfDay() {
+        return new @Nullable Object[][] {
             {0L, 12345L, 1L, 0L, 1L},
-            {0L, 12345L, -1L, null, null},
+            {0L, 12345L, -1L, null, 0L},
             {7L, 12345L, 2L, 7L, 2L},
             {-99L, 12345L, 3L, -99L, 3L},
             {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_DAY - 1, MJD_1972_12_30, NANOS_PER_DAY - 1},
             {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_DAY - 1, MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1},
             {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_DAY - 1, MJD_1973_01_01, NANOS_PER_DAY - 1},
-            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_DAY, null, null},
+            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_DAY, null, 0L},
             {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_DAY, MJD_1972_12_31_LEAP, NANOS_PER_DAY},
-            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_DAY, null, null},
-            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY - 1, null, null},
+            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_DAY, null, 0L},
+            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY - 1, null, 0L},
             {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY - 1, MJD_1972_12_31_LEAP, NANOS_PER_LEAP_DAY - 1},
-            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY - 1, null, null},
-            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, null},
-            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, null},
-            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, null},
+            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY - 1, null, 0L},
+            {MJD_1972_12_30, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, 0L},
+            {MJD_1972_12_31_LEAP, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, 0L},
+            {MJD_1973_01_01, NANOS_PER_DAY - 1, NANOS_PER_LEAP_DAY, null, 0L},
         };
     }
 
     @ParameterizedTest
     @MethodSource("data_withNanoOfDay")
-    public void test_withNanoOfDay(long mjd, long nanos, long newNanoOfDay, Long expectedMjd, Long expectedNanos) {
+    public void test_withNanoOfDay(long mjd, long nanos, long newNanoOfDay, @Nullable Long expectedMjd, long expectedNanos) {
         UtcInstant i = UtcInstant.ofModifiedJulianDay(mjd, nanos);
         if (expectedMjd != null) {
             UtcInstant withNanoOfDay = i.withNanoOfDay(newNanoOfDay);
             assertEquals(expectedMjd.longValue(), withNanoOfDay.getModifiedJulianDay());
-            assertEquals(expectedNanos.longValue(), withNanoOfDay.getNanoOfDay());
+            assertEquals(expectedNanos, withNanoOfDay.getNanoOfDay());
         } else {
             assertThrows(DateTimeException.class, () -> i.withNanoOfDay(newNanoOfDay));
         }
@@ -487,17 +492,17 @@ public class TestUtcInstant {
                 UtcInstant b = instants[j];
                 if (i < j) {
                     assertEquals(-1, a.compareTo(b));
-                    assertEquals(false, a.equals(b));
+                    assertNotEquals(a, b);
                     assertTrue(a.isBefore(b));
                     assertFalse(a.isAfter(b));
                 } else if (i > j) {
                     assertEquals(1, a.compareTo(b));
-                    assertEquals(false, a.equals(b));
+                    assertNotEquals(a, b);
                     assertFalse(a.isBefore(b));
                     assertTrue(a.isAfter(b));
                 } else {
                     assertEquals(0, a.compareTo(b));
-                    assertEquals(true, a.equals(b));
+                    assertEquals(a, b);
                     assertFalse(a.isBefore(b));
                     assertFalse(a.isAfter(b));
                 }
@@ -508,6 +513,7 @@ public class TestUtcInstant {
     @Test
     public void test_compareTo_ObjectNull() {
         UtcInstant a = UtcInstant.ofModifiedJulianDay(0L, 0);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> a.compareTo(null));
     }
 

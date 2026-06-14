@@ -29,41 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.extra.scale;
+@NullMarked
+package org.threeten.extra.chrono;
 
-/**
- * Mock rules that always returns a leap second.
- */
-public class MockUtcRulesAlwaysLeap extends UtcRules {
+import org.jspecify.annotations.NullMarked;
 
-    @Override
-    public String getName() {
-        return "Mock";
-    }
-
-    @Override
-    public int getLeapSecondAdjustment(long mjDay) {
-        return 1;  // always leap
-    }
-
-    @Override
-    public int getTaiOffset(long mjDay) {
-        return (int) mjDay;
-    }
-
-    @Override
-    public long[] getLeapSecondDates() {
-        return new long[0];
-    }
-
-    @Override
-    public TaiInstant convertToTai(UtcInstant utcInstant) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public UtcInstant convertToUtc(TaiInstant taiInstant) {
-        throw new UnsupportedOperationException();
-    }
-
-}

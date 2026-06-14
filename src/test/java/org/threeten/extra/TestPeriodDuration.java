@@ -263,6 +263,7 @@ public class TestPeriodDuration {
 
     @Test
     public void test_parse_CharSequence_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> PeriodDuration.parse((CharSequence) null));
     }
 
@@ -286,6 +287,7 @@ public class TestPeriodDuration {
 
     @Test
     public void test_plus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> P1Y2M3D.plus(null));
     }
 
@@ -309,6 +311,7 @@ public class TestPeriodDuration {
 
     @Test
     public void test_minus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> P1Y2M3D.minus(null));
     }
 

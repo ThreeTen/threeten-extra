@@ -57,6 +57,7 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -86,7 +87,7 @@ import com.google.common.testing.EqualsTester;
 /**
  * Test.
  */
-@SuppressWarnings({"static-method", "javadoc"})
+@SuppressWarnings({"static-method"})
 public class TestInternationalFixedChronology {
 
     //-----------------------------------------------------------------------
@@ -98,7 +99,7 @@ public class TestInternationalFixedChronology {
         assertNotNull(chrono);
         assertEquals(InternationalFixedChronology.INSTANCE, chrono);
         assertEquals("Ifc", chrono.getId());
-        assertEquals(null, chrono.getCalendarType());
+        assertNull(chrono.getCalendarType());
     }
 
     //-----------------------------------------------------------------------

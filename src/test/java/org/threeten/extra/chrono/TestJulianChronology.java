@@ -54,8 +54,10 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -287,21 +289,21 @@ public class TestJulianChronology {
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(true, JulianChronology.INSTANCE.isLeapYear(8));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(7));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(6));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(5));
-        assertEquals(true, JulianChronology.INSTANCE.isLeapYear(4));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(3));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(2));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(1));
-        assertEquals(true, JulianChronology.INSTANCE.isLeapYear(0));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-1));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-2));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-3));
-        assertEquals(true, JulianChronology.INSTANCE.isLeapYear(-4));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-5));
-        assertEquals(false, JulianChronology.INSTANCE.isLeapYear(-6));
+        assertTrue(JulianChronology.INSTANCE.isLeapYear(8));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(7));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(6));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(5));
+        assertTrue(JulianChronology.INSTANCE.isLeapYear(4));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(3));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(2));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(1));
+        assertTrue(JulianChronology.INSTANCE.isLeapYear(0));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(-1));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(-2));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(-3));
+        assertTrue(JulianChronology.INSTANCE.isLeapYear(-4));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(-5));
+        assertFalse(JulianChronology.INSTANCE.isLeapYear(-6));
     }
 
     public static Object[][] data_lengthOfMonth() {
@@ -397,8 +399,8 @@ public class TestJulianChronology {
     public void test_Chronology_eras() {
         List<Era> eras = JulianChronology.INSTANCE.eras();
         assertEquals(2, eras.size());
-        assertEquals(true, eras.contains(JulianEra.BC));
-        assertEquals(true, eras.contains(JulianEra.AD));
+        assertTrue(eras.contains(JulianEra.BC));
+        assertTrue(eras.contains(JulianEra.AD));
     }
 
     //-----------------------------------------------------------------------

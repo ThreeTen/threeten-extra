@@ -54,8 +54,10 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -267,21 +269,21 @@ public class TestCopticChronology {
 
     @Test
     public void test_isLeapYear_specific() {
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(8));
-        assertEquals(true, CopticChronology.INSTANCE.isLeapYear(7));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(6));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(5));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(4));
-        assertEquals(true, CopticChronology.INSTANCE.isLeapYear(3));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(2));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(1));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(0));
-        assertEquals(true, CopticChronology.INSTANCE.isLeapYear(-1));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-2));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-3));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-4));
-        assertEquals(true, CopticChronology.INSTANCE.isLeapYear(-5));
-        assertEquals(false, CopticChronology.INSTANCE.isLeapYear(-6));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(8));
+        assertTrue(CopticChronology.INSTANCE.isLeapYear(7));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(6));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(5));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(4));
+        assertTrue(CopticChronology.INSTANCE.isLeapYear(3));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(2));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(1));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(0));
+        assertTrue(CopticChronology.INSTANCE.isLeapYear(-1));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(-2));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(-3));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(-4));
+        assertTrue(CopticChronology.INSTANCE.isLeapYear(-5));
+        assertFalse(CopticChronology.INSTANCE.isLeapYear(-6));
     }
 
     public static Object[][] data_lengthOfMonth() {
@@ -367,8 +369,8 @@ public class TestCopticChronology {
     public void test_Chronology_eras() {
         List<Era> eras = CopticChronology.INSTANCE.eras();
         assertEquals(2, eras.size());
-        assertEquals(true, eras.contains(CopticEra.BEFORE_AM));
-        assertEquals(true, eras.contains(CopticEra.AM));
+        assertTrue(eras.contains(CopticEra.BEFORE_AM));
+        assertTrue(eras.contains(CopticEra.AM));
     }
 
     //-----------------------------------------------------------------------

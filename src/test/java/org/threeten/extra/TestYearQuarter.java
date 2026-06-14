@@ -163,16 +163,19 @@ public class TestYearQuarter {
 
     @Test
     public void test_of_Year_Quarter_nullQuarter() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of(Year.of(2012), (Quarter) null));
     }
 
     @Test
     public void test_of_Year_Quarter_nullYear() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of((Year) null, Quarter.Q2));
     }
 
     @Test
     public void test_of_Year_Quarter_nullBoth() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of((Year) null, (Quarter) null));
     }
 
@@ -193,6 +196,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_of_Year_int_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of((Year) null, 2));
     }
 
@@ -223,6 +227,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_of_int_Quarter_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of(2012, (Quarter) null));
     }
 
@@ -295,6 +300,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_from_TemporalAccessor_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.from((TemporalAccessor) null));
     }
 
@@ -323,6 +329,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_parse_CharSequenceDate_nullCharSequence() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.parse((CharSequence) null));
     }
 
@@ -344,11 +351,13 @@ public class TestYearQuarter {
     @Test
     public void test_parse_CharSequenceDateTimeFormatter_nullCharSequence() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("'Q'Q uuuu");
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.parse((CharSequence) null, f));
     }
 
     @Test
     public void test_parse_CharSequenceDateTimeFormatter_nullDateTimeFormatter() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.parse("", (DateTimeFormatter) null));
     }
 
@@ -434,6 +443,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_range_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.range((TemporalField) null));
     }
 
@@ -455,6 +465,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_get_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.get((TemporalField) null));
     }
 
@@ -476,6 +487,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_getLong_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.getLong((TemporalField) null));
     }
 
@@ -584,6 +596,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_with_TemporalAdjuster_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of(2007, Q2).with((TemporalAdjuster) null));
     }
 
@@ -746,6 +759,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_adjustInto_Temporal_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.adjustInto((Temporal) null));
     }
 
@@ -787,11 +801,13 @@ public class TestYearQuarter {
 
     @Test
     public void test_until_TemporalTemporalUnit_nullTemporal() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of(2012, Q2).until(null, QUARTER_YEARS));
     }
 
     @Test
     public void test_until_TemporalTemporalUnit_nullTemporalUnit() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of(2012, Q2).until(YearQuarter.of(2012, Q3), null));
     }
 
@@ -800,6 +816,7 @@ public class TestYearQuarter {
     //-----------------------------------------------------------------------
     @Test
     public void test_quartersUntil_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.of(2012, Q2).quartersUntil(null));
     }
 
@@ -838,6 +855,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_format_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.format((DateTimeFormatter) null));
     }
 
@@ -967,6 +985,7 @@ public class TestYearQuarter {
 
     @Test
     public void test_compareTo_nullYearQuarter() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.compareTo(null));
     }
 

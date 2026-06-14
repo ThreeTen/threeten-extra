@@ -173,6 +173,7 @@ public class TestMonths {
 
     @Test
     public void test_from_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Months.from((TemporalAmount) null));
     }
 
@@ -250,6 +251,7 @@ public class TestMonths {
 
     @Test
     public void test_parse_CharSequence_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Months.parse((CharSequence) null));
     }
 
@@ -261,11 +263,13 @@ public class TestMonths {
 
     @Test
     public void test_between_date_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Months.between(LocalDate.now(), (Temporal) null));
     }
 
     @Test
     public void test_between_null_date() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Months.between((Temporal) null, LocalDate.now()));
     }
 
@@ -323,6 +327,7 @@ public class TestMonths {
 
     @Test
     public void test_plus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Months.of(Integer.MIN_VALUE + 1).plus(null));
     }
 
@@ -390,6 +395,7 @@ public class TestMonths {
 
     @Test
     public void test_minus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Months.of(Integer.MIN_VALUE + 1).minus(null));
     }
 
@@ -528,6 +534,7 @@ public class TestMonths {
     @Test
     public void test_compareTo_null() {
         Months test5 = Months.of(5);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 

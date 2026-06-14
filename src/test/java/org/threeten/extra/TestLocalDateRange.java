@@ -558,6 +558,7 @@ public class TestLocalDateRange {
 
     @Test
     public void test_parse_CharSequence_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> LocalDateRange.parse(null));
     }
 

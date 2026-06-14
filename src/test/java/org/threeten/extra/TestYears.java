@@ -160,6 +160,7 @@ public class TestYears {
 
     @Test
     public void test_from_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Years.from((TemporalAmount) null));
     }
 
@@ -199,6 +200,7 @@ public class TestYears {
 
     @Test
     public void test_parse_CharSequence_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Years.parse((CharSequence) null));
     }
 
@@ -210,11 +212,13 @@ public class TestYears {
 
     @Test
     public void test_between_date_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Years.between(LocalDate.now(), (Temporal) null));
     }
 
     @Test
     public void test_between_null_date() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Years.between((Temporal) null, LocalDate.now()));
     }
 
@@ -272,6 +276,7 @@ public class TestYears {
 
     @Test
     public void test_plus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Years.of(Integer.MIN_VALUE + 1).plus(null));
     }
 
@@ -339,6 +344,7 @@ public class TestYears {
 
     @Test
     public void test_minus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Years.of(Integer.MIN_VALUE + 1).minus(null));
     }
 
@@ -477,6 +483,7 @@ public class TestYears {
     @Test
     public void test_compareTo_null() {
         Years test5 = Years.of(5);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 

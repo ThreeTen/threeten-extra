@@ -155,6 +155,7 @@ public class TestWeeks {
 
     @Test
     public void test_from_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Weeks.from((TemporalAmount) null));
     }
 
@@ -194,6 +195,7 @@ public class TestWeeks {
 
     @Test
     public void test_parse_CharSequence_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Weeks.parse((CharSequence) null));
     }
 
@@ -205,11 +207,13 @@ public class TestWeeks {
 
     @Test
     public void test_between_date_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Weeks.between(LocalDate.now(), (Temporal) null));
     }
 
     @Test
     public void test_between_null_date() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Weeks.between((Temporal) null, LocalDate.now()));
     }
 
@@ -267,6 +271,7 @@ public class TestWeeks {
 
     @Test
     public void test_plus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Weeks.of(Integer.MIN_VALUE + 1).plus(null));
     }
 
@@ -334,6 +339,7 @@ public class TestWeeks {
 
     @Test
     public void test_minus_TemporalAmount_null() {
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Weeks.of(Integer.MIN_VALUE + 1).minus(null));
     }
 
@@ -472,6 +478,7 @@ public class TestWeeks {
     @Test
     public void test_compareTo_null() {
         Weeks test5 = Weeks.of(5);
+        //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> test5.compareTo(null));
     }
 

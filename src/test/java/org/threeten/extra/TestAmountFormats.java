@@ -39,6 +39,7 @@ import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -580,8 +581,8 @@ public class TestAmountFormats {
         }
     }
 
-    public static Object[][] duration_unitBasedErrors() {
-        return new Object[][] {
+    public static @Nullable Object[][] duration_unitBasedErrors() {
+        return new @Nullable Object[][] {
             {new NullPointerException("durationText must not be null"), null},
             {new DateTimeParseException("Not a numeric value", "", 0), ""},
             {new DateTimeParseException("Not a numeric value", "+", 0), "+"},
