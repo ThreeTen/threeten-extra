@@ -251,6 +251,11 @@ public class TestLocalDateRange {
     }
 
     @Test
+    public void test_ofClosed_empty() {
+        assertThrows(DateTimeException.class, () -> LocalDateRange.ofClosed(DATE_2012_07_30, DATE_2012_07_29));
+    }
+
+    @Test
     public void test_ofClosed_MIN() {
         LocalDateRange test = LocalDateRange.ofClosed(LocalDate.MIN, DATE_2012_07_30);
         assertEquals(LocalDate.MIN, test.getStart());
@@ -699,6 +704,49 @@ public class TestLocalDateRange {
     public void test_withEnd_invalid() {
         LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
         assertThrows(DateTimeException.class, () -> base.withEnd(DATE_2012_07_27));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_withEndInclusive() {
+        LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
+        LocalDateRange test = base.withEndInclusive(DATE_2012_07_31);
+        assertEquals(DATE_2012_07_28, test.getStart());
+        assertEquals(DATE_2012_07_31, test.getEndInclusive());
+        assertEquals(DATE_2012_08_01, test.getEnd());
+    }
+
+    @Test
+    public void test_withEndInclusive_adjuster() {
+        LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
+        LocalDateRange test = base.withEndInclusive(date -> {
+            assertEquals(DATE_2012_07_30, date);
+            return date.plus(1, ChronoUnit.WEEKS);
+        });
+        assertEquals(DATE_2012_07_28, test.getStart());
+        assertEquals(DATE_2012_07_30.plusWeeks(1), test.getEndInclusive());
+        assertEquals(DATE_2012_07_31.plusWeeks(1), test.getEnd());
+    }
+
+    @Test
+    public void test_withEndInclusive_max() {
+        LocalDateRange base = LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_31);
+        LocalDateRange test = base.withEndInclusive(LocalDate.MAX);
+        assertEquals(DATE_2012_07_28, test.getStart());
+        assertEquals(LocalDate.MAX, test.getEndInclusive());
+        assertEquals(LocalDate.MAX, test.getEnd());
+    }
+
+    @Test
+    public void test_withEndInclusive_empty() {
+        LocalDateRange base = LocalDateRange.of(DATE_2012_07_30, DATE_2012_07_31);
+        assertThrows(DateTimeException.class, () -> base.withEndInclusive(DATE_2012_07_29));
+    }
+
+    @Test
+    public void test_withEndInclusive_invalid() {
+        LocalDateRange base = LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_31);
+        assertThrows(DateTimeException.class, () -> base.withEndInclusive(DATE_2012_07_27));
     }
 
     //-----------------------------------------------------------------------

@@ -13,6 +13,10 @@
         Can be used to obtain the equivalent date range of most Temporal objects.
         For example, `LocalDateRange.from(YearMonth.of(2024, 6))` will return the range 2024-06-01 to 2024-06-30 (inclusive).
       </action>
+      <action dev="jodastephen" type="add" issue="371">
+        Add `LocalDateRange.withEndInclusive(TemporalAdjuster)`.
+        Allows a range to be adjusted based on the inclusive end date.
+      </action>
     </release>
     <release version="1.10.0" date="2026-06-16" description="v1.10.0">
       <action dev="jodastephen" type="add" issue="379">

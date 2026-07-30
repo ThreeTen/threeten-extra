@@ -142,6 +142,7 @@ public final class LocalDateRange
      * <p>
      * The range includes the start date and the end date.
      * The end date must be equal to or after the start date.
+     * Note that an empty range cannot be created with this method.
      * <p>
      * The constants {@code LocalDate.MIN} and {@code LocalDate.MAX} can be used
      * to indicate an unbounded far-past or far-future. In addition, an end date of
@@ -171,7 +172,7 @@ public final class LocalDateRange
      * Obtains an instance of {@code LocalDateRange} from the start and a period.
      * <p>
      * The end date is calculated as the start plus the duration.
-     * The period must not be negative.
+     * The period must not be negative, but may be zero.
      * <p>
      * The constant {@code LocalDate.MIN} can be used to indicate an unbounded far-past.
      * <p>
@@ -188,7 +189,7 @@ public final class LocalDateRange
         Objects.requireNonNull(startInclusive, "startInclusive");
         Objects.requireNonNull(period, "period");
         if (period.isNegative()) {
-            throw new DateTimeException("Period must not be zero or negative");
+            throw new DateTimeException("Period must not be negative");
         }
         return new LocalDateRange(startInclusive, startInclusive.plus(period));
     }
@@ -469,7 +470,7 @@ public final class LocalDateRange
     }
 
     /**
-     * Returns a copy of this range with the end date adjusted.
+     * Returns a copy of this range with the exclusive end date adjusted.
      * <p>
      * This returns a new instance with the exclusive end date altered.
      * Since {@code LocalDate} implements {@code TemporalAdjuster} any
@@ -481,11 +482,35 @@ public final class LocalDateRange
      * </pre>
      * 
      * @param adjuster  the adjuster to use, not null
-     * @return a copy of this range with the end date adjusted
+     * @return a copy of this range with the exclusive end date adjusted
      * @throws DateTimeException if the new end date is before the current start date
      */
     public LocalDateRange withEnd(TemporalAdjuster adjuster) {
         return LocalDateRange.of(start, end.with(adjuster));
+    }
+
+    /**
+     * Returns a copy of this range with the inclusive end date adjusted.
+     * <p>
+     * This returns a new instance with the inclusive end date altered.
+     * Since {@code LocalDate} implements {@code TemporalAdjuster} any
+     * local date can simply be passed in.
+     * <p>
+     * For example, to adjust the end to one week later:
+     * <pre>
+     *  range = range.withEndInclusive(date -&gt; date.plus(1, ChronoUnit.WEEKS));
+     * </pre>
+     * <p>
+     * It is not possible to create an empty range with this method,
+     * as the inclusive end date must always be on or after the start date.
+     *
+     * @param adjuster  the adjuster to use, not null
+     * @return a copy of this range with the inclusive end date adjusted
+     * @throws DateTimeException if the new inclusive end date is before the start date
+     * @since 1.11.0
+     */
+    public LocalDateRange withEndInclusive(TemporalAdjuster adjuster) {
+        return LocalDateRange.ofClosed(start, getEndInclusive().with(adjuster));
     }
 
     //-----------------------------------------------------------------------
