@@ -33,10 +33,15 @@ package org.threeten.extra;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalQueries;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Spliterator;
@@ -44,7 +49,6 @@ import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
 import org.jspecify.annotations.Nullable;
@@ -204,6 +208,50 @@ public final class LocalDateRange
     public static LocalDateRange ofEmpty(LocalDate date) {
         Objects.requireNonNull(date, "date");
         return new LocalDateRange(date, date);
+    }
+
+    /**
+     * Obtains a range of dates from a temporal object.
+     * <p>
+     * The temporal object must provide sufficient information to create a range, otherwise an exception will be thrown.
+     * <p>
+     * Most temporal objects are handled, including {@code LocalDate}, {@code YearMonth}, {@code Year},
+     * {@code YearHalf}, {@code YearQuarter} and {@code YearWeek}. Complete objects with a time amount will
+     * be converted to a date, ignoring the time component. For example, a {@code LocalDateTime}
+     * will be converted to a {@code LocalDate} and then used to create a one-day range.
+     * <p>
+     * Classes such as {@code MonthDay} and {@code Month} are not supported as they do not provide sufficient information.
+     *
+     * @param temporal  the temporal object to convert, not null
+     * @return the range, not null
+     * @throws DateTimeException if the temporal cannot be converted to a range
+     * @since 1.11.0
+     */
+    public static LocalDateRange from(Temporal temporal) {
+        Objects.requireNonNull(temporal, "temporal");
+        LocalDate date = temporal.query(TemporalQueries.localDate());
+        if (date != null) {
+            return ofClosed(date, date);
+        }
+        if (temporal instanceof Year) {
+            LocalDate start = ((Year) temporal).atDay(1);
+            return ofClosed(start, start.withMonth(12).withDayOfMonth(31));
+        } else if (temporal instanceof YearMonth) {
+            YearMonth ym = (YearMonth) temporal;
+            return ofClosed(ym.atDay(1), ym.atEndOfMonth());
+        } else if (temporal instanceof YearHalf) {
+            YearHalf yh = (YearHalf) temporal;
+            return ofClosed(yh.atDay(1), yh.atEndOfHalf());
+        } else if (temporal instanceof YearQuarter) {
+            YearQuarter yq = (YearQuarter) temporal;
+            return ofClosed(yq.atDay(1), yq.atEndOfQuarter());
+        } else if (temporal instanceof YearWeek) {
+            YearWeek yw = (YearWeek) temporal;
+            return ofClosed(yw.atDay(DayOfWeek.MONDAY), yw.atDay(DayOfWeek.SUNDAY));
+        } else {
+            // we could examine precision and try to extract based on fields, but it is pretty complex
+            throw new DateTimeException("Unknown Temporal type: " + temporal.getClass().getName());
+        }
     }
 
     /**
