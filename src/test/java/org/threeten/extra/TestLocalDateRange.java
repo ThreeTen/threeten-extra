@@ -35,7 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import com.google.common.collect.Range;
+import com.google.common.testing.EqualsTester;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -43,21 +46,23 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import com.google.common.collect.Range;
-import com.google.common.testing.EqualsTester;
 
 /**
  * Test date range.
@@ -405,6 +410,36 @@ public class TestLocalDateRange {
     @Test
     public void test_ofEmpty_MAXM1() {
         assertThrows(DateTimeException.class, () -> LocalDateRange.ofEmpty(MAXM1));
+    }
+
+    //-----------------------------------------------------------------------
+    @ParameterizedTest
+    @MethodSource("data_from")
+    public void test_from(Temporal temporal, LocalDate startDate, LocalDate endDate) {
+        LocalDateRange test = LocalDateRange.from(temporal);
+        assertEquals(startDate, test.getStart());
+        assertEquals(endDate, test.getEndInclusive());
+    }
+
+    static Object[][] data_from() {
+        return new Object[][]{
+                {Year.of(2012), LocalDate.of(2012, 1, 1), LocalDate.of(2012, 12, 31)},
+                {Year.of(Year.MIN_VALUE), LocalDate.of(Year.MIN_VALUE, 1, 1), LocalDate.of(Year.MIN_VALUE, 12, 31)},
+                {Year.of(Year.MAX_VALUE), LocalDate.of(Year.MAX_VALUE, 1, 1), LocalDate.of(Year.MAX_VALUE, 12, 31)},
+                {YearMonth.of(2012, 2), LocalDate.of(2012, 2, 1), LocalDate.of(2012, 2, 29)},
+                {YearHalf.of(2012, Half.H1), LocalDate.of(2012, 1, 1), LocalDate.of(2012, 6, 30)},
+                {YearQuarter.of(2012, Quarter.Q1), LocalDate.of(2012, 1, 1), LocalDate.of(2012, 3, 31)},
+                {YearWeek.of(2012, 3), LocalDate.of(2012, 1, 16), LocalDate.of(2012, 1, 22)},
+                {LocalDateTime.of(2012, 7, 30, 12, 30), LocalDate.of(2012, 7, 30), LocalDate.of(2012, 7, 30)},
+                {OffsetDate.of(2012, 7, 30, ZoneOffset.UTC), LocalDate.of(2012, 7, 30), LocalDate.of(2012, 7, 30)},
+                {OffsetDateTime.of(2012, 7, 30, 12, 30, 0, 0, ZoneOffset.UTC), LocalDate.of(2012, 7, 30), LocalDate.of(2012, 7, 30)}
+        };
+    }
+
+    @Test
+    public void test_from_unknownType() {
+        assertThrows(DateTimeException.class, () -> LocalDateRange.from(LocalTime.NOON));
+        assertThrows(DateTimeException.class, () -> LocalDateRange.from(HourMinute.of(12, 30)));
     }
 
     //-----------------------------------------------------------------------
