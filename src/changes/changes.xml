@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.11.0" date="2026-06-16" description="v1.11.0">
+      <action dev="jodastephen" type="add" issue="369">
+        Add `PartialTemporal`.
+        Acts like the `Partial` class in Joda-Time, a map of `TemporalField` to value.
+      </action>
       <action dev="jodastephen" type="add" issue="371">
         Add `LocalDateRange.from(Temporal)`.
         Can be used to obtain the equivalent date range of most Temporal objects.
