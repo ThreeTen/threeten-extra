@@ -148,7 +148,35 @@ public class TestInternationalFixedChronology {
 
             {InternationalFixedDate.of(2012, 6, 15), LocalDate.of(2012, 6, 3)},
             {InternationalFixedDate.of(2012, 6, 16), LocalDate.of(2012, 6, 4)},
+
+            // Year Day of a leap year immediately preceding a non-leap year
+            {InternationalFixedDate.of(2036, 13, 29), LocalDate.of(2036, 12, 31)},
+            {InternationalFixedDate.of(2037, 1, 1), LocalDate.of(2037, 1, 1)},
+            {InternationalFixedDate.of(2040, 13, 29), LocalDate.of(2040, 12, 31)},
+            {InternationalFixedDate.of(2041, 1, 1), LocalDate.of(2041, 1, 1)},
         };
+    }
+
+    @Test
+    public void test_dateEpochDay_roundTrip() {
+        long start = LocalDate.of(1, 1, 1).toEpochDay();
+        long end = LocalDate.of(9999, 12, 31).toEpochDay();
+        for (long epochDay = start; epochDay <= end; epochDay++) {
+            long ed = epochDay;
+            assertEquals(ed, InternationalFixedChronology.INSTANCE.dateEpochDay(ed).toEpochDay(),
+                () -> "epoch day did not round-trip: " + ed);
+        }
+    }
+
+    @Test
+    public void test_dateEpochDay_yearDay() {
+        for (int year = 1; year <= 9999; year++) {
+            // Year Day is always 13/29, in leap years and non-leap years alike
+            assertEquals(
+                InternationalFixedDate.of(year, 13, 29),
+                InternationalFixedChronology.INSTANCE.dateEpochDay(LocalDate.of(year, 12, 31).toEpochDay()),
+                "wrong Year Day for International fixed year " + year);
+        }
     }
 
     @ParameterizedTest
