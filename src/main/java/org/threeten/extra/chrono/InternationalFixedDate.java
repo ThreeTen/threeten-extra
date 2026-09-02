@@ -296,7 +296,8 @@ public final class InternationalFixedDate
         // In some cases, N/0/0 results in (N+1)/0/0 (rubbish), in a way +1 year off.
         if (doy == 0) {
             year -= 1;
-            doy = DAYS_IN_YEAR + (isLeapYear ? 1 : 0);
+            // the leap status must be that of the decremented year, not the estimated one
+            doy = DAYS_IN_YEAR + (INSTANCE.isLeapYear(year) ? 1 : 0);
         }
 
         return ofYearDay((int) year, (int) doy);
