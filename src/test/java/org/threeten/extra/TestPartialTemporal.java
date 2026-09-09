@@ -82,9 +82,9 @@ public class TestPartialTemporal {
         // toString has a sorted order of fields, so the output is more predictable (but you should not rely on this!)
         assertEquals("Partial[fieldValues={Year=2024, DayOfMonth=29}, null]", date.toString());
 
-        PartialTemporal doyOnly = date.withoutField(YEAR);
-        assertEquals(1, doyOnly.size());
-        assertEquals("Partial[fieldValues={DayOfMonth=29}, null]", doyOnly.toString());
+        PartialTemporal domOnly = date.withoutField(YEAR);
+        assertEquals(1, domOnly.size());
+        assertEquals("Partial[fieldValues={DayOfMonth=29}, null]", domOnly.toString());
     }
 
     @Test
