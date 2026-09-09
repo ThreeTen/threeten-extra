@@ -38,9 +38,11 @@ import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.NANO_OF_DAY;
+import static java.time.temporal.ChronoField.OFFSET_SECONDS;
 import static java.time.temporal.ChronoField.YEAR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,11 +75,16 @@ public class TestPartialTemporal {
         assertTrue(date.isSupported(YEAR));
         assertEquals(2024, date.getLong(YEAR));
         assertFalse(date.isSupported(NANO_OF_DAY));
+
         PartialTemporal sameDate = PartialTemporal.of(YEAR, 2024).withField(DAY_OF_MONTH, 29);
         assertEquals(date, sameDate);
         assertEquals(date.hashCode(), sameDate.hashCode());
         // toString has a sorted order of fields, so the output is more predictable (but you should not rely on this!)
         assertEquals("Partial[fieldValues={Year=2024, DayOfMonth=29}, null]", date.toString());
+
+        PartialTemporal doyOnly = date.withoutField(YEAR);
+        assertEquals(1, doyOnly.size());
+        assertEquals("Partial[fieldValues={DayOfMonth=29}, null]", doyOnly.toString());
     }
 
     @Test
@@ -91,6 +98,20 @@ public class TestPartialTemporal {
         assertEquals(LocalTime.NOON, partial.query(java.time.temporal.TemporalQueries.localTime()));
         assertEquals(ZoneOffset.ofHours(1), partial.query(java.time.temporal.TemporalQueries.offset()));
         assertEquals(Optional.of(ZoneId.of("Europe/London")), partial.getZone());
+    }
+
+    @Test
+    public void test_queryInvalidOffset() {
+        PartialTemporal partial = PartialTemporal.of(OFFSET_SECONDS, ZoneOffset.MAX.getTotalSeconds() + 1);
+        ZoneOffset offset = partial.query(TemporalQueries.offset());
+        assertNull(offset);
+    }
+
+    @Test
+    public void test_queryInvalidOffsetWithFallback() {
+        PartialTemporal partial = PartialTemporal.of(OFFSET_SECONDS, ZoneOffset.MAX.getTotalSeconds() + 1).withZone(ZoneOffset.ofHours(2));
+        ZoneOffset offset = partial.query(TemporalQueries.offset());
+        assertEquals(ZoneOffset.ofHours(2), offset);
     }
 
     @Test

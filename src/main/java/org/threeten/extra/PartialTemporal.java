@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ *  * Neither the name of JSR-310 nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package org.threeten.extra;
 
 import static java.time.temporal.ChronoField.EPOCH_DAY;
@@ -59,7 +90,7 @@ public final class PartialTemporal implements TemporalAccessor {
      * <p>
      * This effectively puts no constraints on the date/time, and can be used to represent any date/time.
      *
-     * @return the empty partial
+     * @return the empty partial temporal
      */
     public static PartialTemporal empty() {
         return new PartialTemporal(new HashMap<>(), null);
@@ -70,7 +101,7 @@ public final class PartialTemporal implements TemporalAccessor {
      *
      * @param field the field
      * @param value the value
-     * @return the partial
+     * @return the partial temporal
      */
     public static PartialTemporal of(TemporalField field, long value) {
         Objects.requireNonNull(field, "field");
@@ -83,7 +114,7 @@ public final class PartialTemporal implements TemporalAccessor {
      * Obtains an instance from a map of field-values, with no time-zone.
      *
      * @param fieldValues the field-values
-     * @return the partial
+     * @return the partial temporal
      */
     public static PartialTemporal of(Map<TemporalField, Long> fieldValues) {
         return new PartialTemporal(fieldValues, null);
@@ -94,7 +125,7 @@ public final class PartialTemporal implements TemporalAccessor {
      *
      * @param fieldValues the field-values
      * @param zone the zone
-     * @return the partial
+     * @return the partial temporal
      */
     public static PartialTemporal of(Map<TemporalField, Long> fieldValues, ZoneId zone) {
         Objects.requireNonNull(fieldValues, "fieldValues");
@@ -111,7 +142,7 @@ public final class PartialTemporal implements TemporalAccessor {
      * The zone is obtained from the temporal using {@link TemporalQueries#zone()}.
      *
      * @param temporal the temporal to copy from
-     * @return the partial
+     * @return the partial temporal
      */
     public static PartialTemporal from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
@@ -133,7 +164,7 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Returns the number of fields that have values.
+     * Returns the number of field-value pairs in this partial temporal.
      *
      * @return the size of the internal field-value map
      */
@@ -169,7 +200,7 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Returns a copy of this partial with the specified field set to a new value.
+     * Returns a copy of this partial temporal with the specified field set to a new value.
      * <p>
      * This operates with the same semantics as {@code Map.put}.
      *
@@ -185,11 +216,11 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Returns a copy of this partial with the specified field removed.
+     * Returns a copy of this partial temporal with the specified field removed.
      * <p>
-     * If this partial did not previously support the field, no error occurs.
+     * If this partial temporal did not previously support the field, no error occurs.
      *
-     * @param field the field type to remove, may be null
+     * @param field the field type to remove, not null
      * @return a copy of this instance with the field removed
      */
     public PartialTemporal withoutField(TemporalField field) {
@@ -200,9 +231,9 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Returns a copy of this partial with the specified zone.
+     * Returns a copy of this partial temporal with the specified zone.
      * <p>
-     * If the zone is null, the returned partial will have no zone.
+     * If the zone is null, the returned partial temporal will have no zone.
      *
      * @param zone the zone to set, may be null for no zone
      * @return a copy of this instance with the zone set
@@ -262,7 +293,7 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Queries this partial.
+     * Queries this partial temporal.
      * <p>
      * This implementation provides the following support:
      * <ul>
@@ -302,7 +333,7 @@ public final class PartialTemporal implements TemporalAccessor {
             if (zone instanceof ZoneOffset) {
                 return (R) zone;
             }
-            return query.queryFrom(this);
+            return null;
         } else if (query == TemporalQueries.zone()) {
             return query.queryFrom(this);
         } else if (query == TemporalQueries.precision()) {
@@ -312,14 +343,14 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Checks if this partial match the specified temporal.
+     * Checks if this partial temporal matches the specified temporal.
      * <p>
-     * A match occurs when all the fields of this partial are supported by the specified
+     * A match occurs when all the fields of this partial temporal are supported by the specified
      * temporal, and they have the same value.
      * Note that the other temporal may have other additional fields, which are not checked.
      *
      * @param temporal a temporal to check against, null means now in default zone
-     * @return true if this partial matches the specified temporal
+     * @return true if this partial temporal matches the specified temporal
      */
     public boolean matches(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
@@ -328,14 +359,14 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Resolves this partial into a {@code TemporalAccessor} using the specified resolver style.
+     * Resolves this partial temporal into a {@code TemporalAccessor} using the specified resolver style.
      * <p>
      * This method returns a {@code TemporalAccessor} that can be queried for resolved values, such as date and time.
      * It behaves just like the fields were formatted to a string and parsed back using a {@code DateTimeFormatter}
      * with the specified resolver style.
      * An exception will be thrown if the resolution fails, for example due to a conflict between fields.
      * <p>
-     * For example, to obtain a {@code LocalDate} from a partial:
+     * For example, to obtain a {@code LocalDate} from a partial temporal:
      * <pre>{@code
      *   LocalDate date = LocalDate.from(partial.resolve(ResolverStyle.SMART));
      * }</pre>
@@ -357,12 +388,12 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Formats this partial using the specified formatter.
+     * Formats this partial temporal using the specified formatter.
      * <p>
-     * This partial will be passed to the formatter to produce a string.
+     * This partial temporal will be passed to the formatter to produce a string.
      *
      * @param formatter the formatter to use, not null
-     * @return the formatted partial string, not null
+     * @return the formatted partial temporal string, not null
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
@@ -371,9 +402,9 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Checks if this partial is equal to another partial.
+     * Checks if this partial temporal is equal to another partial temporal.
      *
-     * @param obj the other partial to compare to, null returns false
+     * @param obj the other partial temporal to compare to, null returns false
      * @return true if equal, false otherwise
      */
     @Override
@@ -394,7 +425,7 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Output this partial using a map-like format.
+     * Output this partial temporal using a map-like format.
      * <p>
      * The format of this method may vary and is not to be relied on.
      *
