@@ -37,6 +37,7 @@ import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
+import static java.time.temporal.ChronoField.MICRO_OF_SECOND;
 import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.DECADES;
@@ -51,6 +52,10 @@ import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
+import static java.time.temporal.ChronoField.CLOCK_HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.NANO_OF_DAY;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -73,10 +78,16 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
+import java.time.temporal.WeekFields;
+import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -771,4 +782,145 @@ public class TestTemporals {
         assertEquals(expected, test);
     }
 
+    //-----------------------------------------------------------------------
+    // comparators
+    //-------------------------------------------------------------------------
+    @Test
+    public void test_fieldComparator() {
+        Comparator<TemporalField> comparator = Temporals.fieldComparator();
+        assertSame(comparator, Temporals.fieldComparator());
+        assertEquals(0, comparator.compare(NANO_OF_SECOND, same(NANO_OF_SECOND)));
+        assertTrue(comparator.compare(NANO_OF_SECOND, NANO_OF_DAY) < 0);
+        assertTrue(comparator.compare(NANO_OF_DAY, NANO_OF_SECOND) > 0);
+        assertTrue(comparator.compare(NANO_OF_DAY, MICRO_OF_SECOND) < 0);
+        assertTrue(comparator.compare(CLOCK_HOUR_OF_DAY, HOUR_OF_DAY) < 0);
+        assertTrue(comparator.compare(HOUR_OF_DAY, CLOCK_HOUR_OF_DAY) > 0);
+        assertTrue(comparator.compare(IsoFields.WEEK_OF_WEEK_BASED_YEAR, WeekFields.ISO.weekOfWeekBasedYear()) < 0);
+
+        TemporalField first = testField("FIELD", HOURS, DAYS);
+        TemporalField second = testField("FIELD", HOURS, DAYS);
+        assertNotEquals(first, second);
+        assertEquals(0, comparator.compare(first, second));
+    }
+
+    @Test
+    public void test_unitComparator() {
+        Comparator<TemporalUnit> comparator = Temporals.unitComparator();
+        assertSame(comparator, Temporals.unitComparator());
+        assertEquals(0, comparator.compare(NANOS, same(NANOS)));
+        assertTrue(comparator.compare(NANOS, DAYS) < 0);
+        assertTrue(comparator.compare(DAYS, NANOS) > 0);
+
+        TemporalUnit alpha = testUnit("ALPHA", Duration.ofSeconds(1));
+        TemporalUnit beta = testUnit("BETA", Duration.ofSeconds(1));
+        assertTrue(comparator.compare(alpha, beta) < 0);
+        assertTrue(comparator.compare(beta, alpha) > 0);
+
+        TemporalUnit first = testUnit("UNIT", Duration.ofSeconds(1));
+        TemporalUnit second = testUnit("UNIT", Duration.ofSeconds(1));
+        assertNotEquals(first, second);
+        assertEquals(0, comparator.compare(first, second));
+    }
+
+    private static <T> T same(T value) {
+        return value;
+    }
+
+    private static TemporalField testField(String name, TemporalUnit baseUnit, TemporalUnit rangeUnit) {
+        return new TemporalField() {
+            @Override
+            public TemporalUnit getBaseUnit() {
+                return baseUnit;
+            }
+
+            @Override
+            public TemporalUnit getRangeUnit() {
+                return rangeUnit;
+            }
+
+            @Override
+            public ValueRange range() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public boolean isDateBased() {
+                return false;
+            }
+
+            @Override
+            public boolean isTimeBased() {
+                return true;
+            }
+
+            @Override
+            public boolean isSupportedBy(TemporalAccessor temporal) {
+                return false;
+            }
+
+            @Override
+            public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public long getFrom(TemporalAccessor temporal) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String toString() {
+                return name;
+            }
+        };
+    }
+
+    private static TemporalUnit testUnit(String name, Duration duration) {
+        return new TemporalUnit() {
+            @Override
+            public Duration getDuration() {
+                return duration;
+            }
+
+            @Override
+            public boolean isDurationEstimated() {
+                return false;
+            }
+
+            @Override
+            public boolean isDateBased() {
+                return false;
+            }
+
+            @Override
+            public boolean isTimeBased() {
+                return true;
+            }
+
+            @Override
+            public boolean isSupportedBy(Temporal temporal) {
+                return false;
+            }
+
+            @Override
+            public <R extends Temporal> R addTo(R temporal, long amount) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public long between(Temporal temporal1Inclusive, Temporal temporal2Exclusive) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String toString() {
+                return name;
+            }
+        };
+    }
 }
