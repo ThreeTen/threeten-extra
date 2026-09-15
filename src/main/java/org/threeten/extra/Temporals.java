@@ -481,13 +481,13 @@ public final class Temporals {
     }
 
     /**
-     * Returns a comparator that compares {@code TemporalField} instances by base unit duration, then range unit duration, then name.
+     * Returns a comparator that compares {@code TemporalField} instances by base unit duration, then range unit duration, then name, then class name.
      * <p>
      * Fields are ordered from smallest to largest.
      * For example, the {@code NANO_OF_SECOND} field is smaller than the {@code NANO_OF_DAY} field, which is smaller than the {@code MICRO_OF_SECOND} field.
-     * If two fields have the same base and range duration, they are ordered by name, as defined by {@code toString()}.
+     * If two fields have the same base and range duration, they are ordered by name, as defined by {@code toString()}, then by class name.
      * <p>
-     * The comparator is not consistent with equals, as zero could be returned for two fields that are not equal.
+     * The comparator is consistent with equals unless the field has a deliberately bad implementation.
      *
      * @return the comparator
      * @since 1.11.0
@@ -497,12 +497,12 @@ public final class Temporals {
     }
 
     /**
-     * Returns a comparator that compares {@code TemporalUnit} instances by duration, then name.
+     * Returns a comparator that compares {@code TemporalUnit} instances by duration, then name, then class name.
      * <p>
      * Units are ordered from smallest to largest.
-     * If two units have the same duration, they are ordered by name, as defined by {@code toString()}.
+     * If two units have the same duration, they are ordered by name, as defined by {@code toString()}, then by class name.
      * <p>
-     * The comparator is not consistent with equals, as zero could be returned for two units that are not equal.
+     * The comparator is consistent with equals unless the unit has a deliberately bad implementation.
      *
      * @return the comparator
      * @since 1.11.0
@@ -529,6 +529,9 @@ public final class Temporals {
                 cmp = range1.compareTo(range2);
                 if (cmp == 0) {
                     cmp = field1.toString().compareTo(field2.toString());
+                    if (cmp == 0) {
+                        cmp = field1.getClass().getName().compareTo(field2.getClass().getName());
+                    }
                 }
             }
             return cmp;
@@ -549,6 +552,9 @@ public final class Temporals {
             int cmp = base1.compareTo(base2);
             if (cmp == 0) {
                 cmp = unit1.toString().compareTo(unit2.toString());
+                if (cmp == 0) {
+                    cmp = unit1.getClass().getName().compareTo(unit2.getClass().getName());
+                }
             }
             return cmp;
         }
