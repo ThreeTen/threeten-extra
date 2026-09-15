@@ -76,6 +76,10 @@ import org.jspecify.annotations.Nullable;
  * This performs the same logic that a {@link DateTimeFormatter} would use when parsing a string.
  * <p>
  * The class operates in the ISO chronology.
+ * <p>
+ * This class uses a sorted map to store the fields, using the comparator from {@link Temporals#fieldComparator()}.
+ * It is possible to write a {@code TemporalField} implementation that is deliberately not consistent with equals.
+ * Using such a field would break the internal storage map, resulting in undefined behavior.
  *
  * <h3>Implementation Requirements:</h3>
  * This class is immutable and thread-safe.
@@ -239,7 +243,7 @@ public final class PartialTemporal implements TemporalAccessor {
      * <p>
      * If this partial temporal did not previously support the field, no error occurs.
      *
-     * @param field the field type to remove, not null
+     * @param field the field type to remove
      * @return a copy of this instance with the field removed
      */
     public PartialTemporal withoutField(TemporalField field) {
@@ -282,12 +286,13 @@ public final class PartialTemporal implements TemporalAccessor {
      * This implementation simply returns the value from the internal map.
      * No attempt is made to derive fields.
      *
-     * @param field the field to check, null returns false
+     * @param field the field to check
      * @return the value, if present
      * @throws UnsupportedTemporalTypeException if the field is not present
      */
     @Override
     public long getLong(TemporalField field) {
+        Objects.requireNonNull(field, "field");
         Long value = fieldValues.get(field);
         if (value == null) {
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
@@ -306,6 +311,7 @@ public final class PartialTemporal implements TemporalAccessor {
      */
     @Override
     public ValueRange range(TemporalField field) {
+        Objects.requireNonNull(field, "field");
         if (!fieldValues.containsKey(field)) {
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -327,12 +333,13 @@ public final class PartialTemporal implements TemporalAccessor {
      * </ul>
      *
      * @param <R> the query result type
-     * @param query the query to invoke, not null
+     * @param query the query to invoke
      * @return the query result, null if query could not be satisfied
      */
     @Override
     @SuppressWarnings("unchecked")
     public <R extends @Nullable Object> R query(TemporalQuery<R> query) {
+        Objects.requireNonNull(query, "query");
         if (query == TemporalQueries.zoneId()) {
             return (R) zone;
         } else if (query == TemporalQueries.chronology()) {
@@ -391,8 +398,8 @@ public final class PartialTemporal implements TemporalAccessor {
      *   LocalDate date = LocalDate.from(partial.resolve(ResolverStyle.SMART));
      * }</pre>
      *
-     * @param resolverStyle the resolver style to use, not null
-     * @return the resolved {@code TemporalAccessor}, not null
+     * @param resolverStyle the resolver style to use
+     * @return the resolved {@code TemporalAccessor}
      * @throws DateTimeException if an error occurs during resolution
      */
     public TemporalAccessor resolve(ResolverStyle resolverStyle) {
@@ -412,8 +419,8 @@ public final class PartialTemporal implements TemporalAccessor {
      * <p>
      * This partial temporal will be passed to the formatter to produce a string.
      *
-     * @param formatter the formatter to use, not null
-     * @return the formatted partial temporal string, not null
+     * @param formatter the formatter to use
+     * @return the formatted partial temporal string
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
@@ -445,7 +452,7 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Output this partial temporal using a map-like format.
+     * Outputs this partial temporal using a map-like format.
      * <p>
      * The format of this method may vary and is not to be relied on.
      *
