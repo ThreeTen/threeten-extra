@@ -51,13 +51,18 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -66,11 +71,35 @@ import org.junit.jupiter.api.Test;
 public class TestPartialTemporal {
 
     @Test
-    public void test_factoriesAndImmutableUpdates() {
+    public void test_empty() {
         PartialTemporal empty = PartialTemporal.empty();
-        PartialTemporal date = empty.withField(YEAR, 2024).withField(DAY_OF_MONTH, 29);
 
         assertEquals(0, empty.size());
+        assertEquals(IsoChronology.INSTANCE, empty.getChronology());
+        assertEquals(Optional.empty(), empty.getZone());
+        assertEquals(new HashMap<>(), empty.getFields());
+        assertEquals("Partial[{}]", empty.toString());
+    }
+
+    @Test
+    public void test_mapOrder() {
+        PartialTemporal partial = PartialTemporal.of(DAY_OF_MONTH, 29).withField(MONTH_OF_YEAR, 2).withField(YEAR, 2026);
+
+        assertEquals(3, partial.size());
+        assertEquals(IsoChronology.INSTANCE, partial.getChronology());
+        assertEquals(Optional.empty(), partial.getZone());
+        Iterator<Map.Entry<TemporalField, Long>> it = partial.getFields().entrySet().iterator();
+        assertEquals(new AbstractMap.SimpleEntry<>(YEAR, 2026L), it.next());
+        assertEquals(new AbstractMap.SimpleEntry<>(MONTH_OF_YEAR, 2L), it.next());
+        assertEquals(new AbstractMap.SimpleEntry<>(DAY_OF_MONTH, 29L), it.next());
+        assertFalse(it.hasNext());
+        assertEquals("Partial[{Year=2026, MonthOfYear=2, DayOfMonth=29}]", partial.toString());
+    }
+
+    @Test
+    public void test_factoriesAndImmutableUpdates() {
+        PartialTemporal date = PartialTemporal.empty().withField(YEAR, 2024).withField(DAY_OF_MONTH, 29);
+
         assertEquals(2, date.size());
         assertTrue(date.isSupported(YEAR));
         assertEquals(2024, date.getLong(YEAR));
@@ -79,12 +108,11 @@ public class TestPartialTemporal {
         PartialTemporal sameDate = PartialTemporal.of(YEAR, 2024).withField(DAY_OF_MONTH, 29);
         assertEquals(date, sameDate);
         assertEquals(date.hashCode(), sameDate.hashCode());
-        // toString has a sorted order of fields, so the output is more predictable (but you should not rely on this!)
-        assertEquals("Partial[fieldValues={Year=2024, DayOfMonth=29}, null]", date.toString());
+        assertEquals("Partial[{Year=2024, DayOfMonth=29}]", date.toString());
 
         PartialTemporal domOnly = date.withoutField(YEAR);
         assertEquals(1, domOnly.size());
-        assertEquals("Partial[fieldValues={DayOfMonth=29}, null]", domOnly.toString());
+        assertEquals("Partial[{DayOfMonth=29}]", domOnly.toString());
     }
 
     @Test
@@ -169,11 +197,8 @@ public class TestPartialTemporal {
 
         PartialTemporal conflicting = PartialTemporal.of(EPOCH_DAY, 10).withField(YEAR, 2024);
         DateTimeException ex2 = assertThrows(DateTimeException.class, () -> conflicting.resolve(ResolverStyle.STRICT));
-        // text could be either way around, as the map has no sort order (for performance reasons)
-        assertTrue(ex2.getMessage().contains("Text '2024|10|' could not be parsed:") ||
-                ex2.getMessage().contains("Text '10|2024|' could not be parsed:"));
-        assertTrue(ex2.getMessage().contains("Conflict found: Field Year 1970 differs from Year 2024 derived from 1970-01-11") ||
-                ex2.getMessage().contains("Conflict found: Field Year 2024 differs from Year 1970 derived from 1970-01-11"));
+        assertTrue(ex2.getMessage().contains("Text '2024|10|' could not be parsed:"));
+        assertTrue(ex2.getMessage().contains("Conflict found: Field Year 1970 differs from Year 2024 derived from 1970-01-11"));
     }
 
     @Test

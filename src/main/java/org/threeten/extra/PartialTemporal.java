@@ -36,7 +36,6 @@ import static java.time.temporal.ChronoField.NANO_OF_DAY;
 import static java.time.temporal.ChronoField.OFFSET_SECONDS;
 
 import java.time.DateTimeException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -54,32 +53,42 @@ import java.time.temporal.TemporalQuery;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Allows an incomplete "partial" date and/or time to be stored.
+ * An incomplete "partial" date and/or time to be stored.
  * <p>
- * This class can be thought of as a map of date and/or time components.
- * As such, there are no constraints on the value associated with each field.
- * For example, you can set the month to -5,000 if desired.
+ * {@code PartialTemporal} is an immutable date-time object that represents an arbitrary set of date and/or time fields.
+ * It can be thought of as primarily a map of {@link TemporalField} to {@code long} values, plus an optional {@link ZoneId}.
+ * <p>
+ * There are no constraints on the fields that can be stored, and no constraints on the values of those fields.
+ * For example, you could store the month as -5,000 if desired, or you could store the combination
+ * {@code DAY_OF_YEAR} 1 and {@code MONTH_OF_YEAR} 2, which cannot be resolved to a date.
+ * <p>
+ * The main purpose of this class is to allow the set of fields to be stored.
+ * If desired, the fields can be resolved into a {@link TemporalAccessor} using the {@link #resolve(ResolverStyle)} method.
+ * This performs the same logic that a {@link DateTimeFormatter} would use when parsing a string.
  * <p>
  * The class operates in the ISO chronology.
+ *
+ * <h3>Implementation Requirements:</h3>
+ * This class is immutable and thread-safe.
+ * <p>
+ * This class must be treated as a value type. Do not synchronize, rely on the
+ * identity hash code or use the distinction between equals() and ==.
  */
 public final class PartialTemporal implements TemporalAccessor {
 
     /**
      * The parsed fields.
      */
-    private final Map<TemporalField, Long> fieldValues;
+    private final TreeMap<TemporalField, Long> fieldValues;
     /**
      * The parsed zone.
      */
@@ -93,7 +102,7 @@ public final class PartialTemporal implements TemporalAccessor {
      * @return the empty partial temporal
      */
     public static PartialTemporal empty() {
-        return new PartialTemporal(new HashMap<>(), null);
+        return new PartialTemporal(createMap(), null);
     }
 
     /**
@@ -105,9 +114,9 @@ public final class PartialTemporal implements TemporalAccessor {
      */
     public static PartialTemporal of(TemporalField field, long value) {
         Objects.requireNonNull(field, "field");
-        Map<TemporalField, Long> fieldValues = new HashMap<>();
-        fieldValues.put(field, value);
-        return new PartialTemporal(fieldValues, null);
+        TreeMap<TemporalField, Long> map = createMap();
+        map.put(field, value);
+        return new PartialTemporal(map, null);
     }
 
     /**
@@ -117,7 +126,10 @@ public final class PartialTemporal implements TemporalAccessor {
      * @return the partial temporal
      */
     public static PartialTemporal of(Map<TemporalField, Long> fieldValues) {
-        return new PartialTemporal(fieldValues, null);
+        Objects.requireNonNull(fieldValues, "fieldValues");
+        TreeMap<TemporalField, Long> map = createMap();
+        map.putAll(fieldValues);
+        return new PartialTemporal(map, null);
     }
 
     /**
@@ -130,7 +142,9 @@ public final class PartialTemporal implements TemporalAccessor {
     public static PartialTemporal of(Map<TemporalField, Long> fieldValues, ZoneId zone) {
         Objects.requireNonNull(fieldValues, "fieldValues");
         Objects.requireNonNull(zone, "zone");
-        return new PartialTemporal(fieldValues, zone);
+        TreeMap<TemporalField, Long> map = createMap();
+        map.putAll(fieldValues);
+        return new PartialTemporal(map, zone);
     }
 
     /**
@@ -146,20 +160,24 @@ public final class PartialTemporal implements TemporalAccessor {
      */
     public static PartialTemporal from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
-        Map<TemporalField, Long> fieldValues = new HashMap<>();
+        TreeMap<TemporalField, Long> map = createMap();
         Stream.of(ChronoField.values())
                 .filter(temporal::isSupported)
-                .forEach(field -> fieldValues.put(field, temporal.getLong(field)));
-        return new PartialTemporal(fieldValues, temporal.query(TemporalQueries.zone()));
+                .forEach(field -> map.put(field, temporal.getLong(field)));
+        return new PartialTemporal(map, temporal.query(TemporalQueries.zone()));
     }
 
-    private PartialTemporal(Map<TemporalField, Long> fieldValues, @Nullable ZoneId zone) {
+    private static TreeMap<TemporalField, Long> createMap() {
+        return new TreeMap<>(Temporals.fieldComparator().reversed());
+    }
+
+    private PartialTemporal(TreeMap<TemporalField, Long> fieldValues, @Nullable ZoneId zone) {
         Objects.requireNonNull(fieldValues, "fieldValues");
         fieldValues.forEach((field, value) -> {
             Objects.requireNonNull(field, "field");
             Objects.requireNonNull(value, "value for field " + field);
         });
-        this.fieldValues = new HashMap<>(fieldValues);
+        this.fieldValues = fieldValues;
         this.zone = zone;
     }
 
@@ -191,12 +209,12 @@ public final class PartialTemporal implements TemporalAccessor {
     }
 
     /**
-     * Gets the set of fields, immutable.
+     * Gets the map of field-value pairs, immutable.
      *
-     * @return the set of fields
+     * @return the map of field-value pairs
      */
-    public Set<TemporalField> getFields() {
-        return Collections.unmodifiableSet(fieldValues.keySet());
+    public NavigableMap<TemporalField, Long> getFields() {
+        return Collections.unmodifiableNavigableMap(fieldValues);
     }
 
     /**
@@ -210,9 +228,10 @@ public final class PartialTemporal implements TemporalAccessor {
      */
     public PartialTemporal withField(TemporalField field, long value) {
         Objects.requireNonNull(field, "field");
-        Map<TemporalField, Long> newFieldValues = new HashMap<>(fieldValues);
-        newFieldValues.put(field, value);
-        return new PartialTemporal(newFieldValues, zone);
+        TreeMap<TemporalField, Long> map = createMap();
+        map.putAll(fieldValues);
+        map.put(field, value);
+        return new PartialTemporal(map, zone);
     }
 
     /**
@@ -225,9 +244,10 @@ public final class PartialTemporal implements TemporalAccessor {
      */
     public PartialTemporal withoutField(TemporalField field) {
         Objects.requireNonNull(field, "field");
-        Map<TemporalField, Long> newFieldValues = new HashMap<>(fieldValues);
-        newFieldValues.remove(field);
-        return new PartialTemporal(newFieldValues, zone);
+        TreeMap<TemporalField, Long> map = createMap();
+        map.putAll(fieldValues);
+        map.remove(field);
+        return new PartialTemporal(map, zone);
     }
 
     /**
@@ -433,29 +453,6 @@ public final class PartialTemporal implements TemporalAccessor {
      */
     @Override
     public String toString() {
-        SortedMap<TemporalField, Long> sortedFieldValues = new TreeMap<>(new FieldComparator());
-        sortedFieldValues.putAll(fieldValues);
-        return "Partial[fieldValues=" + sortedFieldValues + ", " + zone + "]";
-    }
-
-    // compares fields by base unit duration, then range unit duration, then name (reverse order)
-    static class FieldComparator implements Comparator<TemporalField> {
-        @Override
-        public int compare(TemporalField field1, TemporalField field2) {
-            if (field1.equals(field2)) {
-                return 0;
-            }
-            Duration base1 = field1.getBaseUnit().getDuration();
-            Duration base2 = field2.getBaseUnit().getDuration();
-            if (!base1.equals(base2)) {
-                return base2.compareTo(base1);
-            }
-            Duration range1 = field1.getRangeUnit().getDuration();
-            Duration range2 = field2.getRangeUnit().getDuration();
-            if (!range1.equals(range2)) {
-                return range2.compareTo(range1);
-            }
-            return field2.toString().compareTo(field1.toString());
-        }
+        return "Partial[" + fieldValues + (zone == null ? "" : "," + zone) + "]";
     }
 }
