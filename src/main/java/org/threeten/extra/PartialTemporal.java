@@ -273,7 +273,7 @@ public final class PartialTemporal implements TemporalAccessor {
      */
     @Override
     public boolean isSupported(@Nullable TemporalField field) {
-        return fieldValues.containsKey(field);
+        return field != null && fieldValues.containsKey(field);
     }
 
     /**
@@ -369,7 +369,7 @@ public final class PartialTemporal implements TemporalAccessor {
      * temporal, and they have the same value.
      * Note that the other temporal may have other additional fields, which are not checked.
      *
-     * @param temporal a temporal to check against, null means now in default zone
+     * @param temporal a temporal to check against
      * @return true if this partial temporal matches the specified temporal
      */
     public boolean matches(TemporalAccessor temporal) {

@@ -79,6 +79,8 @@ public class TestPartialTemporal {
         assertEquals(Optional.empty(), empty.getZone());
         assertEquals(new HashMap<>(), empty.getFields());
         assertEquals("Partial[{}]", empty.toString());
+        assertFalse(empty.isSupported(YEAR));
+        assertFalse(empty.isSupported(null));
     }
 
     @Test
@@ -94,6 +96,9 @@ public class TestPartialTemporal {
         assertEquals(new AbstractMap.SimpleEntry<>(DAY_OF_MONTH, 29L), it.next());
         assertFalse(it.hasNext());
         assertEquals("Partial[{Year=2026, MonthOfYear=2, DayOfMonth=29}]", partial.toString());
+        assertTrue(partial.isSupported(YEAR));
+        assertFalse(partial.isSupported(NANO_OF_DAY));
+        assertFalse(partial.isSupported(null));
     }
 
     @Test
