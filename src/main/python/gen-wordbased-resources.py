@@ -114,21 +114,6 @@ CHECK_RANGE = range(0, 1001)
 # CLDR evaluates plural rules in this order, falling through to "other".
 PLURAL_ORDER = ["zero", "one", "two", "few", "many"]
 
-# Escaped even though .properties are read as UTF-8, because these are invisible
-# in a diff and are easily lost by an editor that trims whitespace.
-INVISIBLE = {
-    " ": "\\u00A0",  # NO-BREAK SPACE
-    " ": "\\u202F",  # NARROW NO-BREAK SPACE
-    " ": "\\u2009",  # THIN SPACE
-    "​": "\\u200B",  # ZERO WIDTH SPACE
-    "‌": "\\u200C",  # ZERO WIDTH NON-JOINER
-    "‍": "\\u200D",  # ZERO WIDTH JOINER
-    "‎": "\\u200E",  # LEFT-TO-RIGHT MARK
-    "‏": "\\u200F",  # RIGHT-TO-LEFT MARK
-    "؜": "\\u061C",  # ARABIC LETTER MARK
-    "⁠": "\\u2060",  # WORD JOINER
-}
-
 
 # -----------------------------------------------------------------------------
 # CLDR access
@@ -306,16 +291,22 @@ def fit_unit(patterns, categories, used):
 # Writing .properties
 
 def escape(value):
-    """Escape a .properties value, making leading and trailing spaces explicit."""
+    """Escape a .properties value so it is safe on every supported Java version.
+
+    Every non-ASCII character is written as a \\uXXXX escape. threeten-extra
+    supports Java 8, whose PropertyResourceBundle decodes bundles as ISO-8859-1
+    rather than UTF-8 - raw UTF-8 bytes read back as mojibake there, so escapes
+    are the only encoding that behaves the same on 8 and on 9+.
+
+    Leading and trailing spaces are made explicit as well, so that an editor or
+    tool that trims whitespace cannot silently change a separator.
+    """
     out = []
     last = len(value) - 1
     for index, char in enumerate(value):
-        if char in INVISIBLE:
-            out.append(INVISIBLE[char])
-        elif char == "\\":
+        code = ord(char)
+        if char == "\\":
             out.append("\\\\")
-        elif char == "\t":
-            out.append("\\t")
         elif char == " ":
             if index == last:
                 out.append("\\u0020")
@@ -323,6 +314,13 @@ def escape(value):
                 out.append("\\ ")
             else:
                 out.append(" ")
+        elif code < 0x20 or code > 0x7E:
+            if code > 0xFFFF:  # outside the BMP, so write a surrogate pair
+                code -= 0x10000
+                out.append("\\u%04X\\u%04X"
+                           % (0xD800 + (code >> 10), 0xDC00 + (code & 0x3FF)))
+            else:
+                out.append("\\u%04X" % code)
         else:
             out.append(char)
     return "".join(out)
@@ -430,6 +428,10 @@ def parse_args(argv):
 
 def main(argv):
     args = parse_args(argv)
+    if args.base and len(args.lang) != 1:
+        # every language would write the same base bundle, so the last one wins
+        # and the rest end up as empty bundles delegating to the wrong language
+        raise Failure("--base needs exactly one --lang, got %d" % len(args.lang))
     styles = args.style or list(STYLES)
     cldr = Cldr(args.cldr_version, args.cache_dir)
     warnings = []
