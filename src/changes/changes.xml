@@ -8,6 +8,14 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.11.0" date="2026-06-16" description="v1.11.0">
+      <action dev="msqr" type="add" issue="386">
+        Add `AmountFormats.wordBased()` overloads taking a `FormatStyle`.
+        These produce abbreviated output, for example `FormatStyle.MEDIUM` formats
+        `P1DT3H2M` as "1 day, 3 hr, 2 min" and `FormatStyle.SHORT` formats it as "1d 3h 2m".
+        The abbreviations are based on CLDR, and are provided for every language that the
+        existing full-word format supports.
+        The existing methods are unchanged, and are equivalent to passing `FormatStyle.FULL`.
+      </action>
       <action dev="jodastephen" type="add" issue="371">
         Add `LocalDateRange.from(Temporal)`.
         Can be used to obtain the equivalent date range of most Temporal objects.
