@@ -10,6 +10,7 @@
 .classpath
 .project
 .checkstyle
+__pycache__/
 *.class
 *.jar
 *.war
