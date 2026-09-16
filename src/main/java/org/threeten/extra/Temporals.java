@@ -49,9 +49,11 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -475,6 +477,80 @@ public final class Temporals {
         public static final BigDecimal MAX = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(999_999_999, 9));
 
         private BigDecimalSeconds() {
+        }
+    }
+
+    /**
+     * Returns a comparator that compares {@code TemporalField} instances by base unit duration, then range unit duration, then name.
+     * <p>
+     * Fields are ordered from smallest to largest.
+     * For example, the {@code NANO_OF_SECOND} field is smaller than the {@code NANO_OF_DAY} field, which is smaller than the {@code MICRO_OF_SECOND} field.
+     * If two fields have the same base and range duration, they are ordered by name, as defined by {@code toString()}.
+     * <p>
+     * The comparator is not consistent with equals, as zero could be returned for two fields that are not equal.
+     *
+     * @return the comparator
+     * @since 1.11.0
+     */
+    public static Comparator<TemporalField> fieldComparator() {
+        return FieldComparator.INSTANCE;
+    }
+
+    /**
+     * Returns a comparator that compares {@code TemporalUnit} instances by duration, then name.
+     * <p>
+     * Units are ordered from smallest to largest.
+     * If two units have the same duration, they are ordered by name, as defined by {@code toString()}.
+     * <p>
+     * The comparator is not consistent with equals, as zero could be returned for two units that are not equal.
+     *
+     * @return the comparator
+     * @since 1.11.0
+     */
+    public static Comparator<TemporalUnit> unitComparator() {
+        return UnitComparator.INSTANCE;
+    }
+
+    // compares fields by base unit duration, then range unit duration, then name (smallest to largest)
+    private static enum FieldComparator implements Comparator<TemporalField> {
+        INSTANCE;
+
+        @Override
+        public int compare(TemporalField field1, TemporalField field2) {
+            if (field1 == field2) {
+                return 0;
+            }
+            Duration base1 = field1.getBaseUnit().getDuration();
+            Duration base2 = field2.getBaseUnit().getDuration();
+            int cmp = base1.compareTo(base2);
+            if (cmp == 0) {
+                Duration range1 = field1.getRangeUnit().getDuration();
+                Duration range2 = field2.getRangeUnit().getDuration();
+                cmp = range1.compareTo(range2);
+                if (cmp == 0) {
+                    cmp = field1.toString().compareTo(field2.toString());
+                }
+            }
+            return cmp;
+        }
+    }
+
+    // compares units by duration (smallest to largest)
+    private static enum UnitComparator implements Comparator<TemporalUnit> {
+        INSTANCE;
+
+        @Override
+        public int compare(TemporalUnit unit1, TemporalUnit unit2) {
+            if (unit1 == unit2) {
+                return 0;
+            }
+            Duration base1 = unit1.getDuration();
+            Duration base2 = unit2.getDuration();
+            int cmp = base1.compareTo(base2);
+            if (cmp == 0) {
+                cmp = unit1.toString().compareTo(unit2.toString());
+            }
+            return cmp;
         }
     }
 }

@@ -16,6 +16,10 @@
         existing full-word format supports.
         The existing methods are unchanged, and are equivalent to passing `FormatStyle.FULL`.
       </action>
+      <action dev="jodastephen" type="add" issue="369">
+        Add `Temporals.fieldComparator()` and `Temporals.unitComparator()`.
+        Provides a mechanism to sort arbitrary fields and units.
+      </action>
       <action dev="jodastephen" type="add" issue="371">
         Add `LocalDateRange.from(Temporal)`.
         Can be used to obtain the equivalent date range of most Temporal objects.
