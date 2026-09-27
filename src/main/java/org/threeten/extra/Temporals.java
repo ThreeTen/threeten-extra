@@ -31,6 +31,8 @@
  */
 package org.threeten.extra;
 
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SUNDAY;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.ERAS;
@@ -43,24 +45,36 @@ import java.math.RoundingMode;
 import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Additional utilities for working with temporal classes.
  * <p>
  * This includes:
  * <ul>
- * <li>adjusters that ignore Saturday/Sunday weekends
+ * <li>additional temporal adjusters
+ * <li>additional temporal queries
  * <li>conversion between {@code TimeUnit} and {@code ChronoUnit}
  * <li>converting an amount to another unit
  * </ul>
@@ -199,6 +213,105 @@ public final class Temporals {
 
     //-------------------------------------------------------------------------
     /**
+     * Returns a {@code TemporalQuery} that extracts the effective start date of the temporal.
+     * <p>
+     * This query extracts the effective start date from the temporal if the temporal represents a date or date-time.
+     * For example, {@link LocalDate} will return itself, a {@link LocalDateTime} will return the date part,
+     * and a {@code YearMonth} will return the date at the first day of the month.
+     * Some temporals will return null when queried, such as {@link LocalTime} and {@link MonthDay}.
+     * <p>
+     * This method returns a result for {@link Year}, {@link YearMonth}, {@code YearHalf}, {@code YearQuarter} and
+     * {@code YearWeek}, as well as any other temporal where {@code TemporalQueries.localDate()} returns a date.
+     *
+     * @return a query that extracts the effective start date of the temporal, not null
+     * @since 1.11.0
+     */
+    public static TemporalQuery<@Nullable LocalDate> localDateAtStart() {
+        return LOCAL_DATE_AT_START_QUERY;
+    }
+
+    // query expressed as a constant so it can be compared with ==
+    private static final TemporalQuery<@Nullable LocalDate> LOCAL_DATE_AT_START_QUERY = new TemporalQuery<@Nullable LocalDate>() {
+        @Override
+        public @Nullable LocalDate queryFrom(TemporalAccessor temporal) {
+            if (temporal instanceof LocalDate) {
+                return ((LocalDate) temporal);
+            } else if (temporal instanceof Year) {
+                return ((Year) temporal).atDay(1);
+            } else if (temporal instanceof YearMonth) {
+                return ((YearMonth) temporal).atDay(1);
+            } else if (temporal instanceof YearHalf) {
+                return ((YearHalf) temporal).atDay(1);
+            } else if (temporal instanceof YearQuarter) {
+                return ((YearQuarter) temporal).atDay(1);
+            } else if (temporal instanceof YearWeek) {
+                return ((YearWeek) temporal).atDay(MONDAY);
+            }
+            return temporal.query(TemporalQueries.localDate());
+        }
+
+        @Override
+        public String toString() {
+            return "LocalDateAtStart";
+        }
+    };
+
+    //-------------------------------------------------------------------------
+    /**
+     * Returns a {@code TemporalQuery} that extracts the effective end date of the temporal.
+     * <p>
+     * This query extracts the effective end date from the temporal if the temporal represents a date or date-time.
+     * For example, {@link LocalDate} will return itself, a {@link LocalDateTime} will return the date part,
+     * and a {@code YearMonth} will return the date at the last day of the month.
+     * Some temporals will return null when queried, such as {@link LocalTime} and {@link MonthDay}.
+     * <p>
+     * This method returns a result for {@link Year}, {@link YearMonth}, {@code YearHalf}, {@code YearQuarter} and
+     * {@code YearWeek}, as well as any other temporal where {@code TemporalQueries.localDate()} returns a date.
+     *
+     * @return a query that extracts the effective end date of the temporal, not null
+     * @since 1.11.0
+     */
+    public static TemporalQuery<@Nullable LocalDate> localDateAtEnd() {
+        return LOCAL_DATE_AT_END_QUERY;
+    }
+
+    // query expressed as a constant so it can be compared with ==
+    private static final TemporalQuery<@Nullable LocalDate> LOCAL_DATE_AT_END_QUERY = new TemporalQuery<@Nullable LocalDate>() {
+        @Override
+        public @Nullable LocalDate queryFrom(TemporalAccessor temporal) {
+            if (temporal instanceof LocalDate) {
+                return ((LocalDate) temporal);
+            } else if (temporal instanceof Year) {
+                return ((Year) temporal).atMonth(12).atEndOfMonth();
+            } else if (temporal instanceof YearMonth) {
+                return ((YearMonth) temporal).atEndOfMonth();
+            } else if (temporal instanceof YearHalf) {
+                return ((YearHalf) temporal).atEndOfHalf();
+            } else if (temporal instanceof YearQuarter) {
+                return ((YearQuarter) temporal).atEndOfQuarter();
+            } else if (temporal instanceof YearWeek) {
+                return localDateAtEnd((YearWeek) temporal);
+            }
+            return temporal.query(TemporalQueries.localDate());
+        }
+
+        @Override
+        public String toString() {
+            return "LocalDateAtEnd";
+        }
+    };
+
+    private static LocalDate localDateAtEnd(YearWeek yw) {
+        try {
+            return yw.atDay(SUNDAY);
+        } catch (DateTimeException ex) {
+            // the last week of LocalDate.MAX_YEAR flows into the next year
+            return LocalDate.MAX;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    /**
      * Parses the text using one of the formatters.
      * <p>
      * This will try each formatter in turn, attempting to fully parse the specified text.
@@ -247,6 +360,7 @@ public final class Temporals {
      * Converts a {@code TimeUnit} to a {@code ChronoUnit}.
      * <p>
      * This handles the seven units declared in {@code TimeUnit}.
+     * From Java SE 9 onwards, use {@code TimeUnit.toChronoUnit()}.
      * 
      * @param unit  the unit to convert, not null
      * @return the converted unit, not null
@@ -277,6 +391,7 @@ public final class Temporals {
      * Converts a {@code ChronoUnit} to a {@code TimeUnit}.
      * <p>
      * This handles the seven units declared in {@code TimeUnit}.
+     * From Java SE 9 onwards, use {@code TimeUnit.of(ChronoUnit)}.
      * 
      * @param unit  the unit to convert, not null
      * @return the converted unit, not null
@@ -475,6 +590,80 @@ public final class Temporals {
         public static final BigDecimal MAX = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(999_999_999, 9));
 
         private BigDecimalSeconds() {
+        }
+    }
+
+    /**
+     * Returns a comparator that compares {@code TemporalField} instances by base unit duration, then range unit duration, then name.
+     * <p>
+     * Fields are ordered from smallest to largest.
+     * For example, the {@code NANO_OF_SECOND} field is smaller than the {@code NANO_OF_DAY} field, which is smaller than the {@code MICRO_OF_SECOND} field.
+     * If two fields have the same base and range duration, they are ordered by name, as defined by {@code toString()}.
+     * <p>
+     * The comparator is not consistent with equals, as zero could be returned for two fields that are not equal.
+     *
+     * @return the comparator
+     * @since 1.11.0
+     */
+    public static Comparator<TemporalField> fieldComparator() {
+        return FieldComparator.INSTANCE;
+    }
+
+    /**
+     * Returns a comparator that compares {@code TemporalUnit} instances by duration, then name.
+     * <p>
+     * Units are ordered from smallest to largest.
+     * If two units have the same duration, they are ordered by name, as defined by {@code toString()}.
+     * <p>
+     * The comparator is not consistent with equals, as zero could be returned for two units that are not equal.
+     *
+     * @return the comparator
+     * @since 1.11.0
+     */
+    public static Comparator<TemporalUnit> unitComparator() {
+        return UnitComparator.INSTANCE;
+    }
+
+    // compares fields by base unit duration, then range unit duration, then name (smallest to largest)
+    private static enum FieldComparator implements Comparator<TemporalField> {
+        INSTANCE;
+
+        @Override
+        public int compare(TemporalField field1, TemporalField field2) {
+            if (field1 == field2) {
+                return 0;
+            }
+            Duration base1 = field1.getBaseUnit().getDuration();
+            Duration base2 = field2.getBaseUnit().getDuration();
+            int cmp = base1.compareTo(base2);
+            if (cmp == 0) {
+                Duration range1 = field1.getRangeUnit().getDuration();
+                Duration range2 = field2.getRangeUnit().getDuration();
+                cmp = range1.compareTo(range2);
+                if (cmp == 0) {
+                    cmp = field1.toString().compareTo(field2.toString());
+                }
+            }
+            return cmp;
+        }
+    }
+
+    // compares units by duration (smallest to largest)
+    private static enum UnitComparator implements Comparator<TemporalUnit> {
+        INSTANCE;
+
+        @Override
+        public int compare(TemporalUnit unit1, TemporalUnit unit2) {
+            if (unit1 == unit2) {
+                return 0;
+            }
+            Duration base1 = unit1.getDuration();
+            Duration base2 = unit2.getDuration();
+            int cmp = base1.compareTo(base2);
+            if (cmp == 0) {
+                cmp = unit1.toString().compareTo(unit2.toString());
+            }
+            return cmp;
         }
     }
 }
