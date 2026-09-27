@@ -80,6 +80,8 @@ import java.time.Month;
 import java.time.MonthDay;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -378,31 +380,33 @@ public class TestTemporals {
     //-----------------------------------------------------------------------
     public static @Nullable Object[][] data_localDateAtStartAndEnd() {
         return new @Nullable Object[][]{
-                {LocalDate.of(2026, 9, 15), LocalDate.of(2026, 9, 15)},
-                {LocalDateTime.of(2026, 9, 15, 12, 30), LocalDate.of(2026, 9, 15)},
-                {OffsetDateTime.of(2026, 9, 15, 12, 30, 0, 0, ZoneOffset.ofHours(1)), LocalDate.of(2026, 9, 15)},
-                {ZonedDateTime.of(2026, 9, 15, 12, 30, 0, 0, ZoneOffset.ofHours(1)), LocalDate.of(2026, 9, 15)},
-                {MonthDay.of(9, 15), null},
-                {DECEMBER, null},
-                {MONDAY, null},
-                {LocalTime.of(12, 30), null},
-                {OffsetTime.of(12, 30, 0, 0, ZoneOffset.ofHours(1)), null},
-                {HourMinute.of(12, 30), null},
+                {LocalDate.of(2026, 9, 15), LocalDate.of(2026, 9, 15), LocalDate.of(2026, 9, 15)},
+                {YearMonth.of(2026, 9), LocalDate.of(2026, 9, 1), LocalDate.of(2026, 9, 30)},
+                {Year.of(2026), LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)},
+                {LocalDateTime.of(2026, 9, 15, 12, 30), LocalDate.of(2026, 9, 15), LocalDate.of(2026, 9, 15)},
+                {OffsetDateTime.of(2026, 9, 15, 12, 30, 0, 0, ZoneOffset.ofHours(1)), LocalDate.of(2026, 9, 15), LocalDate.of(2026, 9, 15)},
+                {ZonedDateTime.of(2026, 9, 15, 12, 30, 0, 0, ZoneOffset.ofHours(1)), LocalDate.of(2026, 9, 15), LocalDate.of(2026, 9, 15)},
+                {MonthDay.of(9, 15), null, null},
+                {DECEMBER, null, null},
+                {MONDAY, null, null},
+                {LocalTime.of(12, 30), null, null},
+                {OffsetTime.of(12, 30, 0, 0, ZoneOffset.ofHours(1)), null, null},
+                {HourMinute.of(12, 30), null, null},
         };
     }
 
     @ParameterizedTest
     @MethodSource("data_localDateAtStartAndEnd")
-    public void test_localDateAtStart(TemporalAccessor temporal, @Nullable LocalDate expected) {
-        assertEquals(expected, temporal.query(Temporals.localDateAtStart()));
-        assertEquals(expected, Temporals.localDateAtStart().queryFrom(temporal));
+    public void test_localDateAtStart(TemporalAccessor temporal, @Nullable LocalDate expectedStart, @Nullable LocalDate expectedEnd) {
+        assertEquals(expectedStart, temporal.query(Temporals.localDateAtStart()));
+        assertEquals(expectedStart, Temporals.localDateAtStart().queryFrom(temporal));
     }
 
     @ParameterizedTest
     @MethodSource("data_localDateAtStartAndEnd")
-    public void test_localDateAtEnd(TemporalAccessor temporal, @Nullable LocalDate expected) {
-        assertEquals(expected, temporal.query(Temporals.localDateAtEnd()));
-        assertEquals(expected, Temporals.localDateAtEnd().queryFrom(temporal));
+    public void test_localDateAtEnd(TemporalAccessor temporal, @Nullable LocalDate expectedStart, @Nullable LocalDate expectedEnd) {
+        assertEquals(expectedEnd, temporal.query(Temporals.localDateAtEnd()));
+        assertEquals(expectedEnd, Temporals.localDateAtEnd().queryFrom(temporal));
     }
 
     //-----------------------------------------------------------------------

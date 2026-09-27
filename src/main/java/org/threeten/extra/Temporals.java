@@ -223,6 +223,7 @@ public final class Temporals {
      * {@code YearWeek}, as well as any other temporal where {@code TemporalQueries.localDate()} returns a date.
      *
      * @return a query that extracts the effective start date of the temporal, not null
+     * @since 1.11.0
      */
     public static TemporalQuery<LocalDate> localDateAtStart() {
         return LOCAL_DATE_AT_START_QUERY;
@@ -267,6 +268,7 @@ public final class Temporals {
      * {@code YearWeek}, as well as any other temporal where {@code TemporalQueries.localDate()} returns a date.
      *
      * @return a query that extracts the effective end date of the temporal, not null
+     * @since 1.11.0
      */
     public static TemporalQuery<LocalDate> localDateAtEnd() {
         return LOCAL_DATE_AT_END_QUERY;
@@ -287,7 +289,7 @@ public final class Temporals {
             } else if (temporal instanceof YearQuarter) {
                 return ((YearQuarter) temporal).atEndOfQuarter();
             } else if (temporal instanceof YearWeek) {
-                return ((YearWeek) temporal).atDay(SUNDAY);
+                return localDateAtEnd((YearWeek) temporal);
             }
             return temporal.query(TemporalQueries.localDate());
         }
@@ -297,6 +299,15 @@ public final class Temporals {
             return "LocalDateAtEnd";
         }
     };
+
+    private static LocalDate localDateAtEnd(YearWeek yw) {
+        try {
+            return yw.atDay(SUNDAY);
+        } catch (DateTimeException ex) {
+            // the last week of LocalDate.MAX_YEAR flows into the next year
+            return LocalDate.MAX;
+        }
+    }
 
     //-------------------------------------------------------------------------
     /**
