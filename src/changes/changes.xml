@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.11.0" date="2026-06-16" description="v1.11.0">
+    <release version="1.11.0" date="SNAPSHOT" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">
         Add `Temporals.fieldComparator()` and `Temporals.unitComparator()`.
         Provides a mechanism to sort arbitrary fields and units.
