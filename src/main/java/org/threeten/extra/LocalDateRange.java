@@ -33,15 +33,11 @@ package org.threeten.extra;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.Year;
-import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalQueries;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Spliterator;
@@ -226,33 +222,19 @@ public final class LocalDateRange
      * @param temporal  the temporal object to convert, not null
      * @return the range, not null
      * @throws DateTimeException if the temporal cannot be converted to a range
+     * @see Temporals#localDateAtStart()
+     * @see Temporals#localDateAtEnd()
      * @since 1.11.0
      */
     public static LocalDateRange from(Temporal temporal) {
         Objects.requireNonNull(temporal, "temporal");
-        LocalDate date = temporal.query(TemporalQueries.localDate());
-        if (date != null) {
-            return ofClosed(date, date);
+        LocalDate start = temporal.query(Temporals.localDateAtStart());
+        LocalDate end = temporal.query(Temporals.localDateAtEnd());
+        if (start != null && end != null) {
+            return ofClosed(start, end);
         }
-        if (temporal instanceof Year) {
-            LocalDate start = ((Year) temporal).atDay(1);
-            return ofClosed(start, start.withMonth(12).withDayOfMonth(31));
-        } else if (temporal instanceof YearMonth) {
-            YearMonth ym = (YearMonth) temporal;
-            return ofClosed(ym.atDay(1), ym.atEndOfMonth());
-        } else if (temporal instanceof YearHalf) {
-            YearHalf yh = (YearHalf) temporal;
-            return ofClosed(yh.atDay(1), yh.atEndOfHalf());
-        } else if (temporal instanceof YearQuarter) {
-            YearQuarter yq = (YearQuarter) temporal;
-            return ofClosed(yq.atDay(1), yq.atEndOfQuarter());
-        } else if (temporal instanceof YearWeek) {
-            YearWeek yw = (YearWeek) temporal;
-            return ofClosed(yw.atDay(DayOfWeek.MONDAY), yw.atDay(DayOfWeek.SUNDAY));
-        } else {
-            // we could examine precision and try to extract based on fields, but it is pretty complex
-            throw new DateTimeException("Unknown Temporal type: " + temporal.getClass().getName());
-        }
+        // we could examine precision and try to extract based on fields, but it would be overly complex
+        throw new DateTimeException("Unknown Temporal type: " + temporal.getClass().getName());
     }
 
     /**

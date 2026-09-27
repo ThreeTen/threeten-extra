@@ -1073,6 +1073,28 @@ public class TestYearWeek {
         assertEquals(ChronoUnit.WEEKS, TEST.query(TemporalQueries.precision()));
         assertEquals(null, TEST.query(TemporalQueries.zone()));
         assertEquals(null, TEST.query(TemporalQueries.zoneId()));
+        assertEquals(TEST.atDay(MONDAY), TEST.query(Temporals.localDateAtStart()));
+        assertEquals(TEST.atDay(MONDAY), Temporals.localDateAtStart().queryFrom(TEST));
+        assertEquals(TEST.atDay(SUNDAY), TEST.query(Temporals.localDateAtEnd()));
+        assertEquals(TEST.atDay(SUNDAY), Temporals.localDateAtEnd().queryFrom(TEST));
+    }
+
+    @Test
+    public void test_localDateAtStartBoundary() {
+        YearWeek farPast = YearWeek.of(Year.MIN_VALUE, 1);
+        assertEquals(farPast.atDay(MONDAY), farPast.query(Temporals.localDateAtStart()));
+        assertEquals(farPast.atDay(MONDAY), Temporals.localDateAtStart().queryFrom(farPast));
+        assertEquals(farPast.atDay(SUNDAY), farPast.query(Temporals.localDateAtEnd()));
+        assertEquals(farPast.atDay(SUNDAY), Temporals.localDateAtEnd().queryFrom(farPast));
+    }
+
+    @Test
+    public void test_localDateAtEndBoundary() {
+        YearWeek farFuture = YearWeek.of(Year.MAX_VALUE, 52);
+        assertEquals(farFuture.atDay(MONDAY), farFuture.query(Temporals.localDateAtStart()));
+        assertEquals(farFuture.atDay(MONDAY), Temporals.localDateAtStart().queryFrom(farFuture));
+        assertEquals(farFuture.atDay(FRIDAY), farFuture.query(Temporals.localDateAtEnd()));
+        assertEquals(farFuture.atDay(FRIDAY), Temporals.localDateAtEnd().queryFrom(farFuture));
     }
 
     //-----------------------------------------------------------------------

@@ -1003,6 +1003,7 @@ public final class YearWeek
      *
      * @param dayOfWeek  the day-of-week to use, not null
      * @return the date formed from this year-week and the specified day, not null
+     * @throws DateTimeException if the year is the maximum year, the week is 52, and the result would exceed the maximum date
      */
     public LocalDate atDay(DayOfWeek dayOfWeek) {
         Objects.requireNonNull(dayOfWeek, "dayOfWeek");
