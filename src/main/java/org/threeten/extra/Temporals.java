@@ -66,6 +66,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Additional utilities for working with temporal classes.
@@ -225,14 +226,14 @@ public final class Temporals {
      * @return a query that extracts the effective start date of the temporal, not null
      * @since 1.11.0
      */
-    public static TemporalQuery<LocalDate> localDateAtStart() {
+    public static TemporalQuery<@Nullable LocalDate> localDateAtStart() {
         return LOCAL_DATE_AT_START_QUERY;
     }
 
     // query expressed as a constant so it can be compared with ==
-    private static final TemporalQuery<LocalDate> LOCAL_DATE_AT_START_QUERY = new TemporalQuery<LocalDate>() {
+    private static final TemporalQuery<@Nullable LocalDate> LOCAL_DATE_AT_START_QUERY = new TemporalQuery<@Nullable LocalDate>() {
         @Override
-        public LocalDate queryFrom(TemporalAccessor temporal) {
+        public @Nullable LocalDate queryFrom(TemporalAccessor temporal) {
             if (temporal instanceof LocalDate) {
                 return ((LocalDate) temporal);
             } else if (temporal instanceof Year) {
@@ -270,14 +271,14 @@ public final class Temporals {
      * @return a query that extracts the effective end date of the temporal, not null
      * @since 1.11.0
      */
-    public static TemporalQuery<LocalDate> localDateAtEnd() {
+    public static TemporalQuery<@Nullable LocalDate> localDateAtEnd() {
         return LOCAL_DATE_AT_END_QUERY;
     }
 
     // query expressed as a constant so it can be compared with ==
-    private static final TemporalQuery<LocalDate> LOCAL_DATE_AT_END_QUERY = new TemporalQuery<LocalDate>() {
+    private static final TemporalQuery<@Nullable LocalDate> LOCAL_DATE_AT_END_QUERY = new TemporalQuery<@Nullable LocalDate>() {
         @Override
-        public LocalDate queryFrom(TemporalAccessor temporal) {
+        public @Nullable LocalDate queryFrom(TemporalAccessor temporal) {
             if (temporal instanceof LocalDate) {
                 return ((LocalDate) temporal);
             } else if (temporal instanceof Year) {
