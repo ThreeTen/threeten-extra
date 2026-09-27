@@ -25,6 +25,9 @@
         Add `LocalDateRange.withEndInclusive(TemporalAdjuster)`.
         Allows a range to be adjusted based on the inclusive end date.
       </action>
+      <action dev="dylanpulver" type="fix" issue="385">
+        Fix `InternationalFixedDate.ofEpochDay()` to correctly calculate when the initial estimated year is one-off.
+      </action>
     </release>
     <release version="1.10.0" date="2026-06-16" description="v1.10.0">
       <action dev="jodastephen" type="add" issue="379">
