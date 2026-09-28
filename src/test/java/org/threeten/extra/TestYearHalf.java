@@ -725,6 +725,10 @@ public class TestYearHalf {
         assertEquals(HALF_YEARS, TEST.query(TemporalQueries.precision()));
         assertEquals(null, TEST.query(TemporalQueries.zone()));
         assertEquals(null, TEST.query(TemporalQueries.zoneId()));
+        assertEquals(TEST.atDay(1), TEST.query(Temporals.localDateAtStart()));
+        assertEquals(TEST.atDay(1), Temporals.localDateAtStart().queryFrom(TEST));
+        assertEquals(TEST.atEndOfHalf(), TEST.query(Temporals.localDateAtEnd()));
+        assertEquals(TEST.atEndOfHalf(), Temporals.localDateAtEnd().queryFrom(TEST));
     }
 
     //-----------------------------------------------------------------------
