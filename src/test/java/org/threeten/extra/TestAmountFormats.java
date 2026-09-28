@@ -32,27 +32,50 @@
 package org.threeten.extra;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.time.format.FormatStyle;
 import java.util.Locale;
 
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test AmountFormats.
  */
 public class TestAmountFormats {
 
+    private static final Locale BG = new Locale("bg");
+    private static final Locale CA = new Locale("ca");
+    private static final Locale CS = new Locale("cs");
+    private static final Locale DA = new Locale("da");
+    private static final Locale ES = new Locale("es");
     private static final Locale FA = new Locale("fa");
+    private static final Locale FI = new Locale("fi");
+    private static final Locale NB = new Locale("nb");
+    private static final Locale NL = new Locale("nl");
+    private static final Locale NN = new Locale("nn");
     private static final Locale PL = new Locale("pl");
+    private static final Locale PT = new Locale("pt");
     private static final Locale RO = new Locale("ro");
     private static final Locale RU = new Locale("ru");
+    private static final Locale SV = new Locale("sv");
+    private static final Locale TR = new Locale("tr");
+
+    /** Every language with word-based resources, as used by the style tests. */
+    private static final Locale[] SUPPORTED = {
+        BG, CA, CS, DA, Locale.GERMAN, Locale.ENGLISH, ES, FA, FI, Locale.FRENCH,
+        Locale.ITALIAN, Locale.JAPANESE, NB, NL, NN, PL, PT, RO, RU, SV, TR};
+
+    /** A duration exercising every duration unit, including milliseconds. */
+    private static final Duration D_HMSM = Duration.ofHours(5).plusMinutes(6).plusSeconds(7).plusMillis(8);
 
     //-----------------------------------------------------------------------
     @Test
@@ -164,6 +187,210 @@ public class TestAmountFormats {
     public void test_wordBased(Period period, Duration duration, Locale locale, String expected) {
         assertEquals(expected, AmountFormats.wordBased(period, duration, locale));
         assertEquals(expected, AmountFormats.wordBased(PeriodDuration.of(period, duration), locale));
+    }
+
+    public static Object[][] period_duration_wordBased_style() {
+        return new Object[][] {
+            {Period.ofDays(1), Duration.ofMinutes(180 + 2), Locale.ROOT, "1 day, 3 hr and 2 min", "1 day, 3 hr, 2 min", "1d 3h 2m"},
+            {Period.ofDays(2), Duration.ofSeconds(180), Locale.ROOT, "2 days and 3 min", "2 days, 3 min", "2d 3m"},
+            {Period.ofDays(7), Duration.ofMinutes(80), Locale.ROOT, "1 wk, 1 hr and 20 min", "1 wk, 1 hr, 20 min", "1w 1h 20m"},
+            {Period.ZERO, Duration.ofMillis(1_000), Locale.ROOT, "1 sec", "1 sec", "1s"},
+
+            {Period.ofMonths(0), Duration.ofSeconds(0), Locale.ENGLISH, "0 ms", "0 ms", "0ms"},
+            {Period.ofMonths(0), Duration.ofHours(9), Locale.ENGLISH, "9 hr", "9 hr", "9h"},
+            {Period.ofMonths(1), Duration.ZERO, Locale.ENGLISH, "1 mth", "1 mth", "1m"},
+            {Period.ofMonths(4), Duration.ZERO, Locale.ENGLISH, "4 mths", "4 mths", "4m"},
+            {Period.of(1, 2, 5), Duration.ofHours(4), Locale.ENGLISH, "1 yr, 2 mths, 5 days and 4 hr", "1 yr, 2 mths, 5 days, 4 hr", "1y 2m 5d 4h"},
+            {Period.ofDays(5), Duration.ofDays(2).plusHours(6), Locale.ENGLISH, "7 days and 6 hr", "7 days, 6 hr", "7d 6h"},
+            {Period.ofDays(5), Duration.ofDays(-2).plusHours(-6), Locale.ENGLISH, "3 days and -6 hr", "3 days, -6 hr", "3d -6h"},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("period_duration_wordBased_style")
+    public void test_wordBased_style(Period period, Duration duration, Locale locale, String expectedLong, String expectedMedium, String expectedShort) {
+        assertEquals(expectedLong, AmountFormats.wordBased(period, duration, locale, FormatStyle.LONG), "LONG style");
+        assertEquals(expectedLong, AmountFormats.wordBased(PeriodDuration.of(period, duration), locale, FormatStyle.LONG), "LONG style");
+        assertEquals(expectedMedium, AmountFormats.wordBased(period, duration, locale, FormatStyle.MEDIUM), "MEDIUM style");
+        assertEquals(expectedMedium, AmountFormats.wordBased(PeriodDuration.of(period, duration), locale, FormatStyle.MEDIUM), "MEDIUM style");
+        assertEquals(expectedShort, AmountFormats.wordBased(period, duration, locale, FormatStyle.SHORT), "SHORT style");
+        assertEquals(expectedShort, AmountFormats.wordBased(PeriodDuration.of(period, duration), locale, FormatStyle.SHORT), "SHORT style");
+    }
+
+    // one case per supported language, exercising every unit and both separators
+    // expected values checked against CLDR 48.2.1
+    public static Object[][] period_duration_wordBased_style_languages() {
+        return new Object[][] {
+            {BG,
+                "3 год., 4 мес., 3 седм., 5 ч, 6 мин, 7 сек и 8 мсек",
+                "3 год., 4 мес., 3 седм., 5 ч, 6 мин, 7 сек и 8 мсек",
+                "3 г., 4 мес., 3 седм., 5 ч, 6 мин, 7 с и 8 мсек"},
+            {CA,
+                "3 anys, 4 m, 3 setm., 5 h, 6 min, 7 s i 8 ms",
+                "3 anys, 4 m, 3 setm., 5 h, 6 min, 7 s i 8 ms",
+                "3 anys, 4 m, 3 setm., 5 h, 6 min, 7 s i 8 ms"},
+            {CS,
+                "3 roky, 4 měs., 3 týd., 5 h, 6 min, 7 s a 8 ms",
+                "3 roky, 4 měs., 3 týd., 5 h, 6 min, 7 s, 8 ms",
+                "3 r. 4 m. 3 t. 5 h 6 m 7 s 8 ms"},
+            {DA,
+                "3 år, 4 mdr., 3 uger, 5 t., 6 min., 7 sek. og 8 ms",
+                "3 år, 4 mdr., 3 uger, 5 t., 6 min., 7 sek. og 8 ms",
+                "3 år, 4 m, 3 u, 5 t, 6 m, 7 s og 8 ms"},
+            {Locale.GERMAN,
+                "3 J, 4 Mon., 3 Wo., 5 Std., 6 Min., 7 Sek. und 8 ms",
+                "3 J, 4 Mon., 3 Wo., 5 Std., 6 Min., 7 Sek., 8 ms",
+                "3 J, 4 M, 3 W, 5h, 6 Min., 7 Sek., 8 ms"},
+            {Locale.ENGLISH,
+                "3 yrs, 4 mths, 3 wks, 5 hr, 6 min, 7 sec and 8 ms",
+                "3 yrs, 4 mths, 3 wks, 5 hr, 6 min, 7 sec, 8 ms",
+                "3y 4m 3w 5h 6m 7s 8ms"},
+            {ES,
+                "3 a, 4 m., 3 sem., 5 h, 6 min, 7 s y 8 ms",
+                "3 a, 4 m., 3 sem., 5 h, 6 min, 7 s y 8 ms",
+                "3a 4m 3sem 5h 6min 7s 8ms"},
+            {FA,
+                "3 سال،‏ 4 ماه،‏ 3 هفته،‏ 5 ساعت،‏ 6 دقیقه،‏ 7 ثانیه و 8 میلی‌ثانیه",
+                "3 سال،‏ 4 ماه،‏ 3 هفته،‏ 5 ساعت،‏ 6 دقیقه،‏ 7 ثانیه،‏ 8 میلی‌ثانیه",
+                "3 سال 4 ماه 3 هفته 5h 6m 7s 8ms"},
+            {FI,
+                "3 v, 4 kk, 3 vk, 5 t, 6 min, 7 s ja 8 ms",
+                "3 v, 4 kk, 3 vk, 5 t, 6 min, 7 s, 8 ms",
+                "3v 4kk 3vk 5t 6min 7s 8ms"},
+            {Locale.FRENCH,
+                "3 ans, 4 m., 3 sem., 5 h, 6 min, 7 s et 8 ms",
+                "3 ans, 4 m., 3 sem., 5 h, 6 min, 7 s et 8 ms",
+                "3a 4m. 3sem. 5h 6min 7s 8ms"},
+            {Locale.ITALIAN,
+                "3 anni, 4 mesi, 3 sett., 5 h, 6 min, 7 s e 8 ms",
+                "3 anni, 4 mesi, 3 sett., 5 h, 6 min, 7 s e 8 ms",
+                "3anni 4 mesi 3sett. 5h 6min 7s 8ms"},
+            {Locale.JAPANESE,
+                "3 年、4 か月、3 週間、5 時間、6 分、7 秒、8 ms",
+                "3 年 4 か月 3 週間 5 時間 6 分 7 秒 8 ms",
+                "3y4m3w5h6m7s8ms"},
+            {NB,
+                "3 år, 4 md., 3 u, 5 t, 6 min, 7 sek og 8 ms",
+                "3 år, 4 md., 3 u, 5 t, 6 min, 7 sek, 8 ms",
+                "3å, 4 m, 3u, 5t, 6m, 7s, 8ms"},
+            {NL,
+                "3 jr, 4 mnd, 3 wkn, 5 uur, 6 min, 7 sec en 8 ms",
+                "3 jr, 4 mnd, 3 wkn, 5 uur, 6 min, 7 sec, 8 ms",
+                "3 jr, 4 m, 3 w, 5 u, 6 m, 7 s, 8 ms"},
+            {NN,
+                "3 år, 4 md., 3 v, 5 t, 6 min, 7 s og 8 ms",
+                "3 år, 4 md., 3 v, 5 t, 6 min, 7 s, 8 ms",
+                "3å 4m 3v 5t 6m 7s 8ms"},
+            {PL,
+                "3 lata, 4 mies., 3 tyg., 5 godz., 6 min, 7 sek. i 8 ms",
+                "3 lata, 4 mies., 3 tyg., 5 godz., 6 min, 7 sek. i 8 ms",
+                "3 l., 4 m-ce, 3 t., 5 h, 6 min, 7 s i 8 ms"},
+            {PT,
+                "3 anos, 4 meses, 3 sem., 5 h, 6 min, 7 s e 8 ms",
+                "3 anos, 4 meses, 3 sem., 5 h, 6 min, 7 s e 8 ms",
+                "3 anos 4 meses 3 sem. 5 h 6 min 7 s 8 ms"},
+            {RO,
+                "3 ani, 4 luni, 3 săpt., 5 ore, 6 min., 7 s și 8 ms",
+                "3 ani, 4 luni, 3 săpt., 5 ore, 6 min., 7 s, 8 ms",
+                "3 a, 4 l, 3 săpt., 5 h, 6 m, 7 s, 8 ms"},
+            {RU,
+                "3 г., 4 мес., 3 нед., 5 ч, 6 мин, 7 с и 8 мс",
+                "3 г. 4 мес. 3 нед. 5 ч 6 мин 7 с 8 мс",
+                "3 г. 4 м. 3 н. 5 ч 6 мин 7 с 8 мс"},
+            {SV,
+                "3 år, 4 mån, 3 v, 5 tim, 6 min, 7 s och 8 ms",
+                "3 år, 4 mån, 3 v, 5 tim, 6 min, 7 s, 8 ms",
+                "3å 4m 3v 5h 6m 7s 8ms"},
+            {TR,
+                "3 yıl, 4 ay, 3 hf., 5 sa., 6 dk., 7 sn. ve 8 msn",
+                "3 yıl 4 ay 3 hf. 5 sa. 6 dk. 7 sn. 8 msn",
+                "3y 4a 3h 5s 6d 7sn 8msn"},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("period_duration_wordBased_style_languages")
+    public void test_wordBased_style_languages(Locale locale, String expectedLong, String expectedMedium, String expectedShort) {
+        Period period = Period.of(3, 4, 21);
+        assertEquals(expectedLong, AmountFormats.wordBased(period, D_HMSM, locale, FormatStyle.LONG), "LONG style");
+        assertEquals(expectedMedium, AmountFormats.wordBased(period, D_HMSM, locale, FormatStyle.MEDIUM), "MEDIUM style");
+        assertEquals(expectedShort, AmountFormats.wordBased(period, D_HMSM, locale, FormatStyle.SHORT), "SHORT style");
+    }
+
+    // the languages that need plural predicates rather than a single/plural pair
+    public static Object[][] period_wordBased_style_plurals() {
+        return new Object[][] {
+            {CS, 1, "1 rok", "1 rok", "1 r."},
+            {CS, 2, "2 roky", "2 roky", "2 r."},
+            {CS, 5, "5 let", "5 let", "5 l."},
+            {CS, 21, "21 let", "21 let", "21 l."},
+            {PL, 1, "1 rok", "1 rok", "1 r."},
+            {PL, 2, "2 lata", "2 lata", "2 l."},
+            {PL, 5, "5 lat", "5 lat", "5 l."},
+            {PL, 21, "21 lat", "21 lat", "21 l."},
+            {PL, 22, "22 lata", "22 lata", "22 l."},
+            {RU, 1, "1 г.", "1 г.", "1 г."},
+            {RU, 2, "2 г.", "2 г.", "2 г."},
+            {RU, 5, "5 л.", "5 л.", "5 л."},
+            {RU, 21, "21 г.", "21 г.", "21 г."},
+            {RU, 22, "22 г.", "22 г.", "22 г."},
+            {RU, 101, "101 г.", "101 г.", "101 г."},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("period_wordBased_style_plurals")
+    public void test_wordBased_style_plurals(Locale locale, int years, String expectedLong, String expectedMedium, String expectedShort) {
+        Period period = Period.ofYears(years);
+        assertEquals(expectedLong, AmountFormats.wordBased(period, locale, FormatStyle.LONG), "LONG style");
+        assertEquals(expectedMedium, AmountFormats.wordBased(period, locale, FormatStyle.MEDIUM), "MEDIUM style");
+        assertEquals(expectedShort, AmountFormats.wordBased(period, locale, FormatStyle.SHORT), "SHORT style");
+    }
+
+    @Test
+    public void test_wordBased_style_allLanguagesHaveAllWords() {
+        // the two periods between them use every unit, as a period of 21 days formats as weeks
+        Period[] periods = {Period.of(3, 4, 21), Period.of(3, 4, 5)};
+        for (Locale locale : SUPPORTED) {
+            for (FormatStyle style : FormatStyle.values()) {
+                for (Period period : periods) {
+                    String text = AmountFormats.wordBased(period, D_HMSM, locale, style);
+                    assertFalse(text.isEmpty(), locale + " " + style);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void test_wordBased_styleFullMatchesNoStyle() {
+        Period period = Period.of(3, 4, 5);
+        PeriodDuration periodDuration = PeriodDuration.of(period, D_HMSM);
+        for (Locale locale : SUPPORTED) {
+            String msg = locale.toString();
+            assertEquals(AmountFormats.wordBased(period, locale),
+                AmountFormats.wordBased(period, locale, FormatStyle.FULL), msg);
+            assertEquals(AmountFormats.wordBased(D_HMSM, locale),
+                AmountFormats.wordBased(D_HMSM, locale, FormatStyle.FULL), msg);
+            assertEquals(AmountFormats.wordBased(period, D_HMSM, locale),
+                AmountFormats.wordBased(period, D_HMSM, locale, FormatStyle.FULL), msg);
+            assertEquals(AmountFormats.wordBased(periodDuration, locale),
+                AmountFormats.wordBased(periodDuration, locale, FormatStyle.FULL), msg);
+        }
+    }
+
+    @Test
+    public void test_wordBased_style_nullStyle() {
+        Period period = Period.ofDays(1);
+        Duration duration = Duration.ofHours(1);
+        PeriodDuration periodDuration = PeriodDuration.of(period, duration);
+        assertThrows(NullPointerException.class,
+            () -> AmountFormats.wordBased(period, Locale.ENGLISH, (FormatStyle) null));
+        assertThrows(NullPointerException.class,
+            () -> AmountFormats.wordBased(duration, Locale.ENGLISH, (FormatStyle) null));
+        assertThrows(NullPointerException.class,
+            () -> AmountFormats.wordBased(period, duration, Locale.ENGLISH, (FormatStyle) null));
+        assertThrows(NullPointerException.class,
+            () -> AmountFormats.wordBased(periodDuration, Locale.ENGLISH, (FormatStyle) null));
     }
 
     //-----------------------------------------------------------------------

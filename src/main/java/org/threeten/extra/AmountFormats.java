@@ -34,6 +34,7 @@ package org.threeten.extra;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.List;
@@ -201,9 +202,38 @@ public final class AmountFormats {
      * @return the localized word-based format for the period
      */
     public static String wordBased(Period period, Locale locale) {
+        return wordBased(period, locale, FormatStyle.FULL);
+    }
+
+    /**
+     * Formats a period to a string in a localized word-based format.
+     * <p>
+     * This returns a word-based format for the period.
+     * The year and month are printed as supplied unless the signs differ, in which case they are normalized.
+     * <p>
+     * The style selects how much each unit is abbreviated:
+     * <ul>
+     * <li>{@link FormatStyle#FULL FULL} - whole words, such as "1 day, 3 hours and 2 minutes"</li>
+     * <li>{@link FormatStyle#LONG LONG} - abbreviations joined by a word, such as "1 day, 3 hr and 2 min"</li>
+     * <li>{@link FormatStyle#MEDIUM MEDIUM} - abbreviations joined by a comma, such as "1 day, 3 hr, 2 min"</li>
+     * <li>{@link FormatStyle#SHORT SHORT} - the shortest abbreviations, such as "1d 3h 2m"</li>
+     * </ul>
+     * The words are configured in a resource bundle text file -
+     * {@code org.threeten.extra.wordbased.properties} for {@code FULL}, and
+     * {@code org.threeten.extra.wordbased-long.properties} and similar for the other styles -
+     * with overrides per language. The abbreviations are based on CLDR.
+     *
+     * @param period  the period to format
+     * @param locale  the locale to use
+     * @param style  the style to use
+     * @return the localized word-based format for the period
+     * @since 1.11.0
+     */
+    public static String wordBased(Period period, Locale locale, FormatStyle style) {
         Objects.requireNonNull(period, "period must not be null");
         Objects.requireNonNull(locale, "locale must not be null");
-        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        Objects.requireNonNull(style, "style must not be null");
+        ResourceBundle bundle = ResourceBundle.getBundle(bundleName(style), locale);
         UnitFormat[] formats = {
             UnitFormat.of(bundle, WORDBASED_YEAR),
             UnitFormat.of(bundle, WORDBASED_MONTH),
@@ -235,9 +265,37 @@ public final class AmountFormats {
      * @return the localized word-based format for the duration
      */
     public static String wordBased(Duration duration, Locale locale) {
+        return wordBased(duration, locale, FormatStyle.FULL);
+    }
+
+    /**
+     * Formats a duration to a string in a localized word-based format.
+     * <p>
+     * This returns a word-based format for the duration.
+     * <p>
+     * The style selects how much each unit is abbreviated:
+     * <ul>
+     * <li>{@link FormatStyle#FULL FULL} - whole words, such as "3 hours and 2 minutes"</li>
+     * <li>{@link FormatStyle#LONG LONG} - abbreviations joined by a word, such as "3 hr and 2 min"</li>
+     * <li>{@link FormatStyle#MEDIUM MEDIUM} - abbreviations joined by a comma, such as "3 hr, 2 min"</li>
+     * <li>{@link FormatStyle#SHORT SHORT} - the shortest abbreviations, such as "3h 2m"</li>
+     * </ul>
+     * The words are configured in a resource bundle text file -
+     * {@code org.threeten.extra.wordbased.properties} for {@code FULL}, and
+     * {@code org.threeten.extra.wordbased-long.properties} and similar for the other styles -
+     * with overrides per language. The abbreviations are based on CLDR.
+     *
+     * @param duration  the duration to format
+     * @param locale  the locale to use
+     * @param style  the style to use
+     * @return the localized word-based format for the duration
+     * @since 1.11.0
+     */
+    public static String wordBased(Duration duration, Locale locale, FormatStyle style) {
         Objects.requireNonNull(duration, "duration must not be null");
         Objects.requireNonNull(locale, "locale must not be null");
-        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        Objects.requireNonNull(style, "style must not be null");
+        ResourceBundle bundle = ResourceBundle.getBundle(bundleName(style), locale);
         UnitFormat[] formats = {
             UnitFormat.of(bundle, WORDBASED_HOUR),
             UnitFormat.of(bundle, WORDBASED_MINUTE),
@@ -267,10 +325,40 @@ public final class AmountFormats {
      * @return the localized word-based format for the period and duration
      */
     public static String wordBased(Period period, Duration duration, Locale locale) {
+        return wordBased(period, duration, locale, FormatStyle.FULL);
+    }
+
+    /**
+     * Formats a period and duration to a string in a localized word-based format.
+     * <p>
+     * This returns a word-based format for the period.
+     * The year and month are printed as supplied unless the signs differ, in which case they are normalized.
+     * <p>
+     * The style selects how much each unit is abbreviated:
+     * <ul>
+     * <li>{@link FormatStyle#FULL FULL} - whole words, such as "1 day, 3 hours and 2 minutes"</li>
+     * <li>{@link FormatStyle#LONG LONG} - abbreviations joined by a word, such as "1 day, 3 hr and 2 min"</li>
+     * <li>{@link FormatStyle#MEDIUM MEDIUM} - abbreviations joined by a comma, such as "1 day, 3 hr, 2 min"</li>
+     * <li>{@link FormatStyle#SHORT SHORT} - the shortest abbreviations, such as "1d 3h 2m"</li>
+     * </ul>
+     * The words are configured in a resource bundle text file -
+     * {@code org.threeten.extra.wordbased.properties} for {@code FULL}, and
+     * {@code org.threeten.extra.wordbased-long.properties} and similar for the other styles -
+     * with overrides per language. The abbreviations are based on CLDR.
+     *
+     * @param period  the period to format
+     * @param duration  the duration to format
+     * @param locale  the locale to use
+     * @param style  the style to use
+     * @return the localized word-based format for the period and duration
+     * @since 1.11.0
+     */
+    public static String wordBased(Period period, Duration duration, Locale locale, FormatStyle style) {
         Objects.requireNonNull(period, "period must not be null");
         Objects.requireNonNull(duration, "duration must not be null");
         Objects.requireNonNull(locale, "locale must not be null");
-        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        Objects.requireNonNull(style, "style must not be null");
+        ResourceBundle bundle = ResourceBundle.getBundle(bundleName(style), locale);
         UnitFormat[] formats = {
             UnitFormat.of(bundle, WORDBASED_YEAR),
             UnitFormat.of(bundle, WORDBASED_MONTH),
@@ -321,9 +409,52 @@ public final class AmountFormats {
      * @since 1.9.0
      */
     public static String wordBased(PeriodDuration periodDuration, Locale locale) {
+        return wordBased(periodDuration, locale, FormatStyle.FULL);
+    }
+
+    /**
+     * Formats a period-duration to a string in a localized word-based format.
+     * <p>
+     * This returns a word-based format for the period-duration.
+     * The year and month are printed as supplied unless the signs differ, in which case they are normalized.
+     * <p>
+     * The style selects how much each unit is abbreviated:
+     * <ul>
+     * <li>{@link FormatStyle#FULL FULL} - whole words, such as "1 day, 3 hours and 2 minutes"</li>
+     * <li>{@link FormatStyle#LONG LONG} - abbreviations joined by a word, such as "1 day, 3 hr and 2 min"</li>
+     * <li>{@link FormatStyle#MEDIUM MEDIUM} - abbreviations joined by a comma, such as "1 day, 3 hr, 2 min"</li>
+     * <li>{@link FormatStyle#SHORT SHORT} - the shortest abbreviations, such as "1d 3h 2m"</li>
+     * </ul>
+     * The words are configured in a resource bundle text file -
+     * {@code org.threeten.extra.wordbased.properties} for {@code FULL}, and
+     * {@code org.threeten.extra.wordbased-long.properties} and similar for the other styles -
+     * with overrides per language. The abbreviations are based on CLDR.
+     *
+     * @param periodDuration  the period-duration to format
+     * @param locale  the locale to use
+     * @param style  the style to use
+     * @return the localized word-based format for the period-duration
+     * @since 1.11.0
+     */
+    public static String wordBased(PeriodDuration periodDuration, Locale locale, FormatStyle style) {
         Objects.requireNonNull(periodDuration, "periodDuration must not be null");
         Objects.requireNonNull(locale, "locale must not be null");
-        return wordBased(periodDuration.getPeriod(), periodDuration.getDuration(), locale);
+        Objects.requireNonNull(style, "style must not be null");
+        return wordBased(periodDuration.getPeriod(), periodDuration.getDuration(), locale, style);
+    }
+
+    // resolve the resource bundle holding the words for the requested style
+    private static String bundleName(FormatStyle style) {
+        switch (style) {
+            case LONG:
+                return BUNDLE_NAME + "-long";
+            case MEDIUM:
+                return BUNDLE_NAME + "-medium";
+            case SHORT:
+                return BUNDLE_NAME + "-short";
+            default:
+                return BUNDLE_NAME;
+        }
     }
 
     // -------------------------------------------------------------------------
