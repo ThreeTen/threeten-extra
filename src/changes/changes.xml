@@ -9,6 +9,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.11.0" date="SNAPSHOT" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">
+        Add `PartialTemporal`.
+        Acts like the `Partial` class in Joda-Time, a map of `TemporalField` to value.
+      </action>
+      <action dev="jodastephen" type="add" issue="369">
         Add `Temporals.fieldComparator()` and `Temporals.unitComparator()`.
         Provides a mechanism to sort arbitrary fields and units.
       </action>
@@ -146,7 +150,7 @@
         Fixes #126.
       </action>
       <action dev="ofornes" type="add">
-        Add Norwegian Bokmål and Norwegian Nynorsk translations for word-based formatting.
+        Add Norwegian Bokmï¿½l and Norwegian Nynorsk translations for word-based formatting.
         Fixes #125.
       </action>
       <action dev="spand" type="fix">
