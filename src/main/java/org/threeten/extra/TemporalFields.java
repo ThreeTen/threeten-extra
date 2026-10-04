@@ -104,7 +104,7 @@ public final class TemporalFields {
      * This field allows the half-of-year value to be queried and set.
      * The half-of-year has values from 1 to 2.
      * <p>
-     * The half-of-year can only be calculated if the month-of-year is available.
+     * The half-of-year can only be calculated if the quarter-of-year is available.
      * <p>
      * In the resolving phase of parsing, a date can be created from a year,
      * half-of-year and day-of-half.
@@ -310,7 +310,7 @@ public final class TemporalFields {
             // calls getFrom() to check if supported
             long curValue = getFrom(temporal);
             range().checkValidValue(newValue, this);  // strictly check from 1 to 2
-            return (R) temporal.with(MONTH_OF_YEAR, temporal.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 6);
+            return (R) temporal.with(QUARTER_OF_YEAR, temporal.getLong(QUARTER_OF_YEAR) + (newValue - curValue) * 2);
         }
 
         @Override

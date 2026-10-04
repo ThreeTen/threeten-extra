@@ -52,6 +52,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test TemporalFields.
@@ -111,6 +113,19 @@ public class TestTemporalFields {
         assertEquals(LocalDate.of(2023, 7, 1), HALF_OF_YEAR.adjustInto(LocalDate.of(2023, 7, 1), 2));
 
         assertEquals(YearMonth.of(2023, 12), HALF_OF_YEAR.adjustInto(YearMonth.of(2023, 6), 2));
+        assertEquals(LocalDate.of(2023, 9, 30), HALF_OF_YEAR.adjustInto(LocalDate.of(2023, 3, 31), 2));
+        assertEquals(LocalDate.of(2023, 2, 28), HALF_OF_YEAR.adjustInto(LocalDate.of(2023, 8, 31), 1));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1, 1, 1", "1, 2, 3", "2, 1, 2", "2, 2, 4",
+            "3, 1, 1", "3, 2, 3", "4, 1, 2", "4, 2, 4"})
+    public void test_HALF_OF_YEAR_adjustInto_YearQuarter(int quarter, int half, int expectedQuarter) {
+        YearQuarter base = YearQuarter.of(2026, quarter);
+        YearQuarter expected = YearQuarter.of(2026, expectedQuarter);
+        assertEquals(true, HALF_OF_YEAR.isSupportedBy(base));
+        assertEquals(expected, HALF_OF_YEAR.adjustInto(base, half));
+        assertEquals(expected, base.with(HALF_OF_YEAR, half));
     }
 
     //-----------------------------------------------------------------------
