@@ -283,6 +283,68 @@ public class TestSymmetry454Chronology {
     //-----------------------------------------------------------------------
     // Symmetry454Date.isLeapYear
     //-----------------------------------------------------------------------
+    public static Object[][] data_epochDayAnchors() {
+        return new Object[][] {
+            {-999_999, -365_961_480L}, {-100, -756_052L}, {-8, -722_452L},
+            {-6, -721_717L}, {-5, -721_353L}, {-4, -720_989L}, {-2, -720_261L},
+            {-1, -719_890L}, {0, -719_526L}, {1, -719_162L}, {1_000_000, 364_522_792L},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_epochDayAnchors")
+    public void test_epochDay_anchors(int year, long epochDay) {
+        Symmetry454Date date = Symmetry454Date.of(year, 1, 1);
+        assertEquals(epochDay, date.toEpochDay());
+        assertEquals(date, Symmetry454Chronology.INSTANCE.dateEpochDay(epochDay));
+    }
+
+    @Test
+    public void test_epochDay_lastDayBeforeYearZero() {
+        Symmetry454Date date = Symmetry454Date.of(-1, 12, 28);
+        assertEquals(-719_527, date.toEpochDay());
+        assertEquals(date, Symmetry454Chronology.INSTANCE.dateEpochDay(-719_527));
+    }
+
+    public static Object[][] data_negativeLeapYears() {
+        return new Object[][] {
+            {-8, true}, {-7, false}, {-6, false}, {-5, false}, {-4, false},
+            {-3, false}, {-2, true}, {-1, false}, {0, false}, {1, false}, {3, true},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_negativeLeapYears")
+    public void test_isLeapYear_negativeYears(int year, boolean expected) {
+        assertEquals(expected, Symmetry454Chronology.INSTANCE.isLeapYear(year));
+    }
+
+    @Test
+    public void test_isLeapYear_negativeCycle() {
+        for (int year = -293; year < 0; year++) {
+            assertEquals(Symmetry454Chronology.INSTANCE.isLeapYear(year + 293),
+                    Symmetry454Chronology.INSTANCE.isLeapYear(year), "Year: " + year);
+        }
+    }
+
+    @Test
+    public void test_epochDay_roundTripAcrossYearZero() {
+        for (int year = -293; year <= 293; year++) {
+            Symmetry454Date first = Symmetry454Date.of(year, 1, 1);
+            Symmetry454Date next = Symmetry454Date.of(year + 1, 1, 1);
+            int length = (int) (next.toEpochDay() - first.toEpochDay());
+            assertEquals(length, first.lengthOfYear(), "Year: " + year);
+            for (int day = 1; day <= length; day++) {
+                Symmetry454Date date = Symmetry454Chronology.INSTANCE.dateYearDay(year, day);
+                long epochDay = first.toEpochDay() + day - 1;
+                assertEquals(epochDay, date.toEpochDay(), date.toString());
+                assertEquals(date, Symmetry454Chronology.INSTANCE.dateEpochDay(epochDay), date.toString());
+                assertEquals(epochDay, Symmetry454Chronology.INSTANCE.dateEpochDay(epochDay).toEpochDay());
+            }
+            assertEquals(next, Symmetry454Chronology.INSTANCE.dateYearDay(year, length).plus(1, DAYS));
+        }
+    }
+
     @Test
     public void test_isLeapYear_specific() {
         assertTrue(Symmetry454Chronology.INSTANCE.isLeapYear(3));
