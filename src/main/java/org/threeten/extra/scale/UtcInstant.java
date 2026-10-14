@@ -239,6 +239,15 @@ public final class UtcInstant
         this.nanoOfDay = nanoOfDay;
     }
 
+    /**
+     * Resolves the serialized state through the validating factory.
+     *
+     * @return the validated UTC instant, not null
+     */
+    private Object readResolve() {
+        return UtcInstant.ofModifiedJulianDay(mjDay, nanoOfDay);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the Modified Julian Day (MJD).

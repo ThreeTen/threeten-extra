@@ -292,6 +292,17 @@ public final class Interval
         this.end = endExclusive;
     }
 
+    /**
+     * Resolves the serialized state through the validating factory.
+     *
+     * @return the validated interval, not null
+     */
+    private Object readResolve() {
+        Objects.requireNonNull(start, "start");
+        Objects.requireNonNull(end, "end");
+        return Interval.of(start, end);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the start of this time interval, inclusive.
