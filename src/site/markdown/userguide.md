@@ -28,6 +28,32 @@ These include:
 * [`PeriodDuration`](apidocs/org.threeten.extra/org/threeten/extra/PeriodDuration.html) - combines `Period` and `Duration`
 
 
+## Additional fields and units
+
+[`Temporals`](apidocs/org.threeten.extra/org/threeten/extra/Temporals.html) provides additional utilities
+for working with `Temporal` objects. This includes adjusters, queries, parsing helpers, converters and comparators.
+
+[`TemporalFields`](apidocs/org.threeten.extra/org/threeten/extra/TemporalFields.html) provides additional fields and units.
+These include day-of-half, half-of-year and half-years.
+
+Note that due to a design flaw in the JDK, methods should be invoked on `TemporalAccessor` or `Temporal` rather
+than on `TemporalField` or `TemporalUnit`.
+For example, these two methods are supposed to return the same result, but they do not:
+
+```
+ YearQuarter yq = YearQuarter.of(2014, Quarter.Q4);
+ 
+ boolean supportedA = yq.isSupported(IsoFields.QUARTER_OF_YEAR);   // true
+ boolean supportedB = IsoFields.QUARTER_OF_YEAR.isSupportedBy(yq); // false!!
+ 
+ long quarterA = yq.get(IsoFields.QUARTER_OF_YEAR);     // 4
+ long quarterB = IsoFields.QUARTER_OF_YEAR.getFrom(yq); // throws UnsupportedTemporalTypeException!!
+```
+
+When `TemporalField` was designed, it was thought that there could be perfect symmetry between these two methods.
+However, in reality the design only works if the method on the temporal is viewed as the primary method,
+and the method on the field is viewed as a framework-level method, that should not be invoked directly by callers.
+
 ## Period/Duration formatting
 
 The JDK does not provide a mechanism to format periods or durations beyond ISO-8601.

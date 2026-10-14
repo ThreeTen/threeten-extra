@@ -86,6 +86,7 @@ import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
 import static java.time.temporal.IsoFields.WEEK_BASED_YEARS;
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -488,6 +489,26 @@ public class TestYearWeek {
         assertEquals(false, TEST.isSupported(CENTURIES));
         assertEquals(true, TEST.isSupported(WEEK_BASED_YEARS));
         assertEquals(false, TEST.isSupported(QUARTER_YEARS));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_frameworkMethodsBrokenInReverse() {
+        // this ought to be true, but the ThreeTen design does not allow it
+        assertFalse(WEEK_OF_WEEK_BASED_YEAR.isSupportedBy(TEST));
+        assertFalse(WEEK_BASED_YEAR.isSupportedBy(TEST));
+
+        // this ought to return the correct value, but the ThreeTen design does not allow it
+        assertThrows(UnsupportedTemporalTypeException.class, () -> WEEK_OF_WEEK_BASED_YEAR.getFrom(TEST));
+        assertThrows(UnsupportedTemporalTypeException.class, () -> WEEK_BASED_YEAR.getFrom(TEST));
+
+        // this ought to return the correct value, but the ThreeTen design does not allow it
+        // in Java 8 these returned normally, but in later versions they throw an exception
+        //assertThrows(UnsupportedTemporalTypeException.class, () -> WEEK_OF_WEEK_BASED_YEAR.rangeRefinedBy(TEST));
+        //assertThrows(UnsupportedTemporalTypeException.class, () -> WEEK_BASED_YEAR.rangeRefinedBy(TEST));
+
+        // this ought to be true, but the ThreeTen design does not allow it
+        assertFalse(WEEK_BASED_YEARS.isSupportedBy(TEST));
     }
 
     //-----------------------------------------------------------------------

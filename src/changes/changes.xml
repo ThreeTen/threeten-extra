@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.11.0" date="SNAPSHOT" description="v1.11.0">
+      <action dev="jodastephen" type="add" issue="397">
+        Derive `TemporalFields.HALF_OF_YEAR` from `QUARTER_OF_YEAR` instead of `MONTH_OF_YEAR`.
+        Document need to call from temporal when using fields other than `ChronoField`.
+      </action>
       <action dev="jodastephen" type="add" issue="369">
         Add `Temporals.fieldComparator()` and `Temporals.unitComparator()`.
         Provides a mechanism to sort arbitrary fields and units.
