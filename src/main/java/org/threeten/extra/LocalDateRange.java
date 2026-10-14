@@ -346,6 +346,17 @@ public final class LocalDateRange
         this.end = endExclusive;
     }
 
+    /**
+     * Resolves the serialized state through the validating factory.
+     *
+     * @return the validated range, not null
+     */
+    private Object readResolve() {
+        Objects.requireNonNull(start, "start");
+        Objects.requireNonNull(end, "end");
+        return LocalDateRange.of(start, end);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the start date of this range, inclusive.

@@ -228,6 +228,15 @@ public final class TaiInstant
         this.nanos = nanoOfSecond;
     }
 
+    /**
+     * Resolves the serialized state through the validating factory.
+     *
+     * @return the validated TAI instant, not null
+     */
+    private Object readResolve() {
+        return TaiInstant.ofTaiSeconds(seconds, nanos);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the number of seconds from the TAI epoch of 1958-01-01T00:00:00(TAI).
