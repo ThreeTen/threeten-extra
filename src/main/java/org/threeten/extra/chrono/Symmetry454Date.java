@@ -266,7 +266,7 @@ public final class Symmetry454Date
     static Symmetry454Date ofEpochDay(long epochDay) {
         EPOCH_DAY_RANGE.checkValidValue(epochDay + 3, ChronoField.EPOCH_DAY);
         long zeroDay = epochDay + DAYS_0001_TO_1970 + 1;
-        long year = 1 + ((293 * zeroDay) / DAYS_PER_CYCLE);
+        long year = 1 + Math.floorDiv(293 * zeroDay, DAYS_PER_CYCLE);
         long doy = zeroDay - (DAYS_IN_YEAR * (year - 1) + Symmetry454Chronology.getLeapYearsBefore(year) * DAYS_IN_WEEK);
 
         if (doy < 1) {

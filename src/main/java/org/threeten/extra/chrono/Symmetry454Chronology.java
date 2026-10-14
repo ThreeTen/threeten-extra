@@ -421,7 +421,7 @@ public final class Symmetry454Chronology
      */
     @Override
     public boolean isLeapYear(long year) {
-        return WEEKS_IN_YEAR > ((WEEKS_IN_YEAR * year + 146) % YEARS_IN_CYCLE);
+        return WEEKS_IN_YEAR > Math.floorMod(WEEKS_IN_YEAR * year + 146, YEARS_IN_CYCLE);
     }
 
     //-----------------------------------------------------------------------
