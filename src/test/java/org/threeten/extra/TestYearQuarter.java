@@ -64,6 +64,7 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.DECADES;
+import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.FOREVER;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MICROS;
@@ -79,6 +80,7 @@ import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.threeten.extra.Quarter.Q1;
@@ -86,6 +88,7 @@ import static org.threeten.extra.Quarter.Q2;
 import static org.threeten.extra.Quarter.Q3;
 import static org.threeten.extra.Quarter.Q4;
 
+import com.google.common.testing.EqualsTester;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -111,10 +114,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
-
-import com.google.common.testing.EqualsTester;
 
 /**
  * Test YearQuarter.
@@ -399,6 +399,11 @@ public class TestYearQuarter {
         assertEquals(false, TEST.isSupported(OFFSET_SECONDS));
         assertEquals(true, TEST.isSupported(QUARTER_OF_YEAR));
         assertEquals(false, TEST.isSupported(DAY_OF_QUARTER));
+
+        // these work OK because they are ChronoField instances
+        assertTrue(YEAR_OF_ERA.isSupportedBy(TEST));
+        assertTrue(YEAR.isSupportedBy(TEST));
+        assertTrue(ERA.isSupportedBy(TEST));
     }
 
     //-----------------------------------------------------------------------
@@ -423,6 +428,30 @@ public class TestYearQuarter {
         assertEquals(true, TEST.isSupported(ERA));
         assertEquals(false, TEST.isSupported(FOREVER));
         assertEquals(true, TEST.isSupported(QUARTER_YEARS));
+
+        // these work OK because they are ChronoUnit instances
+        assertTrue(YEARS.isSupportedBy(TEST));
+        assertTrue(DECADES.isSupportedBy(TEST));
+        assertTrue(CENTURIES.isSupportedBy(TEST));
+        assertTrue(MILLENNIA.isSupportedBy(TEST));
+        assertTrue(ERAS.isSupportedBy(TEST));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_frameworkMethodsBrokenInReverse() {
+        // this ought to be true, but the ThreeTen design does not allow it
+        assertFalse(QUARTER_OF_YEAR.isSupportedBy(TEST));
+
+        // this ought to return the correct value, but the ThreeTen design does not allow it
+        assertThrows(UnsupportedTemporalTypeException.class, () -> QUARTER_OF_YEAR.getFrom(TEST));
+
+        // this ought to return the correct value, but the ThreeTen design does not allow it
+        // in Java 8 it returned normally, but in later versions it throws an exception
+        //assertThrows(UnsupportedTemporalTypeException.class, () -> QUARTER_OF_YEAR.rangeRefinedBy(TEST));
+
+        // this ought to be true, but the ThreeTen design does not allow it
+        assertFalse(QUARTER_YEARS.isSupportedBy(TEST));
     }
 
     //-----------------------------------------------------------------------

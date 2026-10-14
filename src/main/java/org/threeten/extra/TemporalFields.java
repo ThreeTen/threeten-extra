@@ -35,6 +35,7 @@ import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
@@ -52,13 +53,27 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Map;
-
 import org.jspecify.annotations.Nullable;
 
 /**
  * Additional Temporal fields.
  * <p>
  * This provides additional fields and units not in the JDK.
+ * <p>
+ * Due to the design of the JDK, it is not possible to add new fields or units in a 100% seamless way.
+ * The constraint is that callers must invoke methods on {@link TemporalAccessor} and {@link Temporal}
+ * passing these fields and units as parameters, rather than calling methods on the fields and units themselves.
+ * This affects the methods {@link TemporalField#isSupportedBy(TemporalAccessor)},
+ * {@link TemporalField#getFrom(TemporalAccessor)},
+ * {@link TemporalField#adjustInto(Temporal, long)},
+ * {@link TemporalField#rangeRefinedBy(TemporalAccessor)},
+ * {@link TemporalUnit#isSupportedBy(Temporal)},
+ * {@link TemporalUnit#addTo(Temporal, long)} and {@link TemporalUnit#between(Temporal, Temporal)}.
+ * <p>
+ * The underlying reason is that the JDK's {@code TemporalAccessor} and {@code Temporal} interfaces are designed
+ * to operate in two phases: querying standard JDK fields/units, and then calling out to the actual field/unit.
+ * In this way, the field or unit acts as a framework-level concept, and should not therefore be used
+ * as the entrypoint for querying or manipulating a date-time object (despite what the Javadoc in the JDK says).
  */
 public final class TemporalFields {
 
@@ -104,7 +119,7 @@ public final class TemporalFields {
      * This field allows the half-of-year value to be queried and set.
      * The half-of-year has values from 1 to 2.
      * <p>
-     * The half-of-year can only be calculated if the month-of-year is available.
+     * The half-of-year can only be calculated if the quarter-of-year is supported.
      * <p>
      * In the resolving phase of parsing, a date can be created from a year,
      * half-of-year and day-of-half.
@@ -310,7 +325,7 @@ public final class TemporalFields {
             // calls getFrom() to check if supported
             long curValue = getFrom(temporal);
             range().checkValidValue(newValue, this);  // strictly check from 1 to 2
-            return (R) temporal.with(MONTH_OF_YEAR, temporal.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 6);
+            return (R) temporal.with(QUARTER_OF_YEAR, temporal.getLong(QUARTER_OF_YEAR) + (newValue - curValue) * 2);
         }
 
         @Override
@@ -352,7 +367,10 @@ public final class TemporalFields {
 
         @Override
         public boolean isSupportedBy(Temporal temporal) {
-            return temporal.isSupported(QUARTER_OF_YEAR);
+            // the QUARTER_YEARS part is needed in case the temporal directly implements quarter addition
+            // the YEARS/MONTHS part is needed as QUARTER_YEARS.isSupportedBy(temporal) is incorrectly based on EPOCH_DAY
+            return temporal.isSupported(QUARTER_YEARS)
+                    || (temporal.isSupported(YEARS) && temporal.isSupported(MONTHS));
         }
 
         @SuppressWarnings("unchecked")

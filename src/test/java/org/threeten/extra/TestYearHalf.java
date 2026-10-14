@@ -64,6 +64,7 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.DECADES;
+import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.FOREVER;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MICROS;
@@ -79,6 +80,7 @@ import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.threeten.extra.Half.H1;
@@ -418,6 +420,11 @@ public class TestYearHalf {
         assertEquals(false, TEST.isSupported(DAY_OF_QUARTER));
         assertEquals(true, TEST.isSupported(HALF_OF_YEAR));
         assertEquals(false, TEST.isSupported(DAY_OF_HALF));
+
+        // these work OK because they are ChronoField instances
+        assertTrue(YEAR_OF_ERA.isSupportedBy(TEST));
+        assertTrue(YEAR.isSupportedBy(TEST));
+        assertTrue(ERA.isSupportedBy(TEST));
     }
 
     //-----------------------------------------------------------------------
@@ -443,6 +450,29 @@ public class TestYearHalf {
         assertEquals(false, TEST.isSupported(FOREVER));
         assertEquals(false, TEST.isSupported(QUARTER_YEARS));
         assertEquals(true, TEST.isSupported(HALF_YEARS));
+
+        // these work OK because they are ChronoUnit instances
+        assertTrue(YEARS.isSupportedBy(TEST));
+        assertTrue(DECADES.isSupportedBy(TEST));
+        assertTrue(CENTURIES.isSupportedBy(TEST));
+        assertTrue(MILLENNIA.isSupportedBy(TEST));
+        assertTrue(ERAS.isSupportedBy(TEST));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_frameworkMethodsBrokenInReverse() {
+        // NOTE: these three cases could be worked around with extra clauses in HALF_OF_YEAR/HALF_YEARS,
+        // but that would make them inconsistent with QUARTER_OF_YEAR/QUARTER_YEARS
+
+        // this ought to be true, but the ThreeTen design does not allow it
+        assertFalse(HALF_OF_YEAR.isSupportedBy(TEST));
+
+        // this ought to return the correct value, but the ThreeTen design does not allow it
+        assertThrows(UnsupportedTemporalTypeException.class, () -> HALF_OF_YEAR.getFrom(TEST));
+
+        // this ought to be true, but the ThreeTen design does not allow it
+        assertFalse(HALF_YEARS.isSupportedBy(TEST));
     }
 
     //-----------------------------------------------------------------------
