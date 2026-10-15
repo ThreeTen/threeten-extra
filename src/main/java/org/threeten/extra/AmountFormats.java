@@ -469,7 +469,7 @@ public final class AmountFormats {
             // for the fractional part, it's possible to overflow; however,
             // this does not invalidate the duration, but rather it means that
             // the precision of the fractional part is truncated to 999,999,999.
-            if (overflow || fraction > Long.MAX_VALUE / 10) {
+            if (overflow || fraction > Long.MAX_VALUE / 10 || scale > Long.MAX_VALUE / 10) {
                 continue;
             }
             long tmp = fraction * 10 + (long) (c - '0');
