@@ -945,7 +945,7 @@
     <!-- Dependencies -->
     <assertj.version>3.27.7</assertj.version>
     <joda-convert.version>2.2.4</joda-convert.version>
-    <jspecify.version>1.0.0</jspecify.version>
+    <jspecify.version>1.0.1</jspecify.version>
     <junit.version>5.14.4</junit.version>
     <pioneer.version>1.9.1</pioneer.version><!-- 2.x is Java 11 based -->
     <guava.version>33.7.2-jre</guava.version>
@@ -980,7 +980,7 @@
     <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
-    <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
+    <central-publishing-maven-plugin.version>0.12.0</central-publishing-maven-plugin.version>
     <github-api.version>1.326</github-api.version>
     <github-release-plugin.version>1.6.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
