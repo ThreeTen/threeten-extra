@@ -985,7 +985,7 @@
     <github-release-plugin.version>1.6.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <reflow-velocity-tools.version>1.2</reflow-velocity-tools.version>
-    <spotbugs-maven-plugin.version>4.8.4.0</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.10.5.0</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.release>8</maven.compiler.release>
