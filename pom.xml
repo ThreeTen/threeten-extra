@@ -944,7 +944,7 @@
   <properties>
     <!-- Dependencies -->
     <assertj.version>3.27.7</assertj.version>
-    <joda-convert.version>2.2.4</joda-convert.version>
+    <joda-convert.version>3.0.1</joda-convert.version>
     <jspecify.version>1.0.1</jspecify.version>
     <junit.version>5.14.4</junit.version>
     <pioneer.version>1.9.1</pioneer.version><!-- 2.x is Java 11 based -->
