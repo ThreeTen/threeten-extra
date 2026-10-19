@@ -947,7 +947,7 @@
     <joda-convert.version>2.2.4</joda-convert.version>
     <jspecify.version>1.0.1</jspecify.version>
     <junit.version>5.14.4</junit.version>
-    <pioneer.version>1.9.1</pioneer.version><!-- 2.x is Java 11 based -->
+    <pioneer.version>2.3.0</pioneer.version><!-- 2.x is Java 11 based -->
     <guava.version>33.7.2-jre</guava.version>
 
     <!-- Common control parameters -->
