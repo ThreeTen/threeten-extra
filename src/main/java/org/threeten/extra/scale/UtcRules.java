@@ -45,11 +45,8 @@ import java.util.ConcurrentModificationException;
  * These are used by default in {@code UtcInstant} and {@code TaiInstant}.
  * Using other rules requires manual use of this class.
  * <p>
- * The system rules can be updated using a {@code LeapSeconds.txt} file.
- * You can create your own version of this file, place it on the classpath,
- * and it will be used. Due to Java 9 module restrictions, the file is located
- * under META-INF to avoid module encapsulation problems -
- * {@code META-INF/org/threeten/extra/scale/LeapSeconds.txt}.
+ * Leap seconds are to be discontinued in 2027, and no new leap seconds are to be added.
+ * As such, the built-in leap second data from {@link #system()} is sufficient for most applications.
  *
  * <h3>Implementation Requirements:</h3>
  * This is an abstract class and must be implemented with care
@@ -79,8 +76,7 @@ public abstract class UtcRules {
     /**
      * Gets the system default leap second rules.
      * <p>
-     * The system default rules are serializable, immutable and thread-safe.
-     * They will remain up to date as new leap seconds are added.
+     * The built-in system default rules are serializable, immutable and thread-safe.
      *
      * @return the system rules, not null
      */

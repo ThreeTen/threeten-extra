@@ -7,6 +7,17 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.12.0" date="SNAPSHOT" description="v1.12.0">
+      <action dev="jodastephen" type="update" issue="419">
+        Hard code leap second data in the class file rather than reading from a resource file.
+        Since leap seconds are to be discontinued in 2027, the built-in data is sufficient for most applications.
+        As such, external leap second files are no longer supported.
+        This could be considered a breaking change, however there are no good reasons to use an external file.
+        If you are using an external file with the same data as the built-in file, then there is no change in behavior.
+        If you are using an external file with different data, then you will need to use
+        `UtcRules.registerLeapSecond(long, int)` to manually add any additional leap seconds.
+      </action>
+    </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">
         Add `Temporals.fieldComparator()` and `Temporals.unitComparator()`.

@@ -31,24 +31,10 @@
  */
 package org.threeten.extra.scale;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.io.StreamCorruptedException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.temporal.JulianFields;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * System default UTC rules.
@@ -59,17 +45,23 @@ import java.util.stream.Collectors;
 final class SystemUtcRules extends UtcRules implements Serializable {
 
     /**
-     * The leap seconds config file.
-     */
-    private static final String LEAP_SECONDS_TXT = "org/threeten/extra/scale/LeapSeconds.txt";
-    /**
-     * Leap second file format.
-     */
-    private static final Pattern LEAP_FILE_FORMAT = Pattern.compile("([0-9-]{10})[ ]+([0-9]+)");
-    /**
      * Serialization version.
      */
     private static final long serialVersionUID = 7594178360693417218L;
+    /**
+     * The known leap second definitions.
+     * Consists of the Modified Julian Day of the leap second and the TAI offset after that date.
+     */
+    private static final Data BUILT_IN_DATA = new Data(
+            new long[]{
+                    41317, 41498, 41682, 42047, 42412, 42777, 43143, 43508, 43873, 44238,
+                    44785, 45150, 45515, 46246, 47160, 47891, 48256, 48803, 49168, 49533,
+                    50082, 50629, 51178, 53735, 54831, 56108, 57203, 57753
+            },
+            new int[]{
+                    10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+                    24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
+            });
     /**
      * Singleton.
      */
@@ -78,18 +70,21 @@ final class SystemUtcRules extends UtcRules implements Serializable {
     /**
      * The table of leap second dates.
      */
-    private final AtomicReference<Data> dataRef = new AtomicReference<>(loadLeapSeconds());
+    private final AtomicReference<Data> dataRef = new AtomicReference<>(BUILT_IN_DATA);
 
     /** Data holder. */
     private static final class Data implements Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = -3655687912882817265L;
         /** Constructor. */
-        private Data(long[] dates, int[] offsets, long[] taiSeconds) {
+        private Data(long[] dates, int[] offsets) {
             super();
             this.dates = dates;
             this.offsets = offsets;
-            this.taiSeconds = taiSeconds;
+            this.taiSeconds = new long[dates.length];
+            for (int i = 0; i < dates.length; i++) {
+                this.taiSeconds[i] = tai(dates[i], offsets[i]);
+            }
         }
         /** The table of leap second date when the leap second occurs. */
         private final long[] dates;
@@ -97,13 +92,6 @@ final class SystemUtcRules extends UtcRules implements Serializable {
         private final int[] offsets;
         /** The table of TAI second when the new offset starts. */
         private final long[] taiSeconds;
-
-        /**
-         * @return The modified Julian Date of the newest leap second
-         */
-        public long getNewestDate() {
-            return dates[dates.length - 1];
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -125,6 +113,10 @@ final class SystemUtcRules extends UtcRules implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Adds a new leap second to these rules.
+     * <p>
+     * This class includes all known leap seconds.
+     * Since leap seconds are now discontinued, there is no good reason to add new leap seconds.
+     * However, this method is retained for compatibility, and for unusual use cases.
      *
      * @param mjDay  the Modified Julian Day that the leap second occurs at the end of
      * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
@@ -148,12 +140,10 @@ final class SystemUtcRules extends UtcRules implements Serializable {
         }
         long[] dates = Arrays.copyOf(data.dates, data.dates.length + 1);
         int[] offsets = Arrays.copyOf(data.offsets, data.offsets.length + 1);
-        long[] taiSeconds = Arrays.copyOf(data.taiSeconds, data.taiSeconds.length + 1);
         int offset = offsets[offsets.length - 2] + leapAdjustment;
         dates[dates.length - 1] = mjDay;
         offsets[offsets.length - 1] = offset;
-        taiSeconds[taiSeconds.length - 1] = tai(mjDay, offset);
-        Data newData = new Data(dates, offsets, taiSeconds);
+        Data newData = new Data(dates, offsets);
         if (!dataRef.compareAndSet(data, newData)) {
             throw new ConcurrentModificationException("Unable to update leap second rules as they have already been updated");
         }
@@ -208,90 +198,6 @@ final class SystemUtcRules extends UtcRules implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Loads the rules from files in the class loader, often jar files.
-     *
-     * @return the list of loaded rules, not null
-     * @throws RuntimeException if an error occurs
-     */
-    private static Data loadLeapSeconds() {
-        Data bestData = null;
-        URL url = null;
-        try {
-            // this is the new location of the file, working on Java 8, Java 9 class path and Java 9 module path
-            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("META-INF/" + LEAP_SECONDS_TXT);
-            while (en.hasMoreElements()) {
-                url = en.nextElement();
-                Data candidate = loadLeapSeconds(url);
-                if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
-                    bestData = candidate;
-                }
-            }
-            // this location does not work on Java 9 module path because the resource is encapsulated
-            en = Thread.currentThread().getContextClassLoader().getResources(LEAP_SECONDS_TXT);
-            while (en.hasMoreElements()) {
-                url = en.nextElement();
-                Data candidate = loadLeapSeconds(url);
-                if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
-                    bestData = candidate;
-                }
-            }
-            // this location is the canonical one, and class-based loading works on Java 9 module path
-            url = SystemUtcRules.class.getResource("/" + LEAP_SECONDS_TXT);
-            if (url != null) {
-                Data candidate = loadLeapSeconds(url);
-                if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
-                    bestData = candidate;
-                }
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Unable to load time-zone rule data: " + url, ex);
-        }
-        if (bestData == null) {
-            // no data on classpath, but we allow manual registration of leap seconds
-            // setup basic known data - MJD 1972-01-01 is 41317L, where offset was 10
-            bestData = new Data(new long[] {41317L}, new int[] {10}, new long[] {tai(41317L, 10)});
-        }
-        return bestData;
-    }
-
-    /**
-     * Loads the leap second rules from a URL, often in a jar file.
-     *
-     * @param url  the jar file to load, not null
-     * @throws RuntimeException if an error occurs
-     * @throws IOException if an error occurs
-     */
-    private static Data loadLeapSeconds(URL url) throws IOException {
-        List<String> lines;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-            lines = reader.lines().collect(Collectors.toList());
-        }
-        List<Long> dates = new ArrayList<>();
-        List<Integer> offsets = new ArrayList<>();
-        for (String line : lines) {
-            line = line.trim();
-            if (line.isEmpty() || line.startsWith("#")) {
-                continue;
-            }
-            Matcher matcher = LEAP_FILE_FORMAT.matcher(line);
-            if (!matcher.matches()) {
-                throw new StreamCorruptedException("Invalid leap second file");
-            }
-            dates.add(LocalDate.parse(matcher.group(1)).getLong(JulianFields.MODIFIED_JULIAN_DAY));
-            offsets.add(Integer.valueOf(matcher.group(2)));
-        }
-        long[] datesData = new long[dates.size()];
-        int[] offsetsData = new int[dates.size()];
-        long[] taiData = new long[dates.size()];
-        for (int i = 0; i < datesData.length; i++) {
-            datesData[i] = dates.get(i);
-            offsetsData[i] = offsets.get(i);
-            taiData[i] = tai(datesData[i], offsetsData[i]);
-        }
-        return new Data(datesData, offsetsData, taiData);
-    }
-
-    /**
      * Gets the TAI seconds for the start of the day following the day passed in.
      *
      * @param changeMjd  the MJD that the leap second is added to
@@ -301,5 +207,4 @@ final class SystemUtcRules extends UtcRules implements Serializable {
     private static long tai(long changeMjd, int offset) {
         return (changeMjd + 1 - OFFSET_MJD_TAI) * SECS_PER_DAY + offset;
     }
-
 }
