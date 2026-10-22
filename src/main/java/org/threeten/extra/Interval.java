@@ -203,6 +203,9 @@ public final class Interval
         Objects.requireNonNull(text, "text");
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '/') {
+                if (i == 0) {
+                    throw new DateTimeParseException("Interval cannot be parsed, start section is empty", text, 0);
+                }
                 return parseSplit(text.subSequence(0, i), text.subSequence(i + 1, text.length()));
             }
         }
