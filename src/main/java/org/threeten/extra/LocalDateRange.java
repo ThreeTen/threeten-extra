@@ -298,6 +298,9 @@ public final class LocalDateRange
         Objects.requireNonNull(text, "text");
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '/') {
+                if (i == 0) {
+                    throw new DateTimeParseException("LocalDateRange cannot be parsed, start section is empty", text, 0);
+                }
                 char firstChar = text.charAt(0);
                 if (firstChar == 'P' || firstChar == 'p') {
                     // period followed by date

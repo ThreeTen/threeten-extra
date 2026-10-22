@@ -17,6 +17,9 @@
         If you are using an external file with different data, then you will need to use
         `UtcRules.registerLeapSecond(long, int)` to manually add any additional leap seconds.
       </action>
+      <action dev="jodastephen" type="fix" issue="420">
+        Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
+      </action>
       <action dev="JimmyLiuJia" type="fix" issue="396">
         Fix leap year calculations for negative years in the symmetry calendars.
       </action>

@@ -594,6 +594,7 @@ public class TestLocalDateRange {
     @Test
     public void test_parse_CharSequence_badFormat() {
         assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse(DATE_2012_07_29 + "-" + DATE_2012_07_27));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("/" + DATE_2012_07_27));
     }
 
     @Test

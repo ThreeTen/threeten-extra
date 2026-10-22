@@ -315,6 +315,7 @@ public class TestInterval {
     @Test
     public void test_parse_CharSequence_badFormat() {
         assertThrows(DateTimeParseException.class, () -> Interval.parse(NOW2 + "-" + NOW1));
+        assertThrows(DateTimeParseException.class, () -> Interval.parse("/" + NOW1));
     }
 
     @Test
