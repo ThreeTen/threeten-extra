@@ -100,10 +100,8 @@ Use `TaiInstant` if you need an instant using the TAI time-scale.
 
 Use `UtcInstant` if you need an instant using the UTC time-scale.
 
-The leap second data is provided in a text file loaded from the classpath.
-Only whole leap seconds are handled, and data starts from 1972 by default.
-To replace the built in leap seconds file, create a file `META-INF/org/threeten/extra/scale/LeapSeconds.txt`.
-The content should have two columns as per [this format](https://github.com/ThreeTen/threeten-extra/blob/0cf61e35fc165062eb70a66b026c54c261dce46d/src/main/resources/org/threeten/extra/scale/LeapSeconds.txt).
+Only whole leap seconds are handled.
+The library includes leap second data for the entire period from 1972 to the formal end of leap seconds in 2027.
 
 
 ## Related projects

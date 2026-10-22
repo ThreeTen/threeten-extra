@@ -31,17 +31,24 @@
  */
 package org.threeten.extra.scale;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -96,6 +103,36 @@ public class TestUtcRules {
     @Test
     public void test_getName() {
         assertEquals("System", rules.getName());
+    }
+
+    @Test
+    public void test_builtinLeapSeconds_matchOriginalFile() throws IOException {
+        InputStream resource = getClass().getResourceAsStream("/org/threeten/extra/scale/LeapSeconds.txt");
+        assertNotNull(resource);
+        long[] actualDates = rules.getLeapSecondDates();
+        int index = 0;
+        int previousOffset = 10;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#")) {
+                    continue;
+                }
+                String[] fields = line.split("\\s+");
+                long expectedDate = LocalDate.parse(fields[0]).getLong(JulianFields.MODIFIED_JULIAN_DAY);
+                int expectedOffset = Integer.parseInt(fields[1]);
+                assertTrue(index < actualDates.length);
+                assertEquals(expectedDate, actualDates[index]);
+                assertEquals(expectedOffset, rules.getTaiOffset(expectedDate + 1));
+                if (index > 0) {
+                    assertEquals(expectedOffset - previousOffset, rules.getLeapSecondAdjustment(expectedDate));
+                }
+                previousOffset = expectedOffset;
+                index++;
+            }
+        }
+        assertEquals(actualDates.length, index);
     }
 
     //-----------------------------------------------------------------------
@@ -501,7 +538,7 @@ public class TestUtcRules {
         int adj = rules.getLeapSecondAdjustment(mjd);
         rules.register(mjd, adj);
         long[] test = rules.getLeapSecondDates();
-        assertTrue(Arrays.equals(test, dates));
+        assertArrayEquals(test, dates);
         assertEquals(adj, rules.getLeapSecondAdjustment(mjd));
     }
 
@@ -512,7 +549,7 @@ public class TestUtcRules {
         int adj = rules.getLeapSecondAdjustment(mjd);
         rules.register(mjd, adj);
         long[] test = rules.getLeapSecondDates();
-        assertTrue(Arrays.equals(test, dates));
+        assertArrayEquals(test, dates);
         assertEquals(adj, rules.getLeapSecondAdjustment(mjd));
     }
 
