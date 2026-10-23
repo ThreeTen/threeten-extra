@@ -189,6 +189,8 @@ public final class Years
                 return of(Math.multiplyExact(val, negate));
             } catch (NumberFormatException ex) {
                 throw new DateTimeParseException("Text cannot be parsed to a Years", text, 0, ex);
+            } catch (ArithmeticException ex) {
+                throw new DateTimeParseException("Text cannot be parsed to a Years, overflow", text, 0, ex);
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to a Years", text, 0);

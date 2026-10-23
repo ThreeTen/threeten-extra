@@ -260,31 +260,35 @@ public final class Seconds
                         throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric seconds", text, 0, ex);
                     }
                 }
-                if (minutesStr != null) {
-                    try {
-                        int minutesAsSecs = Math.multiplyExact(Integer.parseInt(minutesStr), SECONDS_PER_MINUTE);
-                        seconds = Math.addExact(seconds, minutesAsSecs);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric minutes", text, 0, ex);
+                try {
+                    if (minutesStr != null) {
+                        try {
+                            int minutesAsSecs = Math.multiplyExact(Integer.parseInt(minutesStr), SECONDS_PER_MINUTE);
+                            seconds = Math.addExact(seconds, minutesAsSecs);
+                        } catch (NumberFormatException ex) {
+                            throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric minutes", text, 0, ex);
+                        }
                     }
-                }
-                if (hoursStr != null) {
-                    try {
-                        int hoursAsSecs = Math.multiplyExact(Integer.parseInt(hoursStr), SECONDS_PER_HOUR);
-                        seconds = Math.addExact(seconds, hoursAsSecs);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric hours", text, 0, ex);
+                    if (hoursStr != null) {
+                        try {
+                            int hoursAsSecs = Math.multiplyExact(Integer.parseInt(hoursStr), SECONDS_PER_HOUR);
+                            seconds = Math.addExact(seconds, hoursAsSecs);
+                        } catch (NumberFormatException ex) {
+                            throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric hours", text, 0, ex);
+                        }
                     }
-                }
-                if (daysStr != null) {
-                    try {
-                        int daysAsSecs = Math.multiplyExact(Integer.parseInt(daysStr), SECONDS_PER_DAY);
-                        seconds = Math.addExact(seconds, daysAsSecs);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric days", text, 0, ex);
+                    if (daysStr != null) {
+                        try {
+                            int daysAsSecs = Math.multiplyExact(Integer.parseInt(daysStr), SECONDS_PER_DAY);
+                            seconds = Math.addExact(seconds, daysAsSecs);
+                        } catch (NumberFormatException ex) {
+                            throw new DateTimeParseException("Text cannot be parsed to Seconds, non-numeric days", text, 0, ex);
+                        }
                     }
+                    return of(Math.multiplyExact(seconds, negate));
+                } catch (ArithmeticException ex) {
+                    throw new DateTimeParseException("Text cannot be parsed to Seconds, overflow", text, 0, ex);
                 }
-                return of(Math.multiplyExact(seconds, negate));
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to Seconds", text, 0);

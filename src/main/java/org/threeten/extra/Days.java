@@ -224,15 +224,19 @@ public final class Days
                         throw new DateTimeParseException("Text cannot be parsed to a Days, non-numeric days", text, 0, ex);
                     }
                 }
-                if (weeksStr != null) {
-                    try {
-                        int weeks = Math.multiplyExact(Integer.parseInt(weeksStr), DAYS_PER_WEEK);
-                        days = Math.addExact(days, weeks);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Days, non-numeric weeks", text, 0, ex);
+                try {
+                    if (weeksStr != null) {
+                        try {
+                            int weeks = Math.multiplyExact(Integer.parseInt(weeksStr), DAYS_PER_WEEK);
+                            days = Math.addExact(days, weeks);
+                        } catch (NumberFormatException ex) {
+                            throw new DateTimeParseException("Text cannot be parsed to a Days, non-numeric weeks", text, 0, ex);
+                        }
                     }
+                    return of(Math.multiplyExact(days, negate));
+                } catch (ArithmeticException ex) {
+                    throw new DateTimeParseException("Text cannot be parsed to a Days, overflow", text, 0, ex);
                 }
-                return of(Math.multiplyExact(days, negate));
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to a Days", text, 0);

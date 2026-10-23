@@ -189,6 +189,8 @@ public final class Weeks
                 return of(Math.multiplyExact(val, negate));
             } catch (NumberFormatException ex) {
                 throw new DateTimeParseException("Text cannot be parsed to a Weeks", text, 0, ex);
+            } catch (ArithmeticException ex) {
+                throw new DateTimeParseException("Text cannot be parsed to a Weeks, overflow", text, 0, ex);
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to a Weeks", text, 0);

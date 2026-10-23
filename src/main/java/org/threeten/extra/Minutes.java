@@ -233,23 +233,27 @@ public final class Minutes
                         throw new DateTimeParseException("Text cannot be parsed to Minutes, non-numeric minutes", text, 0, ex);
                     }
                 }
-                if (hoursStr != null) {
-                    try {
-                        int hoursAsMins = Math.multiplyExact(Integer.parseInt(hoursStr), MINUTES_PER_HOUR);
-                        minutes = Math.addExact(minutes, hoursAsMins);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to Minutes, non-numeric hours", text, 0, ex);
+                try {
+                    if (hoursStr != null) {
+                        try {
+                            int hoursAsMins = Math.multiplyExact(Integer.parseInt(hoursStr), MINUTES_PER_HOUR);
+                            minutes = Math.addExact(minutes, hoursAsMins);
+                        } catch (NumberFormatException ex) {
+                            throw new DateTimeParseException("Text cannot be parsed to Minutes, non-numeric hours", text, 0, ex);
+                        }
                     }
-                }
-                if (daysStr != null) {
-                    try {
-                        int daysAsMins = Math.multiplyExact(Integer.parseInt(daysStr), MINUTES_PER_DAY);
-                        minutes = Math.addExact(minutes, daysAsMins);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to Minutes, non-numeric days", text, 0, ex);
+                    if (daysStr != null) {
+                        try {
+                            int daysAsMins = Math.multiplyExact(Integer.parseInt(daysStr), MINUTES_PER_DAY);
+                            minutes = Math.addExact(minutes, daysAsMins);
+                        } catch (NumberFormatException ex) {
+                            throw new DateTimeParseException("Text cannot be parsed to Minutes, non-numeric days", text, 0, ex);
+                        }
                     }
+                    return of(Math.multiplyExact(minutes, negate));
+                } catch (ArithmeticException ex) {
+                    throw new DateTimeParseException("Text cannot be parsed to Minutes, overflow", text, 0, ex);
                 }
-                return of(Math.multiplyExact(minutes, negate));
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to Minutes", text, 0);
