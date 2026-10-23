@@ -119,6 +119,14 @@ public class TestAmountFormats {
             {Duration.ofNanos(1_000_000), Locale.ENGLISH, "1 millisecond"},
             {Duration.ofNanos(1000_000_000 + 2_000_000), Locale.ENGLISH, "1 second and 2 milliseconds"},
 
+            {Duration.ofHours(Integer.MAX_VALUE + 1L), Locale.ENGLISH, "2147483648 hours"},
+            {Duration.ofHours(-Integer.MAX_VALUE - 2L), Locale.ENGLISH, "-2147483649 hours"},
+            {Duration.ofHours(5_000_000_000L).plusMinutes(1), Locale.ENGLISH, "5000000000 hours and 1 minute"},
+            {Duration.ofSeconds(Long.MAX_VALUE), Locale.ENGLISH,
+                "2562047788015215 hours, 30 minutes and 7 seconds"},
+            {Duration.ofHours(5_000_000_001L), PL, "5000000001 godzin"},
+            {Duration.ofHours(5_000_000_002L), PL, "5000000002 godziny"},
+
             {Duration.ofMinutes(60 + 1), RO, "1 oră și 1 minut"},
             {Duration.ofMinutes(180 + 2), RO, "3 ore și 2 minute"},
             {Duration.ofMinutes(-60 - 40), RO, "-1 oră și -40 minute"},
@@ -141,6 +149,8 @@ public class TestAmountFormats {
 
     public static Object[][] period_duration_wordBased() {
         return new Object[][] {
+            {Period.ofDays(Integer.MAX_VALUE), Duration.ofHours(48), Locale.ROOT, "2147483649 days"},
+            {Period.ofDays(Integer.MIN_VALUE), Duration.ofHours(-48), Locale.ROOT, "-2147483650 days"},
             {Period.ofDays(1), Duration.ofMinutes(180 + 2), Locale.ROOT, "1 day, 3 hours and 2 minutes"},
             {Period.ofDays(2), Duration.ofSeconds(180), Locale.ROOT, "2 days and 3 minutes"},
             {Period.ofDays(7), Duration.ofMinutes(80), Locale.ROOT, "1 week, 1 hour and 20 minutes"},

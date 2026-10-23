@@ -43,7 +43,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
-import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -129,23 +129,23 @@ public final class AmountFormats {
     /**
      * The predicate that matches 1 or -1.
      */
-    private static final IntPredicate PREDICATE_1 = value -> value == 1 || value == -1;
+    private static final LongPredicate PREDICATE_1 = value -> value == 1 || value == -1;
     /**
      * The predicate that matches numbers ending 1 but not ending 11.
      */
-    private static final IntPredicate PREDICATE_END1_NOT11 = value -> {
-        int abs = Math.abs(value);
-        int last = abs % 10;
-        int secondLast = (abs % 100) / 10;
+    private static final LongPredicate PREDICATE_END1_NOT11 = value -> {
+        long abs = Math.abs(value);
+        long last = abs % 10;
+        long secondLast = (abs % 100) / 10;
         return (last == 1 && secondLast != 1);
     };
     /**
      * The predicate that matches numbers ending 2, 3 or 4, but not ending 12, 13 or 14.
      */
-    private static final IntPredicate PREDICATE_END234_NOTTEENS = value -> {
-        int abs = Math.abs(value);
-        int last = abs % 10;
-        int secondLast = (abs % 100) / 10;
+    private static final LongPredicate PREDICATE_END234_NOTTEENS = value -> {
+        long abs = Math.abs(value);
+        long last = abs % 10;
+        long secondLast = (abs % 100) / 10;
         return (last >= 2 && last <= 4 && secondLast != 1);
     };
     /**
@@ -220,7 +220,7 @@ public final class AmountFormats {
         } else {
             days = normPeriod.getDays();
         }
-        int[] values = {normPeriod.getYears(), normPeriod.getMonths(), weeks, days};
+        long[] values = {normPeriod.getYears(), normPeriod.getMonths(), weeks, days};
         return wb.format(values);
     }
 
@@ -250,7 +250,7 @@ public final class AmountFormats {
         long mins = duration.toMinutes() % MINUTES_PER_HOUR;
         long secs = duration.getSeconds() % SECONDS_PER_MINUTE;
         int millis = duration.getNano() / NANOS_PER_MILLIS;
-        int[] values = {(int) hours, (int) mins, (int) secs, millis};
+        long[] values = {hours, mins, secs, millis};
         return wb.format(values);
     }
 
@@ -285,19 +285,19 @@ public final class AmountFormats {
 
         Period normPeriod = oppositeSigns(period.getMonths(), period.getYears()) ? period.normalized() : period;
         int weeks = 0;
-        int days = 0;
+        long days = 0;
         if (normPeriod.getDays() % DAYS_PER_WEEK == 0) {
             weeks = normPeriod.getDays() / DAYS_PER_WEEK;
         } else {
             days = normPeriod.getDays();
         }
         long totalHours = duration.toHours();
-        days += (int) (totalHours / HOURS_PER_DAY);
-        int hours = (int) (totalHours % HOURS_PER_DAY);
+        days += totalHours / HOURS_PER_DAY;
+        long hours = totalHours % HOURS_PER_DAY;
         int mins = (int) (duration.toMinutes() % MINUTES_PER_HOUR);
         int secs = (int) (duration.getSeconds() % SECONDS_PER_MINUTE);
         int millis = duration.getNano() / NANOS_PER_MILLIS;
-        int[] values = {
+        long[] values = {
             normPeriod.getYears(), normPeriod.getMonths(), weeks, days,
             hours, mins, secs, millis};
         return wb.format(values);
@@ -522,10 +522,10 @@ public final class AmountFormats {
             this.lastSeparator = lastSeparator;
         }
 
-        String format(int[] values) {
+        String format(long[] values) {
             StringBuilder buf = new StringBuilder(32);
             int nonZeroCount = 0;
-            for (int value : values) {
+            for (long value : values) {
                 if (value != 0) {
                     nonZeroCount++;
                 }
@@ -563,7 +563,7 @@ public final class AmountFormats {
             }
         }
 
-        void formatTo(int value, StringBuilder buf);
+        void formatTo(long value, StringBuilder buf);
     }
 
     // data holder for single/plural formats
@@ -577,14 +577,14 @@ public final class AmountFormats {
         }
 
         @Override
-        public void formatTo(int value, StringBuilder buf) {
+        public void formatTo(long value, StringBuilder buf) {
             buf.append(value).append(value == 1 || value == -1 ? single : plural);
         }
     }
 
     // data holder for predicate formats
     static final class PredicateFormat implements UnitFormat {
-        private final IntPredicate[] predicates;
+        private final LongPredicate[] predicates;
         private final String[] text;
 
         PredicateFormat(String[] predicateStrs, String[] text) {
@@ -593,11 +593,11 @@ public final class AmountFormats {
             }
             this.predicates = Stream.of(predicateStrs)
                     .map(this::findPredicate)
-                    .toArray(IntPredicate[]::new);
+                    .toArray(LongPredicate[]::new);
             this.text = text;
         }
 
-        private IntPredicate findPredicate(String predicateStr) {
+        private LongPredicate findPredicate(String predicateStr) {
             switch (predicateStr) {
                 case "One": return PREDICATE_1;
                 case "End234NotTeens": return PREDICATE_END234_NOTTEENS;
@@ -607,7 +607,7 @@ public final class AmountFormats {
         }
 
         @Override
-        public void formatTo(int value, StringBuilder buf) {
+        public void formatTo(long value, StringBuilder buf) {
             for (int i = 0; i < predicates.length; i++) {
                 if (predicates[i].test(value)) {
                     buf.append(value).append(text[i]);
