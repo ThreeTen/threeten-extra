@@ -357,6 +357,12 @@ public class TestHours {
         assertThrows(ArithmeticException.class, () -> Hours.of(1).dividedBy(0));
     }
 
+    @Test
+    public void test_dividedBy_minusOne() {
+        assertEquals(Hours.of(-5), Hours.of(5).dividedBy(-1));
+        assertThrows(ArithmeticException.class, () -> Hours.of(Integer.MIN_VALUE).dividedBy(-1));
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void test_negated() {

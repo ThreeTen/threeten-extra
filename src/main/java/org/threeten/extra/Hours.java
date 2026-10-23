@@ -424,6 +424,9 @@ public final class Hours
         if (divisor == 1) {
             return this;
         }
+        if (divisor == -1) {
+            return negated();
+        }
         return of(hours / divisor);
     }
 

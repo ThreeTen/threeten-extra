@@ -398,6 +398,9 @@ public final class Years
         if (divisor == 1) {
             return this;
         }
+        if (divisor == -1) {
+            return negated();
+        }
         return of(years / divisor);
     }
 

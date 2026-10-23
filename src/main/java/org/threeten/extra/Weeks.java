@@ -398,6 +398,9 @@ public final class Weeks
         if (divisor == 1) {
             return this;
         }
+        if (divisor == -1) {
+            return negated();
+        }
         return of(weeks / divisor);
     }
 

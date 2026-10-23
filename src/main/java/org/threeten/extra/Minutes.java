@@ -458,6 +458,9 @@ public final class Minutes
         if (divisor == 1) {
             return this;
         }
+        if (divisor == -1) {
+            return negated();
+        }
         return of(minutes / divisor);
     }
 

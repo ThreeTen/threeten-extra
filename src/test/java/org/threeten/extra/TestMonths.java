@@ -471,6 +471,12 @@ public class TestMonths {
         assertThrows(ArithmeticException.class, () -> Months.of(1).dividedBy(0));
     }
 
+    @Test
+    public void test_dividedBy_minusOne() {
+        assertEquals(Months.of(-5), Months.of(5).dividedBy(-1));
+        assertThrows(ArithmeticException.class, () -> Months.of(Integer.MIN_VALUE).dividedBy(-1));
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void test_negated() {

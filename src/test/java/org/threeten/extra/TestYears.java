@@ -420,6 +420,12 @@ public class TestYears {
         assertThrows(ArithmeticException.class, () -> Years.of(1).dividedBy(0));
     }
 
+    @Test
+    public void test_dividedBy_minusOne() {
+        assertEquals(Years.of(-5), Years.of(5).dividedBy(-1));
+        assertThrows(ArithmeticException.class, () -> Years.of(Integer.MIN_VALUE).dividedBy(-1));
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void test_negated() {
