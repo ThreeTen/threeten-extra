@@ -199,6 +199,12 @@ public class TestYears {
     }
 
     @Test
+    public void test_parse_CharSequence_overflow() {
+        assertThrows(DateTimeParseException.class, () -> Years.parse("-P-2147483648Y"));
+        assertThrows(DateTimeParseException.class, () -> Years.parse("P2147483648Y"));
+    }
+
+    @Test
     public void test_parse_CharSequence_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Years.parse((CharSequence) null));

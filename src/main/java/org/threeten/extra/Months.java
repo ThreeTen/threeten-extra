@@ -224,15 +224,19 @@ public final class Months
                         throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric months", text, 0, ex);
                     }
                 }
-                if (weeksStr != null) {
-                    try {
-                        int years = Math.multiplyExact(Integer.parseInt(weeksStr), MONTHS_PER_YEAR);
-                        months = Math.addExact(months, years);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric years", text, 0, ex);
+                try {
+                    if (weeksStr != null) {
+                        try {
+                            int years = Math.multiplyExact(Integer.parseInt(weeksStr), MONTHS_PER_YEAR);
+                            months = Math.addExact(months, years);
+                        } catch (NumberFormatException ex) {
+                            throw new DateTimeParseException("Text cannot be parsed to a Months, non-numeric years", text, 0, ex);
+                        }
                     }
+                    return of(Math.multiplyExact(months, negate));
+                } catch (ArithmeticException ex) {
+                    throw new DateTimeParseException("Text cannot be parsed to a Months, overflow", text, 0, ex);
                 }
-                return of(Math.multiplyExact(months, negate));
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to a Months", text, 0);

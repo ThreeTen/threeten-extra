@@ -194,6 +194,12 @@ public class TestWeeks {
     }
 
     @Test
+    public void test_parse_CharSequence_overflow() {
+        assertThrows(DateTimeParseException.class, () -> Weeks.parse("-P-2147483648W"));
+        assertThrows(DateTimeParseException.class, () -> Weeks.parse("P2147483648W"));
+    }
+
+    @Test
     public void test_parse_CharSequence_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Weeks.parse((CharSequence) null));

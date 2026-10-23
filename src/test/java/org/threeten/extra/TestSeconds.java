@@ -253,6 +253,14 @@ public class TestSeconds {
     }
 
     @Test
+    public void test_parse_CharSequence_overflow() {
+        assertThrows(DateTimeParseException.class, () -> Seconds.parse("-PT-2147483648S"));
+        assertThrows(DateTimeParseException.class, () -> Seconds.parse("PT2147483647M"));
+        assertThrows(DateTimeParseException.class, () -> Seconds.parse("P2147483647D"));
+        assertThrows(DateTimeParseException.class, () -> Seconds.parse("PT2147483647H"));
+    }
+
+    @Test
     public void test_parse_CharSequence_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Seconds.parse((CharSequence) null));

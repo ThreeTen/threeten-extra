@@ -207,15 +207,19 @@ public final class Hours
                         throw new DateTimeParseException("Text cannot be parsed to Hours, non-numeric hours", text, 0, ex);
                     }
                 }
-                if (daysStr != null) {
-                    try {
-                        int daysAsHours = Math.multiplyExact(Integer.parseInt(daysStr), HOURS_PER_DAY);
-                        hours = Math.addExact(hours, daysAsHours);
-                    } catch (NumberFormatException ex) {
-                        throw new DateTimeParseException("Text cannot be parsed to Hours, non-numeric days", text, 0, ex);
+                try {
+                    if (daysStr != null) {
+                        try {
+                            int daysAsHours = Math.multiplyExact(Integer.parseInt(daysStr), HOURS_PER_DAY);
+                            hours = Math.addExact(hours, daysAsHours);
+                        } catch (NumberFormatException ex) {
+                            throw new DateTimeParseException("Text cannot be parsed to Hours, non-numeric days", text, 0, ex);
+                        }
                     }
+                    return of(Math.multiplyExact(hours, negate));
+                } catch (ArithmeticException ex) {
+                    throw new DateTimeParseException("Text cannot be parsed to Hours, overflow", text, 0, ex);
                 }
-                return of(Math.multiplyExact(hours, negate));
             }
         }
         throw new DateTimeParseException("Text cannot be parsed to Hours", text, 0);

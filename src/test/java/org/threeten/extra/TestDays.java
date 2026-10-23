@@ -257,6 +257,13 @@ public class TestDays {
     }
 
     @Test
+    public void test_parse_CharSequence_overflow() {
+        assertThrows(DateTimeParseException.class, () -> Days.parse("-P-2147483648D"));
+        assertThrows(DateTimeParseException.class, () -> Days.parse("P2147483647W"));
+        assertThrows(DateTimeParseException.class, () -> Days.parse("P2147483647W1D"));
+    }
+
+    @Test
     public void test_parse_CharSequence_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Days.parse((CharSequence) null));

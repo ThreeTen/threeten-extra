@@ -250,6 +250,13 @@ public class TestMonths {
     }
 
     @Test
+    public void test_parse_CharSequence_overflow() {
+        assertThrows(DateTimeParseException.class, () -> Months.parse("-P-2147483648M"));
+        assertThrows(DateTimeParseException.class, () -> Months.parse("P2147483647Y"));
+        assertThrows(DateTimeParseException.class, () -> Months.parse("P2147483647Y1M"));
+    }
+
+    @Test
     public void test_parse_CharSequence_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> Months.parse((CharSequence) null));
