@@ -31,6 +31,7 @@
  */
 package org.threeten.extra;
 
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
@@ -469,7 +470,7 @@ public final class AmountFormats {
             // for the fractional part, it's possible to overflow; however,
             // this does not invalidate the duration, but rather it means that
             // the precision of the fractional part is truncated to 999,999,999.
-            if (overflow || fraction > Long.MAX_VALUE / 10) {
+            if (overflow || fraction > Long.MAX_VALUE / 10 || scale > Long.MAX_VALUE / 10) {
                 continue;
             }
             long tmp = fraction * 10 + (long) (c - '0');
@@ -704,7 +705,18 @@ public final class AmountFormats {
             if (value == 0) {
                 return Duration.ZERO;
             }
-            return unit.scaleBy(d -> d.multipliedBy(value).dividedBy(scale));
+            // the fraction is below one unit, so the result fits in nanos, but the
+            // intermediate product may not fit in a long.
+            return unit.scaleBy(d -> {
+                long unitNanos = d.toNanos();
+                if (value <= Long.MAX_VALUE / unitNanos) {
+                    return Duration.ofNanos(unitNanos * value / scale);
+                }
+                return Duration.ofNanos(BigInteger.valueOf(unitNanos)
+                    .multiply(BigInteger.valueOf(value))
+                    .divide(BigInteger.valueOf(scale))
+                    .longValueExact());
+            });
         }
     }
 }

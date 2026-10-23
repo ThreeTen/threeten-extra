@@ -23,6 +23,9 @@
       <action dev="JimmyLiuJia" type="fix" issue="396">
         Fix leap year calculations for negative years in the symmetry calendars.
       </action>
+      <action dev="jodastephen" type="fix" issue="422">
+        Fix overflow edge cases when parsing in `AmountFormats.parseUnitBasedDuration()`.
+      </action>
     </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">

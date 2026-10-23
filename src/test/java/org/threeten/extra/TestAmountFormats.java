@@ -562,6 +562,13 @@ public class TestAmountFormats {
             {Duration.ofHours(1).plusMinutes(1).plusSeconds(1), "1h1m1s"},
             // Loss of precision, but still a valid duration.
             {Duration.ofSeconds(1).plusNanos(999_999_999), "1.9999999999999999999999999999s"},
+            {Duration.ofMillis(100), "0.1000000000000000000s"},
+            {Duration.ofMinutes(1).plusSeconds(30), "1.5000000000000000000m"},
+            {Duration.ofMinutes(30).negated(), "-0.5000000000000000000h"},
+            {Duration.ofHours(1).minusNanos(1), "0.9999999999999999999h"},
+            {Duration.ofMillis(100).negated(), "-0.1000000000000000000s"},
+            {Duration.ofMillis(100), "0.1000000000000000000000000s"},
+            {Duration.ofSeconds(1).plusMillis(500), "1.5000000000000000000s"},
             // Adding duration values to exactly the max duration.
             {Duration.ofSeconds(Long.MAX_VALUE), String.format("%ds%ds", Long.MAX_VALUE - 2, 2)},
         };
