@@ -230,6 +230,11 @@ public class TestAmPm {
     }
 
     @Test
+    public void test_range_unsupportedNonChronoField() {
+        assertThrows(UnsupportedTemporalTypeException.class, () -> AmPm.AM.range(TemporalFields.HALF_OF_YEAR));
+    }
+
+    @Test
     public void test_range_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> AmPm.AM.range(null));
