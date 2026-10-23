@@ -7,18 +7,18 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read  # only the initial checkout uses GITHUB_TOKEN, all pushes use PERSONAL_GITHUB_TOKEN
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
         ref: ${{ github.ref }}
         fetch-tags: true
+        persist-credentials: false
 
     - name: Setup git
       run: |
@@ -26,11 +26,10 @@ jobs:
         git config --global user.email "scolebourne@joda.org"
 
     - name: Set up JDK
-      uses: actions/setup-java@v6
+      uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
       with:
         java-version: 21
         distribution: 'temurin'
-        cache: 'maven'
 
     - name: Maven version
       run: |
@@ -50,8 +49,9 @@ jobs:
         mvn install site
 
     - name: Checkout website
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
+        # a PAT is required because GITHUB_TOKEN only grants access to this repository, not threeten.github.io
         token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
         repository: ThreeTen/threeten.github.io
         path: target/threeten.github.io
@@ -72,7 +72,9 @@ jobs:
         git push origin main
 
     - name: Delete website tag
-      if: "always()"
+      if: always() && startsWith(github.ref, 'refs/tags/')
+      env:
+        GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       run: |
-        git tag --delete "${GITHUB_REF_NAME}" || true
-        git push --delete origin "${GITHUB_REF_NAME}" || true
+        gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$GITHUB_REF_NAME" \
+          || echo "::warning::failed to delete tag $GITHUB_REF_NAME"
