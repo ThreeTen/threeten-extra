@@ -300,7 +300,7 @@ public final class AmountFormats {
      *  normalized to the same sign, for example "1 year, -2 months" is output as "10 months".
      * <li>The days of the period are never normalized, so they may have a different sign to the years and months.
      *  Weeks, when output, always have the same sign as the days.
-     * <li>All time units derived from the duration (hours, minutes, seconds and milliseconds) have the
+     * <li>All non-zero time units derived from the duration (hours, minutes, seconds and milliseconds) have the
      *  same sign as the duration.
      * <li>No normalization takes place between the period and the duration, so the output may mix positive and
      *  negative values, for example "1 day and -1 hour". The only interaction is the conversion of
