@@ -79,6 +79,10 @@ public final class AmountFormats {
      */
     private static final int NANOS_PER_MILLIS = 1000_000;
     /**
+     * The number of nanosecond per second.
+     */
+    private static final int NANOS_PER_SECOND = 1000_000_000;
+    /**
      * The resource bundle name.
      */
     private static final String BUNDLE_NAME = "org.threeten.extra.wordbased";
@@ -246,10 +250,17 @@ public final class AmountFormats {
             UnitFormat.of(bundle, WORDBASED_MILLISECOND)};
         WordBased wb = new WordBased(formats, bundle.getString(WORDBASED_COMMASPACE), bundle.getString(WORDBASED_SPACEANDSPACE));
 
-        long hours = duration.toHours();
-        long mins = duration.toMinutes() % MINUTES_PER_HOUR;
-        long secs = duration.getSeconds() % SECONDS_PER_MINUTE;
-        int millis = duration.getNano() / NANOS_PER_MILLIS;
+        // Duration stores negative values as floored seconds plus positive nanos, so make both parts negative
+        long totalSecs = duration.getSeconds();
+        int nanos = duration.getNano();
+        if (totalSecs < 0 && nanos > 0) {
+            totalSecs++;
+            nanos -= NANOS_PER_SECOND;
+        }
+        long hours = totalSecs / (MINUTES_PER_HOUR * SECONDS_PER_MINUTE);
+        long mins = (totalSecs / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
+        long secs = totalSecs % SECONDS_PER_MINUTE;
+        int millis = nanos / NANOS_PER_MILLIS;
         long[] values = {hours, mins, secs, millis};
         return wb.format(values);
     }
@@ -258,9 +269,43 @@ public final class AmountFormats {
      * Formats a period and duration to a string in a localized word-based format.
      * <p>
      * This returns a word-based format for the period.
-     * The year and month are printed as supplied unless the signs differ, in which case they are normalized.
      * The words are configured in a resource bundle text file -
      * {@code org.threeten.extra.wordbased.properties} - with overrides per language.
+     * <p>
+     * The output is built from up to eight units, always in this order:
+     * years, months, weeks, days, hours, minutes, seconds and milliseconds.
+     * Units with a zero value are omitted, and if all values are zero the result is "0 milliseconds"
+     * (in the locale's wording).
+     * Each unit is written as the value followed by the localized unit text,
+     * such as "1 day" or "2 hours" in English.
+     * Negative values are printed with a minus sign on the number, such as "-2 hours".
+     * Spacing and separators are locale-specific. In English, units are separated by a comma and space,
+     * except that the last two are separated by "and", for example "1 year, 2 months and 3 days".
+     * <p>
+     * The period and duration are combined as follows:
+     * <ul>
+     * <li>If the days of the period are an exact multiple of seven, they are shown as weeks,
+     *  otherwise all the days are shown as days and no weeks are output.
+     * <li>The duration is split into hours, minutes, seconds and milliseconds, truncating any
+     *  nanoseconds beyond the millisecond.
+     * <li>Whole 24 hour blocks in the duration are converted to days and added to the days from the period.
+     *  Note that this is applied after the weeks decision, so a duration of 7 days with a zero period
+     *  results in "7 days", not "1 week".
+     * <li>Years and months are never converted to or from other units.
+     * </ul>
+     * <p>
+     * Signs are handled as follows:
+     * <ul>
+     * <li>Years and months are printed as supplied unless their signs differ, in which case they are
+     *  normalized to the same sign, for example "1 year, -2 months" is output as "10 months".
+     * <li>The days of the period are never normalized, so they may have a different sign to the years and months.
+     *  Weeks, when output, always have the same sign as the days.
+     * <li>All non-zero time units derived from the duration (hours, minutes, seconds and milliseconds) have the
+     *  same sign as the duration.
+     * <li>No normalization takes place between the period and the duration, so the output may mix positive and
+     *  negative values, for example "1 day and -1 hour". The only interaction is the conversion of
+     *  24 hour blocks to days described above, which can reduce or negate the days from the period.
+     * </ul>
      *
      * @param period  the period to format
      * @param duration  the duration to format
@@ -291,12 +336,18 @@ public final class AmountFormats {
         } else {
             days = normPeriod.getDays();
         }
-        long totalHours = duration.toHours();
+        long totalSecs = duration.getSeconds();
+        int nanos = duration.getNano();
+        if (totalSecs < 0 && nanos > 0) {
+            totalSecs++;
+            nanos -= NANOS_PER_SECOND;
+        }
+        long totalHours = totalSecs / (MINUTES_PER_HOUR * SECONDS_PER_MINUTE);
         days += totalHours / HOURS_PER_DAY;
         long hours = totalHours % HOURS_PER_DAY;
-        int mins = (int) (duration.toMinutes() % MINUTES_PER_HOUR);
-        int secs = (int) (duration.getSeconds() % SECONDS_PER_MINUTE);
-        int millis = duration.getNano() / NANOS_PER_MILLIS;
+        int mins = (int) ((totalSecs / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR);
+        int secs = (int) (totalSecs % SECONDS_PER_MINUTE);
+        int millis = nanos / NANOS_PER_MILLIS;
         long[] values = {
             normPeriod.getYears(), normPeriod.getMonths(), weeks, days,
             hours, mins, secs, millis};
