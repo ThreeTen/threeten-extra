@@ -17,6 +17,13 @@
         If you are using an external file with different data, then you will need to use
         `UtcRules.registerLeapSecond(long, int)` to manually add any additional leap seconds.
       </action>
+      <action dev="jodastephen" type="fix" issue="424">
+        Fix negative duration handling in `AmountFormats.wordBased...()`.
+        This alters how negative durations are formatted, and could be considered a breaking change.
+        An amount of -1.5s will now be formatted as "-1 second and -500 milliseconds", rather than "-2 seconds and 500 milliseconds".
+        Similarly, an amount of -1ns will now be formatted as "0 milliseconds", rather than "-1 seconds and 999 milliseconds".
+        For most use cases, this is a more natural/correct way to format negative durations.
+      </action>
       <action dev="jodastephen" type="fix" issue="420">
         Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
       </action>
