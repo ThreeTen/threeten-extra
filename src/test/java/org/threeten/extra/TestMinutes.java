@@ -373,6 +373,12 @@ public class TestMinutes {
         assertThrows(ArithmeticException.class, () -> Minutes.of(1).dividedBy(0));
     }
 
+    @Test
+    public void test_dividedBy_minusOne() {
+        assertEquals(Minutes.of(-5), Minutes.of(5).dividedBy(-1));
+        assertThrows(ArithmeticException.class, () -> Minutes.of(Integer.MIN_VALUE).dividedBy(-1));
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void test_negated() {

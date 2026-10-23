@@ -415,6 +415,12 @@ public class TestWeeks {
         assertThrows(ArithmeticException.class, () -> Weeks.of(1).dividedBy(0));
     }
 
+    @Test
+    public void test_dividedBy_minusOne() {
+        assertEquals(Weeks.of(-5), Weeks.of(5).dividedBy(-1));
+        assertThrows(ArithmeticException.class, () -> Weeks.of(Integer.MIN_VALUE).dividedBy(-1));
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void test_negated() {

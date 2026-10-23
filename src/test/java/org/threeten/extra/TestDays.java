@@ -478,6 +478,12 @@ public class TestDays {
         assertThrows(ArithmeticException.class, () -> Days.of(1).dividedBy(0));
     }
 
+    @Test
+    public void test_dividedBy_minusOne() {
+        assertEquals(Days.of(-5), Days.of(5).dividedBy(-1));
+        assertThrows(ArithmeticException.class, () -> Days.of(Integer.MIN_VALUE).dividedBy(-1));
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void test_negated() {

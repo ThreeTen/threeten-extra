@@ -493,6 +493,9 @@ public final class Seconds
         if (divisor == 1) {
             return this;
         }
+        if (divisor == -1) {
+            return negated();
+        }
         return of(seconds / divisor);
     }
 

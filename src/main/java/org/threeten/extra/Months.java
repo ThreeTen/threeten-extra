@@ -442,6 +442,9 @@ public final class Months
         if (divisor == 1) {
             return this;
         }
+        if (divisor == -1) {
+            return negated();
+        }
         return of(months / divisor);
     }
 
