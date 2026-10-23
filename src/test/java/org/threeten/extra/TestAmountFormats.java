@@ -125,6 +125,7 @@ public class TestAmountFormats {
             {Duration.ofSeconds(Long.MAX_VALUE), Locale.ENGLISH,
                 "2562047788015215 hours, 30 minutes and 7 seconds"},
             {Duration.ofHours(5_000_000_001L), PL, "5000000001 godzin"},
+            {Duration.ofNanos(-1), Locale.ENGLISH, "0 milliseconds"},
             {Duration.ofMillis(-1500), Locale.ENGLISH, "-1 second and -500 milliseconds"},
             {Duration.ofMillis(-500), Locale.ENGLISH, "-500 milliseconds"},
             {Duration.ofMillis(-59_500), Locale.ENGLISH, "-59 seconds and -500 milliseconds"},

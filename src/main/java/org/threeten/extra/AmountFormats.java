@@ -276,11 +276,11 @@ public final class AmountFormats {
      * years, months, weeks, days, hours, minutes, seconds and milliseconds.
      * Units with a zero value are omitted, and if all values are zero the result is "0 milliseconds"
      * (in the locale's wording).
-     * Each unit is written as the value followed by a space and the localized singular or plural word,
-     * such as "1 day" or "2 hours".
+     * Each unit is written as the value followed by the localized unit text,
+     * such as "1 day" or "2 hours" in English.
      * Negative values are printed with a minus sign on the number, such as "-2 hours".
-     * The units are separated by a comma and space, except that the last two are separated by "and",
-     * for example "1 year, 2 months and 3 days".
+     * Spacing and separators are locale-specific. In English, units are separated by a comma and space,
+     * except that the last two are separated by "and", for example "1 year, 2 months and 3 days".
      * <p>
      * The period and duration are combined as follows:
      * <ul>
