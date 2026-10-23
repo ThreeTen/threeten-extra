@@ -49,6 +49,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
@@ -238,6 +239,9 @@ public enum AmPm implements TemporalAccessor, TemporalAdjuster {
         if (field == AMPM_OF_DAY) {
             return field.range();
         } else if (field instanceof ChronoField) {
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+        }
+        if (!isSupported(Objects.requireNonNull(field, "field"))) {
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.rangeRefinedBy(this);
