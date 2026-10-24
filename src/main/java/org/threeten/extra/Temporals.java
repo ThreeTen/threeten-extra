@@ -45,14 +45,18 @@ import java.math.RoundingMode;
 import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
+import java.time.OffsetDateTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
@@ -210,6 +214,42 @@ public final class Temporals {
             }
         }
     }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Returns a {@code TemporalQuery} that extracts an {@code Instant} from the temporal.
+     * <p>
+     * This query extracts the {@code Instant} from the temporal if the temporal represents an instant.
+     * <p>
+     * This method returns a result for {@link Instant}, {@link ZonedDateTime} and {@link OffsetDateTime},
+     * as well as any other temporal that can supply {@link ChronoField#INSTANT_SECONDS}.
+     *
+     * @return a query that extracts the instant from the temporal, not null
+     * @since 1.12.0
+     */
+    public static TemporalQuery<@Nullable Instant> instant() {
+        return INSTANT_QUERY;
+    }
+
+    // query expressed as a constant so it can be compared with ==
+    private static final TemporalQuery<@Nullable Instant> INSTANT_QUERY = new TemporalQuery<@Nullable Instant>() {
+        @Override
+        public @Nullable Instant queryFrom(TemporalAccessor temporal) {
+            if (temporal instanceof Instant) {
+                return (Instant) temporal;
+            } else if (temporal.isSupported(ChronoField.INSTANT_SECONDS)) {
+                long seconds = temporal.getLong(ChronoField.INSTANT_SECONDS);
+                long nanos = temporal.isSupported(ChronoField.NANO_OF_SECOND) ? temporal.getLong(ChronoField.NANO_OF_SECOND) : 0;
+                return Instant.ofEpochSecond(seconds, nanos);
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "Instant";
+        }
+    };
 
     //-------------------------------------------------------------------------
     /**
