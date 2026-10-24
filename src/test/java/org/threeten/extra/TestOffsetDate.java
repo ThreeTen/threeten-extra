@@ -583,6 +583,45 @@ public class TestOffsetDate extends AbstractDateTimeTest {
         assertEquals(-expected, od2.until(od1, unit));
     }
 
+    public static Object[][] data_until_differentOffset() {
+        ZoneOffset utc = ZoneOffset.UTC;
+        ZoneOffset p5 = ZoneOffset.ofHours(5);
+        ZoneOffset m5 = ZoneOffset.ofHours(-5);
+        return new Object[][] {
+                {0, OffsetDate.of(2000, 1, 1, utc), OffsetDate.of(2000, 1, 1, p5), ChronoUnit.DAYS},
+                {0, OffsetDate.of(2000, 1, 2, utc), OffsetDate.of(2000, 1, 1, m5), ChronoUnit.DAYS},
+                {1, OffsetDate.of(2000, 1, 1, utc), OffsetDate.of(2000, 1, 2, m5), ChronoUnit.DAYS},
+                {0, OffsetDate.of(2000, 2, 1, utc), OffsetDate.of(2000, 1, 1, m5), ChronoUnit.MONTHS},
+                {0, OffsetDate.of(2000, 1, 1, utc), OffsetDate.of(2000, 2, 1, p5), ChronoUnit.MONTHS},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_until_differentOffset")
+    public void test_until_differentOffset(long expected, OffsetDate od1, OffsetDate od2, TemporalUnit unit) {
+        assertEquals(expected, od1.until(od2, unit));
+        assertEquals(od1.atTime(LocalTime.MIDNIGHT).until(od2.atTime(LocalTime.MIDNIGHT), unit), od1.until(od2, unit));
+        assertEquals(od2.atTime(LocalTime.MIDNIGHT).until(od1.atTime(LocalTime.MIDNIGHT), unit), od2.until(od1, unit));
+    }
+
+    @Test
+    public void test_until_extremes() {
+        assertEquals(OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.DAYS), -OffsetDate.MAX.until(OffsetDate.MIN, ChronoUnit.DAYS));
+        assertEquals(LocalDate.MAX.toEpochDay() - LocalDate.MIN.toEpochDay() + 1,
+                OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.DAYS));
+        assertEquals(OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.DAYS) / 7,
+                OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.WEEKS));
+        assertEquals(1999999999L, OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.YEARS));
+        assertEquals(-1999999999L, OffsetDate.MAX.until(OffsetDate.MIN, ChronoUnit.YEARS));
+        assertEquals(1999999999L * 12, OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.MONTHS));
+        assertEquals(-1999999999L * 12, OffsetDate.MAX.until(OffsetDate.MIN, ChronoUnit.MONTHS));
+        assertEquals(1999999999L / 10, OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.DECADES));
+        assertEquals(1999999999L / 100, OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.CENTURIES));
+        assertEquals(1999999999L / 1000, OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.MILLENNIA));
+        assertEquals(1, OffsetDate.MIN.until(OffsetDate.MAX, ChronoUnit.ERAS));
+        assertEquals(-1, OffsetDate.MAX.until(OffsetDate.MIN, ChronoUnit.ERAS));
+    }
+
     @Test
     public void test_until_otherType() {
         OffsetDate start = OffsetDate.of(2007, 6, 30, OFFSET_PONE);
