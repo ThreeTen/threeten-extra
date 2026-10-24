@@ -20,6 +20,17 @@
         If you are using an external file with different data, then you will need to use
         `UtcRules.registerLeapSecond(long, int)` to manually add any additional leap seconds.
       </action>
+      <action dev="jodastephen" type="fix" issue="437">
+        Heavily reworked `PeriodDuration.between()`.
+        The original implementation was completely broken for many inputs.
+        The new implementation is much more consistent and correct, however it could be considered a breaking change.
+        The logic now correctly handles `Instant`s and takes into account offsets.
+        The output also now normalizes the period and duration to have the same sign.
+        If the start has a time-zone it is used, so the period reflects the logical number of days
+        across a daylight saving time change. The end is converted to an instant, ignoring any zone.
+        The goal is that adding the result to the start logically yields the end, so for backwards periods
+        the result can differ from `Period.between(LocalDate, LocalDate)`.
+      </action>
       <action dev="jodastephen" type="fix" issue="424">
         Fix negative duration handling in `AmountFormats.wordBased...()`.
         This alters how negative durations are formatted, and could be considered a breaking change.
