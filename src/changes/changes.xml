@@ -8,6 +8,9 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.12.0" date="SNAPSHOT" description="v1.12.0">
+      <action dev="jodastephen" type="update" issue="436">
+        Add `Temporals.instant()` to extract the instant from a temporal.
+      </action>
       <action dev="jodastephen" type="update" issue="419">
         Hard code leap second data in the class file rather than reading from a resource file.
         Since leap seconds are to be discontinued in 2027, the built-in data is sufficient for most applications.

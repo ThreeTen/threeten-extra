@@ -73,6 +73,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -82,10 +83,12 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
@@ -373,6 +376,56 @@ public class TestTemporals {
         LocalDate saturday = LocalDate.of(2011, JANUARY, 1);
         test = Temporals.previousWorkingDayOrSame().adjustInto(saturday);
         assertEquals(LocalDate.of(2010, DECEMBER, 31), test);
+    }
+
+    //-----------------------------------------------------------------------
+    // instant()
+    //-----------------------------------------------------------------------
+    public static @Nullable Object[][] data_instant() {
+        Instant instant = Instant.ofEpochSecond(1_000_000_000L, 123_456_789);
+        return new @Nullable Object[][]{
+                {instant, instant},
+                {instant.atOffset(ZoneOffset.ofHours(1)), instant},
+                {instant.atZone(ZoneId.of("Europe/Paris")), instant},
+                {LocalDateTime.of(2026, 9, 15, 12, 30), null},
+                {LocalDate.of(2026, 9, 15), null},
+                {LocalTime.of(12, 30), null},
+                {OffsetTime.of(12, 30, 0, 0, ZoneOffset.ofHours(1)), null},
+                {Year.of(2026), null},
+                {DECEMBER, null},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_instant")
+    public void test_instant(TemporalAccessor temporal, @Nullable Instant expected) {
+        assertEquals(expected, temporal.query(Temporals.instant()));
+        assertEquals(expected, Temporals.instant().queryFrom(temporal));
+    }
+
+    @Test
+    public void test_instant_secondsSupportedWithoutNanos() {
+        TemporalAccessor temporal = new TemporalAccessor() {
+            @Override
+            public boolean isSupported(TemporalField field) {
+                return field == ChronoField.INSTANT_SECONDS;
+            }
+
+            @Override
+            public long getLong(TemporalField field) {
+                if (field == ChronoField.INSTANT_SECONDS) {
+                    return 1_000_000_000L;
+                }
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+            }
+        };
+        assertEquals(Instant.ofEpochSecond(1_000_000_000L), Temporals.instant().queryFrom(temporal));
+    }
+
+    @Test
+    public void test_instant_toString() {
+        assertEquals("Instant", Temporals.instant().toString());
+        assertSame(Temporals.instant(), Temporals.instant());
     }
 
     //-----------------------------------------------------------------------
