@@ -76,6 +76,9 @@
         The result was rounded away from zero instead of towards zero.
         Allow `until()` between `MIN` and `MAX` for all units, matching `LocalDate`.
       </action>
+      <action dev="jodastephen" type="update" issue="434">
+        Improve `hashCode()` of `Interval`, `LocalDateRange`, `OffsetDate` and `PeriodDuration` to reduce collisions.
+      </action>
     </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">

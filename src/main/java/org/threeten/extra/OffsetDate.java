@@ -1407,7 +1407,8 @@ public final class OffsetDate
      */
     @Override
     public int hashCode() {
-        return date.hashCode() ^ offset.hashCode();
+        int h = date.hashCode() * 0x9E3779B1 + offset.hashCode();
+        return h ^ (h >>> 15);
     }
 
     //-----------------------------------------------------------------------

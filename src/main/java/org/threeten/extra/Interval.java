@@ -768,7 +768,8 @@ public final class Interval
      */
     @Override
     public int hashCode() {
-        return start.hashCode() ^ end.hashCode();
+        int h = start.hashCode() * 0x9E3779B1 + end.hashCode();
+        return h ^ (h >>> 15);
     }
 
     //-----------------------------------------------------------------------

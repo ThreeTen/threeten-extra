@@ -701,7 +701,8 @@ public final class PeriodDuration
      */
     @Override
     public int hashCode() {
-        return period.hashCode() ^ duration.hashCode();
+        int h = period.hashCode() * 0x9E3779B1 + duration.hashCode();
+        return h ^ (h >>> 15);
     }
 
     //-----------------------------------------------------------------------
