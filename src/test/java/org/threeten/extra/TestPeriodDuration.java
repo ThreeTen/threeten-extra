@@ -40,6 +40,7 @@ import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -50,12 +51,22 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -155,31 +166,280 @@ public class TestPeriodDuration {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_between_dates() {
-        PeriodDuration test = PeriodDuration.between(LocalDate.of(2012, 6, 20), LocalDate.of(2012, 8, 25));
-        assertEquals(Period.between(LocalDate.of(2012, 6, 20), LocalDate.of(2012, 8, 25)), test.getPeriod());
-        assertEquals(Duration.ZERO, test.getDuration());
+    public void test_between_borrowsDayToAvoidMixedSigns() {
+        LocalDateTime a = LocalDateTime.of(2012, 1, 31, 10, 0);
+        LocalDateTime b = LocalDateTime.of(2012, 3, 1, 9, 0);
+        PeriodDuration forward = PeriodDuration.between(a, b);
+        assertEquals(PeriodDuration.of(Period.ofDays(29), Duration.ofHours(23)), forward);
+        assertEquals(b, a.plus(forward));
+        PeriodDuration backward = PeriodDuration.between(b, a);
+        assertEquals(a, b.plus(backward));
+        assertFalse(backward.getPeriod().isNegative() && backward.getDuration().compareTo(Duration.ZERO) > 0);
     }
 
     @Test
-    public void test_between_times() {
-        PeriodDuration test = PeriodDuration.between(LocalTime.of(11, 20), LocalTime.of(12, 25));
-        assertEquals(Period.ZERO, test.getPeriod());
-        assertEquals(Duration.between(LocalTime.of(11, 20), LocalTime.of(12, 25)), test.getDuration());
+    public void test_between_zoned_acrossDst() {
+        ZoneId london = ZoneId.of("Europe/London");
+        ZonedDateTime start = ZonedDateTime.of(2012, 3, 24, 12, 0, 0, 0, london);
+        Instant end = ZonedDateTime.of(2012, 3, 25, 12, 0, 0, 0, london).toInstant();
+        assertEquals(PeriodDuration.of(Period.ofDays(1)), PeriodDuration.between(start, end));
+        Instant end2 = end.plus(Duration.ofMinutes(90));
+        assertEquals(PeriodDuration.of(Period.ofDays(1), Duration.ofMinutes(90)), PeriodDuration.between(start, end2));
     }
 
     @Test
-    public void test_between_mixed1() {
-        PeriodDuration test = PeriodDuration.between(LocalDate.of(2012, 6, 20), LocalTime.of(11, 25));
-        assertEquals(Period.ZERO, test.getPeriod());
-        assertEquals(Duration.ofHours(11).plusMinutes(25), test.getDuration());
+    public void test_between_zoned_borrowsDayToAvoidMixedSigns() {
+        ZoneId london = ZoneId.of("Europe/London");
+        ZonedDateTime a = ZonedDateTime.of(2012, 3, 24, 12, 0, 0, 0, london);
+        ZonedDateTime b = ZonedDateTime.of(2012, 3, 25, 11, 0, 0, 0, london);
+        assertEquals(PeriodDuration.of(Duration.ofHours(22)), PeriodDuration.between(a, b.toInstant()));
+        assertEquals(PeriodDuration.of(Duration.ofHours(-22)), PeriodDuration.between(b, a.toInstant()));
+
+        ZoneId paris = ZoneId.of("Europe/Paris");
+        ZonedDateTime c = ZonedDateTime.of(2012, 1, 31, 10, 0, 0, 0, paris);
+        ZonedDateTime d = ZonedDateTime.of(2012, 3, 1, 9, 0, 0, 0, paris);
+        assertEquals(PeriodDuration.of(Period.ofDays(29), Duration.ofHours(23)), PeriodDuration.between(c, d.toInstant()));
+        PeriodDuration backward = PeriodDuration.between(d, c.toInstant());
+        assertEquals(c, d.plus(backward.getPeriod()).plus(backward.getDuration()));
     }
 
     @Test
-    public void test_between_mixed2() {
-        PeriodDuration test = PeriodDuration.between(LocalDate.of(2012, 6, 20), LocalDateTime.of(2012, 7, 22, 11, 25));
-        assertEquals(Period.of(0, 1, 2), test.getPeriod());
-        assertEquals(Duration.ofHours(11).plusMinutes(25), test.getDuration());
+    public void test_between_zoned_javadocExample() {
+        ZonedDateTime start = ZonedDateTime.parse("2012-03-24T12:00+01:00[Europe/Paris]");
+        ZonedDateTime endZoned = ZonedDateTime.parse("2012-03-27T12:00+02:00[Europe/Paris]");
+        Instant end = Instant.parse("2012-03-27T10:00:00Z");
+        assertEquals(endZoned.toInstant(), end);
+        assertEquals(71, Duration.between(start.toInstant(), end).toHours());
+        assertEquals(PeriodDuration.of(Period.ofDays(3)), PeriodDuration.between(start, end));
+    }
+
+    @Test
+    public void test_between_zoned_afterDst() {
+        ZonedDateTime original = ZonedDateTime.parse("2012-03-30T00:00+02:00[Europe/Paris]");
+        assertEquals(
+                PeriodDuration.of(Period.ofDays(3), Duration.ofHours(2)),
+                PeriodDuration.between(original, Instant.parse("2012-04-02T00:00:00Z")));
+    }
+
+    @Test
+    public void test_between_zoned_endInGap() {
+        // 2012-03-25T01:30 does not exist in London, local time jumps from 01:00 to 02:00
+        ZoneId london = ZoneId.of("Europe/London");
+        ZonedDateTime start = ZonedDateTime.of(2012, 3, 24, 1, 30, 0, 0, london);
+        Instant end = Instant.parse("2012-03-25T01:15:00Z");
+        PeriodDuration test = PeriodDuration.between(start, end);
+        assertEquals(end, start.plus(test.getPeriod()).plus(test.getDuration()).toInstant());
+        assertFalse(test.getPeriod().isNegative() || test.getDuration().isNegative());
+    }
+
+    @Test
+    public void test_between_zoned_endInOverlap() {
+        // 2012-10-28T01:30 occurs twice in London
+        ZoneId london = ZoneId.of("Europe/London");
+        ZonedDateTime start = ZonedDateTime.of(2012, 10, 27, 1, 30, 0, 0, london);
+        for (Instant end : Arrays.asList(Instant.parse("2012-10-28T00:30:00Z"), Instant.parse("2012-10-28T01:30:00Z"))) {
+            PeriodDuration test = PeriodDuration.between(start, end);
+            assertEquals(end, start.plus(test.getPeriod()).plus(test.getDuration()).toInstant());
+            assertFalse(test.getPeriod().isNegative() || test.getDuration().isNegative());
+        }
+    }
+
+    public static Object[][] data_betweenZonedZones() {
+        return new Object[][]{
+                {"Europe/London"}, {"America/New_York"}, {"Australia/Lord_Howe"}, {"Asia/Kolkata"}, {"Pacific/Apia"}};
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("data_betweenZonedZones")
+    public void test_between_zoned_randomRoundTripAndSigns(String zoneId) {
+        ZoneId zone = ZoneId.of(zoneId);
+        Random random = new Random(zoneId.hashCode());
+        long from = Instant.parse("2010-01-01T00:00:00Z").getEpochSecond();
+        long range = Instant.parse("2020-01-01T00:00:00Z").getEpochSecond() - from;
+        for (int i = 0; i < 2000; i++) {
+            ZonedDateTime start = Instant.ofEpochSecond(from + (long) (random.nextDouble() * range)).atZone(zone);
+            // bias towards nearby values, where gaps, overlaps and month-ends matter
+            long delta = (long) ((random.nextDouble() - 0.5) * (i % 2 == 0 ? 3 * 86400 : 120 * 86400));
+            Instant end = start.toInstant().plusSeconds(delta);
+            PeriodDuration test = PeriodDuration.between(start, end);
+            String msg = start + " -> " + end + " = " + test;
+            assertEquals(end, start.plus(test.getPeriod()).plus(test.getDuration()).toInstant(), msg);
+            assertFalse(test.getPeriod().isNegative() && test.getDuration().compareTo(Duration.ZERO) > 0, msg);
+            assertFalse(test.getDuration().isNegative() && !test.getPeriod().isNegative() && !test.getPeriod().isZero(), msg);
+        }
+    }
+
+    @Test
+    public void test_between_randomRoundTripAndSigns() {
+        Random random = new Random(12345);
+        ZoneOffset[] offsets = {ZoneOffset.UTC, ZoneOffset.ofHours(1), ZoneOffset.ofHoursMinutes(-9, -30), ZoneOffset.ofHoursMinutes(5, 45)};
+        for (int i = 0; i < 5000; i++) {
+            OffsetDateTime start = OffsetDateTime.of(
+                    LocalDateTime.of(2012, 1, 1, 0, 0).plusSeconds(random.nextInt(2 * 365 * 86400)).plusNanos(random.nextInt(1_000_000_000)),
+                    offsets[random.nextInt(offsets.length)]);
+            OffsetDateTime end = OffsetDateTime.of(
+                    start.toLocalDateTime().plusSeconds((long) ((random.nextDouble() - 0.5) * 200 * 86400)),
+                    offsets[random.nextInt(offsets.length)]);
+            PeriodDuration test = PeriodDuration.between(start, end);
+            String msg = start + " -> " + end + " = " + test;
+            assertEquals(end.toInstant(), start.plus(test).toInstant(), msg);
+            assertFalse(test.getPeriod().isNegative() && test.getDuration().compareTo(Duration.ZERO) > 0, msg);
+            assertFalse(test.getDuration().isNegative() && !test.getPeriod().isNegative() && !test.getPeriod().isZero(), msg);
+        }
+    }
+
+    @Test
+    public void test_between_zoned_skippedDay() {
+        // Pacific/Apia skipped 2011-12-30 entirely, so the end is only 13 hours after the start
+        ZoneId apia = ZoneId.of("Pacific/Apia");
+        ZonedDateTime a = ZonedDateTime.of(2011, 12, 29, 12, 0, 0, 0, apia);
+        ZonedDateTime b = ZonedDateTime.of(2011, 12, 31, 1, 0, 0, 0, apia);
+        for (ZonedDateTime[] pair : new ZonedDateTime[][] {{a, b}, {b, a}}) {
+            PeriodDuration test = PeriodDuration.between(pair[0], pair[1]);
+            assertEquals(pair[1].toInstant(), pair[0].plus(test.getPeriod()).plus(test.getDuration()).toInstant(), test.toString());
+            assertFalse(test.getPeriod().isNegative() && test.getDuration().compareTo(Duration.ZERO) > 0, test.toString());
+            assertFalse(test.getDuration().isNegative() && !test.getPeriod().isNegative() && !test.getPeriod().isZero(), test.toString());
+        }
+    }
+
+    @Test
+    public void test_between_zoned_backwardsAndSame() {
+        ZoneId london = ZoneId.of("Europe/London");
+        ZonedDateTime start = ZonedDateTime.of(2012, 3, 25, 12, 0, 0, 0, london);
+        Instant end = ZonedDateTime.of(2012, 3, 24, 11, 0, 0, 0, london).toInstant();
+        assertEquals(PeriodDuration.of(Period.ofDays(-1), Duration.ofHours(-1)), PeriodDuration.between(start, end));
+        assertEquals(PeriodDuration.ZERO, PeriodDuration.between(start, start.toInstant()));
+    }
+
+    public static Object[][] data_between() {
+        ZoneOffset plus1 = ZoneOffset.ofHours(1);
+        Instant instant = Instant.parse("2012-06-20T10:00:00Z");
+        OffsetDateTime odt = OffsetDateTime.of(2012, 6, 20, 10, 0, 0, 0, plus1);
+        OffsetDate offsetDate = OffsetDate.of(LocalDate.of(2012, 6, 20), plus1);
+        return new Object[][]{
+                {"dates", LocalDate.of(2012, 6, 20), LocalDate.of(2012, 8, 25), PeriodDuration.of(Period.of(0, 2, 5))},
+                {"times", LocalTime.of(11, 20), LocalTime.of(12, 25), PeriodDuration.of(Duration.ofMinutes(65))},
+                {"localDate-localTime", LocalDate.of(2012, 6, 20), LocalTime.of(11, 25),
+                        PeriodDuration.of(Duration.ofMinutes(685))},
+                {"localDate-localDateTime", LocalDate.of(2012, 6, 20), LocalDateTime.of(2012, 7, 22, 11, 25),
+                        PeriodDuration.of(Period.of(0, 1, 2), Duration.ofMinutes(685))},
+                {"offsetDate-offsetDate", offsetDate, OffsetDate.of(LocalDate.of(2012, 6, 20), ZoneOffset.UTC),
+                        PeriodDuration.of(Duration.ofHours(1))},
+                {"instant-instant", instant, Instant.parse("2012-06-22T11:00:00.5Z"),
+                        PeriodDuration.of(Period.ofDays(2), Duration.ofHours(1).plusMillis(500))},
+                {"negativeOffsets",
+                        OffsetDateTime.of(2012, 6, 20, 22, 0, 0, 0, ZoneOffset.ofHours(-5)),
+                        OffsetDateTime.of(2012, 6, 21, 2, 0, 0, 0, ZoneOffset.ofHours(-3)),
+                        PeriodDuration.of(Duration.ofHours(2))},
+                {"nanos",
+                        LocalDateTime.of(2012, 6, 20, 10, 0, 0, 900_000_000),
+                        LocalDateTime.of(2012, 6, 21, 10, 0, 0, 100_000_000),
+                        PeriodDuration.of(Duration.ofHours(23).plusMinutes(59).plusSeconds(59).plusMillis(200))},
+                {"differentZones",
+                        ZonedDateTime.of(2012, 6, 20, 10, 0, 0, 0, ZoneId.of("Europe/London")),
+                        ZonedDateTime.of(2012, 6, 20, 6, 0, 0, 0, ZoneId.of("America/New_York")),
+                        PeriodDuration.of(Duration.ofHours(1))},
+                {"instant-offsetDateTime", instant, odt, PeriodDuration.of(Duration.ofHours(-1))},
+                {"instant-localDateTime", instant, LocalDateTime.of(2012, 6, 22, 11, 0),
+                        PeriodDuration.of(Period.ofDays(2), Duration.ofHours(1))},
+                {"offsetTime-offsetTime", OffsetTime.of(10, 0, 0, 0, plus1), OffsetTime.of(9, 30, 0, 0, ZoneOffset.UTC),
+                        PeriodDuration.of(Duration.ofMinutes(30))},
+                {"offsetTime-offsetTime-sameDate", OffsetTime.of(23, 0, 0, 0, plus1), OffsetTime.of(23, 30, 0, 0, ZoneOffset.UTC),
+                        PeriodDuration.of(Duration.ofMinutes(90))},
+                {"offsetTime-offsetTime-sameDateAcrossOffsets", OffsetTime.of(0, 30, 0, 0, plus1), OffsetTime.of(23, 30, 0, 0, ZoneOffset.UTC),
+                        PeriodDuration.of(Duration.ofHours(24))},
+                {"offsetDate-localDate", offsetDate, LocalDate.of(2012, 6, 25), PeriodDuration.of(Period.ofDays(5))},
+                {"offsetDate-localTime", offsetDate, LocalTime.of(11, 30), PeriodDuration.of(Duration.ofMinutes(690))},
+                {"offsetDateTime-localDate", odt, LocalDate.of(2012, 6, 25),
+                        PeriodDuration.of(Period.ofDays(4), Duration.ofHours(14))},
+                {"offsetDateTime-localTime", odt, LocalTime.of(11, 30), PeriodDuration.of(Duration.ofMinutes(90))},
+                {"year-year", Year.of(2020), Year.of(2025), PeriodDuration.of(Period.ofYears(5))},
+                {"yearMonth-yearMonth", YearMonth.of(2020, 1), YearMonth.of(2021, 3), PeriodDuration.of(Period.of(1, 2, 0))},
+                {"yearMonth-localDate", YearMonth.of(2020, 1), LocalDate.of(2020, 1, 11), PeriodDuration.of(Period.ofDays(10))},
+        };
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("data_between")
+    public void test_between(String name, Temporal start, Temporal end, PeriodDuration expected) {
+        assertEquals(expected, PeriodDuration.between(start, end));
+        assertEquals(expected.negated(), PeriodDuration.between(end, start));
+    }
+
+    @Test
+    public void test_between_zonedStart_localEndUsesZone() {
+        ZoneId london = ZoneId.of("Europe/London");
+        ZonedDateTime start = ZonedDateTime.of(2012, 3, 24, 12, 0, 0, 0, london);
+        LocalDateTime end = LocalDateTime.of(2012, 3, 25, 12, 0);
+        PeriodDuration test = PeriodDuration.between(start, end);
+        assertEquals(PeriodDuration.of(Period.ofDays(1)), test);
+        assertEquals(ZonedDateTime.of(end, london), start.plus(test));
+    }
+
+    @Test
+    public void test_between_dates_addableToStart() {
+        // backwards month-end cases where Period.between does not add back to the end date
+        LocalDate[] dates = {
+            LocalDate.of(2013, 3, 29), LocalDate.of(2013, 2, 1), LocalDate.of(2012, 12, 31), LocalDate.of(2012, 4, 3),
+            LocalDate.of(2015, 7, 31), LocalDate.of(2014, 11, 30), LocalDate.of(2012, 2, 29), LocalDate.of(2011, 2, 28)};
+        for (LocalDate a : dates) {
+            for (LocalDate b : dates) {
+                PeriodDuration test = PeriodDuration.between(a, b);
+                assertEquals(b, a.plus(test.getPeriod()), a + " " + b);
+                assertEquals(test, PeriodDuration.between(a.atStartOfDay(), b.atStartOfDay()), a + " " + b);
+                if (!b.isBefore(a)) {
+                    assertEquals(PeriodDuration.of(Period.between(a, b)), test, a + " " + b);
+                }
+            }
+        }
+    }
+
+    public static Object[][] data_betweenAllTypes() {
+        ZoneOffset plus1 = ZoneOffset.ofHours(1);
+        ZoneId london = ZoneId.of("Europe/London");
+        Temporal[] temporals = {
+            LocalDate.of(2012, 1, 31), LocalTime.of(10, 30), LocalDateTime.of(2012, 3, 1, 9, 0),
+            OffsetDate.of(LocalDate.of(2012, 3, 25), plus1), OffsetTime.of(23, 30, 0, 0, plus1),
+            OffsetDateTime.of(2012, 3, 25, 0, 30, 0, 0, ZoneOffset.ofHoursMinutes(-9, -30)),
+            ZonedDateTime.of(2012, 3, 25, 12, 0, 0, 0, london), Instant.parse("2012-03-24T23:45:00.5Z"),
+            Year.of(2011), YearMonth.of(2012, 2), YearQuarter.of(2012, Quarter.Q3), YearHalf.of(2012, 2),
+            YearWeek.of(2012, 10)};
+        Object[][] data = new Object[temporals.length * temporals.length][];
+        int i = 0;
+        for (Temporal start : temporals) {
+            for (Temporal end : temporals) {
+                data[i++] = new Object[] {start, end};
+            }
+        }
+        return data;
+    }
+
+    @ParameterizedTest(name = "{0} {1}")
+    @MethodSource("data_betweenAllTypes")
+    public void test_between_allTypeCombinations(Temporal start, Temporal end) {
+        PeriodDuration test = PeriodDuration.between(start, end);
+        String msg = start + " -> " + end + " = " + test;
+        assertFalse(test.getPeriod().isNegative() && test.getDuration().compareTo(Duration.ZERO) > 0, msg);
+        assertFalse(test.getDuration().isNegative() && !test.getPeriod().isNegative() && !test.getPeriod().isZero(), msg);
+        // same instance must always give zero
+        assertEquals(PeriodDuration.ZERO, PeriodDuration.between(start, start), msg);
+        // if the start is a full date-time that can accept the result, the end is reached
+        if (start instanceof LocalDateTime && end instanceof LocalDateTime) {
+            assertEquals(end, start.plus(test), msg);
+        }
+        if (start instanceof ZonedDateTime || start instanceof OffsetDateTime) {
+            Instant expected = end.query(Temporals.instant());
+            if (expected != null) {
+                assertEquals(expected, start.plus(test).query(Temporals.instant()), msg);
+            }
+        }
+    }
+
+    @Test
+    public void test_between_overflowOnOffsetConversion() {
+        OffsetDateTime start = OffsetDateTime.of(LocalDateTime.MAX, ZoneOffset.ofHours(18));
+        OffsetDateTime end = OffsetDateTime.of(LocalDateTime.MAX, ZoneOffset.ofHours(-18));
+        assertThrows(DateTimeException.class, () -> PeriodDuration.between(start, end));
     }
 
     //-----------------------------------------------------------------------
