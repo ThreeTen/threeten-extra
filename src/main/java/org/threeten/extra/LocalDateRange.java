@@ -149,7 +149,7 @@ public final class LocalDateRange
      * 
      * @param startInclusive  the inclusive start date, not null
      * @param endInclusive  the inclusive end date, not null
-     * @return the closed range
+     * @return the closed range, not null
      * @throws DateTimeException if the end is before the start,
      *   or the start date is {@code LocalDate.MAX} or {@code LocalDate.MAX.minusDays(1)},
      *   or the end date is {@code LocalDate.MIN}
@@ -168,11 +168,13 @@ public final class LocalDateRange
      * Obtains an instance of {@code LocalDateRange} from the start and a period.
      * <p>
      * The end date is calculated as the start plus the duration.
-     * The period must not be negative, but may be zero.
+     * The period may contain negative components, but the end date must not be before the start date,
+     * so the net effect of the period must not be negative.
+     * <p>
+     * The period may be zero, unless the start date is {@code LocalDate.MIN},
+     * in which case the period must be two days or more.
      * <p>
      * The constant {@code LocalDate.MIN} can be used to indicate an unbounded far-past.
-     * <p>
-     * The period must not be zero or one day when the start date is {@code LocalDate.MIN}.
      *
      * @param startInclusive  the inclusive start date, not null
      * @param period  the period from the start to the end, not null
@@ -184,9 +186,6 @@ public final class LocalDateRange
     public static LocalDateRange of(LocalDate startInclusive, Period period) {
         Objects.requireNonNull(startInclusive, "startInclusive");
         Objects.requireNonNull(period, "period");
-        if (period.isNegative()) {
-            throw new DateTimeException("Period must not be negative");
-        }
         return new LocalDateRange(startInclusive, startInclusive.plus(period));
     }
 
@@ -306,7 +305,11 @@ public final class LocalDateRange
                     // period followed by date
                     Period duration = Period.parse(text.subSequence(0, i));
                     LocalDate end = LocalDate.parse(text.subSequence(i + 1, text.length()));
-                    return LocalDateRange.of(end.minus(duration), end);
+                    try {
+                        return LocalDateRange.of(end.minus(duration), end);
+                    } catch (DateTimeException | ArithmeticException ex) {
+                        throw new DateTimeParseException("LocalDateRange cannot be parsed: " + ex.getMessage(), text, 0, ex);
+                    }
                 } else {
                     // date followed by date or period
                     LocalDate start = LocalDate.parse(text.subSequence(0, i));
@@ -314,11 +317,19 @@ public final class LocalDateRange
                         char c = text.charAt(i + 1);
                         if (c == 'P' || c == 'p') {
                             Period duration = Period.parse(text.subSequence(i + 1, text.length()));
-                            return LocalDateRange.of(start, start.plus(duration));
+                            try {
+                                return LocalDateRange.of(start, start.plus(duration));
+                            } catch (DateTimeException | ArithmeticException ex) {
+                                throw new DateTimeParseException("LocalDateRange cannot be parsed: " + ex.getMessage(), text, 0, ex);
+                            }
                         }
                     }
                     LocalDate end = LocalDate.parse(text.subSequence(i + 1, text.length()));
-                    return LocalDateRange.of(start, end);
+                    try {
+                        return LocalDateRange.of(start, end);
+                    } catch (DateTimeException ex) {
+                        throw new DateTimeParseException("LocalDateRange cannot be parsed: " + ex.getMessage(), text, 0, ex);
+                    }
                 }
             }
         }
@@ -578,7 +589,7 @@ public final class LocalDateRange
      * <p>
      * This is equivalent to {@code (isConnected(other) && !abuts(other))}.
      *
-     * @param other  the time range to compare to, null
+     * @param other  the time range to compare to, not null
      * @return true if the time ranges overlap
      */
     public boolean overlaps(LocalDateRange other) {
@@ -716,6 +727,7 @@ public final class LocalDateRange
      * @return true if the start of this range is after the specified date
      */
     public boolean isAfter(LocalDate date) {
+        Objects.requireNonNull(date, "date");
         return start.compareTo(date) > 0;
     }
 
@@ -729,7 +741,8 @@ public final class LocalDateRange
      * @return true if the start of this range is before the specified date
      */
     public boolean isBefore(LocalDate date) {
-        return end.compareTo(date) <= 0 && start.compareTo(date) < 0;
+        Objects.requireNonNull(date, "date");
+        return end.compareTo(date) <= 0 && !isUnboundedEnd() && start.compareTo(date) < 0;
     }
 
     //-----------------------------------------------------------------------
@@ -743,6 +756,7 @@ public final class LocalDateRange
      * @return true if every date in this range is after every date in the other range
      */
     public boolean isAfter(LocalDateRange other) {
+        Objects.requireNonNull(other, "other");
         return start.compareTo(other.end) >= 0 && !other.equals(this);
     }
 
@@ -752,11 +766,12 @@ public final class LocalDateRange
      * The result is true if every date in this range is before every date in the specified range.
      * An empty range behaves as though it is a date for comparison purposes.
      *
-     * @param range  the other range to compare to, not null
+     * @param other  the other range to compare to, not null
      * @return true if every date in this range is before every date in the other range
      */
-    public boolean isBefore(LocalDateRange range) {
-        return end.compareTo(range.start) <= 0 && !range.equals(this);
+    public boolean isBefore(LocalDateRange other) {
+        Objects.requireNonNull(other, "other");
+        return end.compareTo(other.start) <= 0 && !other.equals(this);
     }
 
     //-----------------------------------------------------------------------
@@ -823,7 +838,7 @@ public final class LocalDateRange
      */
     @Override
     public int hashCode() {
-        return start.hashCode() ^ end.hashCode();
+        return 31 * start.hashCode() + end.hashCode();
     }
 
     //-----------------------------------------------------------------------

@@ -33,6 +33,7 @@ package org.threeten.extra;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -543,6 +544,21 @@ public class TestLocalDateRange {
         assertThrows(DateTimeException.class, () -> LocalDateRange.of(MAXM1, Period.ofDays(1)));
     }
 
+    @Test
+    public void test_of_LocalDatePeriod_netPositiveMixedSigns() {
+        LocalDateRange test = LocalDateRange.of(LocalDate.of(2020, 1, 1), Period.of(1, -1, 0));
+        assertEquals(LocalDate.of(2020, 12, 1), test.getEnd());
+        assertEquals(test, LocalDateRange.parse("2020-01-01/P1Y-1M"));
+        assertEquals(test, LocalDateRange.parse("P1Y-1M/2020-12-01"));
+    }
+
+    @Test
+    public void test_of_LocalDatePeriod_netNegativeMixedSigns() {
+        assertThrows(DateTimeException.class, () -> LocalDateRange.of(LocalDate.of(2020, 1, 1), Period.of(-1, 1, 0)));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("2020-01-01/P-1Y1M"));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("P-1Y1M/2020-01-01"));
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void test_parse_CharSequence() {
@@ -588,7 +604,18 @@ public class TestLocalDateRange {
 
     @Test
     public void test_parse_CharSequence_badOrder() {
-        assertThrows(DateTimeException.class, () -> LocalDateRange.parse(DATE_2012_07_29 + "/" + DATE_2012_07_27));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse(DATE_2012_07_29 + "/" + DATE_2012_07_27));
+    }
+
+    @Test
+    public void test_parse_CharSequence_invalidRangeThrowsParseException() {
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("2020-01-01/P-1D"));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("P-1D/2020-01-01"));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("-999999999-01-01/P0D"));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("-999999999-01-01/P1D"));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("2020-01-01/P2147483647Y"));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("P2147483647Y/2020-01-01"));
+        assertThrows(DateTimeParseException.class, () -> LocalDateRange.parse("+999999999-12-30/+999999999-12-31"));
     }
 
     @Test
@@ -1166,6 +1193,20 @@ public class TestLocalDateRange {
         assertEquals(true, test.isBefore(DATE_2012_07_30));
     }
 
+    @Test
+    public void test_isBefore_date_unboundedEnd() {
+        LocalDateRange test = LocalDateRange.ofUnboundedEnd(DATE_2012_07_29);
+        assertTrue(test.contains(LocalDate.MAX));
+        assertFalse(test.isBefore(LocalDate.MAX));
+    }
+
+    @Test
+    public void test_hashCode_distinct() {
+        assertTrue(LocalDateRange.ofEmpty(DATE_2012_07_28).hashCode() != LocalDateRange.ofEmpty(DATE_2012_07_29).hashCode());
+        assertTrue(LocalDateRange.of(DATE_2012_07_28, DATE_2012_07_29).hashCode()
+            != LocalDateRange.of(DATE_2012_07_29, DATE_2012_07_30).hashCode());
+    }
+
     //-----------------------------------------------------------------------
     public static Object[][] data_isAfter() {
         return new Object[][] {
@@ -1354,7 +1395,7 @@ public class TestLocalDateRange {
             // continue
         }
         if (extra == null) {
-            assertEquals(guava, extra);
+            assertNull(guava);
         } else if (guava != null) {
             assertEquals(guava.lowerEndpoint(), extra.getStart());
             assertEquals(guava.upperEndpoint(), extra.getEnd());
