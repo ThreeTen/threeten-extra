@@ -44,6 +44,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.MonthDay;
+import java.time.Year;
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZoneId;
@@ -118,6 +119,14 @@ public final class OffsetDate
      * The number of seconds per day.
      */
     private static final long SECONDS_PER_DAY = 86400;
+    /**
+     * The minimum epoch-day of a LocalDate.
+     */
+    private static final long MIN_EPOCH_DAY = LocalDate.MIN.toEpochDay();
+    /**
+     * The maximum epoch-day of a LocalDate.
+     */
+    private static final long MAX_EPOCH_DAY = LocalDate.MAX.toEpochDay();
 
     /**
      * The local date.
@@ -1167,10 +1176,59 @@ public final class OffsetDate
         OffsetDate end = OffsetDate.from(endExclusive);
         if (unit instanceof ChronoUnit) {
             long offsetDiff = end.offset.getTotalSeconds() - offset.getTotalSeconds();
-            LocalDate endLocal = end.date.plusDays(Math.floorDiv(-offsetDiff, SECONDS_PER_DAY));
-            return date.until(endLocal, unit);
+            // end date as an epoch-day in this offset; kept as a long as it may be just outside the LocalDate range
+            long endDay = end.date.toEpochDay() + Math.floorDiv(-offsetDiff, SECONDS_PER_DAY);
+            // the end is partway through endDay, so when it is before the start, round towards zero
+            if (Math.floorMod(-offsetDiff, SECONDS_PER_DAY) != 0 && endDay < date.toEpochDay()) {
+                endDay++;
+            }
+            if (endDay < MIN_EPOCH_DAY || endDay > MAX_EPOCH_DAY) {
+                return untilOutOfRange(endDay, (ChronoUnit) unit);
+            }
+            return date.until(LocalDate.ofEpochDay(endDay), unit);
         }
         return unit.between(this, end);
+    }
+
+    // calculates until() for an end date up to a few days outside the LocalDate range
+    private long untilOutOfRange(long endDay, ChronoUnit unit) {
+        if (unit == DAYS) {
+            return endDay - date.toEpochDay();
+        } else if (unit == ChronoUnit.WEEKS) {
+            return (endDay - date.toEpochDay()) / 7;
+        }
+        // duplicates the logic in LocalDate.until() to calculate months and years
+        long endYear;
+        long endMonth;
+        long endDom;
+        if (endDay > MAX_EPOCH_DAY) {
+            endYear = (long) Year.MAX_VALUE + 1;
+            endMonth = 1;
+            endDom = endDay - MAX_EPOCH_DAY;
+        } else {
+            endYear = (long) Year.MIN_VALUE - 1;
+            endMonth = 12;
+            endDom = 32 - (MIN_EPOCH_DAY - endDay);
+        }
+        long packed1 = date.getLong(ChronoField.PROLEPTIC_MONTH) * 32 + date.getDayOfMonth();
+        long packed2 = (endYear * 12 + endMonth - 1) * 32 + endDom;
+        long months = (packed2 - packed1) / 32;
+        switch (unit) {
+            case MONTHS:
+                return months;
+            case YEARS:
+                return months / 12;
+            case DECADES:
+                return months / 120;
+            case CENTURIES:
+                return months / 1200;
+            case MILLENNIA:
+                return months / 12000;
+            case ERAS:
+                return (endYear >= 1 ? 1 : 0) - (date.getYear() >= 1 ? 1 : 0);
+            default:
+                throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
+        }
     }
 
     /**

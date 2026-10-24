@@ -71,6 +71,11 @@
         Updating a `MutableClock` from within an update operation now throws `IllegalStateException`,
         rather than silently losing an update.
       </action>
+      <action dev="jodastephen" type="fix" issue="433">
+        Fix `OffsetDate.until()` when the offsets differ and the result is negative.
+        The result was rounded away from zero instead of towards zero.
+        Allow `until()` between `MIN` and `MAX` for all units, matching `LocalDate`.
+      </action>
     </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">
