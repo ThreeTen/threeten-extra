@@ -41,6 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
@@ -60,6 +61,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
@@ -366,4 +368,69 @@ public class TestMutableClock {
                 Instant.EPOCH.plus(increment.multipliedBy(updateCount)),
                 clock.instant());
     }
+
+    @Test
+    public void test_reentrantUpdateThrows() {
+        MutableClock clock = MutableClock.epochUTC();
+        assertThrows(IllegalStateException.class, () -> clock.set(t -> {
+            clock.add(1, ChronoUnit.DAYS);
+            return t;
+        }));
+        assertThrows(IllegalStateException.class, () -> clock.set(t -> {
+            clock.setInstant(Instant.EPOCH);
+            return t;
+        }));
+        assertThrows(IllegalStateException.class, () -> clock.set(t -> {
+            clock.withZone(ZoneOffset.ofHours(1)).add(1, ChronoUnit.DAYS);
+            return t;
+        }));
+        assertEquals(Instant.EPOCH, clock.instant());
+        // guard is cleared after a failed update
+        clock.add(1, ChronoUnit.DAYS);
+        assertEquals(Instant.EPOCH.plus(1, ChronoUnit.DAYS), clock.instant());
+    }
+
+    @Test
+    public void test_updateOfUnrelatedClockFromAdjusterAllowed() {
+        MutableClock clock = MutableClock.epochUTC();
+        MutableClock other = MutableClock.epochUTC();
+        clock.set(t -> {
+            other.add(1, ChronoUnit.DAYS);
+            return t.plus(1, ChronoUnit.HOURS);
+        });
+        assertEquals(Instant.EPOCH.plus(1, ChronoUnit.HOURS), clock.instant());
+        assertEquals(Instant.EPOCH.plus(1, ChronoUnit.DAYS), other.instant());
+    }
+
+    @Test
+    public void test_failedUpdateLeavesClockUnchanged() {
+        MutableClock clock = MutableClock.of(Instant.MAX, ZoneOffset.UTC);
+        assertThrows(DateTimeException.class, () -> clock.add(1, ChronoUnit.SECONDS));
+        assertEquals(Instant.MAX, clock.instant());
+    }
+
+    @Test
+    public void test_adjusterDoesNotHoldLock() throws Exception {
+        MutableClock clock = MutableClock.epochUTC();
+        AtomicBoolean first = new AtomicBoolean(true);
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        try {
+            // would deadlock if the adjuster were run while holding a lock
+            clock.set(t -> {
+                if (first.getAndSet(false)) {
+                    try {
+                        service.submit(() -> clock.add(1, ChronoUnit.SECONDS)).get(1, TimeUnit.MINUTES);
+                    } catch (Exception ex) {
+                        throw new IllegalStateException(ex);
+                    }
+                }
+                return t.plus(1, ChronoUnit.HOURS);
+            });
+        } finally {
+            service.shutdownNow();
+        }
+        // the adjuster is re-applied on top of the other thread's update
+        assertEquals(Instant.EPOCH.plusSeconds(1).plus(1, ChronoUnit.HOURS), clock.instant());
+    }
+
 }
