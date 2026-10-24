@@ -101,9 +101,10 @@ import org.jspecify.annotations.Nullable;
  * This class is thread-safe. Updates are atomic and lock-free.
  * <p>
  * Under contention, an update operation may be re-applied, so any
- * {@code TemporalAdjuster} or {@code TemporalAmount} passed to an update must
- * be side-effect-free. Updating a clock from within such an operation throws
- * {@code IllegalStateException}.
+ * {@code TemporalAdjuster}, {@code TemporalAmount}, {@code TemporalUnit}, or
+ * {@code TemporalField} passed to an update must be side-effect-free.
+ * Updating this clock, or a clock with shared updates, from within an update
+ * operation on the same thread throws {@code IllegalStateException}.
  * <p>
  * While update semantics are expressed in terms of {@code ZonedDateTime}, that
  * imposes no requirements on implementation details. The implementation may
