@@ -477,7 +477,6 @@ public final class TaiInstant
      */
     @Override
     public int hashCode() {
-        // TODO: Evaluate hash code
         return (Long.hashCode(seconds)) + 51 * nanos;
     }
 
