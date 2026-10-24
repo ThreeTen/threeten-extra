@@ -45,11 +45,11 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -206,7 +206,7 @@ public final class HourMinute
      *
      * @param temporal  the temporal object to convert, not null
      * @return the hour-minute, not null
-     * @throws DateTimeException if unable to convert to a {@code HourMinute}
+     * @throws DateTimeException if unable to convert to an {@code HourMinute}
      */
     public static HourMinute from(TemporalAccessor temporal) {
         if (temporal instanceof HourMinute) {
@@ -230,6 +230,7 @@ public final class HourMinute
      * <p>
      * The string must represent a valid hour-minute.
      * The format must be {@code HH:mm}.
+     * The value "24:00" can be parsed successfully, but will return {@code 00:00}.
      *
      * @param text  the text to parse such as "12:31", not null
      * @return the parsed hour-minute, not null
@@ -280,15 +281,15 @@ public final class HourMinute
      * Returns a copy of this hour-minute with the new hour and minute, checking
      * to see if a new object is in fact required.
      *
-     * @param newYear  the hour to represent, validated from 0 to 23
+     * @param newHour  the hour to represent, validated from 0 to 23
      * @param newMinute  the minute-of-hour to represent, validated from 0 to 59
      * @return the hour-minute, not null
      */
-    private HourMinute with(int newYear, int newMinute) {
-        if (hour == newYear && minute == newMinute) {
+    private HourMinute with(int newHour, int newMinute) {
+        if (hour == newHour && minute == newMinute) {
             return this;
         }
-        return new HourMinute(newYear, newMinute);
+        return new HourMinute(newHour, newMinute);
     }
 
     //-----------------------------------------------------------------------
@@ -509,7 +510,7 @@ public final class HourMinute
     /**
      * Returns an adjusted copy of this hour-minute.
      * <p>
-     * This returns a {@code HourMinute} based on this one, with the hour-minute adjusted.
+     * This returns an {@code HourMinute} based on this one, with the hour-minute adjusted.
      * The adjustment takes place using the specified adjuster strategy object.
      * Read the documentation of the adjuster to understand what adjustment will be made.
      * <p>
@@ -520,7 +521,7 @@ public final class HourMinute
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster the adjuster to use, not null
-     * @return a {@code HourMinute} based on {@code this} with the adjustment made, not null
+     * @return an {@code HourMinute} based on {@code this} with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
@@ -532,7 +533,7 @@ public final class HourMinute
     /**
      * Returns a copy of this hour-minute with the specified field set to a new value.
      * <p>
-     * This returns a {@code HourMinute} based on this one, with the value
+     * This returns an {@code HourMinute} based on this one, with the value
      * for the specified field changed.
      * This can be used to change any supported field, such as the hour or minute.
      * If it is not possible to set the value, because the field is not supported or for
@@ -542,24 +543,24 @@ public final class HourMinute
      * The supported fields behave as follows:
      * <ul>
      * <li>{@code MINUTE_OF_HOUR} -
-     *  Returns a {@code HourMinute} with the specified minute-of-hour.
+     *  Returns an {@code HourMinute} with the specified minute-of-hour.
      *  The hour will be unchanged.
      * <li>{@code MINUTE_OF_DAY} -
-     *  Returns a {@code HourMinute} with the specified minute-of-day.
+     *  Returns an {@code HourMinute} with the specified minute-of-day.
      * <li>{@code HOUR_OF_AMPM} -
-     *  Returns a {@code HourMinute} with the specified hour-of-am-pm.
+     *  Returns an {@code HourMinute} with the specified hour-of-am-pm.
      *  The AM/PM and minute-of-hour will be unchanged.
      * <li>{@code CLOCK_HOUR_OF_AMPM} -
-     *  Returns a {@code HourMinute} with the specified clock-hour-of-am-pm.
+     *  Returns an {@code HourMinute} with the specified clock-hour-of-am-pm.
      *  The AM/PM and minute-of-hour will be unchanged.
      * <li>{@code HOUR_OF_DAY} -
-     *  Returns a {@code HourMinute} with the specified hour-of-day.
+     *  Returns an {@code HourMinute} with the specified hour-of-day.
      *  The minute-of-hour will be unchanged.
      * <li>{@code CLOCK_HOUR_OF_DAY} -
-     *  Returns a {@code HourMinute} with the specified clock-hour-of-day.
+     *  Returns an {@code HourMinute} with the specified clock-hour-of-day.
      *  The minute-of-hour will be unchanged.
      * <li>{@code AMPM_OF_DAY} -
-     *  Returns a {@code HourMinute} with the specified AM/PM.
+     *  Returns an {@code HourMinute} with the specified AM/PM.
      *  The hour-of-am-pm and minute-of-hour will be unchanged.
      * </ul>
      * <p>
@@ -577,7 +578,7 @@ public final class HourMinute
      *
      * @param field  the field to set in the result, not null
      * @param newValue  the new value of the field in the result
-     * @return a {@code HourMinute} based on {@code this} with the specified field set, not null
+     * @return an {@code HourMinute} based on {@code this} with the specified field set, not null
      * @throws DateTimeException if the field cannot be set
      * @throws UnsupportedTemporalTypeException if the field is not supported
      * @throws ArithmeticException if numeric overflow occurs
@@ -616,7 +617,7 @@ public final class HourMinute
      * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour to set in the returned hour-minute, from 0 to 23
-     * @return a {@code HourMinute} based on this hour-minute with the requested hour, not null
+     * @return an {@code HourMinute} based on this hour-minute with the requested hour, not null
      * @throws DateTimeException if the hour value is invalid
      */
     public HourMinute withHour(int hour) {
@@ -630,7 +631,7 @@ public final class HourMinute
      * This instance is immutable and unaffected by this method call.
      *
      * @param minute  the minute-of-hour to set in the returned hour-minute, from 0 to 59
-     * @return a {@code HourMinute} based on this hour-minute with the requested minute, not null
+     * @return an {@code HourMinute} based on this hour-minute with the requested minute, not null
      * @throws DateTimeException if the minute-of-hour value is invalid
      */
     public HourMinute withMinute(int minute) {
@@ -642,11 +643,13 @@ public final class HourMinute
     /**
      * Returns a copy of this hour-minute with the specified amount added.
      * <p>
-     * This returns a {@code HourMinute} based on this one, with the specified amount added.
-     * The amount is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAmount} interface.
+     * This returns an {@code HourMinute} based on this one, with the specified amount added.
+     * The amount is typically {@link Duration}, {@code Hours} or {@code Minutes} but may be any
+     * other type implementing the {@link TemporalAmount} interface.
+     * If it is a {@code Duration}, then it must be a whole number of minutes.
      * <p>
-     * The calculation is delegated to the amount object by calling
+     * Addition of {@code Duration} is implemented directly to obtain the desired hour/minute result.
+     * Otherwise, the calculation is delegated to the amount object by calling
      * {@link TemporalAmount#addTo(Temporal)}. The amount implementation is free
      * to implement the addition in any way it wishes, however it typically
      * calls back to {@link #plus(long, TemporalUnit)}. Consult the documentation
@@ -655,19 +658,23 @@ public final class HourMinute
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToAdd  the amount to add, not null
-     * @return a {@code HourMinute} based on this hour-minute with the addition made, not null
+     * @return an {@code HourMinute} based on this hour-minute with the addition made, not null
+     * @throws UnsupportedTemporalTypeException if the amount cannot be added because it is not a whole number of minutes
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public HourMinute plus(TemporalAmount amountToAdd) {
+        if (amountToAdd instanceof Duration) {
+            return plusMinutes(wholeMinutes((Duration) amountToAdd));
+        }
         return (HourMinute) amountToAdd.addTo(this);
     }
 
     /**
      * Returns a copy of this hour-minute with the specified amount added.
      * <p>
-     * This returns a {@code HourMinute} based on this one, with the amount
+     * This returns an {@code HourMinute} based on this one, with the amount
      * in terms of the unit added. If it is not possible to add the amount, because the
      * unit is not supported or for some other reason, an exception is thrown.
      * <p>
@@ -697,7 +704,7 @@ public final class HourMinute
      *
      * @param amountToAdd  the amount of the unit to add to the result, may be negative
      * @param unit  the unit of the amount to add, not null
-     * @return a {@code HourMinute} based on this hour-minute with the specified amount added, not null
+     * @return an {@code HourMinute} based on this hour-minute with the specified amount added, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws UnsupportedTemporalTypeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
@@ -767,11 +774,13 @@ public final class HourMinute
     /**
      * Returns a copy of this hour-minute with the specified amount subtracted.
      * <p>
-     * This returns a {@code HourMinute} based on this one, with the specified amount subtracted.
-     * The amount is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAmount} interface.
+     * This returns an {@code HourMinute} based on this one, with the specified amount subtracted.
+     * The amount is typically {@link Duration}, {@code Hours} or {@code Minutes} but may be any
+     * other type implementing the {@link TemporalAmount} interface.
+     * If it is a {@code Duration}, then it must be a whole number of minutes.
      * <p>
-     * The calculation is delegated to the amount object by calling
+     * Subtraction of {@code Duration} is implemented directly to obtain the desired hour/minute result.
+     * Otherwise, the calculation is delegated to the amount object by calling
      * {@link TemporalAmount#subtractFrom(Temporal)}. The amount implementation is free
      * to implement the subtraction in any way it wishes, however it typically
      * calls back to {@link #minus(long, TemporalUnit)}. Consult the documentation
@@ -780,19 +789,31 @@ public final class HourMinute
      * This instance is immutable and unaffected by this method call.
      *
      * @param amountToSubtract  the amount to subtract, not null
-     * @return a {@code HourMinute} based on this hour-minute with the subtraction made, not null
+     * @return an {@code HourMinute} based on this hour-minute with the subtraction made, not null
+     * @throws UnsupportedTemporalTypeException if the amount cannot be subtracted because it is not a whole number of minutes
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public HourMinute minus(TemporalAmount amountToSubtract) {
+        if (amountToSubtract instanceof Duration) {
+            return minusMinutes(wholeMinutes((Duration) amountToSubtract));
+        }
         return (HourMinute) amountToSubtract.subtractFrom(this);
+    }
+
+    // Duration would otherwise call plus(seconds, SECONDS), which is unsupported
+    private static long wholeMinutes(Duration duration) {
+        if (duration.getNano() != 0 || duration.getSeconds() % 60 != 0) {
+            throw new UnsupportedTemporalTypeException("Unsupported unit: Seconds");
+        }
+        return duration.getSeconds() / 60;
     }
 
     /**
      * Returns a copy of this hour-minute with the specified amount subtracted.
      * <p>
-     * This returns a {@code HourMinute} based on this one, with the amount
+     * This returns an {@code HourMinute} based on this one, with the amount
      * in terms of the unit subtracted. If it is not possible to subtract the amount,
      * because the unit is not supported or for some other reason, an exception is thrown.
      * <p>
@@ -803,7 +824,7 @@ public final class HourMinute
      *
      * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
      * @param unit  the unit of the amount to subtract, not null
-     * @return a {@code HourMinute} based on this hour-minute with the specified amount subtracted, not null
+     * @return an {@code HourMinute} based on this hour-minute with the specified amount subtracted, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws UnsupportedTemporalTypeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
@@ -814,12 +835,12 @@ public final class HourMinute
     }
 
     /**
-     * Returns a copy of this hour-minute with the specified period in hours subtracted.
+     * Returns a copy of this hour-minute with the specified duration in hours subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hoursToSubtract  the hours to subtract, may be negative
-     * @return a {@code HourMinute} based on this hour-minute with the hours subtracted, not null
+     * @return an {@code HourMinute} based on this hour-minute with the hours subtracted, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
     public HourMinute minusHours(long hoursToSubtract) {
@@ -827,12 +848,12 @@ public final class HourMinute
     }
 
     /**
-     * Returns a copy of this hour-minute with the specified period in minutes subtracted.
+     * Returns a copy of this hour-minute with the specified duration in minutes subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutesToSubtract  the minutes to subtract, may be negative
-     * @return a {@code HourMinute} based on this hour-minute with the minutes subtracted, not null
+     * @return an {@code HourMinute} based on this hour-minute with the minutes subtracted, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
     public HourMinute minusMinutes(long minutesToSubtract) {
@@ -904,8 +925,8 @@ public final class HourMinute
      * The result will be negative if the end is before the start.
      * The {@code Temporal} passed to this method is converted to a
      * {@code HourMinute} using {@link #from(TemporalAccessor)}.
-     * For example, the period in hours between two hour-minutes can be calculated
-     * using {@code startHourMinute.until(endHourMinute, YEARS)}.
+     * For example, the duration in hours between two hour-minutes can be calculated
+     * using {@code startHourMinute.until(endHourMinute, HOURS)}.
      * <p>
      * The calculation is implemented in this method for {@link ChronoUnit}.
      * The units {@code MINUTES}, {@code HOURS} and {@code HALF_DAYS} are supported.
@@ -918,11 +939,11 @@ public final class HourMinute
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endExclusive  the end date, exclusive, which is converted to a {@code HourMinute}, not null
+     * @param endExclusive  the end date, exclusive, which is converted to an {@code HourMinute}, not null
      * @param unit  the unit to measure the amount in, not null
      * @return the amount of time between this hour-minute and the end hour-minute
      * @throws DateTimeException if the amount cannot be calculated, or the end
-     *  temporal cannot be converted to a {@code HourMinute}
+     *  temporal cannot be converted to an {@code HourMinute}
      * @throws UnsupportedTemporalTypeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
@@ -1000,7 +1021,7 @@ public final class HourMinute
 
     //-------------------------------------------------------------------------
     /**
-     * Compares this hour-minute to another
+     * Compares this hour-minute to another.
      * <p>
      * The comparison is based first on the value of the hour, then on the value of the minute.
      * It is "consistent with equals", as defined by {@link Comparable}.
@@ -1041,7 +1062,7 @@ public final class HourMinute
     /**
      * Checks if this hour-minute is equal to another hour-minute.
      * <p>
-     * The comparison is based on the time-line position of the hour-minute.
+     * The comparison is based on the hour and minute.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other hour-minute
