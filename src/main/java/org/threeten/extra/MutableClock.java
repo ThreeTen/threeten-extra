@@ -429,7 +429,7 @@ public final class MutableClock
         /**
          * Whether the current thread is inside an update of this holder.
          */
-        private final ThreadLocal<Boolean> updating = new ThreadLocal<>();
+        private final ThreadLocal<@Nullable Boolean> updating = new ThreadLocal<>();
 
         /**
          * Constructor.
