@@ -313,6 +313,26 @@ public class TestInterval {
     }
 
     @Test
+    public void test_parse_CharSequence_invalidIntervalIsParseException() {
+        assertThrows(DateTimeParseException.class, () -> Interval.parse("2000-01-01T00:00:00Z/P-1D"));
+        assertThrows(DateTimeParseException.class, () -> Interval.parse("2000-01-01T00:00:00Z/2000-01-01T00:00:00+18:00"));
+        assertThrows(DateTimeParseException.class, () -> Interval.parse("P1D/-1000000000-01-01T00:00:00Z"));
+    }
+
+    @Test
+    public void test_parse_CharSequence_extremeInstantsMonthPeriod() {
+        assertEquals(
+                Interval.of(Instant.parse("+1000000000-01-31T00:00:00Z"), Instant.parse("+1000000000-02-29T00:00:00Z")),
+                Interval.parse("+1000000000-01-31T00:00:00Z/P1M"));
+        assertEquals(
+                Interval.of(Instant.parse("-1000000000-01-31T00:00:00Z"), Instant.parse("-1000000000-02-29T00:00:00Z")),
+                Interval.parse("-1000000000-01-31T00:00:00Z/P1M"));
+        assertEquals(
+                Interval.of(Instant.parse("+1000000000-02-29T00:00:00Z"), Instant.parse("+1000000000-03-31T00:00:00Z")),
+                Interval.parse("P1M/+1000000000-03-31T00:00:00Z"));
+    }
+
+    @Test
     public void test_parse_CharSequence_badFormat() {
         assertThrows(DateTimeParseException.class, () -> Interval.parse(NOW2 + "-" + NOW1));
         assertThrows(DateTimeParseException.class, () -> Interval.parse("/" + NOW1));
@@ -385,6 +405,13 @@ public class TestInterval {
         assertEquals(false, test.contains(NOW1.minusSeconds(1)));
         assertEquals(false, test.contains(NOW1));
         assertEquals(false, test.contains(NOW1.plusSeconds(1)));
+    }
+
+    @Test
+    public void test_contains_Instant_emptyAtMax() {
+        Interval test = Interval.of(Instant.MAX, Instant.MAX);
+        assertEquals(false, test.contains(Instant.MAX));
+        assertEquals(false, test.contains(Instant.MIN));
     }
 
     @Test

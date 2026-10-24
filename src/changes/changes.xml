@@ -53,6 +53,11 @@
       <action dev="jodastephen" type="fix" issue="429">
         Fix `plus()`/`minus()` on `HourMinute` to support addition/subtraction of minute-based durations.
       </action>
+      <action dev="jodastephen" type="fix" issue="430">
+        Fix Interval parsing in edge cases near maximum/minimum.
+        Throw the correct exception from parsing.
+        Ensure empty interval at `Instant.MAX` does not contain any `Instant.MAX`.
+      </action>
     </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">

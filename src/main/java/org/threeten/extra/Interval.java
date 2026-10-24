@@ -206,11 +206,20 @@ public final class Interval
                 if (i == 0) {
                     throw new DateTimeParseException("Interval cannot be parsed, start section is empty", text, 0);
                 }
-                return parseSplit(text.subSequence(0, i), text.subSequence(i + 1, text.length()));
+                try {
+                    return parseSplit(text.subSequence(0, i), text.subSequence(i + 1, text.length()));
+                } catch (DateTimeParseException ex) {
+                    throw ex;
+                } catch (DateTimeException | ArithmeticException ex) {
+                    throw new DateTimeParseException("Interval cannot be parsed: " + ex.getMessage(), text, 0, ex);
+                }
             }
         }
         throw new DateTimeParseException("Interval cannot be parsed, no forward slash found", text, 0);
     }
+
+    // exactly 400 years, a full Gregorian cycle, so month and day-of-week alignment is preserved
+    private static final long MOVE_SECONDS = 146097L * 86400;
 
     private static Interval parseSplit(CharSequence startStr, CharSequence endStr) {
         char firstChar = startStr.charAt(0);
@@ -225,7 +234,7 @@ public final class Interval
                 Instant end = Instant.parse(endStr);
                 // addition of PeriodDuration only supported by OffsetDateTime,
                 // but to make that work need to move point being subtracted from closer to EPOCH
-                long move = end.isBefore(Instant.EPOCH) ? 1000 * 86400 : -1000 * 86400;
+                long move = end.isBefore(Instant.EPOCH) ? MOVE_SECONDS : -MOVE_SECONDS;
                 Instant start = end.plusSeconds(move).atOffset(ZoneOffset.UTC).minus(amount).toInstant().minusSeconds(move);
                 return Interval.of(start, end);
             }
@@ -256,7 +265,7 @@ public final class Interval
                 PeriodDuration amount = PeriodDuration.parse(endStr);
                 // addition of PeriodDuration only supported by OffsetDateTime,
                 // but to make that work need to move point being added to closer to EPOCH
-                long move = start.isBefore(Instant.EPOCH) ? 1000 * 86400 : -1000 * 86400;
+                long move = start.isBefore(Instant.EPOCH) ? MOVE_SECONDS : -MOVE_SECONDS;
                 Instant end = start.plusSeconds(move).atOffset(ZoneOffset.UTC).plus(amount).toInstant().minusSeconds(move);
                 return Interval.of(start, end);
             }
@@ -674,13 +683,14 @@ public final class Interval
      * If this interval has an unbounded end then {@code contains(Instant#MAX)} returns true.
      * Otherwise, if this interval is empty then this method returns false.
      * <p>
-     * This is equivalent to {@link #startsAtOrBefore(Instant)} {@code &&} {@link #endsAfter(Instant)}.
+     * This is equivalent to {@code !isEmpty() &&} {@link #startsAtOrBefore(Instant)} {@code &&} {@link #endsAfter(Instant)}.
      *
      * @param instant  the instant, not null
      * @return true if this interval contains the instant
      */
     public boolean contains(Instant instant) {
-        return startsAtOrBefore(instant) && endsAfter(instant);
+        Objects.requireNonNull(instant, "instant");
+        return !isEmpty() && startsAtOrBefore(instant) && endsAfter(instant);
     }
 
     /**
@@ -773,7 +783,7 @@ public final class Interval
     @Override
     @ToString
     public String toString() {
-        return start.toString() + '/' + end.toString();
+        return start.toString() + '/' + end;
     }
 
 }
