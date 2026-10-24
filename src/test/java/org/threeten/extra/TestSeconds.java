@@ -230,6 +230,8 @@ public class TestSeconds {
     public static Object[][] data_invalid() {
         return new Object[][] {
             {"P3W"},
+            {"P1DT"},
+            {"PT"},
             {"P3Q"},
             {"P1M2Y"},
 
