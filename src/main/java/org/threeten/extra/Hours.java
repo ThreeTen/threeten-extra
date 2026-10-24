@@ -90,7 +90,7 @@ public final class Hours
     private static final Pattern PATTERN =
             Pattern.compile("([-+]?)P"
                     + "(?:([-+]?[0-9]+)D)?"
-                    + "(?:T"
+                    + "(?:T(?=[-+]?[0-9])"
                     + "(?:([-+]?[0-9]+)H)?)?", Pattern.CASE_INSENSITIVE);
 
     /**
