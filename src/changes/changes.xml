@@ -64,6 +64,13 @@
         Strengthen the hash code to distribute values better.
         Throw the correct exception from parsing.
       </action>
+      <action dev="jodastephen" type="fix" issue="432">
+        Fix `MutableClock` so that update operations no longer run the adjuster or amount while holding a lock.
+        Updates are now lock-free and use compare-and-set, which avoids potential deadlock.
+        Adjusters and amounts may now be invoked more than once under contention, and must be side-effect-free.
+        Updating a `MutableClock` from within an update operation now throws `IllegalStateException`,
+        rather than silently losing an update.
+      </action>
     </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">

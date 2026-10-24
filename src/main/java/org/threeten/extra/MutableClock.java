@@ -49,6 +49,8 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.UnaryOperator;
 
 import org.jspecify.annotations.Nullable;
 
@@ -96,7 +98,12 @@ import org.jspecify.annotations.Nullable;
  * corresponding method of {@code ZonedDateTime}.
  *
  * <h3>Implementation Requirements:</h3>
- * This class is thread-safe. Updates are atomic and synchronized.
+ * This class is thread-safe. Updates are atomic and lock-free.
+ * <p>
+ * Under contention, an update operation may be re-applied, so any
+ * {@code TemporalAdjuster} or {@code TemporalAmount} passed to an update must
+ * be side-effect-free. Updating a clock from within such an operation throws
+ * {@code IllegalStateException}.
  * <p>
  * While update semantics are expressed in terms of {@code ZonedDateTime}, that
  * imposes no requirements on implementation details. The implementation may
@@ -192,11 +199,7 @@ public final class MutableClock
      */
     public void add(TemporalAmount amountToAdd) {
         Objects.requireNonNull(amountToAdd, "amountToAdd");
-        synchronized (instantHolder) {
-            ZonedDateTime current = ZonedDateTime.ofInstant(instantHolder.get(), zone);
-            ZonedDateTime result = current.plus(amountToAdd);
-            instantHolder.set(result.toInstant());
-        }
+        instantHolder.update(zone, current -> current.plus(amountToAdd));
     }
 
     /**
@@ -218,11 +221,7 @@ public final class MutableClock
      */
     public void add(long amountToAdd, TemporalUnit unit) {
         Objects.requireNonNull(unit, "unit");
-        synchronized (instantHolder) {
-            ZonedDateTime current = ZonedDateTime.ofInstant(instantHolder.get(), zone);
-            ZonedDateTime result = current.plus(amountToAdd, unit);
-            instantHolder.set(result.toInstant());
-        }
+        instantHolder.update(zone, current -> current.plus(amountToAdd, unit));
     }
 
     /**
@@ -242,11 +241,7 @@ public final class MutableClock
      */
     public void set(TemporalAdjuster adjuster) {
         Objects.requireNonNull(adjuster, "adjuster");
-        synchronized (instantHolder) {
-            ZonedDateTime current = ZonedDateTime.ofInstant(instantHolder.get(), zone);
-            ZonedDateTime result = current.with(adjuster);
-            instantHolder.set(result.toInstant());
-        }
+        instantHolder.update(zone, current -> current.with(adjuster));
     }
 
     /**
@@ -268,11 +263,7 @@ public final class MutableClock
      */
     public void set(TemporalField field, long newValue) {
         Objects.requireNonNull(field, "field");
-        synchronized (instantHolder) {
-            ZonedDateTime current = ZonedDateTime.ofInstant(instantHolder.get(), zone);
-            ZonedDateTime result = current.with(field, newValue);
-            instantHolder.set(result.toInstant());
-        }
+        instantHolder.update(zone, current -> current.with(field, newValue));
     }
 
     @Override
@@ -425,15 +416,19 @@ public final class MutableClock
      * on the identity of the holder object in their {@code equals} and {@code
      * hashCode} methods.
      * <p>
-     * Reads of the value are volatile and are never stale. Blind writes to the
-     * value are volatile and do not need to synchronize. Atomic read-and-write
-     * operations must synchronize on the holder object instance.
+     * Reads and blind writes of the value are atomic and are never stale.
+     * Read-modify-write operations are lock-free: the operation is computed from
+     * a snapshot and applied with compare-and-set, retrying on contention.
      */
     private static final class InstantHolder {
         /**
          * The current value.
          */
-        private volatile Instant value;
+        private final AtomicReference<Instant> value;
+        /**
+         * Whether the current thread is inside an update of this holder.
+         */
+        private final ThreadLocal<Boolean> updating = new ThreadLocal<>();
 
         /**
          * Constructor.
@@ -441,7 +436,7 @@ public final class MutableClock
          * @param value the initial value, validated not null
          */
         InstantHolder(Instant value) {
-            this.value = value;
+            this.value = new AtomicReference<>(value);
         }
 
         /**
@@ -450,7 +445,7 @@ public final class MutableClock
          * @return the current value, not null
          */
         Instant get() {
-            return value;
+            return value.get();
         }
 
         /**
@@ -459,7 +454,38 @@ public final class MutableClock
          * @param value the new value, validated not null
          */
         void set(Instant value) {
-            this.value = value;
+            if (updating.get() != null) {
+                throw new IllegalStateException("MutableClock must not be updated from within an update operation");
+            }
+            this.value.set(value);
+        }
+
+        /**
+         * Atomically updates the value using the specified operation.
+         * <p>
+         * The operation may be invoked more than once if there is contention,
+         * so it must not have side effects. It must not update the clock.
+         *
+         * @param zone the time-zone used to apply the operation, not null
+         * @param operation the operation to apply, not null
+         * @throws IllegalStateException if the operation updates this clock
+         */
+        void update(ZoneId zone, UnaryOperator<ZonedDateTime> operation) {
+            if (updating.get() != null) {
+                throw new IllegalStateException("MutableClock must not be updated from within an update operation");
+            }
+            updating.set(Boolean.TRUE);
+            try {
+                while (true) {
+                    Instant previous = value.get();
+                    Instant next = operation.apply(ZonedDateTime.ofInstant(previous, zone)).toInstant();
+                    if (value.compareAndSet(previous, next)) {
+                        return;
+                    }
+                }
+            } finally {
+                updating.remove();
+            }
         }
     }
 }
