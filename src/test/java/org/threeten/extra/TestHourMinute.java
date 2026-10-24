@@ -93,6 +93,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -424,6 +425,15 @@ public class TestHourMinute {
     public void test_plus_TemporalAmount() {
         assertThat(TEST.plus(Hours.of(3))).isEqualTo(HourMinute.of(15, 31));
         assertThat(TEST.plus(Minutes.of(3))).isEqualTo(HourMinute.of(12, 34));
+        assertThat(TEST.plus(Duration.ofMinutes(6))).isEqualTo(HourMinute.of(12, 37));
+        assertThat(TEST.plus(Duration.ofMinutes(-32))).isEqualTo(HourMinute.of(11, 59));
+        assertThat(TEST.minus(Duration.ofHours(13))).isEqualTo(HourMinute.of(23, 31));
+    }
+
+    @Test
+    public void test_plus_Duration_invalid() {
+        assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.plus(Duration.ofSeconds(30)));
+        assertThatExceptionOfType(DateTimeException.class).isThrownBy(() -> TEST.minus(Duration.ofNanos(1)));
     }
 
     @Test
