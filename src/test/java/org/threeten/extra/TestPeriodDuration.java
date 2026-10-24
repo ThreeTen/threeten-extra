@@ -367,6 +367,30 @@ public class TestPeriodDuration {
     }
 
     @Test
+    public void test_normalizedStandardDays_nanosSignAgrees() {
+        assertEquals(
+                PeriodDuration.of(Period.ofDays(-1), Duration.ofSeconds(-86399, -876543211)),
+                PeriodDuration.of(Period.ofDays(-1), Duration.ofSeconds(-86400, 123456789)).normalizedStandardDays());
+        assertEquals(
+                PeriodDuration.of(Period.ofDays(-2), Duration.ofNanos(-876543211)),
+                PeriodDuration.of(Period.ofDays(-2), Duration.ofNanos(-876543211)).normalizedStandardDays());
+        assertEquals(
+                PeriodDuration.of(Period.ofDays(1), Duration.ofNanos(500_000_000)),
+                PeriodDuration.of(Period.ofDays(2), Duration.ofSeconds(-86400, 500_000_000)).normalizedStandardDays());
+    }
+
+    @Test
+    public void test_normalizedStandardDays_secondsOverflow() {
+        assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Period.ofDays(1), Duration.ofSeconds(Long.MAX_VALUE)).normalizedStandardDays());
+    }
+
+    @Test
+    public void test_parse_CharSequence_overflow() {
+        assertThrows(DateTimeParseException.class, () -> PeriodDuration.parse("P-2147483648W"));
+        assertThrows(DateTimeParseException.class, () -> PeriodDuration.parse("P-2147483648WT1H"));
+    }
+
+    @Test
     public void test_normalizedStandardDaysn_overflow() {
         assertThrows(ArithmeticException.class, () -> PeriodDuration.of(Duration.ofSeconds(Long.MIN_VALUE)).normalizedStandardDays());
     }
@@ -428,6 +452,25 @@ public class TestPeriodDuration {
                 PeriodDuration.of(P1Y2M3D, Duration.ofDays(2)), 
                 PeriodDuration.of(P1Y2M3D, Duration.ofHours(51)).truncatedTo(DAYS));
         assertThrows(DateTimeException.class, () ->  PeriodDuration.of(P1Y2M3D, Duration.ofHours(51)).truncatedTo(MONTHS));
+    }
+
+    @Test
+    public void test_truncatedTo_negativeTowardsZero() {
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(-86399)),
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(-86400, 1)).truncatedTo(SECONDS));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofHours(-23).minusMinutes(59)),
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(-86400, 1)).truncatedTo(MINUTES));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ZERO),
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(-86400, 1)).truncatedTo(DAYS));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ZERO),
+                PeriodDuration.of(P1Y2M3D, Duration.ofMillis(-500)).truncatedTo(SECONDS));
+        assertEquals(
+                PeriodDuration.of(P1Y2M3D, Duration.ofSeconds(-1)),
+                PeriodDuration.of(P1Y2M3D, Duration.ofMillis(-1500)).truncatedTo(SECONDS));
     }
 
     //-----------------------------------------------------------------------

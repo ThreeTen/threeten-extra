@@ -297,13 +297,17 @@ public final class PeriodDuration
         }
         // period only, parse original text so it does negation
         int tpos = upper.indexOf('T');
-        if (tpos < 0) {
-            return PeriodDuration.of(Period.parse(text));
+        try {
+            if (tpos < 0) {
+                return PeriodDuration.of(Period.parse(text));
+            }
+            // period and duration
+            Period period = Period.parse(negate + upper.substring(0, tpos));
+            Duration duration = Duration.parse(negate + "P" + upper.substring(tpos));
+            return PeriodDuration.of(period, duration);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeParseException("Text cannot be parsed to a PeriodDuration", text, 0, ex);
         }
-        // period and duration
-        Period period = Period.parse(negate + upper.substring(0, tpos));
-        Duration duration = Duration.parse(negate + "P" + upper.substring(tpos));
-        return PeriodDuration.of(period, duration);
     }
 
     //-----------------------------------------------------------------------
@@ -583,13 +587,20 @@ public final class PeriodDuration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public PeriodDuration normalizedStandardDays() {
-        long totalSecs = period.getDays() * SECONDS_PER_DAY + duration.getSeconds();
+        long totalSecs = Math.addExact(period.getDays() * SECONDS_PER_DAY, duration.getSeconds());
+        long nanos = duration.getNano();
+        if (totalSecs < 0 && nanos > 0) {
+            // view as negative seconds plus negative nanos so that the signs agree
+            totalSecs++;
+            nanos -= NANOS_PER_SECOND;
+        }
         int splitDays = Math.toIntExact(totalSecs / SECONDS_PER_DAY);
         long splitSecs = totalSecs % SECONDS_PER_DAY;
-        if (splitDays == period.getDays() && splitSecs == duration.getSeconds()) {
+        Duration splitDuration = Duration.ofSeconds(splitSecs, nanos);
+        if (splitDays == period.getDays() && splitDuration.equals(duration)) {
             return this;
         }
-        return PeriodDuration.of(period.withDays(splitDays), duration.withSeconds(splitSecs));
+        return PeriodDuration.of(period.withDays(splitDays), splitDuration);
     }
 
     //-----------------------------------------------------------------------
@@ -635,7 +646,7 @@ public final class PeriodDuration
     /**
      * Returns a copy of this period-duration truncated to the specified unit.
      * <p>
-     * This method truncates (rounds down) the duration part of this period-duration
+     * This method truncates (rounds towards zero) the duration part of this period-duration
      * to the specified unit. The period part is unaffected.
      * For example, truncating to {@link ChronoUnit#MINUTES MINUTES} will drop the seconds and nanoseconds.
      * See {@link Duration#truncatedTo(TemporalUnit)} for more details.
@@ -667,6 +678,11 @@ public final class PeriodDuration
         }
         long seconds = duration.getSeconds();
         long nanos = duration.getNano();
+        if (seconds < 0 && nanos > 0) {
+            // view as negative seconds plus negative nanos so that truncation is towards zero
+            seconds++;
+            nanos -= NANOS_PER_SECOND;
+        }
         long nod = ((seconds % SECONDS_PER_DAY) * NANOS_PER_SECOND) + nanos;
         long result = (nod / unitNanos) * unitNanos;
         Duration adjusted = duration.plusNanos(result - nod);
