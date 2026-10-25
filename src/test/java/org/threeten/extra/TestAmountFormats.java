@@ -34,6 +34,7 @@ package org.threeten.extra;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.nio.CharBuffer;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
@@ -559,11 +560,15 @@ public class TestAmountFormats {
     @MethodSource("duration_unitBased")
     public void test_parseUnitBasedDuration(Duration expected, String input) {
         assertEquals(expected, AmountFormats.parseUnitBasedDuration(input));
+        assertEquals(expected, AmountFormats.parseUnitBasedDuration(new StringBuilder(input)));
+        assertEquals(expected, AmountFormats.parseUnitBasedDuration(CharBuffer.wrap(input)));
     }
 
     public static Object[][] duration_unitBased() {
         return new Object[][] {
             {Duration.ZERO, "0"},
+            {Duration.ZERO, "+0"},
+            {Duration.ZERO, "-0"},
             {Duration.ofHours(1), "+1h"},
             {Duration.ofHours(1).negated(), "-1h"},
             {Duration.ofHours(1).plusMinutes(15).negated(), "-1.25h"},
