@@ -119,6 +119,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
@@ -637,6 +638,48 @@ public class TestYearWeek {
     public void test_from_TemporalAccessor_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearWeek.from((TemporalAccessor) null));
+    }
+
+    @Test
+    public void test_from_TemporalAccessor_fieldOutsideIntRange() {
+        long[] outside = {Integer.MAX_VALUE + 1L, Integer.MIN_VALUE - 1L, (1L << 32) + 1, Long.MAX_VALUE, Long.MIN_VALUE};
+        for (long value : outside) {
+            assertOverflow(isoAccessor(value, 1));
+            assertOverflow(isoAccessor(2007, value));
+        }
+    }
+
+    private static void assertOverflow(TemporalAccessor temporal) {
+        DateTimeException ex = assertThrows(DateTimeException.class, () -> YearWeek.from(temporal));
+        assertTrue(ex.getCause() instanceof ArithmeticException);
+    }
+
+    private static TemporalAccessor isoAccessor(long year, long week) {
+        return new TemporalAccessor() {
+            @Override
+            public boolean isSupported(TemporalField field) {
+                return field == WEEK_BASED_YEAR || field == WEEK_OF_WEEK_BASED_YEAR;
+            }
+
+            @Override
+            public long getLong(TemporalField field) {
+                if (field == WEEK_BASED_YEAR) {
+                    return year;
+                } else if (field == WEEK_OF_WEEK_BASED_YEAR) {
+                    return week;
+                }
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public <R> R query(TemporalQuery<R> query) {
+                if (query == TemporalQueries.chronology()) {
+                    return (R) IsoChronology.INSTANCE;
+                }
+                return TemporalAccessor.super.query(query);
+            }
+        };
     }
 
     //-----------------------------------------------------------------------

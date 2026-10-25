@@ -108,6 +108,7 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
@@ -306,6 +307,48 @@ public class TestYearHalf {
     public void test_from_TemporalAccessor_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearHalf.from((TemporalAccessor) null));
+    }
+
+    @Test
+    public void test_from_TemporalAccessor_fieldOutsideIntRange() {
+        long[] outside = {Integer.MAX_VALUE + 1L, Integer.MIN_VALUE - 1L, (1L << 32) + 1, Long.MAX_VALUE, Long.MIN_VALUE};
+        for (long value : outside) {
+            assertOverflow(isoAccessor(value, 1));
+            assertOverflow(isoAccessor(2007, value));
+        }
+    }
+
+    private static void assertOverflow(TemporalAccessor temporal) {
+        DateTimeException ex = assertThrows(DateTimeException.class, () -> YearHalf.from(temporal));
+        assertTrue(ex.getCause() instanceof ArithmeticException);
+    }
+
+    private static TemporalAccessor isoAccessor(long year, long half) {
+        return new TemporalAccessor() {
+            @Override
+            public boolean isSupported(TemporalField field) {
+                return field == YEAR || field == HALF_OF_YEAR;
+            }
+
+            @Override
+            public long getLong(TemporalField field) {
+                if (field == YEAR) {
+                    return year;
+                } else if (field == HALF_OF_YEAR) {
+                    return half;
+                }
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public <R> R query(TemporalQuery<R> query) {
+                if (query == TemporalQueries.chronology()) {
+                    return (R) IsoChronology.INSTANCE;
+                }
+                return TemporalAccessor.super.query(query);
+            }
+        };
     }
 
     //-----------------------------------------------------------------------
@@ -728,6 +771,26 @@ public class TestYearHalf {
         assertEquals(YearHalf.of(2005, H1), YearHalf.of(2007, H2).minusHalves(5));
         assertEquals(YearHalf.of(2007, H2), YearHalf.of(2007, H2).minusHalves(0));
         assertEquals(YearHalf.of(2010, H1), YearHalf.of(2007, H2).minusHalves(-5));
+    }
+
+    //-----------------------------------------------------------------------
+    // plus/minus with Long.MIN_VALUE and Long.MAX_VALUE
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plusMinus_longExtremes() {
+        for (int startYear : new int[] {2007, -2007}) {
+            YearHalf start = YearHalf.of(startYear, H2);
+            for (long amount : new long[] {Long.MAX_VALUE, Long.MIN_VALUE}) {
+                assertThrows(DateTimeException.class, () -> start.plusYears(amount));
+                assertThrows(DateTimeException.class, () -> start.minusYears(amount));
+                assertThrows(DateTimeException.class, () -> start.plusHalves(amount));
+                assertThrows(DateTimeException.class, () -> start.minusHalves(amount));
+                assertThrows(DateTimeException.class, () -> start.plus(amount, YEARS));
+                assertThrows(DateTimeException.class, () -> start.minus(amount, YEARS));
+                assertThrows(DateTimeException.class, () -> start.plus(amount, HALF_YEARS));
+                assertThrows(DateTimeException.class, () -> start.minus(amount, HALF_YEARS));
+            }
+        }
     }
 
     //-----------------------------------------------------------------------
