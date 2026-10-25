@@ -808,6 +808,24 @@ public class TestTemporals {
         assertEquals(expected, test, 0d);
     }
 
+    public static Object[][] data_durationToDoubleSeconds_large() {
+        return new Object[][] {
+            {Duration.ofSeconds(-999_999_999, 500_000_000), -999_999_998.5d},
+            {Duration.ofSeconds(-1_000_000_000, 500_000_000), -999_999_999.5d},
+            {Duration.ofSeconds(-10_000_000_000L), -10_000_000_000d},
+            {Duration.ofSeconds(10_000_000_000L), 10_000_000_000d},
+            {Duration.ofSeconds(Long.MIN_VALUE), (double) Long.MIN_VALUE},
+            {Duration.ofSeconds(Long.MIN_VALUE, 999_999_999), (double) Long.MIN_VALUE},
+            {Duration.ofSeconds(Long.MAX_VALUE, 999_999_999), (double) Long.MAX_VALUE},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_durationToDoubleSeconds_large")
+    public void test_durationToDoubleSeconds_large(Duration input, double expected) {
+        assertEquals(expected, Temporals.durationToDoubleSeconds(input), 0d);
+    }
+
     @ParameterizedTest
     @MethodSource("data_durationConversions")
     public void test_durationFromDoubleSeconds(Duration expected, BigDecimal ignored, double input) {
