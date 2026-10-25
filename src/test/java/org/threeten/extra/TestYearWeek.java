@@ -953,12 +953,12 @@ public class TestYearWeek {
 
     @Test
     public void test_plusYears_max_long() {
-        assertThrows(ArithmeticException.class, () -> TEST.plusYears(Long.MAX_VALUE));
+        assertThrows(DateTimeException.class, () -> TEST.plusYears(Long.MAX_VALUE));
     }
 
     @Test
     public void test_plusYears_min_long() {
-        assertThrows(ArithmeticException.class, () -> TEST.plusYears(Long.MIN_VALUE));
+        assertThrows(DateTimeException.class, () -> TEST.plusYears(Long.MIN_VALUE));
     }
 
     //-----------------------------------------------------------------------
@@ -1039,12 +1039,12 @@ public class TestYearWeek {
 
     @Test
     public void test_minusYears_max_long() {
-        assertThrows(ArithmeticException.class, () -> TEST.minusYears(Long.MAX_VALUE));
+        assertThrows(DateTimeException.class, () -> TEST.minusYears(Long.MAX_VALUE));
     }
 
     @Test
     public void test_minusYears_min_long() {
-        assertThrows(ArithmeticException.class, () -> TEST.minusYears(Long.MIN_VALUE));
+        assertThrows(DateTimeException.class, () -> TEST.minusYears(Long.MIN_VALUE));
     }
 
     //-----------------------------------------------------------------------

@@ -790,6 +790,11 @@ public class TestYearHalf {
     }
 
     @Test
+    public void test_adjustInto_Temporal_feb29_keepsDay() {
+        assertEquals(LocalDate.of(2021, 8, 29), YearHalf.of(2021, H2).adjustInto(LocalDate.of(2020, 2, 29)));
+    }
+
+    @Test
     public void test_adjustInto_Temporal_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> TEST.adjustInto((Temporal) null));

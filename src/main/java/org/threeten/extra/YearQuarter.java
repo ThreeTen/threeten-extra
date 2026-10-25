@@ -38,6 +38,7 @@ import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DECADES;
 import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.MILLENNIA;
+import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.DAY_OF_QUARTER;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
@@ -261,7 +262,7 @@ public final class YearQuarter
             int year = Math.toIntExact(adjusted.getLong(YEAR));
             int qoy = Math.toIntExact(adjusted.getLong(QUARTER_OF_YEAR));
             return of(year, qoy);
-        } catch (DateTimeException ex) {
+        } catch (DateTimeException | ArithmeticException ex) {
             throw new DateTimeException("Unable to obtain YearQuarter from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
         }
@@ -873,8 +874,13 @@ public final class YearQuarter
         if (yearsToAdd == 0) {
             return this;
         }
-        int newYear = YEAR.checkValidIntValue(year + yearsToAdd);  // safe overflow
-        return with(newYear, quarter);
+        long newYear;
+        try {
+            newYear = Math.addExact(year, yearsToAdd);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid value for Year: " + year + " + " + yearsToAdd, ex);
+        }
+        return with(YEAR.checkValidIntValue(newYear), quarter);
     }
 
     /**
@@ -891,7 +897,12 @@ public final class YearQuarter
             return this;
         }
         long quarterCount = year * 4L + (quarter.getValue() - 1);
-        long calcQuarters = quarterCount + quartersToAdd;  // safe overflow
+        long calcQuarters;
+        try {
+            calcQuarters = Math.addExact(quarterCount, quartersToAdd);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid value for Year: " + year + " + " + quartersToAdd + " quarters", ex);
+        }
         int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcQuarters, 4));
         int newQuarter = (int) Math.floorMod(calcQuarters, 4L) + 1;
         return with(newYear, Quarter.of(newQuarter));
@@ -1031,7 +1042,12 @@ public final class YearQuarter
         }
         long newProlepticQuarter = getProlepticQuarter();
         long oldProlepticQuarter = temporal.get(YEAR) * 4L + (temporal.get(QUARTER_OF_YEAR) - 1);
-        return temporal.plus(newProlepticQuarter - oldProlepticQuarter, QUARTER_YEARS);
+        long delta = newProlepticQuarter - oldProlepticQuarter;
+        if (!temporal.isSupported(MONTHS)) {
+            return temporal.plus(delta, QUARTER_YEARS);
+        }
+        // add months in one step to avoid losing the day-of-month (29th February) via an intermediate year
+        return temporal.plus(delta * 3, MONTHS);
     }
 
     /**
