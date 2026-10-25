@@ -94,6 +94,9 @@
       <action dev="jodastephen" type="fix" issue="441">
         Fix `AmountFormats` to avoid comparing `CharSequence` to `String` when parsing.
       </action>
+      <action dev="jodastephen" type="fix" issue="442">
+        Fix `PackedFields` to ensure `isSupportedBy` takes the date into account.
+      </action>
     </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">

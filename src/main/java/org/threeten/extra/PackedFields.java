@@ -152,7 +152,11 @@ public final class PackedFields {
         //-----------------------------------------------------------------------
         @Override
         public boolean isSupportedBy(TemporalAccessor temporal) {
-            return temporal.isSupported(EPOCH_DAY);
+            if (!temporal.isSupported(EPOCH_DAY)) {
+                return false;
+            }
+            int year = LocalDate.ofEpochDay(temporal.getLong(EPOCH_DAY)).getYear();
+            return year >= 1000 && year <= 9999;
         }
 
         @Override
