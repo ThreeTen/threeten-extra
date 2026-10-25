@@ -65,6 +65,10 @@ public class TestPackedFields {
         assertEquals(false, PackedFields.PACKED_DATE.isTimeBased());
         assertEquals(true, PackedFields.PACKED_DATE.isSupportedBy(LocalDate.of(2015, 3, 12)));
         assertEquals(false, PackedFields.PACKED_DATE.isSupportedBy(LocalTime.of(11, 30)));
+        assertEquals(false, PackedFields.PACKED_DATE.isSupportedBy(LocalDate.of(999, 12, 31)));
+        assertEquals(false, PackedFields.PACKED_DATE.isSupportedBy(LocalDate.of(10000, 1, 1)));
+        assertEquals(true, PackedFields.PACKED_DATE.isSupportedBy(LocalDate.of(1000, 1, 1)));
+        assertEquals(true, PackedFields.PACKED_DATE.isSupportedBy(LocalDate.of(9999, 12, 31)));
         assertEquals(10000101, PackedFields.PACKED_DATE.range().getMinimum());
         assertEquals(99991231, PackedFields.PACKED_DATE.range().getMaximum());
     }
