@@ -87,7 +87,7 @@
         Fix `PeriodDuration` `truncatedTo()` to handle negative durations correctly.
         Throw correct exception when parsing.
       </action>
-      <action dev="jodastephen" type="update" issue="438">
+      <action dev="jodastephen" type="update" issue="440">
         Fix `YearQuarter` and `YearHalf` to handle end-of-month calculations correctly during adjustment.
         Fix `YearWeek`, `YearQuarter` and `YearHalf` to consistently throw `DateTimeException` in calculations.
       </action>
