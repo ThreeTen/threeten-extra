@@ -579,7 +579,7 @@ public final class Temporals {
      * @return the {@code double} equivalent of the duration, in seconds
      */
     public static double durationToDoubleSeconds(Duration duration) {
-        if (duration.getSeconds() < 1_000_000_000) {
+        if (duration.getSeconds() > -1_000_000_000 && duration.getSeconds() < 1_000_000_000) {
             return duration.toNanos() / 1_000_000_000d;
         }
         return durationToBigDecimalSeconds(duration).doubleValue();
