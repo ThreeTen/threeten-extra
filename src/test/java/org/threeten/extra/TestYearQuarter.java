@@ -107,6 +107,7 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
@@ -302,6 +303,48 @@ public class TestYearQuarter {
     public void test_from_TemporalAccessor_null() {
         //noinspection DataFlowIssue - testing nulls
         assertThrows(NullPointerException.class, () -> YearQuarter.from((TemporalAccessor) null));
+    }
+
+    @Test
+    public void test_from_TemporalAccessor_fieldOutsideIntRange() {
+        long[] outside = {Integer.MAX_VALUE + 1L, Integer.MIN_VALUE - 1L, (1L << 32) + 1, Long.MAX_VALUE, Long.MIN_VALUE};
+        for (long value : outside) {
+            assertOverflow(isoAccessor(value, 1));
+            assertOverflow(isoAccessor(2007, value));
+        }
+    }
+
+    private static void assertOverflow(TemporalAccessor temporal) {
+        DateTimeException ex = assertThrows(DateTimeException.class, () -> YearQuarter.from(temporal));
+        assertTrue(ex.getCause() instanceof ArithmeticException);
+    }
+
+    private static TemporalAccessor isoAccessor(long year, long quarter) {
+        return new TemporalAccessor() {
+            @Override
+            public boolean isSupported(TemporalField field) {
+                return field == YEAR || field == QUARTER_OF_YEAR;
+            }
+
+            @Override
+            public long getLong(TemporalField field) {
+                if (field == YEAR) {
+                    return year;
+                } else if (field == QUARTER_OF_YEAR) {
+                    return quarter;
+                }
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public <R> R query(TemporalQuery<R> query) {
+                if (query == TemporalQueries.chronology()) {
+                    return (R) IsoChronology.INSTANCE;
+                }
+                return TemporalAccessor.super.query(query);
+            }
+        };
     }
 
     //-----------------------------------------------------------------------
@@ -732,6 +775,26 @@ public class TestYearQuarter {
     }
 
     //-----------------------------------------------------------------------
+    // plus/minus with Long.MIN_VALUE and Long.MAX_VALUE
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plusMinus_longExtremes() {
+        for (int startYear : new int[] {2007, -2007}) {
+            YearQuarter start = YearQuarter.of(startYear, Q2);
+            for (long amount : new long[] {Long.MAX_VALUE, Long.MIN_VALUE}) {
+                assertThrows(DateTimeException.class, () -> start.plusYears(amount));
+                assertThrows(DateTimeException.class, () -> start.minusYears(amount));
+                assertThrows(DateTimeException.class, () -> start.plusQuarters(amount));
+                assertThrows(DateTimeException.class, () -> start.minusQuarters(amount));
+                assertThrows(DateTimeException.class, () -> start.plus(amount, YEARS));
+                assertThrows(DateTimeException.class, () -> start.minus(amount, YEARS));
+                assertThrows(DateTimeException.class, () -> start.plus(amount, QUARTER_YEARS));
+                assertThrows(DateTimeException.class, () -> start.minus(amount, QUARTER_YEARS));
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // lengthOfYear()
     //-----------------------------------------------------------------------
     @Test
@@ -788,6 +851,11 @@ public class TestYearQuarter {
         LocalDate base = LocalDate.of(2007, 5, 31);
         LocalDate expected = LocalDate.of(2012, 2, 29);
         assertEquals(expected, YearQuarter.of(2012, Q1).adjustInto(base));
+    }
+
+    @Test
+    public void test_adjustInto_Temporal_feb29_keepsDay() {
+        assertEquals(LocalDate.of(2021, 5, 29), YearQuarter.of(2021, Q2).adjustInto(LocalDate.of(2020, 2, 29)));
     }
 
     @Test

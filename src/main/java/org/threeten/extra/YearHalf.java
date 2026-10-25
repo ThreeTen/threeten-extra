@@ -38,6 +38,7 @@ import static java.time.temporal.ChronoUnit.CENTURIES;
 import static java.time.temporal.ChronoUnit.DECADES;
 import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.MILLENNIA;
+import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.threeten.extra.TemporalFields.DAY_OF_HALF;
 import static org.threeten.extra.TemporalFields.HALF_OF_YEAR;
@@ -260,7 +261,7 @@ public final class YearHalf
             int year = Math.toIntExact(adjusted.getLong(YEAR));
             int hoy = Math.toIntExact(adjusted.getLong(HALF_OF_YEAR));
             return of(year, hoy);
-        } catch (DateTimeException ex) {
+        } catch (DateTimeException | ArithmeticException ex) {
             throw new DateTimeException("Unable to obtain YearHalf from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
         }
@@ -872,8 +873,13 @@ public final class YearHalf
         if (yearsToAdd == 0) {
             return this;
         }
-        int newYear = YEAR.checkValidIntValue(year + yearsToAdd);  // safe overflow
-        return with(newYear, half);
+        long newYear;
+        try {
+            newYear = Math.addExact(year, yearsToAdd);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid value for Year: " + year + " + " + yearsToAdd, ex);
+        }
+        return with(YEAR.checkValidIntValue(newYear), half);
     }
 
     /**
@@ -890,7 +896,12 @@ public final class YearHalf
             return this;
         }
         long halfCount = year * 2L + (half.getValue() - 1);
-        long calcHalves = halfCount + halvesToAdd;  // safe overflow
+        long calcHalves;
+        try {
+            calcHalves = Math.addExact(halfCount, halvesToAdd);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid value for Year: " + year + " + " + halvesToAdd + " halves", ex);
+        }
         int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcHalves, 2));
         int newHalf = (int) Math.floorMod(calcHalves, 2L) + 1;
         return with(newYear, Half.of(newHalf));
@@ -1030,7 +1041,12 @@ public final class YearHalf
         }
         long newProlepticHalf = getProlepticHalf();
         long oldProlepticHalf = temporal.get(YEAR) * 2L + (temporal.get(HALF_OF_YEAR) - 1);
-        return temporal.plus(newProlepticHalf - oldProlepticHalf, HALF_YEARS);
+        long delta = newProlepticHalf - oldProlepticHalf;
+        if (!temporal.isSupported(MONTHS)) {
+            return temporal.plus(delta, HALF_YEARS);
+        }
+        // add months in one step to avoid losing the day-of-month (29th February) via an intermediate year
+        return temporal.plus(delta * 6, MONTHS);
     }
 
     /**

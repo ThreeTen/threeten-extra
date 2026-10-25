@@ -262,7 +262,7 @@ public final class YearWeek
             int year = Math.toIntExact(temporal.getLong(WEEK_BASED_YEAR));
             int week = Math.toIntExact(temporal.getLong(WEEK_OF_WEEK_BASED_YEAR));
             return of(year, week);
-        } catch (DateTimeException ex) {
+        } catch (DateTimeException | ArithmeticException ex) {
             throw new DateTimeException("Unable to obtain YearWeek from TemporalAccessor: " +
                     temporal + " of type " + temporal.getClass().getName(), ex);
         }
@@ -734,8 +734,13 @@ public final class YearWeek
         if (yearsToAdd == 0) {
             return this;
         }
-        int newYear = Math.toIntExact(Math.addExact(year, yearsToAdd));
-        return withYear(newYear);
+        long newYear;
+        try {
+            newYear = Math.addExact(year, yearsToAdd);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid value for WeekBasedYear: " + year + " + " + yearsToAdd, ex);
+        }
+        return withYear(WEEK_BASED_YEAR.range().checkValidIntValue(newYear, WEEK_BASED_YEAR));
     }
 
     /**
@@ -819,8 +824,13 @@ public final class YearWeek
         if (yearsToSubtract == 0) {
             return this;
         }
-        int newYear = Math.toIntExact(Math.subtractExact(year, yearsToSubtract));
-        return withYear(newYear);
+        long newYear;
+        try {
+            newYear = Math.subtractExact(year, yearsToSubtract);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid value for WeekBasedYear: " + year + " - " + yearsToSubtract, ex);
+        }
+        return withYear(WEEK_BASED_YEAR.range().checkValidIntValue(newYear, WEEK_BASED_YEAR));
     }
 
     /**
