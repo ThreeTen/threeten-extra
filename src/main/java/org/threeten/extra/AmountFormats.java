@@ -416,7 +416,7 @@ public final class AmountFormats {
             durationText = updatedText.orElse(durationText);
         }
         // special case for a string of "0"
-        if (durationText.equals("0")) {
+        if (durationText.length() == 1 && durationText.charAt(0) == '0') {
             return Duration.ZERO;
         }
         // special case, empty string as an invalid duration.
