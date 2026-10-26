@@ -233,6 +233,23 @@ public class TestPeriodDuration {
     }
 
     @Test
+    public void test_between_unzonedEnd_startInLaterOverlap() {
+        ZoneId london = ZoneId.of("Europe/London");
+        ZonedDateTime start = ZonedDateTime.of(2012, 10, 28, 1, 30, 0, 0, london).withLaterOffsetAtOverlap();
+        assertEquals(PeriodDuration.ZERO,
+                PeriodDuration.between(start, java.time.LocalDateTime.of(2012, 10, 28, 1, 30)));
+    }
+
+    @Test
+    public void test_between_unzonedEnd_startInOtherYearsOverlap() {
+        ZoneId london = ZoneId.of("Europe/London");
+        ZonedDateTime start = ZonedDateTime.of(2011, 10, 30, 1, 30, 0, 0, london).withLaterOffsetAtOverlap();
+        ZonedDateTime earlier = ZonedDateTime.of(2012, 10, 28, 1, 30, 0, 0, london);
+        PeriodDuration test = PeriodDuration.between(start, java.time.LocalDateTime.of(2012, 10, 28, 1, 30));
+        assertEquals(earlier.toInstant(), start.plus(test.getPeriod()).plus(test.getDuration()).toInstant());
+    }
+
+    @Test
     public void test_between_zoned_endInOverlap() {
         // 2012-10-28T01:30 occurs twice in London
         ZoneId london = ZoneId.of("Europe/London");

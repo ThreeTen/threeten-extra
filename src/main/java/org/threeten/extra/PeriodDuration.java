@@ -59,6 +59,8 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.zone.ZoneOffsetTransition;
+import java.time.zone.ZoneRules;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -424,8 +426,19 @@ public final class PeriodDuration
         LocalDateTime endLdt = LocalDateTime.of(endDate, endTime);
         ZonedDateTime end = endOffset != null ?
                 OffsetDateTime.of(endLdt, endOffset).toZonedDateTime() :
-                ZonedDateTime.of(endLdt, start.getZone());
+                localEnd(start, endLdt);
         return periodZoned(start, end);
+    }
+
+    // resolves a local end in the start's zone, using the start offset only if both are in the same overlap
+    private static ZonedDateTime localEnd(ZonedDateTime start, LocalDateTime endLdt) {
+        ZoneRules rules = start.getZone().getRules();
+        ZoneOffsetTransition transition = rules.getTransition(endLdt);
+        if (transition != null && transition.isOverlap() &&
+                transition.equals(rules.getTransition(start.toLocalDateTime()))) {
+            return ZonedDateTime.ofLocal(endLdt, start.getZone(), start.getOffset());
+        }
+        return ZonedDateTime.of(endLdt, start.getZone());
     }
 
     // calculates the period-duration that can be added to the start to give the end
