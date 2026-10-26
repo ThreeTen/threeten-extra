@@ -433,6 +433,12 @@ public final class PeriodDuration
         ZonedDateTime end = endExclusive.withZoneSameInstant(startInclusive.getZone());
         LocalDate startDate = startInclusive.toLocalDate();
         LocalDate endDate = end.toLocalDate();
+        // a zone rollback can reverse the date order relative to the instant order,
+        // in which case only a duration gives components of the same sign
+        if ((end.isAfter(startInclusive) && endDate.isBefore(startDate)) ||
+                (end.isBefore(startInclusive) && endDate.isAfter(startDate))) {
+            return of(Duration.between(startInclusive, end));
+        }
         if (end.isBefore(startInclusive)) {
             // Period.between() does not add back to the start when counting backwards,
             // so use a calculation that truncates towards the start

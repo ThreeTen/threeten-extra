@@ -303,6 +303,16 @@ public class TestPeriodDuration {
     }
 
     @Test
+    public void test_between_zoned_rollbackAcrossMidnightReversesDateOrder() {
+        ZoneId stJohns = ZoneId.of("America/St_Johns");
+        ZonedDateTime start = ZonedDateTime.of(2009, 11, 1, 0, 0, 0, 0, stJohns);
+        ZonedDateTime end = start.plusMinutes(30);
+        assertTrue(end.toLocalDate().isBefore(start.toLocalDate()));
+        assertEquals(PeriodDuration.of(Duration.ofMinutes(30)), PeriodDuration.between(start, end));
+        assertEquals(PeriodDuration.of(Duration.ofMinutes(-30)), PeriodDuration.between(end, start));
+    }
+
+    @Test
     public void test_between_zoned_backwardsAndSame() {
         ZoneId london = ZoneId.of("Europe/London");
         ZonedDateTime start = ZonedDateTime.of(2012, 3, 25, 12, 0, 0, 0, london);
