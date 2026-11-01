@@ -58,6 +58,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.threeten.extra.chrono.JulianDate;
 
 /**
  * Test TemporalFields.
@@ -71,13 +72,14 @@ public class TestTemporalFields {
     public void test_DAY_OF_HALF() {
         assertEquals(DAYS, DAY_OF_HALF.getBaseUnit());
         assertEquals(HALF_YEARS, DAY_OF_HALF.getRangeUnit());
-        assertEquals(true, DAY_OF_HALF.isDateBased());
-        assertEquals(false, DAY_OF_HALF.isTimeBased());
+        assertTrue(DAY_OF_HALF.isDateBased());
+        assertFalse(DAY_OF_HALF.isTimeBased());
         assertEquals("DayOfHalf", DAY_OF_HALF.toString());
 
-        assertEquals(true, DAY_OF_HALF.isSupportedBy(LocalDate.of(2023, 6, 30)));
-        assertEquals(false, DAY_OF_HALF.isSupportedBy(DayOfYear.of(32)));
-        assertEquals(false, DAY_OF_HALF.isSupportedBy(YearMonth.of(2023, 6)));
+        assertTrue(DAY_OF_HALF.isSupportedBy(LocalDate.of(2023, 6, 30)));
+        assertFalse(DAY_OF_HALF.isSupportedBy(DayOfYear.of(32)));
+        assertFalse(DAY_OF_HALF.isSupportedBy(YearMonth.of(2023, 6)));
+        assertFalse(DAY_OF_HALF.isSupportedBy(JulianDate.of(2023, 6, 30)));
         assertEquals(181, DAY_OF_HALF.getFrom(LocalDate.of(2023, 6, 30)));
         assertEquals(184, DAY_OF_HALF.getFrom(LocalDate.of(2023, 12, 31)));
 
