@@ -40,9 +40,15 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeParseException;
@@ -58,7 +64,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
 import org.jspecify.annotations.Nullable;
@@ -315,30 +320,180 @@ public final class PeriodDuration
      * Obtains an instance consisting of the amount of time between two temporals.
      * <p>
      * The start is included, but the end is not.
-     * The result of this method can be negative if the end is before the start.
+     * The result can be negative if the end is before the start.
      * <p>
-     * The calculation examines the temporals and extracts {@link LocalDate} and {@link LocalTime}.
-     * If the time is missing, it will be defaulted to midnight.
-     * If one date is missing, it will be defaulted to the other date.
-     * It then finds the amount of time between the two dates and between the two times.
+     * The result is logically equivalent to the difference between the resolved start and end.
+     * Once missing information has been defaulted and the start has been converted to the calculation
+     * time-zone (see below), adding the result to that resolved start reaches the same instant as
+     * the resolved end, including when the end is before the start.
+     * As such, for backwards periods over a month-end boundary the result may differ from
+     * {@link Period#between(LocalDate, LocalDate)}, which does not have this property.
+     * <p>
+     * The inputs do not need to be the same type, with missing information being defaulted:
+     * <ul>
+     * <li>An {@link Instant} is treated as being an {@code OffsetDateTime} at UTC.
+     * <li>A date is extracted using {@link Temporals#localDateAtStart()}, so a {@code Year} or {@code YearMonth}
+     *   is treated as being the first day of the year or month.
+     * <li>If the time is missing, it is defaulted to midnight.
+     * <li>If one date is missing, it is defaulted to the other date.
+     *   If both dates are missing, the result is a duration only.
+     * <li>If the start has neither an offset nor a time-zone, it is resolved using the end's time-zone,
+     *   otherwise the end offset, otherwise UTC.
+     * <li>If the start has an offset but no time-zone, it is an exact instant,
+     *   which is then viewed in the end's time-zone if there is one.
+     * <li>If the end has neither an offset nor a time-zone, it is resolved as a local date-time
+     *   in the start's time-zone or offset.
+     * <li>When a local date-time is resolved in a time-zone, within a daylight-saving gap it is moved forward
+     *   by the length of the gap. In an overlap, the offset of the other temporal is used if valid,
+     *   otherwise the earlier offset.
+     * </ul>
+     * <p>
+     * The algorithm takes time-zones into account when calculating the period and duration.
+     * If both the start and end have a time-zone, the algorithm uses the start time-zone,
+     * with the end converted to the same instant in the start time-zone.
+     * If only one of the start or end has a time-zone, that time-zone is used to resolve the other.
+     * <p>
+     * When calculating the period, the algorithm first calculates the period between the two dates.
+     * It then adds that period to the start, calculating the remaining elapsed duration between the result and the end.
+     * A day measured as a period may be longer or shorter than 24 hours.
+     * For example, if the start is "2012-03-24T12:00+01:00[Europe/Paris]" and the end is
+     * "2012-03-27T12:00+02:00[Europe/Paris]", the result is "3 days",
+     * even though the elapsed time is only 71 hours due to the daylight saving time change.
+     * However, if the start is "2012-03-25T00:00+01:00[Europe/Paris]" and the end is
+     * "2012-03-25T12:00+02:00[Europe/Paris]", the period between the dates is zero,
+     * thus the result is remaining duration, which is the elapsed duration of "11 hours", not 12 hours.
+     * <p>
+     * As the time-zone of the start takes precedence, swapping the arguments may not give the negated result.
+     * <p>
+     * The output is adjusted so that the period and duration have the same sign.
+     * For example, the value "1 day and -23 hours" is adjusted to "0 days and 1 hour".
      *
      * @param startInclusive  the start, inclusive, not null
      * @param endExclusive  the end, exclusive, not null
-     * @return the number of days between this date and the end date, not null
+     * @return the period-duration between the start and end, not null
+     * @throws DateTimeException if the temporals cannot be converted, such as when
+     *  the end cannot be represented as an instant relative to the start
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static PeriodDuration between(Temporal startInclusive, Temporal endExclusive) {
-        LocalDate startDate = startInclusive.query(TemporalQueries.localDate());
-        LocalDate endDate = endExclusive.query(TemporalQueries.localDate());
-        Period period = Period.ZERO;
-        if (startDate != null && endDate != null) {
-            period = Period.between(startDate, endDate);
+        Objects.requireNonNull(startInclusive, "startInclusive");
+        Objects.requireNonNull(endExclusive, "endExclusive");
+
+        if (startInclusive instanceof Instant) {
+            startInclusive = ((Instant) startInclusive).atOffset(ZoneOffset.UTC);
         }
+        if (endExclusive instanceof Instant) {
+            endExclusive = ((Instant) endExclusive).atOffset(ZoneOffset.UTC);
+        }
+
+        // short circuit if both are date-times
+        if (startInclusive instanceof ZonedDateTime && endExclusive instanceof ZonedDateTime) {
+            return periodZoned((ZonedDateTime) startInclusive, (ZonedDateTime) endExclusive);
+        }
+        if (startInclusive instanceof OffsetDateTime && endExclusive instanceof OffsetDateTime) {
+            return periodZoned(
+                    ((OffsetDateTime) startInclusive).toZonedDateTime(),
+                    ((OffsetDateTime) endExclusive).toZonedDateTime());
+        }
+        if (startInclusive instanceof LocalDateTime && endExclusive instanceof LocalDateTime) {
+            return periodZoned(
+                    ((LocalDateTime) startInclusive).atZone(ZoneOffset.UTC),
+                    ((LocalDateTime) endExclusive).atZone(ZoneOffset.UTC));
+        }
+
+        return betweenDefaulted(startInclusive, endExclusive);
+    }
+
+    // handles temporals that are not both zoned, defaulting any missing offset, time or date
+    private static PeriodDuration betweenDefaulted(Temporal startInclusive, Temporal endExclusive) {
+        // default the start offset to the end offset or UTC
+        ZoneOffset startOffset = startInclusive.query(TemporalQueries.offset());
+        ZoneOffset endOffset = endExclusive.query(TemporalQueries.offset());
+        boolean startHasOffset = startOffset != null;
+        boolean endHasOffset = endOffset != null;
+        startOffset = startOffset != null ? startOffset : endOffset != null ? endOffset : ZoneOffset.UTC;
+        endOffset = endOffset != null ? endOffset : startOffset;
+
+        // default the time to midnight if missing
         LocalTime startTime = startInclusive.query(TemporalQueries.localTime());
         LocalTime endTime = endExclusive.query(TemporalQueries.localTime());
         startTime = startTime != null ? startTime : LocalTime.MIDNIGHT;
         endTime = endTime != null ? endTime : LocalTime.MIDNIGHT;
-        Duration duration = Duration.between(startTime, endTime);
-        return PeriodDuration.of(period, duration);
+
+        // default the date to the other date
+        LocalDate startDate = startInclusive.query(Temporals.localDateAtStart());
+        LocalDate endDate = endExclusive.query(Temporals.localDateAtStart());
+        if (startDate == null && endDate == null) {
+            // no dates, so apply the same date to both and return only a duration (ignore any time-zone)
+            LocalDate date = LocalDate.of(1970, 1, 1);
+            return of(Duration.between(
+                    OffsetDateTime.of(date, startTime, startOffset),
+                    OffsetDateTime.of(date, endTime, endOffset)));
+        } else if (startDate == null) {
+            startDate = endDate;
+        } else if (endDate == null) {
+            endDate = startDate;
+        }
+
+        // combine
+        LocalDateTime startLdt = LocalDateTime.of(startDate, startTime);
+        LocalDateTime endLdt = LocalDateTime.of(endDate, endTime);
+        OffsetDateTime startOdt = OffsetDateTime.of(startLdt, startOffset);
+        OffsetDateTime endOdt = OffsetDateTime.of(endLdt, endOffset);
+
+        // determine the zone to use, this is the start zone, otherwise the end zone, otherwise the defaulted start offset
+        ZoneId startZone = startInclusive.query(TemporalQueries.zoneId());
+        ZoneId endZone = endExclusive.query(TemporalQueries.zoneId());
+        ZoneId zone = startZone != null ? startZone : endZone != null ? endZone : startOffset;
+
+        // start with an offset but no zone: treat input as an exact instant
+        // start with a zone, or start is local: local date-time resolved in the zone
+        // (the offset is only used to choose between the two offsets in an overlap)
+        ZonedDateTime start = startHasOffset && startZone == null ?
+                startOdt.atZoneSameInstant(zone) :
+                ZonedDateTime.ofLocal(startLdt, zone, startOffset);
+        // end with an offset (and maybe a zone): treat input as an exact instant
+        // end without an offset: local date-time resolved in the zone, preferring the start's offset in an overlap
+        ZonedDateTime end = endHasOffset ?
+                endOdt.atZoneSameInstant(zone) :
+                ZonedDateTime.ofLocal(endLdt, zone, start.getOffset());
+        return periodZoned(start, end);
+    }
+
+    // calculates the period-duration that can be added to the start to give the end
+    private static PeriodDuration periodZoned(ZonedDateTime startInclusive, ZonedDateTime endExclusive) {
+        ZonedDateTime end = endExclusive.withZoneSameInstant(startInclusive.getZone());
+        LocalDate startDate = startInclusive.toLocalDate();
+        LocalDate endDate = end.toLocalDate();
+        // a zone rollback can reverse the date order relative to the instant order,
+        // in which case only a duration gives components of the same sign
+        if ((end.isAfter(startInclusive) && endDate.isBefore(startDate)) ||
+                (end.isBefore(startInclusive) && endDate.isAfter(startDate))) {
+            return of(Duration.between(startInclusive, end));
+        }
+        boolean backwards = end.isBefore(startInclusive);
+        Period period = periodBetween(startDate, endDate);
+        ZonedDateTime adjusted = startInclusive.plus(period);
+        // the local times may mean the period overshoots the end, so borrow days
+        // (more than one is possible if the zone skips a whole day)
+        while (backwards ? adjusted.isBefore(end) : adjusted.isAfter(end)) {
+            endDate = backwards ? endDate.plusDays(1) : endDate.minusDays(1);
+            period = periodBetween(startDate, endDate);
+            adjusted = startInclusive.plus(period);
+        }
+        return of(period, Duration.between(adjusted, end));
+    }
+
+    // calculates a period where adding it to the start date gives the end date, in either direction
+    // Period.between() does not add back to the start when counting backwards,
+    // so a calculation that truncates towards the start is used in that case
+    private static Period periodBetween(LocalDate startDate, LocalDate endDate) {
+        if (endDate.isBefore(startDate)) {
+            long totalMonths = MONTHS.between(startDate, endDate);
+            long days = DAYS.between(startDate.plusMonths(totalMonths), endDate);
+            return Period.of(Math.toIntExact(totalMonths / 12), (int) (totalMonths % 12), Math.toIntExact(days));
+        }
+        return Period.between(startDate, endDate);
     }
 
     //-----------------------------------------------------------------------
