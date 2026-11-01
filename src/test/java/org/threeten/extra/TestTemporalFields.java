@@ -237,7 +237,9 @@ public class TestTemporalFields {
         assertEquals(1, HALF_YEARS.between(YearHalf.of(2023, 1), LocalDate.of(2023, 7, 1)));
         assertEquals(1, HALF_YEARS.between(YearHalf.of(2023, 1), LocalDate.of(2023, 12, 31)));
         assertEquals(-1, HALF_YEARS.between(YearHalf.of(2023, 2), LocalDate.of(2023, 3, 1)));
-        assertEquals(1, HALF_YEARS.between(LocalDate.of(2023, 3, 1), YearHalf.of(2023, 2)));
+
+        assertThrows(DateTimeException.class, () -> LocalDate.of(2023, 3, 1).until(YearHalf.of(2023, 2), HALF_YEARS));
+        assertThrows(DateTimeException.class, () -> HALF_YEARS.between(LocalDate.of(2023, 3, 1), YearHalf.of(2023, 2)));
         assertThrows(DateTimeException.class, () -> HALF_YEARS.between(LocalTime.NOON, YearHalf.of(2023, 2)));
     }
 
