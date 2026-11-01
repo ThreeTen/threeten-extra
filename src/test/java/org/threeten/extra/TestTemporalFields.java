@@ -45,6 +45,7 @@ import static org.threeten.extra.TemporalFields.HALF_YEARS;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.ResolverStyle;
@@ -58,6 +59,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.threeten.extra.chrono.JulianDate;
 
 /**
  * Test TemporalFields.
@@ -71,13 +73,14 @@ public class TestTemporalFields {
     public void test_DAY_OF_HALF() {
         assertEquals(DAYS, DAY_OF_HALF.getBaseUnit());
         assertEquals(HALF_YEARS, DAY_OF_HALF.getRangeUnit());
-        assertEquals(true, DAY_OF_HALF.isDateBased());
-        assertEquals(false, DAY_OF_HALF.isTimeBased());
+        assertTrue(DAY_OF_HALF.isDateBased());
+        assertFalse(DAY_OF_HALF.isTimeBased());
         assertEquals("DayOfHalf", DAY_OF_HALF.toString());
 
-        assertEquals(true, DAY_OF_HALF.isSupportedBy(LocalDate.of(2023, 6, 30)));
-        assertEquals(false, DAY_OF_HALF.isSupportedBy(DayOfYear.of(32)));
-        assertEquals(false, DAY_OF_HALF.isSupportedBy(YearMonth.of(2023, 6)));
+        assertTrue(DAY_OF_HALF.isSupportedBy(LocalDate.of(2023, 6, 30)));
+        assertFalse(DAY_OF_HALF.isSupportedBy(DayOfYear.of(32)));
+        assertFalse(DAY_OF_HALF.isSupportedBy(YearMonth.of(2023, 6)));
+        assertFalse(DAY_OF_HALF.isSupportedBy(JulianDate.of(2023, 6, 30)));
         assertEquals(181, DAY_OF_HALF.getFrom(LocalDate.of(2023, 6, 30)));
         assertEquals(184, DAY_OF_HALF.getFrom(LocalDate.of(2023, 12, 31)));
 
@@ -229,6 +232,15 @@ public class TestTemporalFields {
 
         assertEquals(0, HALF_YEARS.between(YearQuarter.of(2023, 2), YearQuarter.of(2023, 3)));
         assertEquals(1, HALF_YEARS.between(YearQuarter.of(2023, 2), YearQuarter.of(2023, 4)));
+
+        assertEquals(1, HALF_YEARS.between(YearHalf.of(2023, 1), YearHalf.of(2023, 2)));
+        assertEquals(1, HALF_YEARS.between(YearHalf.of(2023, 1), LocalDate.of(2023, 7, 1)));
+        assertEquals(1, HALF_YEARS.between(YearHalf.of(2023, 1), LocalDate.of(2023, 12, 31)));
+        assertEquals(-1, HALF_YEARS.between(YearHalf.of(2023, 2), LocalDate.of(2023, 3, 1)));
+
+        assertThrows(DateTimeException.class, () -> LocalDate.of(2023, 3, 1).until(YearHalf.of(2023, 2), HALF_YEARS));
+        assertThrows(DateTimeException.class, () -> HALF_YEARS.between(LocalDate.of(2023, 3, 1), YearHalf.of(2023, 2)));
+        assertThrows(DateTimeException.class, () -> HALF_YEARS.between(LocalTime.NOON, YearHalf.of(2023, 2)));
     }
 
     //-------------------------------------------------------------------------

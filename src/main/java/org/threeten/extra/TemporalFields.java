@@ -44,6 +44,7 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.Chronology;
 import java.time.chrono.IsoChronology;
 import java.time.format.ResolverStyle;
 import java.time.temporal.Temporal;
@@ -184,7 +185,14 @@ public final class TemporalFields {
         public boolean isSupportedBy(TemporalAccessor temporal) {
             return temporal.isSupported(DAY_OF_YEAR) &&
                     temporal.isSupported(MONTH_OF_YEAR) &&
-                    temporal.isSupported(YEAR);
+                    temporal.isSupported(YEAR) &&
+                    temporal.isSupported(HALF_OF_YEAR) &&
+                    isIso(temporal);
+        }
+
+        // the calculations assume the ISO calendar system
+        private static boolean isIso(TemporalAccessor temporal) {
+            return Chronology.from(temporal).equals(IsoChronology.INSTANCE);
         }
 
         @Override
@@ -381,7 +389,7 @@ public final class TemporalFields {
 
         @Override
         public long between(Temporal temporal1Inclusive, Temporal temporal2Exclusive) {
-            if (temporal1Inclusive.getClass() != temporal2Exclusive.getClass()) {
+            if (temporal1Inclusive instanceof YearHalf) {
                 return temporal1Inclusive.until(temporal2Exclusive, this);
             }
             return temporal1Inclusive.until(temporal2Exclusive, QUARTER_YEARS) / 2;
