@@ -322,9 +322,10 @@ public final class PeriodDuration
      * The start is included, but the end is not.
      * The result can be negative if the end is before the start.
      * <p>
-     * The result is logically equivalent to the difference between the start and end.
-     * Once any missing information has been defaulted (see below), adding the result to the start
-     * yields the end, including when the end is before the start.
+     * The result is logically equivalent to the difference between the resolved start and end.
+     * Once missing information has been defaulted and the start has been converted to the calculation
+     * time-zone (see below), adding the result to that resolved start reaches the same instant as
+     * the resolved end, including when the end is before the start.
      * As such, for backwards periods over a month-end boundary the result may differ from
      * {@link Period#between(LocalDate, LocalDate)}, which does not have this property.
      * <p>
