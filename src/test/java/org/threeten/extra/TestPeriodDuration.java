@@ -489,6 +489,41 @@ public class TestPeriodDuration {
     }
 
     @Test
+    public void test_between_offsetDateStart_instantEnd_acrossMonth() {
+        OffsetDate start = OffsetDate.of(LocalDate.of(2013, 3, 1), ZoneOffset.ofHours(1));
+        Instant end = Instant.parse("2013-04-01T00:00:00Z");
+        PeriodDuration test = PeriodDuration.between(start, end);
+        assertEquals(PeriodDuration.of(Period.ofMonths(1), Duration.ofHours(1)), test);
+        OffsetDateTime startOdt = OffsetDateTime.of(2013, 3, 1, 0, 0, 0, 0, ZoneOffset.ofHours(1));
+        assertEquals(end, startOdt.plus(test.getPeriod()).plus(test.getDuration()).toInstant());
+    }
+
+    @Test
+    public void test_between_offsetDateStart_offsetDateTimeEnd_acrossMonth() {
+        OffsetDate start = OffsetDate.of(LocalDate.of(2013, 3, 1), ZoneOffset.ofHours(1));
+        OffsetDateTime end = OffsetDateTime.of(2013, 4, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        PeriodDuration test = PeriodDuration.between(start, end);
+        assertEquals(PeriodDuration.of(Period.ofMonths(1), Duration.ofHours(1)), test);
+    }
+
+    @Test
+    public void test_between_instantStart_offsetDateEnd_acrossMonth() {
+        Instant start = Instant.parse("2013-03-01T00:00:00Z");
+        OffsetDate end = OffsetDate.of(LocalDate.of(2013, 4, 1), ZoneOffset.ofHours(1));
+        PeriodDuration test = PeriodDuration.between(start, end);
+        assertEquals(PeriodDuration.of(Period.ofDays(30), Duration.ofHours(23)), test);
+        assertEquals(OffsetDateTime.of(2013, 4, 1, 0, 0, 0, 0, ZoneOffset.ofHours(1)).toInstant(),
+                start.atOffset(ZoneOffset.UTC).plus(test.getPeriod()).plus(test.getDuration()).toInstant());
+    }
+
+    @Test
+    public void test_between_offsetDateTimeStart_offsetDateEnd_acrossMonth() {
+        OffsetDateTime start = OffsetDateTime.of(2013, 3, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDate end = OffsetDate.of(LocalDate.of(2013, 4, 1), ZoneOffset.ofHours(1));
+        assertEquals(PeriodDuration.of(Period.ofDays(30), Duration.ofHours(23)), PeriodDuration.between(start, end));
+    }
+
+    @Test
     public void test_between_offsetStart_zonedEnd_offsetIsExact() {
         OffsetTime start = OffsetTime.of(10, 0, 0, 0, ZoneOffset.ofHours(1));
         ZonedDateTime end = ZonedDateTime.of(2012, 1, 5, 9, 0, 0, 0, ZoneId.of("Europe/London"));

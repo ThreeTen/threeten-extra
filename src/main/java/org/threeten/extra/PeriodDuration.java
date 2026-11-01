@@ -378,30 +378,21 @@ public final class PeriodDuration
         Objects.requireNonNull(startInclusive, "startInclusive");
         Objects.requireNonNull(endExclusive, "endExclusive");
 
-        // instants and offset date-times are treated as offset date-times in UTC
-        // unless the end has a time-zone, in which case the start is viewed in that zone
-        if (endExclusive instanceof ZonedDateTime) {
-            ZoneId endZone = ((ZonedDateTime) endExclusive).getZone();
-            if (startInclusive instanceof Instant) {
-                startInclusive = ((Instant) startInclusive).atZone(endZone);
-            } else if (startInclusive instanceof OffsetDateTime) {
-                startInclusive = ((OffsetDateTime) startInclusive).atZoneSameInstant(endZone);
-            }
-        }
         if (startInclusive instanceof Instant) {
-            startInclusive = ((Instant) startInclusive).atZone(ZoneOffset.UTC);
-        } else if (startInclusive instanceof OffsetDateTime) {
-            startInclusive = ((OffsetDateTime) startInclusive).toZonedDateTime();
+            startInclusive = ((Instant) startInclusive).atOffset(ZoneOffset.UTC);
         }
         if (endExclusive instanceof Instant) {
-            endExclusive = ((Instant) endExclusive).atZone(ZoneOffset.UTC);
-        } else if (endExclusive instanceof OffsetDateTime) {
-            endExclusive = ((OffsetDateTime) endExclusive).toZonedDateTime();
+            endExclusive = ((Instant) endExclusive).atOffset(ZoneOffset.UTC);
         }
 
         // short circuit if both are date-times
         if (startInclusive instanceof ZonedDateTime && endExclusive instanceof ZonedDateTime) {
             return periodZoned((ZonedDateTime) startInclusive, (ZonedDateTime) endExclusive);
+        }
+        if (startInclusive instanceof OffsetDateTime && endExclusive instanceof OffsetDateTime) {
+            return periodZoned(
+                    ((OffsetDateTime) startInclusive).toZonedDateTime(),
+                    ((OffsetDateTime) endExclusive).toZonedDateTime());
         }
         if (startInclusive instanceof LocalDateTime && endExclusive instanceof LocalDateTime) {
             return periodZoned(
