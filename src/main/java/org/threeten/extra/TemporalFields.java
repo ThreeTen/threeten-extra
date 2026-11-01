@@ -389,6 +389,12 @@ public final class TemporalFields {
 
         @Override
         public long between(Temporal temporal1Inclusive, Temporal temporal2Exclusive) {
+            if (temporal1Inclusive instanceof YearHalf) {
+                return ((YearHalf) temporal1Inclusive).until(temporal2Exclusive, this);
+            }
+            if (temporal2Exclusive instanceof YearHalf && temporal1Inclusive.isSupported(HALF_YEARS)) {
+                return YearHalf.from(temporal1Inclusive).until(temporal2Exclusive, this);
+            }
             return temporal1Inclusive.until(temporal2Exclusive, QUARTER_YEARS) / 2;
         }
 

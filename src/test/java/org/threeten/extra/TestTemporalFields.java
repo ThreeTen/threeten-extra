@@ -45,6 +45,7 @@ import static org.threeten.extra.TemporalFields.HALF_YEARS;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.ResolverStyle;
@@ -231,6 +232,13 @@ public class TestTemporalFields {
 
         assertEquals(0, HALF_YEARS.between(YearQuarter.of(2023, 2), YearQuarter.of(2023, 3)));
         assertEquals(1, HALF_YEARS.between(YearQuarter.of(2023, 2), YearQuarter.of(2023, 4)));
+
+        assertEquals(1, HALF_YEARS.between(YearHalf.of(2023, 1), YearHalf.of(2023, 2)));
+        assertEquals(1, HALF_YEARS.between(YearHalf.of(2023, 1), LocalDate.of(2023, 7, 1)));
+        assertEquals(1, HALF_YEARS.between(YearHalf.of(2023, 1), LocalDate.of(2023, 12, 31)));
+        assertEquals(-1, HALF_YEARS.between(YearHalf.of(2023, 2), LocalDate.of(2023, 3, 1)));
+        assertEquals(1, HALF_YEARS.between(LocalDate.of(2023, 3, 1), YearHalf.of(2023, 2)));
+        assertThrows(DateTimeException.class, () -> HALF_YEARS.between(LocalTime.NOON, YearHalf.of(2023, 2)));
     }
 
     //-------------------------------------------------------------------------
