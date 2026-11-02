@@ -38,6 +38,13 @@
         Similarly, an amount of -1ns will now be formatted as "0 milliseconds", rather than "-1 seconds and 999 milliseconds".
         For most use cases, this is a more natural/correct way to format negative durations.
       </action>
+      <action dev="jodastephen" type="fix" issue="446">
+        Fix Temporals.parseFirstMatching to provide better errors, and handle null more clearly.
+        If parsing succeeds, but resolving fails, the next formatter will now be tried, which could be considered a breaking change.
+        Queries that return null are now treated as not matching, rather than returning null.
+        Cause exceptions are now stored as suppressed exceptions (as they aren't usually that interesting).
+        Parsing occurs via parse directly instead of parseUnresolved followed by parse.
+      </action>
       <action dev="jodastephen" type="fix" issue="420">
         Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
       </action>
