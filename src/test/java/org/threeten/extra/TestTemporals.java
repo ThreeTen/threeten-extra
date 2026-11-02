@@ -57,6 +57,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static java.time.temporal.IsoFields.QUARTER_YEARS;
+import static org.threeten.extra.TemporalFields.HALF_YEARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -800,6 +801,20 @@ public class TestTemporals {
             {2L, MILLENNIA, DECADES, 2L * 100, 0L},
 
             {2L, MILLENNIA, CENTURIES, 2L * 10, 0L},
+
+            {2L * 6 + 1, MONTHS, HALF_YEARS, 2L, 1L},
+            {2L * 2 + 1, QUARTER_YEARS, HALF_YEARS, 2L, 1L},
+            {2L * 2 + 1, HALF_YEARS, YEARS, 2L, 1L},
+            {2L * 20 + 1, HALF_YEARS, DECADES, 2L, 1L},
+            {2L * 200 + 1, HALF_YEARS, CENTURIES, 2L, 1L},
+            {2L * 2000 + 1, HALF_YEARS, MILLENNIA, 2L, 1L},
+
+            {2L, HALF_YEARS, MONTHS, 2L * 6, 0L},
+            {2L, HALF_YEARS, QUARTER_YEARS, 2L * 2, 0L},
+            {2L, YEARS, HALF_YEARS, 2L * 2, 0L},
+            {2L, DECADES, HALF_YEARS, 2L * 20, 0L},
+            {2L, CENTURIES, HALF_YEARS, 2L * 200, 0L},
+            {2L, MILLENNIA, HALF_YEARS, 2L * 2000, 0L},
         };
     }
 
@@ -860,6 +875,11 @@ public class TestTemporals {
             {DECADES, SECONDS},
             {CENTURIES, SECONDS},
             {MILLENNIA, SECONDS},
+
+            {SECONDS, HALF_YEARS},
+            {HALF_YEARS, SECONDS},
+            {DAYS, HALF_YEARS},
+            {HALF_YEARS, WEEKS},
         };
     }
 
@@ -883,6 +903,10 @@ public class TestTemporals {
 
             {FOREVER, ERAS},
             {ERAS, FOREVER},
+
+            {HALF_YEARS, ERAS},
+            {IsoFields.WEEK_BASED_YEARS, HALF_YEARS},
+            {HALF_YEARS, IsoFields.WEEK_BASED_YEARS},
         };
     }
 

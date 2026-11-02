@@ -488,9 +488,16 @@ public final class Temporals {
     /**
      * Converts an amount from one unit to another.
      * <p>
-     * This works on the units in {@code ChronoUnit} and {@code IsoFields}.
+     * This works on the units in {@code ChronoUnit}, plus
+     * {@link IsoFields#QUARTER_YEARS} (3 months) and {@link TemporalFields#HALF_YEARS} (6 months).
      * The {@code DAYS} and {@code WEEKS} units are handled as exact multiple of 24 hours.
      * The {@code ERAS} and {@code FOREVER} units are not supported.
+     * Other units, including {@code IsoFields.WEEK_BASED_YEARS}, are not supported.
+     * <p>
+     * Units up to {@code WEEKS} are time-based and can be converted between each other.
+     * Units from {@code MONTHS} upwards, {@code QUARTER_YEARS} and {@code HALF_YEARS}
+     * are month-based and can be converted between each other.
+     * Converting between a time-based and a month-based unit throws {@code DateTimeException}.
      *
      * @param amount  the input amount in terms of the {@code fromUnit}
      * @param fromUnit  the unit to convert from, not null
@@ -540,7 +547,7 @@ public final class Temporals {
             if (unit.equals(ERAS) || unit.equals(FOREVER)) {
                 throw new UnsupportedTemporalTypeException("Unsupported TemporalUnit: " + unit);
             }
-        } else if (!unit.equals(IsoFields.QUARTER_YEARS)) {
+        } else if (!unit.equals(IsoFields.QUARTER_YEARS) && !unit.equals(TemporalFields.HALF_YEARS)) {
             throw new UnsupportedTemporalTypeException("Unsupported TemporalUnit: " + unit);
         }
     }
@@ -567,7 +574,14 @@ public final class Temporals {
                             String.format("Unable to convert between units: %s to %s", fromUnit, toUnit));
             }
         }
-        return 3;  // quarters
+        if (unit.equals(IsoFields.QUARTER_YEARS)) {
+            return 3;
+        }
+        if (unit.equals(TemporalFields.HALF_YEARS)) {
+            return 6;
+        }
+        throw new DateTimeException(
+                String.format("Unable to convert between units: %s to %s", fromUnit, toUnit));
     }
 
     //-------------------------------------------------------------------------
