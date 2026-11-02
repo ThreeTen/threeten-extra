@@ -102,6 +102,7 @@ public abstract class UtcRules {
      * @param mjDay  the Modified Julian Day that the leap second occurs at the end of
      * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
      * @throws IllegalArgumentException if the leap adjustment is invalid
+     * @throws IllegalArgumentException if the day is outside the range of {@code JulianFields.MODIFIED_JULIAN_DAY}
      * @throws IllegalArgumentException if the day is before or equal the last known leap second day
      *  and the definition does not match a previously registered leap
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
