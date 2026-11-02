@@ -994,8 +994,32 @@ public class TestTemporals {
     }
 
     @Test
-    public void test_durationFromBigDecimalSeconds_null() {
-        assertThrows(NullPointerException.class, () -> Temporals.durationFromBigDecimalSeconds(null));
+    public void test_durationToDoubleSeconds_boundaries() {
+        assertEquals(-1.0E10, Temporals.durationToDoubleSeconds(Duration.ofSeconds(-10_000_000_000L)));
+        assertEquals(1.0E10, Temporals.durationToDoubleSeconds(Duration.ofSeconds(10_000_000_000L)));
+        for (long secs : new long[] {-9_000_001L, -9_000_000L, -8_999_999L, 8_999_999L, 9_000_000L, 9_000_001L}) {
+            for (int nanos : new int[] {0, 1, 999_999_999}) {
+                Duration d = Duration.ofSeconds(secs, nanos);
+                assertEquals(Temporals.durationToBigDecimalSeconds(d).doubleValue(), Temporals.durationToDoubleSeconds(d), d.toString());
+            }
+        }
+        assertEquals(Temporals.durationToBigDecimalSeconds(Duration.ofSeconds(Long.MIN_VALUE)).doubleValue(),
+                Temporals.durationToDoubleSeconds(Duration.ofSeconds(Long.MIN_VALUE)));
+    }
+
+    @Test
+    public void test_durationToDoubleSeconds_extremes() {
+        assertEquals(-9.223372036854775808E18, Temporals.durationToDoubleSeconds(Duration.ofSeconds(Long.MIN_VALUE)));
+        assertEquals(-9.223372037E9, Temporals.durationToDoubleSeconds(Duration.ofSeconds(-9_223_372_037L)));
+        assertEquals(9.223372036854776E18, Temporals.durationToDoubleSeconds(Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)));
+        assertEquals(9.999999952080019E8, Temporals.durationToDoubleSeconds(Duration.ofSeconds(999_999_995, 208_001_802)));
+    }
+
+    @Test
+    public void test_durationFromDoubleSeconds_nonFinite() {
+        assertEquals(Duration.ofSeconds(Long.MAX_VALUE, 999_999_999), Temporals.durationFromDoubleSeconds(Double.POSITIVE_INFINITY));
+        assertEquals(Duration.ofSeconds(Long.MIN_VALUE), Temporals.durationFromDoubleSeconds(Double.NEGATIVE_INFINITY));
+        assertThrows(IllegalArgumentException.class, () -> Temporals.durationFromDoubleSeconds(Double.NaN));
     }
 
     @Test
@@ -1027,7 +1051,21 @@ public class TestTemporals {
             {Duration.ofNanos(1), 1e-12, Duration.ofNanos(1)},
             {Duration.ofSeconds(Long.MAX_VALUE - 1, 0), 1.1d, Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)},
             {Duration.ofSeconds(Long.MAX_VALUE - 1, 0), -1.1d, Duration.ofSeconds(Long.MIN_VALUE, 0)},
+            {Duration.ofSeconds(1), Double.POSITIVE_INFINITY, Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)},
+            {Duration.ofSeconds(1), Double.NEGATIVE_INFINITY, Duration.ofSeconds(Long.MIN_VALUE)},
+            {Duration.ofSeconds(-1), Double.POSITIVE_INFINITY, Duration.ofSeconds(Long.MIN_VALUE)},
+            {Duration.ofSeconds(-1), Double.NEGATIVE_INFINITY, Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)},
+            {Duration.ofNanos(-1), Double.NEGATIVE_INFINITY, Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)},
+            {Duration.ofSeconds(Long.MAX_VALUE, 999_999_999), Double.MAX_VALUE, Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)},
+            {Duration.ofSeconds(Long.MIN_VALUE), Double.MAX_VALUE, Duration.ofSeconds(Long.MIN_VALUE)},
+            {Duration.ofSeconds(Long.MIN_VALUE), -Double.MAX_VALUE, Duration.ofSeconds(Long.MAX_VALUE, 999_999_999)},
         };
+    }
+
+    @Test
+    public void test_durationMultiply_nan() {
+        assertThrows(IllegalArgumentException.class, () -> Temporals.multiply(Duration.ofSeconds(1), Double.NaN));
+        assertThrows(IllegalArgumentException.class, () -> Temporals.multiply(Duration.ZERO, Double.NaN));
     }
 
     @ParameterizedTest
