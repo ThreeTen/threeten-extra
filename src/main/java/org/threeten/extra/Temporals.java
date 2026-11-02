@@ -592,6 +592,7 @@ public final class Temporals {
      * @return the {@code BigDecimal} equivalent of the duration, in seconds with a scale of 9
      */
     public static BigDecimal durationToBigDecimalSeconds(Duration duration) {
+        Objects.requireNonNull(duration, "duration");
         return BigDecimal.valueOf(duration.getSeconds()).add(BigDecimal.valueOf(duration.getNano(), 9));
     }
 
@@ -606,6 +607,19 @@ public final class Temporals {
      * @return a {@code Duration}, not null
      */
     public static Duration durationFromBigDecimalSeconds(BigDecimal seconds) {
+        Objects.requireNonNull(seconds, "seconds");
+        int sign = seconds.signum();
+        if (sign == 0) {
+            return Duration.ZERO;
+        }
+        // number of digits before the decimal point (zero or negative for values below 1), avoiding any rescaling of huge exponents
+        long magnitude = (long) seconds.precision() - seconds.scale();
+        if (magnitude > 20) {
+            return sign > 0 ? Duration.ofSeconds(Long.MAX_VALUE, 999_999_999) : Duration.ofSeconds(Long.MIN_VALUE);
+        }
+        if (magnitude <= -9) {
+            return Duration.ofSeconds(0, sign);
+        }
         BigInteger nanos = seconds.setScale(9, RoundingMode.UP).max(BigDecimalSeconds.MIN).min(BigDecimalSeconds.MAX).unscaledValue();
         BigInteger[] secondsNanos = nanos.divideAndRemainder(BigInteger.valueOf(1_000_000_000));
         return Duration.ofSeconds(secondsNanos[0].longValue(), secondsNanos[1].intValue());

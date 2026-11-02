@@ -981,6 +981,24 @@ public class TestTemporals {
     }
 
     @Test
+    public void test_durationFromBigDecimalSeconds_extremeScales() {
+        assertEquals(Duration.ofSeconds(Long.MAX_VALUE, 999_999_999),
+                Temporals.durationFromBigDecimalSeconds(new BigDecimal("1E+1000000000")));
+        assertEquals(Duration.ofSeconds(Long.MIN_VALUE),
+                Temporals.durationFromBigDecimalSeconds(new BigDecimal("-1E+1000000000")));
+        assertEquals(Duration.ofNanos(1), Temporals.durationFromBigDecimalSeconds(new BigDecimal("1E-1000000000")));
+        assertEquals(Duration.ofNanos(-1), Temporals.durationFromBigDecimalSeconds(new BigDecimal("-1E-1000000000")));
+        assertEquals(Duration.ofNanos(1), Temporals.durationFromBigDecimalSeconds(new BigDecimal("0.0000000009")));
+        assertEquals(Duration.ZERO, Temporals.durationFromBigDecimalSeconds(new BigDecimal("0E-2000000000")));
+        assertEquals(Duration.ZERO, Temporals.durationFromBigDecimalSeconds(new BigDecimal("0E+2000000000")));
+    }
+
+    @Test
+    public void test_durationFromBigDecimalSeconds_null() {
+        assertThrows(NullPointerException.class, () -> Temporals.durationFromBigDecimalSeconds(null));
+    }
+
+    @Test
     public void test_durationFromDoubleSeconds_tooLargePositive() {
         Duration test = Temporals.durationFromDoubleSeconds(122233322251e10);
         assertEquals(Duration.ofSeconds(Long.MAX_VALUE, 999_999_999), test);
