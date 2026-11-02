@@ -599,11 +599,13 @@ public final class Temporals {
     /**
      * Converts a {@code BigDecimal} representing seconds to a duration, saturating if necessary.
      * <p>
-     * No exception is thrown by this method.
      * Numbers are rounded up to the nearest nanosecond (away from zero).
-     * The duration will saturate at the biggest positive or negative {@code Duration}.
+     * The result saturates rather than overflowing.
+     * If the value is greater than the maximum {@code Duration} ({@code Long.MAX_VALUE} seconds plus 999,999,999 nanoseconds),
+     * the maximum is returned.
+     * If it is less than the minimum {@code Duration} ({@code Long.MIN_VALUE} seconds), the minimum is returned.
      *
-     * @param seconds  the number of seconds to convert, positive or negative
+     * @param seconds  the number of seconds to convert, positive or negative, not null
      * @return a {@code Duration}, not null
      */
     public static Duration durationFromBigDecimalSeconds(BigDecimal seconds) {
@@ -632,8 +634,11 @@ public final class Temporals {
      * @return the {@code double} equivalent of the duration, in seconds
      */
     public static double durationToDoubleSeconds(Duration duration) {
-        if (duration.getSeconds() < 1_000_000_000) {
-            return duration.toNanos() / 1_000_000_000d;
+        Objects.requireNonNull(duration, "duration");
+        // total nanos is below 2^53, so both the long-to-double conversion and the division are exact/correctly rounded
+        long secs = duration.getSeconds();
+        if (secs > -9_000_000 && secs < 9_000_000) {
+            return (secs * 1_000_000_000L + duration.getNano()) / 1_000_000_000d;
         }
         return durationToBigDecimalSeconds(duration).doubleValue();
     }
@@ -641,14 +646,24 @@ public final class Temporals {
     /**
      * Converts a {@code double} representing seconds to a duration, saturating if necessary.
      * <p>
-     * No exception is thrown by this method.
      * Numbers are rounded up to the nearest nanosecond (away from zero).
-     * The duration will saturate at the biggest positive or negative {@code Duration}.
+     * The result saturates rather than overflowing.
+     * If the value is greater than the maximum {@code Duration} ({@code Long.MAX_VALUE} seconds plus 999,999,999 nanoseconds),
+     * the maximum is returned.
+     * If it is less than the minimum {@code Duration} ({@code Long.MIN_VALUE} seconds), the minimum is returned.
+     * Positive and negative infinity therefore return the maximum and minimum respectively.
      *
      * @param seconds  the number of seconds to convert, positive or negative
      * @return a {@code Duration}, not null
+     * @throws IllegalArgumentException if the value is NaN
      */
     public static Duration durationFromDoubleSeconds(double seconds) {
+        if (Double.isNaN(seconds)) {
+            throw new IllegalArgumentException("Seconds must not be NaN");
+        }
+        if (Double.isInfinite(seconds)) {
+            return seconds > 0 ? Duration.ofSeconds(Long.MAX_VALUE, 999_999_999) : Duration.ofSeconds(Long.MIN_VALUE);
+        }
         return durationFromBigDecimalSeconds(BigDecimal.valueOf(seconds));
     }
 
@@ -658,17 +673,32 @@ public final class Temporals {
      * The amount is rounded away from zero, thus the result is only zero if zero is passed in.
      * See {@link #durationToBigDecimalSeconds(Duration)} and {@link #durationFromBigDecimalSeconds(BigDecimal)}.
      * Note that due to the rounding up, 1 nanosecond multiplied by any number smaller than 1 will still be 1 nanosecond.
+     * <p>
+     * The result saturates rather than overflowing.
+     * If the product is greater than the maximum {@code Duration} ({@code Long.MAX_VALUE} seconds plus 999,999,999 nanoseconds),
+     * the maximum is returned.
+     * If it is less than the minimum {@code Duration} ({@code Long.MIN_VALUE} seconds), the minimum is returned.
+     * An infinite multiplicand therefore saturates according to the sign of the product.
      * 
      * @param duration  the duration to multiply, not null
      * @param multiplicand  the multiplication factor
      * @return the multiplied duration, not null
+     * @throws IllegalArgumentException if the multiplicand is NaN
      */
     public static Duration multiply(Duration duration, double multiplicand) {
+        Objects.requireNonNull(duration, "duration");
+        if (Double.isNaN(multiplicand)) {
+            throw new IllegalArgumentException("Multiplicand must not be NaN");
+        }
         if (multiplicand == 0d || duration.isZero()) {
             return Duration.ZERO;
         }
         if (multiplicand == 1d) {
             return duration;
+        }
+        if (Double.isInfinite(multiplicand)) {
+            boolean positive = (multiplicand > 0) == !duration.isNegative();
+            return positive ? Duration.ofSeconds(Long.MAX_VALUE, 999_999_999) : Duration.ofSeconds(Long.MIN_VALUE);
         }
         BigDecimal amount = durationToBigDecimalSeconds(duration);
         amount = amount.multiply(BigDecimal.valueOf(multiplicand));

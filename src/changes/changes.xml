@@ -125,6 +125,10 @@
       <action dev="jodastephen" type="fix" issue="448">
         Fix `Temporals.durationFromBigDecimalSeconds()` to handle very large/small exponents correctly.
       </action>
+      <action dev="jodastephen" type="fix" issue="449">
+        Fix `Temporals` methods that take `double`.
+        Handle zero, NaN, infinity and saturation correctly.
+      </action>
     </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">
