@@ -88,6 +88,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
@@ -95,6 +96,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
@@ -491,6 +493,95 @@ public class TestTemporals {
     @Test
     public void test_parseFirstMatching_twoNoMatch() {
         assertThrows(DateTimeParseException.class, () -> Temporals.parseFirstMatching("2016", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE));
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    public void test_parseFirstMatching_nullFormatterElement() {
+        assertThrows(NullPointerException.class, () -> Temporals.parseFirstMatching("2016-09-06", LocalDate::from, (DateTimeFormatter) null));
+        assertThrows(NullPointerException.class, () -> Temporals.parseFirstMatching("2016-09-06", LocalDate::from, null, DateTimeFormatter.ISO_LOCAL_DATE));
+        assertThrows(NullPointerException.class, () -> Temporals.parseFirstMatching("2016-09-06", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, null));
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    public void test_parseFirstMatching_queryReturnsNull() {
+        assertThrows(DateTimeParseException.class, () -> Temporals.parseFirstMatching("2016-09-06", t -> null, DateTimeFormatter.ISO_LOCAL_DATE));
+        assertThrows(DateTimeParseException.class, () -> Temporals.parseFirstMatching("2016-09-06", t -> null, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.ISO_DATE));
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    public void test_parseFirstMatching_queryReturnsNullThenMatches() {
+        int[] count = new int[1];
+        LocalDate result = Temporals.parseFirstMatching("2016-09-06", t -> count[0]++ == 0 ? null : LocalDate.from(t),
+                DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.ISO_DATE);
+        assertEquals(LocalDate.of(2016, 9, 6), result);
+    }
+
+    @Test
+    public void test_parseFirstMatching_resolveFailureFallsThrough() {
+        DateTimeFormatter strict = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
+        DateTimeFormatter lenient = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.LENIENT);
+        assertEquals(LocalDate.of(2023, 3, 3), Temporals.parseFirstMatching("31/02/2023", LocalDate::from, strict, lenient));
+    }
+
+    @Test
+    public void test_parseFirstMatching_allFailSuppressed() {
+        DateTimeParseException ex = assertThrows(DateTimeParseException.class,
+                () -> Temporals.parseFirstMatching("2016-02-30", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE));
+        assertEquals("2016-02-30", ex.getParsedString());
+        assertEquals(2, ex.getSuppressed().length);
+    }
+
+    @Test
+    public void test_parseFirstMatching_queryThrowsMulti() {
+        TemporalQuery<LocalDate> throwing = t -> {
+            throw new IllegalStateException("boom");
+        };
+        DateTimeParseException ex = assertThrows(DateTimeParseException.class,
+                () -> Temporals.parseFirstMatching("2016-09-06", throwing, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.ISO_DATE));
+        assertEquals(2, ex.getSuppressed().length);
+        assertEquals("boom", ex.getSuppressed()[0].getCause().getMessage());
+    }
+
+    @Test
+    public void test_parseFirstMatching_queryThrowsThenMatches() {
+        int[] count = new int[1];
+        LocalDate result = Temporals.parseFirstMatching("2016-09-06", t -> {
+            if (count[0]++ == 0) {
+                throw new IllegalStateException("boom");
+            }
+            return LocalDate.from(t);
+        }, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.ISO_DATE);
+        assertEquals(LocalDate.of(2016, 9, 6), result);
+    }
+
+    @Test
+    public void test_parseFirstMatching_oneFails() {
+        DateTimeParseException ex = assertThrows(DateTimeParseException.class,
+                () -> Temporals.parseFirstMatching("2016-02-30", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE));
+        assertEquals(1, ex.getSuppressed().length);
+        assertEquals(null, ex.getCause());
+    }
+
+    @Test
+    public void test_parseFirstMatching_emptyAndTrailing() {
+        assertThrows(DateTimeParseException.class,
+                () -> Temporals.parseFirstMatching("", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE));
+        assertThrows(DateTimeParseException.class,
+                () -> Temporals.parseFirstMatching("2016-09-06x", LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.ISO_DATE));
+    }
+
+    @Test
+    public void test_parseFirstMatching_longTextMessageAbbreviated() {
+        char[] chars = new char[10_000];
+        java.util.Arrays.fill(chars, '1');
+        String text = new String(chars);
+        DateTimeParseException ex = assertThrows(DateTimeParseException.class,
+                () -> Temporals.parseFirstMatching(text, LocalDate::from, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.BASIC_ISO_DATE));
+        assertTrue(ex.getMessage().length() < 200);
+        assertEquals(text, ex.getParsedString());
     }
 
     //-----------------------------------------------------------------------

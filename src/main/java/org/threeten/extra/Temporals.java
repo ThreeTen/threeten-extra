@@ -42,7 +42,6 @@ import static java.time.temporal.ChronoUnit.WEEKS;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
@@ -360,13 +359,17 @@ public final class Temporals {
      * <pre>
      *  LocalDateTime dt = Temporals.parseFirstMatching(str, LocalDateTime::from, fmt1, fm2, fm3);
      * </pre>
+     * If a formatter does not consume the entire text, fails during parsing or resolving,
+     * or its query fails or returns null, the next formatter is tried.
+     * If no formatter produces a non-null result, a {@code DateTimeParseException} is thrown
+     * with the individual failures stored as suppressed exceptions.
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
      *
      * @param <T> the type of the parsed date-time
      * @param text  the text to parse, not null
      * @param query  the query defining the type to parse to, not null
-     * @param formatters  the formatters to try, not null
+     * @param formatters  the formatters to try, not null, no element may be null
      * @return the parsed date-time, not null
      * @throws DateTimeParseException if unable to parse the requested result
      */
@@ -377,22 +380,31 @@ public final class Temporals {
         if (formatters.length == 0) {
             throw new DateTimeParseException("No formatters specified", text, 0);
         }
-        if (formatters.length == 1) {
-            return formatters[0].parse(text, query);
+        for (int i = 0; i < formatters.length; i++) {
+            int index = i;
+            Objects.requireNonNull(formatters[i], () -> "formatters[" + index + "]");
         }
+        DateTimeParseException failure = null;
         for (DateTimeFormatter formatter : formatters) {
+            RuntimeException problem;
             try {
-                ParsePosition pp = new ParsePosition(0);
-                formatter.parseUnresolved(text, pp);
-                int len = text.length();
-                if (pp.getErrorIndex() == -1 && pp.getIndex() == len) {
-                    return formatter.parse(text, query);
+                // the JDK method can return null, even though the JDK Javadoc says it can't
+                T result = formatter.parse(text, query);
+                if (result != null) {
+                    return result;
                 }
+                problem = new DateTimeParseException("Query returned null", text, 0);
             } catch (RuntimeException ex) {
-                // should not happen, but ignore if it does
+                problem = ex;
             }
+            if (failure == null) {
+                // only built on failure, abbreviating the text as the JDK does
+                CharSequence abbreviated = text.length() > 64 ? text.subSequence(0, 64).toString() + "..." : text;
+                failure = new DateTimeParseException("Text '" + abbreviated + "' could not be parsed", text, 0);
+            }
+            failure.addSuppressed(problem);
         }
-        throw new DateTimeParseException("Text '" + text + "' could not be parsed", text, 0);
+        throw failure;
     }
 
     //-------------------------------------------------------------------------
