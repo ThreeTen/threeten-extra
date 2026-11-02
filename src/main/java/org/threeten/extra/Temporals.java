@@ -387,27 +387,29 @@ public final class Temporals {
             Objects.requireNonNull(formatters[i], () -> "formatters[" + index + "]");
         }
         List<Throwable> suppressed = new ArrayList<>();
+        boolean queryReturnedNull = false;
         for (DateTimeFormatter formatter : formatters) {
-            RuntimeException problem;
             try {
                 // the JDK method can return null, even though the JDK Javadoc says it can't
                 T result = formatter.parse(text, query);
+                //noinspection ConstantConditions
                 if (result != null) {
                     return result;
                 }
-                problem = new DateTimeParseException("Query returned null", text, 0);
+                queryReturnedNull = true;
             } catch (RuntimeException ex) {
-                problem = ex;
+                suppressed.add(ex);
             }
-            suppressed.add(problem);
         }
         // only built on failure, abbreviating the text as the JDK does
-        CharSequence abbreviated = text.length() > 64 ? text.subSequence(0, 64).toString() + "..." : text;
+        CharSequence abbreviated = text.length() > 64 ? text.subSequence(0, 64) + "..." : text;
+        //noinspection ConstantValue
+        if (queryReturnedNull && suppressed.isEmpty()) {
+            throw new DateTimeParseException("Text '" + abbreviated + "' was parsed, but the query returned null", text, 0);
+        }
         int errorPos = suppressed.stream()
                 .filter(ex -> ex instanceof DateTimeParseException)
-                .map(ex -> (DateTimeParseException) ex)
-                .filter(ex -> !ex.getMessage().equals("Query returned null"))
-                .mapToInt(DateTimeParseException::getErrorIndex)
+                .mapToInt(ex -> ((DateTimeParseException) ex).getErrorIndex())
                 .filter(pos -> pos >= 0)
                 .findFirst()
                 .orElse(0);

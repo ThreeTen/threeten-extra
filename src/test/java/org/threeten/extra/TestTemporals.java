@@ -557,7 +557,7 @@ public class TestTemporals {
         DateTimeParseException ex = assertThrows(DateTimeParseException.class,
                 () -> Temporals.parseFirstMatching("2016-09-06", nullThenThrow::queryFrom, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.ISO_DATE));
         assertEquals(0, ex.getErrorIndex());
-        assertEquals(2, ex.getSuppressed().length);
+        assertEquals(1, ex.getSuppressed().length);
     }
 
     @Test
