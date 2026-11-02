@@ -66,7 +66,9 @@ import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.jspecify.annotations.Nullable;
@@ -384,7 +386,7 @@ public final class Temporals {
             int index = i;
             Objects.requireNonNull(formatters[i], () -> "formatters[" + index + "]");
         }
-        DateTimeParseException failure = null;
+        List<Throwable> suppressed = new ArrayList<>();
         for (DateTimeFormatter formatter : formatters) {
             RuntimeException problem;
             try {
@@ -397,12 +399,21 @@ public final class Temporals {
             } catch (RuntimeException ex) {
                 problem = ex;
             }
-            if (failure == null) {
-                // only built on failure, abbreviating the text as the JDK does
-                CharSequence abbreviated = text.length() > 64 ? text.subSequence(0, 64).toString() + "..." : text;
-                failure = new DateTimeParseException("Text '" + abbreviated + "' could not be parsed", text, 0);
-            }
-            failure.addSuppressed(problem);
+            suppressed.add(problem);
+        }
+        // only built on failure, abbreviating the text as the JDK does
+        CharSequence abbreviated = text.length() > 64 ? text.subSequence(0, 64).toString() + "..." : text;
+        int errorPos = suppressed.stream()
+                .filter(ex -> ex instanceof DateTimeParseException)
+                .map(ex -> (DateTimeParseException) ex)
+                .filter(ex -> !ex.getMessage().equals("Query returned null"))
+                .mapToInt(DateTimeParseException::getErrorIndex)
+                .filter(pos -> pos >= 0)
+                .findFirst()
+                .orElse(0);
+        DateTimeParseException failure = new DateTimeParseException("Text '" + abbreviated + "' could not be parsed", text, errorPos);
+        for (Throwable ex : suppressed) {
+            failure.addSuppressed(ex);
         }
         throw failure;
     }

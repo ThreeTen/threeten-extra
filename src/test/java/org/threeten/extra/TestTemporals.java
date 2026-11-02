@@ -535,6 +535,32 @@ public class TestTemporals {
     }
 
     @Test
+    public void test_parseFirstMatching_errorIndexFromFirstParseFailure() {
+        DateTimeParseException ex = assertThrows(DateTimeParseException.class,
+                () -> Temporals.parseFirstMatching("2016-09-xx", LocalDate::from, DateTimeFormatter.BASIC_ISO_DATE, DateTimeFormatter.ISO_LOCAL_DATE));
+        assertEquals(4, ex.getErrorIndex());
+        assertEquals(2, ex.getSuppressed().length);
+    }
+
+    @Test
+    public void test_parseFirstMatching_errorIndexSkipsNullQueryAndNonParseFailures() {
+        TemporalQuery<LocalDate> nullThenThrow = new TemporalQuery<LocalDate>() {
+            private int count;
+            @Override
+            public @Nullable LocalDate queryFrom(TemporalAccessor temporal) {
+                if (count++ == 0) {
+                    return null;
+                }
+                throw new IllegalStateException("boom");
+            }
+        };
+        DateTimeParseException ex = assertThrows(DateTimeParseException.class,
+                () -> Temporals.parseFirstMatching("2016-09-06", nullThenThrow::queryFrom, DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.ISO_DATE));
+        assertEquals(0, ex.getErrorIndex());
+        assertEquals(2, ex.getSuppressed().length);
+    }
+
+    @Test
     public void test_parseFirstMatching_queryThrowsMulti() {
         TemporalQuery<LocalDate> throwing = t -> {
             throw new IllegalStateException("boom");
