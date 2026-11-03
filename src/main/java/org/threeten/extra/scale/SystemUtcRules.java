@@ -32,6 +32,7 @@
 package org.threeten.extra.scale;
 
 import java.io.Serializable;
+import java.time.temporal.JulianFields;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -121,6 +122,7 @@ final class SystemUtcRules extends UtcRules implements Serializable {
      * @param mjDay  the Modified Julian Day that the leap second occurs at the end of
      * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
      * @throws IllegalArgumentException if the leap adjustment is invalid
+     * @throws IllegalArgumentException if the day is outside the range of {@link JulianFields#MODIFIED_JULIAN_DAY}
      * @throws IllegalArgumentException if the day is before or equal the last known leap second day
      *  and the definition does not match a previously registered leap
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
@@ -128,6 +130,9 @@ final class SystemUtcRules extends UtcRules implements Serializable {
     void register(long mjDay, int leapAdjustment) {
         if (leapAdjustment != -1 && leapAdjustment != 1) {
             throw new IllegalArgumentException("Leap adjustment must be -1 or 1");
+        }
+        if (!JulianFields.MODIFIED_JULIAN_DAY.range().isValidValue(mjDay)) {
+            throw new IllegalArgumentException("Modified Julian Day is out of the supported range");
         }
         Data data = dataRef.get();
         int pos = Arrays.binarySearch(data.dates, mjDay);

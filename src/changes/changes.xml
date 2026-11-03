@@ -129,6 +129,9 @@
         Fix `Temporals` methods that take `double`.
         Handle zero, NaN, infinity and saturation correctly.
       </action>
+      <action dev="jodastephen" type="fix" issue="450">
+        Ensure registered leap seconds are within a sensible range to avoid overflow issues.
+      </action>
     </release>
     <release version="1.11.0" date="2026-10-14" description="v1.11.0">
       <action dev="jodastephen" type="add" issue="369">

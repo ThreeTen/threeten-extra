@@ -591,6 +591,14 @@ public class TestUtcRules {
         assertThrows(IllegalArgumentException.class, () -> rules.register(MJD_2100, 3));
     }
 
+    @Test
+    public void test_registerLeapSecond_outOfRange() {
+        assertThrows(IllegalArgumentException.class, () -> rules.register(Long.MAX_VALUE, 1));
+        assertThrows(IllegalArgumentException.class, () -> rules.register(Long.MAX_VALUE / 86400 + 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> rules.register(JulianFields.MODIFIED_JULIAN_DAY.range().getMaximum() + 1, 1));
+        assertEquals(0, rules.getLeapSecondAdjustment(Long.MAX_VALUE));
+    }
+
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
