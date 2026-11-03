@@ -46,6 +46,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.JulianFields;
 import java.time.temporal.TemporalAccessor;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
@@ -117,6 +120,19 @@ public final class UtcInstant
      * Serialization version.
      */
     private static final long serialVersionUID = 2600294095511836210L;
+    /**
+     * Parser for the ISO-8601 format with a large signed year, used when the date is outside the Instant range.
+     */
+    private static final Pattern LARGE_PARSER = Pattern.compile(
+            "([+-][0-9]{5,})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:[.]([0-9]{1,9}))?Z");
+    /**
+     * The number of days in a 400 year cycle of the ISO calendar.
+     */
+    private static final long DAYS_PER_CYCLE = 146097;
+    /**
+     * The number of years in a 400 year cycle of the ISO calendar.
+     */
+    private static final long YEARS_PER_CYCLE = 400;
 
     /**
      * The Modified Julian Day, from the epoch of 1858-11-17.
@@ -153,7 +169,7 @@ public final class UtcInstant
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
      * @return the UTC instant, not null
-     * @throws IllegalArgumentException if nanoOfDay is out of range
+     * @throws DateTimeException if nanoOfDay is out of range
      */
     public static UtcInstant ofModifiedJulianDay(long mjDay, long nanoOfDay) {
         UtcRules.system().validateModifiedJulianDay(mjDay, nanoOfDay);
@@ -203,16 +219,26 @@ public final class UtcInstant
      * Obtains an instance of {@code UtcInstant} from a text string,
      * such as {@code 2007-12-03T10:15:30.00Z}.
      * <p>
-     * The string must represent a valid instant in UTC and is parsed using
+     * The string must represent a valid instant in UTC and is parsed using the format of
      * {@link DateTimeFormatter#ISO_INSTANT} with leap seconds handled.
+     * A leap second (second 60) is only valid on a day that has one in the leap second rules.
+     * <p>
+     * The date may have a year of any size, as long as the resulting Modified Julian Day
+     * fits in a {@code long}. Years beyond four digits must have a sign, such as
+     * {@code +1000000000-01-01T00:00:00Z} or {@code +999999999999-12-31T23:59:59Z}.
      *
      * @param text  the text to parse such as "2007-12-03T10:15:30.00Z", not null
      * @return the parsed instant, not null
      * @throws DateTimeParseException if the text cannot be parsed
-     * @throws DateTimeException if parsed text represents an invalid leap second
+     * @throws DateTimeException if the text represents an invalid leap second
      */
     @FromString
     public static UtcInstant parse(CharSequence text) {
+        Objects.requireNonNull(text, "text");
+        Matcher matcher = LARGE_PARSER.matcher(text);
+        if (matcher.matches()) {
+            return parseLarge(text, matcher);
+        }
         TemporalAccessor parsed = DateTimeFormatter.ISO_INSTANT.parse(text);
         long epochSecond = parsed.getLong(INSTANT_SECONDS);
         long nanoOfSecond = parsed.getLong(NANO_OF_SECOND);
@@ -224,6 +250,37 @@ public final class UtcInstant
             nanoOfDay += NANOS_PER_SECOND;
         }
         return UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
+    }
+
+    // parses ISO-8601 text with a year too large for Instant
+    private static UtcInstant parseLarge(CharSequence text, Matcher matcher) {
+        try {
+            long year = Long.parseLong(matcher.group(1));
+            int month = Integer.parseInt(matcher.group(2));
+            int day = Integer.parseInt(matcher.group(3));
+            int hour = Integer.parseInt(matcher.group(4));
+            int minute = Integer.parseInt(matcher.group(5));
+            int second = Integer.parseInt(matcher.group(6));
+            String fraction = matcher.group(7);
+            long nano = fraction == null ? 0 : Long.parseLong((fraction + "000000000").substring(0, 9));
+            if (hour > 23 || minute > 59 || second > 60 || (second == 60 && (hour != 23 || minute != 59))) {
+                throw new DateTimeParseException("The text could not be parsed", text, 0);
+            }
+            // shift the year into a 400 year window, as the calendar repeats every 400 years
+            long cycles = Math.floorDiv(year, YEARS_PER_CYCLE) - 5;
+            int baseYear = 2000 + (int) Math.floorMod(year, YEARS_PER_CYCLE);
+            long baseMjd = LocalDate.of(baseYear, month, day).toEpochDay() + OFFSET_MJD_EPOCH;
+            // for negative cycles, shift one cycle so the multiplication cannot overflow at Long.MIN_VALUE
+            long mjd = cycles < 0
+                    ? Math.addExact(Math.multiplyExact(cycles + 1, DAYS_PER_CYCLE), baseMjd - DAYS_PER_CYCLE)
+                    : Math.addExact(baseMjd, Math.multiplyExact(cycles, DAYS_PER_CYCLE));
+            long nanoOfDay = ((hour * 60L + minute) * 60 + second) * NANOS_PER_SECOND + nano;
+            return UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
+        } catch (DateTimeParseException ex) {
+            throw ex;
+        } catch (NumberFormatException | ArithmeticException | DateTimeException ex) {
+            throw new DateTimeParseException("The text could not be parsed", text, 0, ex);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -501,6 +558,10 @@ public final class UtcInstant
      * The string is formatted using ISO-8601.
      * The output includes seconds, 9 nanosecond digits and a trailing 'Z'.
      * The time-of-day will be 23:59:60 during a positive leap second.
+     * <p>
+     * Years beyond the range of {@code LocalDate} are output with a sign and as many digits as needed,
+     * for example {@code +1000000000-01-01T00:00:00Z}.
+     * The result can be read back using {@link #parse(CharSequence)}.
      *
      * @return a representation of this instant, not null
      */
@@ -518,7 +579,16 @@ public final class UtcInstant
 
     // produces the string representation of this instant
     private String buildToString() {
-        LocalDate date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay); // TODO: capacity/import issues
+        String date;
+        if (JulianFields.MODIFIED_JULIAN_DAY.range().isValidValue(mjDay)) {
+            date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay).toString();
+        } else {
+            // the calendar repeats every 400 years, so format a day in the first cycle and adjust the year
+            long cycles = Math.floorDiv(mjDay, DAYS_PER_CYCLE);
+            LocalDate base = LocalDate.ofEpochDay(Math.floorMod(mjDay, DAYS_PER_CYCLE) - OFFSET_MJD_EPOCH);
+            long year = base.getYear() + cycles * YEARS_PER_CYCLE;
+            date = (year < 0 ? "-" : "+") + Math.abs(year) + base.toString().substring(4);
+        }
         StringBuilder buf = new StringBuilder(30);
         int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
         int hourValue = sod / (60 * 60);
