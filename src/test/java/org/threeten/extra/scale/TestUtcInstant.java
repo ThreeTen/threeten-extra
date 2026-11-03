@@ -45,6 +45,8 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.JulianFields;
 
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
@@ -190,6 +192,101 @@ public class TestUtcInstant {
         assertEquals(UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_DAY - NANOS_PER_SEC), UtcInstant.parse("1972-12-31T23:59:59Z"));
         assertEquals(UtcInstant.ofModifiedJulianDay(MJD_1972_12_31_LEAP, NANOS_PER_DAY), UtcInstant.parse("1972-12-31T23:59:60Z"));
     }
+
+    @Test
+    public void factory_parse_CharSequence_rangeLimits() {
+        UtcInstant min = UtcInstant.parse("-999999999-01-01T00:00:00Z");
+        UtcInstant max = UtcInstant.parse("+999999999-12-31T23:59:59.999999999Z");
+        assertEquals(LocalDate.of(-999999999, 1, 1).getLong(JulianFields.MODIFIED_JULIAN_DAY), min.getModifiedJulianDay());
+        assertEquals(LocalDate.of(999999999, 12, 31).getLong(JulianFields.MODIFIED_JULIAN_DAY), max.getModifiedJulianDay());
+        assertEquals("-999999999-01-01T00:00:00Z", min.toString());
+        assertEquals("+999999999-12-31T23:59:59.999999999Z", max.toString());
+    }
+
+    @Test
+    public void factory_parse_CharSequence_beyondLocalDate_toStringDoesNotThrow() {
+        UtcInstant before = UtcInstant.parse("-1000000000-12-31T23:59:59Z");
+        UtcInstant after = UtcInstant.parse("+1000000000-01-01T00:00:00Z");
+        long min = JulianFields.MODIFIED_JULIAN_DAY.range().getMinimum();
+        long max = JulianFields.MODIFIED_JULIAN_DAY.range().getMaximum();
+        assertEquals(min - 1, before.getModifiedJulianDay());
+        assertEquals(max + 1, after.getModifiedJulianDay());
+        assertEquals("MJD" + (min - 1) + "T23:59:59Z", before.toString());
+        assertEquals("MJD+" + (max + 1) + "T00:00:00Z", after.toString());
+    }
+
+    @Test
+    public void test_toString_extremeModifiedJulianDay() {
+        assertEquals("MJD+9223372036854775807T00:00:00Z", UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, 0).toString());
+        assertEquals("MJD-9223372036854775808T00:00:01.500Z", UtcInstant.ofModifiedJulianDay(Long.MIN_VALUE, 1_500_000_000L).toString());
+        assertFalse(UtcInstant.of(Instant.MIN).toString().isEmpty());
+        assertFalse(UtcInstant.of(Instant.MAX).toString().isEmpty());
+    }
+
+    public static Object[][] data_mjdRoundTrip() {
+        long min = JulianFields.MODIFIED_JULIAN_DAY.range().getMinimum();
+        long max = JulianFields.MODIFIED_JULIAN_DAY.range().getMaximum();
+        long[] days = {Long.MIN_VALUE, min - 1_000_000, min - 1, min, 0, max, max + 1, max + 1_000_000, Long.MAX_VALUE};
+        long[] nanos = {0, 1, 1_000, 1_000_000, 123_456_789, 500_000_000, NANOS_PER_DAY - 1};
+        Object[][] result = new Object[days.length * nanos.length][];
+        int i = 0;
+        for (long d : days) {
+            for (long n : nanos) {
+                result[i++] = new Object[] {d, n};
+            }
+        }
+        return result;
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_mjdRoundTrip")
+    public void test_toString_parse_roundTrip(long mjd, long nanoOfDay) {
+        UtcInstant instant = UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
+        assertEquals(instant, UtcInstant.parse(instant.toString()));
+    }
+
+    @Test
+    public void test_toString_parse_roundTrip_randomised() {
+        java.util.Random random = new java.util.Random(1);
+        for (int i = 0; i < 100_000; i++) {
+            long mjd = random.nextBoolean() ? random.nextLong() : (random.nextLong() >> random.nextInt(63));
+            long nanoOfDay = Math.floorMod(random.nextLong(), NANOS_PER_DAY);
+            UtcInstant instant = UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
+            assertEquals(instant, UtcInstant.parse(instant.toString()));
+        }
+    }
+
+    public static Object[][] data_badMjdParse() {
+        return new Object[][] {
+            {"MJD"},
+            {"MJD+T00:00:00Z"},
+            {"MJD1T00:00:00Z"},  // sign required
+            {"MJD+1T24:00:00Z"},
+            {"MJD+1T00:60:00Z"},
+            {"MJD+1T00:00:61Z"},
+            {"MJD+1T00:59:60Z"},  // leap second only at 23:59
+            {"MJD+1T23:59:60Z"},  // no leap second on that day
+            {"MJD+1T00:00:00.Z"},
+            {"MJD+1T00:00:00.1234567890Z"},
+            {"MJD+1T00:00:00"},
+            {"MJD+99999999999999999999T00:00:00Z"},
+            {"mjd+1T00:00:00Z"},
+            {"MJD+1T00:00:00Z\n"},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_badMjdParse")
+    public void factory_parse_CharSequence_invalidMjd(String str) {
+        assertThrows(DateTimeException.class, () -> UtcInstant.parse(str));
+    }
+
+    @Test
+    public void factory_parse_CharSequence_mjdFraction() {
+        assertEquals(UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, 500_000_000L), UtcInstant.parse("MJD+9223372036854775807T00:00:00.5Z"));
+        assertEquals(UtcInstant.ofModifiedJulianDay(-5_000_000_000_000L, 1_000_000_000L + 5), UtcInstant.parse("MJD-5000000000000T00:00:01.000000005Z"));
+    }
+
 
     public static Object[][] data_badParse() {
         return new Object[][] {

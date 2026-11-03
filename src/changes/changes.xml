@@ -51,6 +51,11 @@
         Cause exceptions are now stored as suppressed exceptions (as they aren't usually that interesting).
         Parsing occurs via parse directly instead of parseUnresolved followed by parse.
       </action>
+      <action dev="jodastephen" type="fix" issue="451">
+        Fix `UtcInstant` string format to handle large Modified Julian Dates correctly.
+        This alters the output of `UtcInstant.toString()` for large values, and could be considered a breaking change.
+        The new format is also parsable by `UtcInstant.parse()`, which could be considered a breaking change.
+      </action>
       <action dev="jodastephen" type="fix" issue="420">
         Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
       </action>

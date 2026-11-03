@@ -46,6 +46,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.JulianFields;
 import java.time.temporal.TemporalAccessor;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
@@ -117,6 +120,11 @@ public final class UtcInstant
      * Serialization version.
      */
     private static final long serialVersionUID = 2600294095511836210L;
+    /**
+     * Parser for the MJD format used by toString() outside the LocalDate range.
+     */
+    private static final Pattern MJD_PARSER = Pattern.compile(
+            "MJD([+-][0-9]+)T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:[.]([0-9]{1,9}))?Z");
 
     /**
      * The Modified Julian Day, from the epoch of 1858-11-17.
@@ -153,7 +161,7 @@ public final class UtcInstant
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
      * @return the UTC instant, not null
-     * @throws IllegalArgumentException if nanoOfDay is out of range
+     * @throws DateTimeException if nanoOfDay is out of range
      */
     public static UtcInstant ofModifiedJulianDay(long mjDay, long nanoOfDay) {
         UtcRules.system().validateModifiedJulianDay(mjDay, nanoOfDay);
@@ -205,14 +213,27 @@ public final class UtcInstant
      * <p>
      * The string must represent a valid instant in UTC and is parsed using
      * {@link DateTimeFormatter#ISO_INSTANT} with leap seconds handled.
+     * <p>
+     * The range of dates accepted is that of {@link Instant}.
+     * A leap second (second 60) is only valid on a day that has one in the leap second rules.
+     * <p>
+     * The {@code MJD} format produced by {@link #toString()} for days outside the range
+     * of {@code LocalDate} is also accepted, such as {@code MJD+365241821059T00:00:00Z}.
+     * It consists of {@code MJD}, a signed Modified Julian Day, {@code T}, a time of
+     * {@code HH:mm:ss} with an optional fraction of 1 to 9 digits, and {@code Z}.
      *
      * @param text  the text to parse such as "2007-12-03T10:15:30.00Z", not null
      * @return the parsed instant, not null
      * @throws DateTimeParseException if the text cannot be parsed
-     * @throws DateTimeException if parsed text represents an invalid leap second
+     * @throws DateTimeException if the text represents an invalid leap second
      */
     @FromString
     public static UtcInstant parse(CharSequence text) {
+        Objects.requireNonNull(text, "text");
+        Matcher mjdMatcher = MJD_PARSER.matcher(text);
+        if (mjdMatcher.matches()) {
+            return parseMjd(text, mjdMatcher);
+        }
         TemporalAccessor parsed = DateTimeFormatter.ISO_INSTANT.parse(text);
         long epochSecond = parsed.getLong(INSTANT_SECONDS);
         long nanoOfSecond = parsed.getLong(NANO_OF_SECOND);
@@ -224,6 +245,25 @@ public final class UtcInstant
             nanoOfDay += NANOS_PER_SECOND;
         }
         return UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
+    }
+
+    // parses the MJD format produced by toString() for days outside the LocalDate range
+    private static UtcInstant parseMjd(CharSequence text, Matcher matcher) {
+        try {
+            long mjd = Long.parseLong(matcher.group(1));
+            int hour = Integer.parseInt(matcher.group(2));
+            int minute = Integer.parseInt(matcher.group(3));
+            int second = Integer.parseInt(matcher.group(4));
+            String fraction = matcher.group(5);
+            long nano = fraction == null ? 0 : Long.parseLong((fraction + "000000000").substring(0, 9));
+            if (hour > 23 || minute > 59 || second > 60 || (second == 60 && (hour != 23 || minute != 59))) {
+                throw new DateTimeParseException("The text could not be parsed", text, 0);
+            }
+            long nanoOfDay = ((hour * 60L + minute) * 60 + second) * NANOS_PER_SECOND + nano;
+            return UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
+        } catch (NumberFormatException ex) {
+            throw new DateTimeParseException("The text could not be parsed", text, 0, ex);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -498,9 +538,14 @@ public final class UtcInstant
     /**
      * A string representation of this instant.
      * <p>
-     * The string is formatted using ISO-8601.
+     * The string is formatted using ISO-8601 or Modified Julian Days.
      * The output includes seconds, 9 nanosecond digits and a trailing 'Z'.
      * The time-of-day will be 23:59:60 during a positive leap second.
+     * <p>
+     * The date will use the ISO-8601 format if the Modified Julian Day is within the range of {@code LocalDate}.
+     * The date will use the Modified Julian Day format if it is outside that range,
+     * for example {@code MJD+365241821059T00:00:00Z}.
+     * Both formats can be read back using {@link #parse(CharSequence)}.
      *
      * @return a representation of this instant, not null
      */
@@ -518,7 +563,12 @@ public final class UtcInstant
 
     // produces the string representation of this instant
     private String buildToString() {
-        LocalDate date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay); // TODO: capacity/import issues
+        String date;
+        if (JulianFields.MODIFIED_JULIAN_DAY.range().isValidValue(mjDay)) {
+            date = LocalDate.MAX.with(JulianFields.MODIFIED_JULIAN_DAY, mjDay).toString();
+        } else {
+            date = "MJD" + (mjDay < 0 ? "" : "+") + mjDay;
+        }
         StringBuilder buf = new StringBuilder(30);
         int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
         int hourValue = sod / (60 * 60);
