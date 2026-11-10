@@ -132,7 +132,7 @@
       <action dev="jodastephen" type="fix" issue="450">
         Ensure registered leap seconds are within a sensible range to avoid overflow issues.
       </action>
-      <action dev="jodastephen" type="fix" issue="451">
+      <action dev="jodastephen" type="fix" issue="454">
         Fix `UtcInstant` string format/parse to handle large Modified Julian Dates correctly.
       </action>
     </release>
