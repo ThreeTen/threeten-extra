@@ -209,6 +209,14 @@ public class TestUtcInstant {
     }
 
     @Test
+    public void factory_parse_CharSequence_endOfDayAtMin() {
+        String dayBeforeMin = "-25252734927764696-04-21T";
+        assertThrows(DateTimeException.class, () -> UtcInstant.parse(dayBeforeMin + "00:00:00Z"));
+        assertEquals(UtcInstant.ofModifiedJulianDay(Long.MIN_VALUE, 0),
+                UtcInstant.parse(dayBeforeMin + "24:00:00Z"));
+    }
+
+    @Test
     public void factory_parse_CharSequence_rangeLimits() {
         UtcInstant min = UtcInstant.parse("-999999999-01-01T00:00:00Z");
         UtcInstant max = UtcInstant.parse("+999999999-12-31T23:59:59.999999999Z");

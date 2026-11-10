@@ -273,14 +273,14 @@ public final class UtcInstant
             long cycles = Math.floorDiv(year, YEARS_PER_CYCLE) - 5;
             int baseYear = 2000 + (int) Math.floorMod(year, YEARS_PER_CYCLE);
             long baseMjd = LocalDate.of(baseYear, month, day).toEpochDay() + OFFSET_MJD_EPOCH;
+            if (endOfDay) {
+                baseMjd = Math.addExact(baseMjd, 1);
+                hour = 0;
+            }
             // for negative cycles, shift one cycle so the multiplication cannot overflow at Long.MIN_VALUE
             long mjd = cycles < 0
                     ? Math.addExact(Math.multiplyExact(cycles + 1, DAYS_PER_CYCLE), baseMjd - DAYS_PER_CYCLE)
                     : Math.addExact(baseMjd, Math.multiplyExact(cycles, DAYS_PER_CYCLE));
-            if (endOfDay) {
-                mjd = Math.addExact(mjd, 1);
-                hour = 0;
-            }
             long nanoOfDay = ((hour * 60L + minute) * 60 + second) * NANOS_PER_SECOND + nano;
             return UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
         } catch (DateTimeParseException ex) {
