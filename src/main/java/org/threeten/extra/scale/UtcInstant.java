@@ -124,7 +124,7 @@ public final class UtcInstant
      * Parser for the ISO-8601 format with a large signed year, used when the date is outside the Instant range.
      */
     private static final Pattern LARGE_PARSER = Pattern.compile(
-            "([+-][0-9]{5,})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:[.]([0-9]{1,9}))?Z");
+            "([+-][0-9]{5,})-([0-9]{2})-([0-9]{2})[Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(?:[.]([0-9]{0,9}))?[Zz]");
     /**
      * The number of days in a 400 year cycle of the ISO calendar.
      */
@@ -256,6 +256,9 @@ public final class UtcInstant
     private static UtcInstant parseLarge(CharSequence text, Matcher matcher) {
         try {
             long year = Long.parseLong(matcher.group(1));
+            if (year == 0 && matcher.group(1).charAt(0) == '-') {
+                throw new DateTimeParseException("The text could not be parsed", text, 0);
+            }
             int month = Integer.parseInt(matcher.group(2));
             int day = Integer.parseInt(matcher.group(3));
             int hour = Integer.parseInt(matcher.group(4));

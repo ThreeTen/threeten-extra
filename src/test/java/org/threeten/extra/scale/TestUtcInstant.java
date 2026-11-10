@@ -217,6 +217,13 @@ public class TestUtcInstant {
     }
 
     @Test
+    public void factory_parse_CharSequence_largeFormatCaseAndEmptyFraction() {
+        UtcInstant expected = UtcInstant.parse("+999999999999-01-01T00:00:00Z");
+        assertEquals(expected, UtcInstant.parse("+999999999999-01-01t00:00:00z"));
+        assertEquals(expected, UtcInstant.parse("+999999999999-01-01T00:00:00.Z"));
+    }
+
+    @Test
     public void factory_parse_CharSequence_rangeLimits() {
         UtcInstant min = UtcInstant.parse("-999999999-01-01T00:00:00Z");
         UtcInstant max = UtcInstant.parse("+999999999-12-31T23:59:59.999999999Z");
@@ -345,6 +352,7 @@ public class TestUtcInstant {
                 {"+1000000100-02-29T00:00:00Z"},  // not a leap year
                 {"+1000000000-04-31T00:00:00Z"},
                 {"1000000000-01-01T00:00:00Z"},  // sign required
+                {"-00000-01-01T00:00:00Z"},  // negative zero year
                 {"+1000000000-01-01T24:00:01Z"},
                 {"+1000000000-01-01T00:60:00Z"},
                 {"+1000000000-01-01T00:00:61Z"},
