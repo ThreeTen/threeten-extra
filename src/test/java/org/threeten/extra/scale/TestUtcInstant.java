@@ -195,6 +195,20 @@ public class TestUtcInstant {
     }
 
     @Test
+    public void factory_parse_CharSequence_endOfDay() {
+        UtcInstant expected = UtcInstant.ofModifiedJulianDay(
+                LocalDate.of(10000, 1, 2).getLong(JulianFields.MODIFIED_JULIAN_DAY), 0);
+        assertEquals(expected, UtcInstant.parse("+10000-01-01T24:00:00Z"));
+    }
+
+    @Test
+    public void factory_parse_CharSequence_endOfDayAtMax() {
+        String maxDate = "+25252734927768413-06-12T";
+        assertEquals(UtcInstant.ofModifiedJulianDay(Long.MAX_VALUE, 0), UtcInstant.parse(maxDate + "00:00:00Z"));
+        assertThrows(DateTimeException.class, () -> UtcInstant.parse(maxDate + "24:00:00Z"));
+    }
+
+    @Test
     public void factory_parse_CharSequence_rangeLimits() {
         UtcInstant min = UtcInstant.parse("-999999999-01-01T00:00:00Z");
         UtcInstant max = UtcInstant.parse("+999999999-12-31T23:59:59.999999999Z");
@@ -323,7 +337,7 @@ public class TestUtcInstant {
                 {"+1000000100-02-29T00:00:00Z"},  // not a leap year
                 {"+1000000000-04-31T00:00:00Z"},
                 {"1000000000-01-01T00:00:00Z"},  // sign required
-                {"+1000000000-01-01T24:00:00Z"},
+                {"+1000000000-01-01T24:00:01Z"},
                 {"+1000000000-01-01T00:60:00Z"},
                 {"+1000000000-01-01T00:00:61Z"},
                 {"+1000000000-01-01T00:59:60Z"},

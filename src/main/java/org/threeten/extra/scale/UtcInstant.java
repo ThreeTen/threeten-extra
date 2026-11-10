@@ -263,7 +263,10 @@ public final class UtcInstant
             int second = Integer.parseInt(matcher.group(6));
             String fraction = matcher.group(7);
             long nano = fraction == null ? 0 : Long.parseLong((fraction + "000000000").substring(0, 9));
-            if (hour > 23 || minute > 59 || second > 60 || (second == 60 && (hour != 23 || minute != 59))) {
+            boolean endOfDay = hour == 24;
+            if (hour > 24 || minute > 59 || second > 60 ||
+                    (endOfDay && (minute != 0 || second != 0 || nano != 0)) ||
+                    (second == 60 && (hour != 23 || minute != 59))) {
                 throw new DateTimeParseException("The text could not be parsed", text, 0);
             }
             // shift the year into a 400 year window, as the calendar repeats every 400 years
@@ -274,6 +277,10 @@ public final class UtcInstant
             long mjd = cycles < 0
                     ? Math.addExact(Math.multiplyExact(cycles + 1, DAYS_PER_CYCLE), baseMjd - DAYS_PER_CYCLE)
                     : Math.addExact(baseMjd, Math.multiplyExact(cycles, DAYS_PER_CYCLE));
+            if (endOfDay) {
+                mjd = Math.addExact(mjd, 1);
+                hour = 0;
+            }
             long nanoOfDay = ((hour * 60L + minute) * 60 + second) * NANOS_PER_SECOND + nano;
             return UtcInstant.ofModifiedJulianDay(mjd, nanoOfDay);
         } catch (DateTimeParseException ex) {
