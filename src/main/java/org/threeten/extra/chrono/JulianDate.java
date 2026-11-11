@@ -245,6 +245,7 @@ public final class JulianDate
     }
 
     private static JulianDate resolvePreviousValid(int prolepticYear, int month, int day) {
+        JulianChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         switch (month) {
             case 2:
                 day = Math.min(day, JulianChronology.INSTANCE.isLeapYear(prolepticYear) ? 29 : 28);

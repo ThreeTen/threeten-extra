@@ -517,11 +517,11 @@ public class TestSymmetry010Chronology {
         assertEquals(ValueRange.of(1, 30, 37), Symmetry010Chronology.INSTANCE.range(DAY_OF_MONTH));
         assertEquals(ValueRange.of(1, 364, 371), Symmetry010Chronology.INSTANCE.range(DAY_OF_YEAR));
         assertEquals(ValueRange.of(0, 1), Symmetry010Chronology.INSTANCE.range(ERA));
-        assertEquals(ValueRange.of(-1_000_000 * 364L - 177_474 * 7 - 719_162, 1_000_000 * 364L + 177_474 * 7 - 719_162), Symmetry010Chronology.INSTANCE.range(EPOCH_DAY));
+        assertEquals(ValueRange.of(-365_961_851L, 364_523_155L), Symmetry010Chronology.INSTANCE.range(EPOCH_DAY));
         assertEquals(ValueRange.of(1, 12), Symmetry010Chronology.INSTANCE.range(MONTH_OF_YEAR));
-        assertEquals(ValueRange.of(-12_000_000L, 11_999_999L), Symmetry010Chronology.INSTANCE.range(PROLEPTIC_MONTH));
+        assertEquals(ValueRange.of(-12_000_000L, 12_000_011L), Symmetry010Chronology.INSTANCE.range(PROLEPTIC_MONTH));
         assertEquals(ValueRange.of(-1_000_000L, 1_000_000), Symmetry010Chronology.INSTANCE.range(YEAR));
-        assertEquals(ValueRange.of(-1_000_000, 1_000_000), Symmetry010Chronology.INSTANCE.range(YEAR_OF_ERA));
+        assertEquals(ValueRange.of(1, 1_000_000, 1_000_001), Symmetry010Chronology.INSTANCE.range(YEAR_OF_ERA));
     }
 
     //-----------------------------------------------------------------------
@@ -748,7 +748,7 @@ public class TestSymmetry010Chronology {
             {2013,  1,  1, MONTH_OF_YEAR, -2},
             {2015,  1,  1, MONTH_OF_YEAR, 14},
 
-            {2013,  1,  1, EPOCH_DAY, -365_961_481},
+            {2013,  1,  1, EPOCH_DAY, -365_961_852},
             {2013,  1,  1, EPOCH_DAY,  364_523_156},
             {2013,  1,  1, YEAR, -1_000_001},
             {2013,  1,  1, YEAR,  1_000_001},
@@ -1062,5 +1062,16 @@ public class TestSymmetry010Chronology {
     @MethodSource("data_toString")
     public void test_toString(Symmetry010Date date, String expected) {
         assertEquals(expected, date.toString());
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_range_limits() {
+        int maxYear = (int) Symmetry010Chronology.YEAR_RANGE.getMaximum();
+        Symmetry010Date min = Symmetry010Date.ofYearDay(-maxYear, 1);
+        Symmetry010Date max = Symmetry010Date.ofYearDay(maxYear, Symmetry010Chronology.INSTANCE.isLeapYear(maxYear) ? 371 : 364);
+        RangeLimitAssertions.assertNarrowRangeLimits(Symmetry010Chronology.INSTANCE, min, max);
+        assertThrows(DateTimeException.class, () -> Symmetry010Date.ofYearDay(-maxYear - 1, 1));
+        assertThrows(DateTimeException.class, () -> Symmetry010Date.ofYearDay(maxYear + 1, 1));
     }
 }

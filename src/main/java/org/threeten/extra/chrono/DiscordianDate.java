@@ -288,6 +288,7 @@ public final class DiscordianDate
     }
 
     private static DiscordianDate resolvePreviousValid(int prolepticYear, int month, int day) {
+        DiscordianChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         if (month == 0) {
             day = 0;
             if (DiscordianChronology.INSTANCE.isLeapYear(prolepticYear)) {

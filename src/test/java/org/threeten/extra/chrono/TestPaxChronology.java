@@ -889,4 +889,16 @@ public class TestPaxChronology {
         assertEquals(expected, pax.toString());
     }
 
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_range_limits() {
+        PaxDate min = PaxDate.from(LocalDate.MIN);
+        PaxDate max = PaxDate.from(LocalDate.MAX);
+        RangeLimitAssertions.assertRangeLimits(PaxChronology.INSTANCE, min, max);
+        assertThrows(DateTimeException.class, () -> PaxDate.of(-1_000_000_000, 1, 1));
+        assertThrows(DateTimeException.class, () -> PaxDate.of(1_000_000_000, 1, 1));
+        assertThrows(DateTimeException.class, () -> PaxDate.of(-999_999_999, 1, 1));
+        assertThrows(DateTimeException.class, () -> PaxDate.of(999_999_999, 14, 28));
+    }
+
 }

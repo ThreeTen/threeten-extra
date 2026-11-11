@@ -41,8 +41,10 @@ import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
 import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
+import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -71,6 +73,11 @@ import org.jspecify.annotations.Nullable;
  * <li>leap-year - Leap years occur every 4 years.
  * </ul>
  *
+ * <h3>Valid range</h3>
+ * The supported range is {@code -999,998-01-01 (Coptic)} to {@code +999,999-13-06 (Coptic)}.
+ * This corresponds to the ISO dates {@code -999735-02-15 (ISO)} to {@code +1000304-03-12 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
@@ -79,7 +86,7 @@ public final class CopticChronology
         implements Serializable {
 
     /**
-     * Singleton instance for the Coptic chronology.
+     * Singleton instance of the Coptic chronology.
      */
     public static final CopticChronology INSTANCE = new CopticChronology();
 
@@ -334,6 +341,14 @@ public final class CopticChronology
     @Override
     public List<Era> eras() {
         return Arrays.asList(CopticEra.values());
+    }
+
+    @Override
+    public ValueRange range(ChronoField field) {
+        if (field == ChronoField.EPOCH_DAY) {
+            return CopticDate.EPOCH_DAY_RANGE;
+        }
+        return super.range(field);
     }
 
     //-----------------------------------------------------------------------

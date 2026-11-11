@@ -38,6 +38,7 @@ import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
@@ -1303,6 +1304,20 @@ public class TestBritishCutoverChronology {
     @MethodSource("data_toString")
     public void test_toString(BritishCutoverDate cutover, String expected) {
         assertEquals(expected, cutover.toString());
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_range_limits() {
+        BritishCutoverDate min = BritishCutoverDate.of(-999_998, 1, 1);
+        BritishCutoverDate max = BritishCutoverDate.of(999_999, 12, 31);
+        ValueRange epochDayRange = ValueRange.of(min.toEpochDay(), max.toEpochDay());
+        assertEquals(epochDayRange, BritishCutoverChronology.INSTANCE.range(EPOCH_DAY));
+        assertEquals(epochDayRange, min.range(EPOCH_DAY));
+        assertEquals(epochDayRange, max.range(EPOCH_DAY));
+        RangeLimitAssertions.assertNarrowRangeLimits(BritishCutoverChronology.INSTANCE, min, max);
+        assertThrows(DateTimeException.class, () -> BritishCutoverDate.of(-999_999, 1, 1));
+        assertThrows(DateTimeException.class, () -> BritishCutoverDate.of(1_000_000, 1, 1));
     }
 
 }

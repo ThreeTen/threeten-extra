@@ -85,6 +85,12 @@ import org.jspecify.annotations.Nullable;
  * <li>leap-year - Leap years usually occur every 5 or 6 years.  Timing depends on settings chosen.
  * </ul>
  *
+ * <h3>Valid range</h3>
+ * The supported range for an instance starts at {@code -999,999,999-01-01 (Accounting)} and ends on the last day
+ * of proleptic year {@code +999,999,999 (Accounting)}.
+ * The final month and day, and the corresponding ISO dates, depend on the configuration (year end and leap year rules).
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */

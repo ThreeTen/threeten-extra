@@ -78,13 +78,18 @@ import org.jspecify.annotations.Nullable;
  * <p>
  * For more information, please read the <a href="https://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
  *
+ * <h3>Valid range</h3>
+ * The supported range is {@code -999,999,999-01-02 (Pax)} to {@code +999,999,999-14-27 (Pax)}.
+ * This corresponds to the ISO dates {@code -999999999-01-01 (ISO)} to {@code +999999999-12-31 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
 public final class PaxChronology extends AbstractChronology implements Serializable {
 
     /**
-     * Singleton instance for the Pax chronology.
+     * Singleton instance of the Pax chronology.
      */
     public static final PaxChronology INSTANCE = new PaxChronology();
 
@@ -142,6 +147,12 @@ public final class PaxChronology extends AbstractChronology implements Serializa
      * Range of month of year.
      */
     static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(1, MONTHS_IN_YEAR, MONTHS_IN_YEAR + 1);
+    /**
+     * Range of proleptic month, covering the first month of the minimum year to the last month of the maximum year.
+     */
+    private static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(
+            -999_999_999L * MONTHS_IN_YEAR + PaxDate.getLeapYearsBefore(-999_999_999L),
+            1_000_000_000L * MONTHS_IN_YEAR + PaxDate.getLeapYearsBefore(1_000_000_000L) - 1);
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
@@ -424,6 +435,8 @@ public final class PaxChronology extends AbstractChronology implements Serializa
                 return DAY_OF_YEAR_RANGE;
             case MONTH_OF_YEAR:
                 return MONTH_OF_YEAR_RANGE;
+            case PROLEPTIC_MONTH:
+                return PROLEPTIC_MONTH_RANGE;
             default:
                 return field.range();
         }

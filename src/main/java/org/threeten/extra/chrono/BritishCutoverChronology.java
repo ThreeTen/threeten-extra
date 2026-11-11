@@ -68,12 +68,12 @@ import org.jspecify.annotations.Nullable;
  * the cutover resulted in a "gap" of 10 days.
  * <p>
  * While the calendar was introduced in 1582, it was not adopted everywhere.
- * Britain did not adopt it until the 1752, when Wednesday 2nd September 1752
+ * Britain did not adopt it until 1752, when Wednesday 2nd September 1752
  * was followed by Thursday 14th September 1752.
  * <p>
  * This chronology implements the proleptic Julian calendar system followed by
  * the proleptic Gregorian calendar system (identical to the ISO calendar system).
- * Dates are aligned such that {@code 0001-01-01 (British)} is {@code 0000-12-30 (ISO)}.
+ * Dates are aligned such that {@code 0001-01-01 (BritishCutover)} is {@code 0000-12-30 (ISO)}.
  * <p>
  * This class implements a calendar where January 1st is the start of the year.
  * The history of the start of the year is complex and using the current standard
@@ -98,6 +98,11 @@ import org.jspecify.annotations.Nullable;
  *  The cutover year 1752 has values from 1 to 355 and a length of 355 days.
  * </ul>
  *
+ * <h3>Valid range</h3>
+ * The supported range is {@code -999,998-01-01 (BritishCutover)} to {@code +999,999-12-31 (BritishCutover)}.
+ * This corresponds to the ISO dates {@code -1000019-06-18 (ISO)} to {@code +999999-12-31 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
@@ -106,7 +111,7 @@ public final class BritishCutoverChronology
         implements Serializable {
 
     /**
-     * Singleton instance for the Coptic chronology.
+     * Singleton instance of the BritishCutover chronology.
      */
     public static final BritishCutoverChronology INSTANCE = new BritishCutoverChronology();
     /**
@@ -150,6 +155,12 @@ public final class BritishCutoverChronology
      * Range of proleptic month.
      */
     static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(-999_998 * 12L, 999_999 * 12L + 11);
+    /**
+     * Range of epoch-days.
+     */
+    static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(
+            JulianDate.of(-999_998, 1, 1).toEpochDay(),
+            LocalDate.of(999_999, 12, 31).toEpochDay());
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
@@ -444,6 +455,8 @@ public final class BritishCutoverChronology
     @Override
     public ValueRange range(ChronoField field) {
         switch (field) {
+            case EPOCH_DAY:
+                return EPOCH_DAY_RANGE;
             case DAY_OF_YEAR:
                 return DOY_RANGE;
             case ALIGNED_WEEK_OF_MONTH:

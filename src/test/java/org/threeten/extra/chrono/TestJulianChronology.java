@@ -740,4 +740,14 @@ public class TestJulianChronology {
         assertEquals(expected, julian.toString());
     }
 
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_range_limits() {
+        JulianDate min = JulianDate.of(-999_998, 1, 1);
+        JulianDate max = JulianDate.of(999_999, 12, 31);
+        RangeLimitAssertions.assertNarrowRangeLimits(JulianChronology.INSTANCE, min, max);
+        assertThrows(DateTimeException.class, () -> JulianDate.of(-999_999, 1, 1));
+        assertThrows(DateTimeException.class, () -> JulianDate.of(1_000_000, 1, 1));
+    }
+
 }

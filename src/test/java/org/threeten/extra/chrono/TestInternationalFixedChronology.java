@@ -510,9 +510,9 @@ public class TestInternationalFixedChronology {
         assertEquals(ValueRange.of(1, 29), InternationalFixedChronology.INSTANCE.range(DAY_OF_MONTH));
         assertEquals(ValueRange.of(1, 365, 366), InternationalFixedChronology.INSTANCE.range(DAY_OF_YEAR));
         assertEquals(ValueRange.of(1, 1), InternationalFixedChronology.INSTANCE.range(ERA));
-        assertEquals(ValueRange.of(-719_528, 1_000_000 * 365L + 242_499 - 719_528), InternationalFixedChronology.INSTANCE.range(EPOCH_DAY));
+        assertEquals(ValueRange.of(-719_162, 1_000_001 * 365L + 242_500 - 719_528), InternationalFixedChronology.INSTANCE.range(EPOCH_DAY));
         assertEquals(ValueRange.of(1, 13), InternationalFixedChronology.INSTANCE.range(MONTH_OF_YEAR));
-        assertEquals(ValueRange.of(13, 1_000_000 * 13L - 1), InternationalFixedChronology.INSTANCE.range(PROLEPTIC_MONTH));
+        assertEquals(ValueRange.of(13, 1_000_000 * 13L + 12), InternationalFixedChronology.INSTANCE.range(PROLEPTIC_MONTH));
         assertEquals(ValueRange.of(1, 1_000_000), InternationalFixedChronology.INSTANCE.range(YEAR));
         assertEquals(ValueRange.of(1, 1_000_000), InternationalFixedChronology.INSTANCE.range(YEAR_OF_ERA));
     }
@@ -855,8 +855,8 @@ public class TestInternationalFixedChronology {
             {2013, 1, 1, DAY_OF_YEAR, 366},
             {2012, 1, 1, DAY_OF_YEAR, 367},
 
-            {2013, 1, 1, EPOCH_DAY, -719_529},
-            {2013, 1, 1, EPOCH_DAY, 1_000_000 * 365L + 242_499 - 719_528 + 1},
+            {2013, 1, 1, EPOCH_DAY, -719_163},
+            {2013, 1, 1, EPOCH_DAY, 1_000_001 * 365L + 242_500 - 719_528 + 1},
 
             {2013, 1, 1, MONTH_OF_YEAR, -1},
             {2013, 1, 1, MONTH_OF_YEAR, 14},
@@ -1398,5 +1398,15 @@ public class TestInternationalFixedChronology {
     @MethodSource("data_toString")
     public void test_toString(InternationalFixedDate date, String expected) {
         assertEquals(expected, date.toString());
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_range_limits() {
+        InternationalFixedDate min = InternationalFixedDate.ofYearDay(1, 1);
+        InternationalFixedDate max = InternationalFixedDate.ofYearDay(1_000_000, 366);
+        RangeLimitAssertions.assertNarrowRangeLimits(InternationalFixedChronology.INSTANCE, min, max);
+        assertThrows(DateTimeException.class, () -> InternationalFixedDate.ofYearDay(0, 1));
+        assertThrows(DateTimeException.class, () -> InternationalFixedDate.ofYearDay(1_000_001, 1));
     }
 }

@@ -38,6 +38,7 @@ import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
@@ -711,6 +712,20 @@ public class TestCopticChronology {
     @MethodSource("data_toString")
     public void test_toString(CopticDate coptic, String expected) {
         assertEquals(expected, coptic.toString());
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_range_limits() {
+        CopticDate min = CopticDate.of(-999_998, 1, 1);
+        CopticDate max = CopticDate.of(999_999, 13, 6);
+        ValueRange epochDayRange = ValueRange.of(min.toEpochDay(), max.toEpochDay());
+        assertEquals(epochDayRange, CopticChronology.INSTANCE.range(EPOCH_DAY));
+        assertEquals(epochDayRange, min.range(EPOCH_DAY));
+        assertEquals(epochDayRange, max.range(EPOCH_DAY));
+        RangeLimitAssertions.assertNarrowRangeLimits(CopticChronology.INSTANCE, min, max);
+        assertThrows(DateTimeException.class, () -> min.with(PROLEPTIC_MONTH, -999_998 * 13L - 1));
+        assertThrows(DateTimeException.class, () -> max.with(PROLEPTIC_MONTH, 999_999 * 13L + 13));
     }
 
 }

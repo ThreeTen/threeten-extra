@@ -264,7 +264,7 @@ public final class Symmetry454Date
      * @throws DateTimeException if the epoch-day is out of range
      */
     static Symmetry454Date ofEpochDay(long epochDay) {
-        EPOCH_DAY_RANGE.checkValidValue(epochDay + 3, ChronoField.EPOCH_DAY);
+        EPOCH_DAY_RANGE.checkValidValue(epochDay, ChronoField.EPOCH_DAY);
         long zeroDay = epochDay + DAYS_0001_TO_1970 + 1;
         long year = 1 + Math.floorDiv(293 * zeroDay, DAYS_PER_CYCLE);
         long doy = zeroDay - (DAYS_IN_YEAR * (year - 1) + Symmetry454Chronology.getLeapYearsBefore(year) * DAYS_IN_WEEK);

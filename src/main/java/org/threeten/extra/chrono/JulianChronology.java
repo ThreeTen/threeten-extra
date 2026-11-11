@@ -81,13 +81,18 @@ import org.jspecify.annotations.Nullable;
  * <li>leap-year - Leap years occur every 4 years.
  * </ul>
  *
+ * <h3>Valid range</h3>
+ * The supported range is {@code -999,998-01-01 (Julian)} to {@code +999,999-12-31 (Julian)}.
+ * This corresponds to the ISO dates {@code -1000019-06-18 (ISO)} to {@code +1000020-07-11 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
 public final class JulianChronology extends AbstractChronology implements Serializable {
 
     /**
-     * Singleton instance for the Julian chronology.
+     * Singleton instance of the Julian chronology.
      */
     public static final JulianChronology INSTANCE = new JulianChronology();
 

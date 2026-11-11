@@ -54,6 +54,7 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
+import java.time.temporal.ValueRange;
 
 /**
  * A date in the Coptic calendar system.
@@ -80,6 +81,10 @@ public final class CopticDate
      * The difference between the ISO and Coptic epoch day count.
      */
     private static final int EPOCH_DAY_DIFFERENCE = 574971 + 40587;  // MJD values
+    /**
+     * The range of valid epoch-days.
+     */
+    static final ValueRange EPOCH_DAY_RANGE = AbstractNileChronology.epochDayRange(EPOCH_DAY_DIFFERENCE);
 
     /**
      * The proleptic year.
@@ -216,7 +221,7 @@ public final class CopticDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static CopticDate ofEpochDay(final long epochDay) {
-        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
+        EPOCH_DAY_RANGE.checkValidValue(epochDay, EPOCH_DAY);
         long copticED = epochDay + EPOCH_DAY_DIFFERENCE;
         int adjustment = 0;
         if (copticED < 0) {
@@ -232,6 +237,7 @@ public final class CopticDate
     }
 
     private static CopticDate resolvePreviousValid(int prolepticYear, int month, int day) {
+        CopticChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         if (month == 13 && day > 5) {
             day = CopticChronology.INSTANCE.isLeapYear(prolepticYear) ? 6 : 5;
         }

@@ -250,8 +250,13 @@ public final class BritishCutoverDate
      */
     BritishCutoverDate(LocalDate isoDate) {
         Objects.requireNonNull(isoDate, "isoDate");
+        if (isoDate.isBefore(CUTOVER)) {
+            this.julianDate = JulianDate.from(isoDate);
+        } else {
+            BritishCutoverChronology.YEAR_RANGE.checkValidValue(isoDate.getYear(), ChronoField.YEAR);
+            this.julianDate = null;
+        }
         this.isoDate = isoDate;
-        this.julianDate = (isoDate.isBefore(CUTOVER) ? JulianDate.from(isoDate) : null);
     }
 
     /**
