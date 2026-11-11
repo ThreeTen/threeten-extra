@@ -525,9 +525,6 @@ public final class Symmetry010Date
     @Override
     public Symmetry010Date with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
-            if (newValue == 0) {
-                return this;
-            }
             ChronoField f = (ChronoField) field;
             getChronology().range(f).checkValidValue(newValue, f);
             int nval = (int) newValue;
