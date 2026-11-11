@@ -51,6 +51,10 @@
         Cause exceptions are now stored as suppressed exceptions (as they aren't usually that interesting).
         Parsing occurs via parse directly instead of parseUnresolved followed by parse.
       </action>
+      <action dev="jodastephen" type="fix" issue="456">
+        Fix year and month ranges in chronology implementations, adding clear definitions where necessary.
+        Some invalid dates that could previously be created will now be rejected, which could be considered a breaking change.
+      </action>
       <action dev="jodastephen" type="fix" issue="420">
         Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
       </action>

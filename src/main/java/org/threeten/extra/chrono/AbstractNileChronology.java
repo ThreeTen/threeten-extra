@@ -77,6 +77,19 @@ abstract class AbstractNileChronology
 
     //-----------------------------------------------------------------------
     /**
+     * Calculates the valid range of ISO epoch-days for the supported year range.
+     *
+     * @param epochDayDifference  the difference between the calendar epoch and the ISO epoch, in days
+     * @return the range of epoch-days
+     */
+    static ValueRange epochDayRange(int epochDayDifference) {
+        long min = ((-999_998L - 1) * 365) + Math.floorDiv(-999_998L, 4) - epochDayDifference;
+        long max = ((999_999L - 1) * 365) + Math.floorDiv(999_999L, 4) + 365 - epochDayDifference;
+        return ValueRange.of(min, max);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if the specified year is a leap year.
      * <p>
      * The proleptic-year is leap if the remainder after division by four equals three.

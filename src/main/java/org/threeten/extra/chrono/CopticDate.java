@@ -36,6 +36,8 @@ import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
+import static org.threeten.extra.chrono.CopticChronology.EPOCH_DAY_DIFFERENCE;
+import static org.threeten.extra.chrono.CopticChronology.EPOCH_DAY_RANGE;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -54,6 +56,7 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
+import java.time.temporal.ValueRange;
 
 /**
  * A date in the Coptic calendar system.
@@ -76,10 +79,6 @@ public final class CopticDate
      * Serialization version.
      */
     private static final long serialVersionUID = -7920528871688876868L;
-    /**
-     * The difference between the ISO and Coptic epoch day count.
-     */
-    private static final int EPOCH_DAY_DIFFERENCE = 574971 + 40587;  // MJD values
 
     /**
      * The proleptic year.
@@ -216,7 +215,7 @@ public final class CopticDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static CopticDate ofEpochDay(final long epochDay) {
-        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
+        EPOCH_DAY_RANGE.checkValidValue(epochDay, EPOCH_DAY);
         long copticED = epochDay + EPOCH_DAY_DIFFERENCE;
         int adjustment = 0;
         if (copticED < 0) {
@@ -232,6 +231,7 @@ public final class CopticDate
     }
 
     private static CopticDate resolvePreviousValid(int prolepticYear, int month, int day) {
+        CopticChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         if (month == 13 && day > 5) {
             day = CopticChronology.INSTANCE.isLeapYear(prolepticYear) ? 6 : 5;
         }

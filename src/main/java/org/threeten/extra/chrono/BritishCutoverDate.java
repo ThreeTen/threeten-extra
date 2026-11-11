@@ -34,6 +34,7 @@ package org.threeten.extra.chrono;
 import static org.threeten.extra.chrono.BritishCutoverChronology.CUTOVER;
 import static org.threeten.extra.chrono.BritishCutoverChronology.CUTOVER_DAYS;
 import static org.threeten.extra.chrono.BritishCutoverChronology.CUTOVER_YEAR;
+import static org.threeten.extra.chrono.BritishCutoverChronology.EPOCH_DAY_RANGE;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -215,6 +216,7 @@ public final class BritishCutoverDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static BritishCutoverDate ofEpochDay(final long epochDay) {
+        EPOCH_DAY_RANGE.checkValidValue(epochDay, ChronoField.EPOCH_DAY);
         return new BritishCutoverDate(LocalDate.ofEpochDay(epochDay));
     }
 
@@ -250,8 +252,13 @@ public final class BritishCutoverDate
      */
     BritishCutoverDate(LocalDate isoDate) {
         Objects.requireNonNull(isoDate, "isoDate");
+        if (isoDate.isBefore(CUTOVER)) {
+            this.julianDate = JulianDate.from(isoDate);
+        } else {
+            BritishCutoverChronology.YEAR_RANGE.checkValidValue(isoDate.getYear(), ChronoField.YEAR);
+            this.julianDate = null;
+        }
         this.isoDate = isoDate;
-        this.julianDate = (isoDate.isBefore(CUTOVER) ? JulianDate.from(isoDate) : null);
     }
 
     /**

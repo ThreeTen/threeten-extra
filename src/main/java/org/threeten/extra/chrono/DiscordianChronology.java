@@ -75,6 +75,11 @@ import org.jspecify.annotations.Nullable;
  * St. Tib's Day is not part of any month, nor is it part of the Discordian week.  It is aligned with the ISO calendar leap-day (February 29th).
  * </ul>
  *
+ * <h3>Valid range</h3>
+ * The supported range is {@code 1-1-01 (Discordian)} to {@code +999,999-5-73 (Discordian)}.
+ * This corresponds to the ISO dates {@code -1165-01-01 (ISO)} to {@code +998833-12-31 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
@@ -83,7 +88,7 @@ public final class DiscordianChronology
         implements Serializable {
 
     /**
-     * Singleton instance for the Discordian chronology.
+     * Singleton instance of the Discordian chronology.
      */
     public static final DiscordianChronology INSTANCE = new DiscordianChronology();
 

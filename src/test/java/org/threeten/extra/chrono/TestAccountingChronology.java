@@ -800,4 +800,19 @@ public class TestAccountingChronology {
         assertEquals(expected, accounting.toString());
     }
 
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_range_limits() {
+        AccountingDate min = AccountingDate.from(INSTANCE, LocalDate.MIN);
+        assertEquals(min, INSTANCE.dateEpochDay(min.toEpochDay()));
+        assertThrows(DateTimeException.class, () -> INSTANCE.dateEpochDay(min.toEpochDay() - 1));
+        assertThrows(DateTimeException.class, () -> INSTANCE.dateEpochDay(LocalDate.MAX.toEpochDay() + 1));
+        assertThrows(DateTimeException.class, () -> min.minus(1, DAYS));
+        assertThrows(DateTimeException.class, () -> min.minus(1_000_000_000, YEARS));
+        assertThrows(DateTimeException.class, () -> INSTANCE.date(LocalDate.MAX));
+        assertThrows(DateTimeException.class, () -> INSTANCE.date(LocalDate.MAX).plus(1, DAYS));
+        assertThrows(DateTimeException.class, () -> AccountingDate.of(INSTANCE, -1_000_000_000, 1, 1));
+        assertThrows(DateTimeException.class, () -> AccountingDate.of(INSTANCE, 1_000_000_000, 1, 1));
+    }
+
 }

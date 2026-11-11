@@ -204,7 +204,9 @@ public final class PaxDate
             throw new DateTimeException("Invalid date during Pax as " + prolepticYear + " is a leap year");
         }
 
-        return new PaxDate(prolepticYear, month, dayOfMonth);
+        PaxDate date = new PaxDate(prolepticYear, month, dayOfMonth);
+        checkEpochDay(date.toEpochDay());
+        return date;
     }
 
     /**
@@ -280,7 +282,7 @@ public final class PaxDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static PaxDate ofEpochDay(long epochDay) {
-        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);
+        checkEpochDay(epochDay);
         // use of Pax 0001 makes non-leap century at end of (long) cycle.
         long paxEpochDay = epochDay + PAX_0001_TO_ISO_1970;
         int longCycle = (int) Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
@@ -361,7 +363,7 @@ public final class PaxDate
      * @param prolepticYear The year.
      * @return The number of leap years since Pax year 0.
      */
-    private static long getLeapYearsBefore(long prolepticYear) {
+    static long getLeapYearsBefore(long prolepticYear) {
         // Some explanations are in order:
         // - First, because this calculates "leap years from 0 to the start of the year",
         // The 'current' year must be counted when the year is negative (hence Math.floorDiv(...)).

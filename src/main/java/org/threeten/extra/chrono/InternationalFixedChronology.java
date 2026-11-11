@@ -54,7 +54,7 @@ import org.jspecify.annotations.Nullable;
  * <p>
  * This chronology defines the rules of the International Fixed calendar system.
  * It shares the leap year rule with the Gregorian calendar.
- * Dates are aligned such that {@code 0001-01-01 (International Fixed)} is {@code 0001-01-01 (ISO)}.
+ * Dates are aligned such that {@code 0001-01-01 (Ifc)} is {@code 0001-01-01 (ISO)}.
  * <p>
  * This class is proleptic. It implements only years greater or equal to 1.
  * <p>
@@ -74,6 +74,11 @@ import org.jspecify.annotations.Nullable;
  *  is not divisible by 400. This is the same rule in use for the Gregorian calendar.
  * <li>Week day - every month starts on a Sunday.  Leap-day and year-day are neither part of a week, nor of any month.
  * </ul>
+ *
+ * <h3>Valid range</h3>
+ * The supported range is {@code 1-01-01 (Ifc)} to {@code +1,000,000-13-29 (Ifc)}.
+ * This corresponds to the ISO dates {@code 0001-01-01 (ISO)} to {@code +1000000-12-31 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
  *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
@@ -133,11 +138,13 @@ public final class InternationalFixedChronology extends AbstractChronology imple
     /**
      * Epoch day range.
      */
-    static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(-DAYS_0000_TO_1970, 1_000_000L * DAYS_IN_YEAR + getLeapYearsBefore(1_000_000L) - DAYS_0000_TO_1970);
+    static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(
+            DAYS_IN_YEAR + getLeapYearsBefore(1) + 1 - DAYS_0000_TO_1970,
+            DAYS_IN_YEAR * 1_000_001L + getLeapYearsBefore(1_000_001L) - DAYS_0000_TO_1970);
     /**
      * Range of proleptic month.
      */
-    private static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(13, 1_000_000 * 13L - 1);
+    private static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(13, 1_000_000 * 13L + 12);
     /**
      * Range of day of month.
      */

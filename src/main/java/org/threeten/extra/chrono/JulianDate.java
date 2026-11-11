@@ -36,6 +36,7 @@ import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
+import static org.threeten.extra.chrono.JulianChronology.EPOCH_DAY_RANGE;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -230,7 +231,7 @@ public final class JulianDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static JulianDate ofEpochDay(final long epochDay) {
-        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
+        EPOCH_DAY_RANGE.checkValidValue(epochDay, EPOCH_DAY);
         // use of Julian 0001 makes leap year at end of cycle
         long julianEpochDay = epochDay + JULIAN_0001_TO_ISO_1970;
         long cycle = Math.floorDiv(julianEpochDay, DAYS_PER_CYCLE);
@@ -245,6 +246,7 @@ public final class JulianDate
     }
 
     private static JulianDate resolvePreviousValid(int prolepticYear, int month, int day) {
+        JulianChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         switch (month) {
             case 2:
                 day = Math.min(day, JulianChronology.INSTANCE.isLeapYear(prolepticYear) ? 29 : 28);

@@ -81,6 +81,11 @@ import org.jspecify.annotations.Nullable;
  *   There are no days outside the week or month.
  * </ul>
  *
+ * <h3>Valid range</h3>
+ * The supported range is {@code -1,000,000-01-01 (Symmetry010)} to {@code +1,000,000-12-30 (Symmetry010)}.
+ * This corresponds to the ISO dates {@code -1000000-06-26 (ISO)} to {@code +1000000-07-02 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
@@ -89,7 +94,7 @@ public final class Symmetry010Chronology
         implements Serializable {
 
     /**
-     * Singleton instance for the Symmetry010 chronology.
+     * Singleton instance of the Symmetry010 chronology.
      */
     public static final Symmetry010Chronology INSTANCE = new Symmetry010Chronology();
     /**
@@ -160,15 +165,19 @@ public final class Symmetry010Chronology
      */
     static final ValueRange YEAR_RANGE = ValueRange.of(-MAX_YEAR, MAX_YEAR);
     /**
+     * Range of year-of-era.
+     */
+    static final ValueRange YOE_RANGE = ValueRange.of(1, MAX_YEAR, MAX_YEAR + 1);
+    /**
      * Epoch day range.
      */
     static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(
-            -MAX_YEAR * DAYS_IN_YEAR - getLeapYearsBefore(MAX_YEAR) * DAYS_IN_WEEK - DAYS_0001_TO_1970,
-             MAX_YEAR * DAYS_IN_YEAR + getLeapYearsBefore(MAX_YEAR) * DAYS_IN_WEEK - DAYS_0001_TO_1970);
+            DAYS_IN_YEAR * (-MAX_YEAR - 1) + getLeapYearsBefore(-MAX_YEAR) * DAYS_IN_WEEK - DAYS_0001_TO_1970,
+            DAYS_IN_YEAR * MAX_YEAR + getLeapYearsBefore(MAX_YEAR + 1) * DAYS_IN_WEEK - DAYS_0001_TO_1970 - 1);
     /**
      * Range of proleptic month.
      */
-    private static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(-MAX_YEAR * MONTHS_IN_YEAR, MAX_YEAR * MONTHS_IN_YEAR - 1);
+    private static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(-MAX_YEAR * MONTHS_IN_YEAR, MAX_YEAR * MONTHS_IN_YEAR + MONTHS_IN_YEAR - 1);
     /**
      * Range of day of month.
      */
@@ -479,6 +488,7 @@ public final class Symmetry010Chronology
             case PROLEPTIC_MONTH:
                 return PROLEPTIC_MONTH_RANGE;
             case YEAR_OF_ERA:
+                return YOE_RANGE;
             case YEAR:
                 return YEAR_RANGE;
             default:

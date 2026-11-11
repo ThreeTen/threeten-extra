@@ -81,13 +81,18 @@ import org.jspecify.annotations.Nullable;
  * <li>leap-year - Leap years occur every 4 years.
  * </ul>
  *
+ * <h3>Valid range</h3>
+ * The supported range is {@code -999,998-01-01 (Julian)} to {@code +999,999-12-31 (Julian)}.
+ * This corresponds to the ISO dates {@code -1000019-06-18 (ISO)} to {@code +1000020-07-11 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
  */
 public final class JulianChronology extends AbstractChronology implements Serializable {
 
     /**
-     * Singleton instance for the Julian chronology.
+     * Singleton instance of the Julian chronology.
      */
     public static final JulianChronology INSTANCE = new JulianChronology();
 
@@ -107,6 +112,12 @@ public final class JulianChronology extends AbstractChronology implements Serial
      * Range of proleptic month.
      */
     static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(-999_998 * 12L, 999_999 * 12L + 11);
+    /**
+     * Range of epoch-days for the supported proleptic-year range.
+     */
+    static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(
+            JulianDate.of((int) YEAR_RANGE.getMinimum(), 1, 1).toEpochDay(),
+            JulianDate.of((int) YEAR_RANGE.getMaximum(), 12, 31).toEpochDay());
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
@@ -373,6 +384,8 @@ public final class JulianChronology extends AbstractChronology implements Serial
     @Override
     public ValueRange range(ChronoField field) {
         switch (field) {
+            case EPOCH_DAY:
+                return EPOCH_DAY_RANGE;
             case PROLEPTIC_MONTH:
                 return PROLEPTIC_MONTH_RANGE;
             case YEAR_OF_ERA:

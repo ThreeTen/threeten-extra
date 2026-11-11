@@ -38,6 +38,8 @@ import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.YEAR;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
@@ -57,10 +59,20 @@ import org.jspecify.annotations.Nullable;
 abstract class AbstractDate
         implements ChronoLocalDate {
 
+    private static final long MIN_EPOCH_DAY = LocalDate.MIN.toEpochDay();
+    private static final long MAX_EPOCH_DAY = LocalDate.MAX.toEpochDay();
+
     /**
      * Creates an instance.
      */
     AbstractDate() {
+    }
+
+    static void checkEpochDay(long epochDay) {
+        // JDK 8's ChronoField.EPOCH_DAY range is only an approximation.
+        if (epochDay < MIN_EPOCH_DAY || epochDay > MAX_EPOCH_DAY) {
+            throw new DateTimeException("Invalid value for EpochDay: " + epochDay);
+        }
     }
 
     //-----------------------------------------------------------------------

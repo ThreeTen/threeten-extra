@@ -36,6 +36,8 @@ import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
+import static org.threeten.extra.chrono.EthiopicChronology.EPOCH_DAY_DIFFERENCE;
+import static org.threeten.extra.chrono.EthiopicChronology.EPOCH_DAY_RANGE;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -54,6 +56,7 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
+import java.time.temporal.ValueRange;
 
 /**
  * A date in the Ethiopic calendar system.
@@ -78,10 +81,6 @@ public final class EthiopicDate
      * Serialization version.
      */
     private static final long serialVersionUID = -268768729L;
-    /**
-     * The difference between the ISO and Ethiopic epoch day count.
-     */
-    private static final int EPOCH_DAY_DIFFERENCE = 716367;
 
     /**
      * The proleptic year.
@@ -218,7 +217,7 @@ public final class EthiopicDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static EthiopicDate ofEpochDay(final long epochDay) {
-        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
+        EPOCH_DAY_RANGE.checkValidValue(epochDay, EPOCH_DAY);
         long ethiopicED = epochDay + EPOCH_DAY_DIFFERENCE;
         int adjustment = 0;
         if (ethiopicED < 0) {
@@ -234,6 +233,7 @@ public final class EthiopicDate
     }
 
     private static EthiopicDate resolvePreviousValid(int prolepticYear, int month, int day) {
+        EthiopicChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
         if (month == 13 && day > 5) {
             day = EthiopicChronology.INSTANCE.isLeapYear(prolepticYear) ? 6 : 5;
         }

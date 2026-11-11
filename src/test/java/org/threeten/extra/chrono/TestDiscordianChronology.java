@@ -988,4 +988,14 @@ public class TestDiscordianChronology {
         assertEquals(expected, discordian.toString());
     }
 
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_range_limits() {
+        DiscordianDate min = DiscordianDate.ofYearDay(1, 1);
+        DiscordianDate max = DiscordianDate.ofYearDay(999_999, 365);
+        RangeLimitAssertions.assertNarrowRangeLimits(DiscordianChronology.INSTANCE, min, max);
+        assertThrows(DateTimeException.class, () -> DiscordianDate.ofYearDay(0, 1));
+        assertThrows(DateTimeException.class, () -> DiscordianDate.ofYearDay(1_000_000, 1));
+    }
+
 }
