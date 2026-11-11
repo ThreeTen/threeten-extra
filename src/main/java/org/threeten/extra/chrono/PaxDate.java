@@ -205,7 +205,7 @@ public final class PaxDate
         }
 
         PaxDate date = new PaxDate(prolepticYear, month, dayOfMonth);
-        EPOCH_DAY.range().checkValidValue(date.toEpochDay(), EPOCH_DAY);
+        checkEpochDay(date.toEpochDay());
         return date;
     }
 
@@ -282,7 +282,7 @@ public final class PaxDate
      * @throws DateTimeException if the epoch-day is out of range
      */
     static PaxDate ofEpochDay(long epochDay) {
-        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);
+        checkEpochDay(epochDay);
         // use of Pax 0001 makes non-leap century at end of (long) cycle.
         long paxEpochDay = epochDay + PAX_0001_TO_ISO_1970;
         int longCycle = (int) Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);

@@ -259,7 +259,7 @@ public final class AccountingDate extends AbstractDate implements ChronoLocalDat
      *  NullPointerException if an AccountingChronology was not provided
      */
     static AccountingDate ofEpochDay(AccountingChronology chronology, long epochDay) {
-        EPOCH_DAY.range().checkValidValue(epochDay, EPOCH_DAY);  // validate outer bounds
+        checkEpochDay(epochDay);
         // Use Accounting 1 to help with 0-counts.  Leap years can occur at any time.
         long accountingEpochDay = epochDay + chronology.getDays0001ToIso1970();
 
