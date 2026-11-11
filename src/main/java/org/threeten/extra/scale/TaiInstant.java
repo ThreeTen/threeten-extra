@@ -188,6 +188,8 @@ public final class TaiInstant
      * <ul>
      * <li>{@code {seconds}.{nanosOfSecond}s(TAI)}
      * </ul>
+     * The sign applies to the whole value, so negative fractions are written
+     * with a leading minus sign, such as {@code -0.500000000s(TAI)}.
      * <p>
      * The accepted format is strict.
      * The seconds part must contain only numbers and a possible leading negative sign.
@@ -207,8 +209,11 @@ public final class TaiInstant
             try {
                 long seconds = Long.parseLong(matcher.group(1));
                 long nanos = Long.parseLong(matcher.group(2));
+                if (matcher.group(1).charAt(0) == '-') {
+                    nanos = -nanos;
+                }
                 return TaiInstant.ofTaiSeconds(seconds, nanos);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException | ArithmeticException ex) {
                 throw new DateTimeParseException("The text could not be parsed", text, 0, ex);
             }
         }
@@ -484,9 +489,11 @@ public final class TaiInstant
     /**
      * A string representation of this instant.
      * <p>
-     * The string is formatted as {@code {seconds).(nanosOfSecond}s(TAI)}.
+     * The string is formatted as {@code {seconds}.{nanosOfSecond}s(TAI)}.
      * At least one second digit will be present.
      * The nanoseconds will always be nine digits.
+     * The sign applies to the whole value, so negative fractions are written
+     * with a leading minus sign, such as {@code -0.500000000s(TAI)}.
      *
      * @return a representation of this instant, not null
      */
@@ -494,9 +501,15 @@ public final class TaiInstant
     @ToString
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append(seconds);
+        int displayNanos = nanos;
+        if (seconds < 0 && nanos > 0) {
+            buf.append('-').append(-(seconds + 1));
+            displayNanos = NANOS_PER_SECOND - nanos;
+        } else {
+            buf.append(seconds);
+        }
         int pos = buf.length();
-        buf.append(nanos + NANOS_PER_SECOND);
+        buf.append(displayNanos + NANOS_PER_SECOND);
         buf.setCharAt(pos, '.');
         buf.append("s(TAI)");
         return buf.toString();

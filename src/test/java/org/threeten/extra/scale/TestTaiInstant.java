@@ -41,9 +41,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.Random;
 
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
@@ -160,8 +162,7 @@ public class TestTaiInstant {
             for (int j = 900000000; j < 990000000; j += 10000000) {
                 String str = i + "." + j + "s(TAI)";
                 TaiInstant test = TaiInstant.parse(str);
-                assertEquals(i, test.getTaiSeconds());
-                assertEquals(j, test.getNano());
+                assertEquals(TaiInstant.ofTaiSeconds(i, i < 0 ? -j : j), test);
             }
         }
     }
@@ -174,6 +175,7 @@ public class TestTaiInstant {
             {"123.123456789s"},
             {"+123.123456789s(TAI)"},
             {"-123.123s(TAI)"},
+            {"-9223372036854775808.000000001s(TAI)"},
         };
     }
 
@@ -795,7 +797,54 @@ public class TestTaiInstant {
     @Test
     public void test_toString_negative() {
         TaiInstant t = TaiInstant.ofTaiSeconds(-123L, 123456789);
-        assertEquals("-123.123456789s(TAI)", t.toString());
+        assertEquals("-122.876543211s(TAI)", t.toString());
+    }
+
+    @Test
+    public void test_toString_negative_halfSeconds() {
+        TaiInstant[] instants = {
+            TaiInstant.ofTaiSeconds(1, 0),
+            TaiInstant.ofTaiSeconds(0, 500000000),
+            TaiInstant.ofTaiSeconds(0, 0),
+            TaiInstant.ofTaiSeconds(-1, 500000000),
+            TaiInstant.ofTaiSeconds(-1, 0),
+            TaiInstant.ofTaiSeconds(-2, 500000000),
+        };
+        String[] expected = {
+            "1.000000000s(TAI)",
+            "0.500000000s(TAI)",
+            "0.000000000s(TAI)",
+            "-0.500000000s(TAI)",
+            "-1.000000000s(TAI)",
+            "-1.500000000s(TAI)",
+        };
+        for (int i = 0; i < instants.length; i++) {
+            assertEquals(expected[i], instants[i].toString());
+            assertEquals(instants[i], TaiInstant.parse(expected[i]));
+        }
+    }
+
+    @Test
+    public void test_toString_parse_roundtrip_fuzz() {
+        Random random = new Random(0x544149L);
+        long[] boundarySeconds = {Long.MIN_VALUE, Long.MIN_VALUE + 1, -2, -1, 0, 1, Long.MAX_VALUE - 1, Long.MAX_VALUE};
+        int[] boundaryNanos = {0, 1, 500000000, 999999999};
+        for (long seconds : boundarySeconds) {
+            for (int nanos : boundaryNanos) {
+                assertToStringParseValue(TaiInstant.ofTaiSeconds(seconds, nanos));
+            }
+        }
+        for (int i = 0; i < 10000; i++) {
+            assertToStringParseValue(TaiInstant.ofTaiSeconds(random.nextLong(), random.nextInt(1000000000)));
+        }
+    }
+
+    private void assertToStringParseValue(TaiInstant instant) {
+        String text = instant.toString();
+        BigDecimal expected = BigDecimal.valueOf(instant.getTaiSeconds())
+                .add(BigDecimal.valueOf(instant.getNano(), 9));
+        assertEquals(expected, new BigDecimal(text.substring(0, text.length() - 6)), text);
+        assertEquals(instant, TaiInstant.parse(text), text);
     }
 
     @Test
