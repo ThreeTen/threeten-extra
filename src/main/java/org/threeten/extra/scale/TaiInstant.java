@@ -213,7 +213,7 @@ public final class TaiInstant
                     nanos = -nanos;
                 }
                 return TaiInstant.ofTaiSeconds(seconds, nanos);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException | ArithmeticException ex) {
                 throw new DateTimeParseException("The text could not be parsed", text, 0, ex);
             }
         }
