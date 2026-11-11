@@ -112,6 +112,12 @@ public final class JulianChronology extends AbstractChronology implements Serial
      * Range of proleptic month.
      */
     static final ValueRange PROLEPTIC_MONTH_RANGE = ValueRange.of(-999_998 * 12L, 999_999 * 12L + 11);
+    /**
+     * Range of epoch-days for the supported proleptic-year range.
+     */
+    static final ValueRange EPOCH_DAY_RANGE = ValueRange.of(
+            JulianDate.of((int) YEAR_RANGE.getMinimum(), 1, 1).toEpochDay(),
+            JulianDate.of((int) YEAR_RANGE.getMaximum(), 12, 31).toEpochDay());
 
     /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
@@ -378,6 +384,8 @@ public final class JulianChronology extends AbstractChronology implements Serial
     @Override
     public ValueRange range(ChronoField field) {
         switch (field) {
+            case EPOCH_DAY:
+                return EPOCH_DAY_RANGE;
             case PROLEPTIC_MONTH:
                 return PROLEPTIC_MONTH_RANGE;
             case YEAR_OF_ERA:

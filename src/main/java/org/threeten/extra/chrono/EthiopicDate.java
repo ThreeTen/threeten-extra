@@ -36,6 +36,8 @@ import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
+import static org.threeten.extra.chrono.EthiopicChronology.EPOCH_DAY_DIFFERENCE;
+import static org.threeten.extra.chrono.EthiopicChronology.EPOCH_DAY_RANGE;
 
 import java.io.Serializable;
 import java.time.Clock;
@@ -79,14 +81,6 @@ public final class EthiopicDate
      * Serialization version.
      */
     private static final long serialVersionUID = -268768729L;
-    /**
-     * The difference between the ISO and Ethiopic epoch day count.
-     */
-    private static final int EPOCH_DAY_DIFFERENCE = 716367;
-    /**
-     * The range of valid epoch-days.
-     */
-    static final ValueRange EPOCH_DAY_RANGE = AbstractNileChronology.epochDayRange(EPOCH_DAY_DIFFERENCE);
 
     /**
      * The proleptic year.

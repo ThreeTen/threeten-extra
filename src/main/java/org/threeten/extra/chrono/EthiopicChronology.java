@@ -96,6 +96,15 @@ public final class EthiopicChronology
     private static final long serialVersionUID = 53287687268768L;
 
     /**
+     * The difference between the ISO and Ethiopic epoch day count.
+     */
+    static final int EPOCH_DAY_DIFFERENCE = 716367;
+    /**
+     * Range of epoch-days for the supported proleptic-year range.
+     */
+    static final ValueRange EPOCH_DAY_RANGE = AbstractNileChronology.epochDayRange(EPOCH_DAY_DIFFERENCE);
+
+    /**
      * Private constructor, that is public to satisfy the {@code ServiceLoader}.
      * @deprecated Use the singleton {@link #INSTANCE} instead.
      */
@@ -346,7 +355,7 @@ public final class EthiopicChronology
     @Override
     public ValueRange range(ChronoField field) {
         if (field == ChronoField.EPOCH_DAY) {
-            return EthiopicDate.EPOCH_DAY_RANGE;
+            return EPOCH_DAY_RANGE;
         }
         return super.range(field);
     }

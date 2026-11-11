@@ -38,6 +38,7 @@ import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
@@ -745,6 +746,10 @@ public class TestJulianChronology {
     public void test_range_limits() {
         JulianDate min = JulianDate.of(-999_998, 1, 1);
         JulianDate max = JulianDate.of(999_999, 12, 31);
+        ValueRange epochDayRange = ValueRange.of(min.toEpochDay(), max.toEpochDay());
+        assertEquals(epochDayRange, JulianChronology.INSTANCE.range(EPOCH_DAY));
+        assertEquals(epochDayRange, min.range(EPOCH_DAY));
+        assertEquals(epochDayRange, max.range(EPOCH_DAY));
         RangeLimitAssertions.assertNarrowRangeLimits(JulianChronology.INSTANCE, min, max);
         assertThrows(DateTimeException.class, () -> JulianDate.of(-999_999, 1, 1));
         assertThrows(DateTimeException.class, () -> JulianDate.of(1_000_000, 1, 1));
