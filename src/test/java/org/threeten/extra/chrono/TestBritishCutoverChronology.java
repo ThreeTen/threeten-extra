@@ -505,6 +505,13 @@ public class TestBritishCutoverChronology {
     }
 
     @Test
+    public void test_prolepticYear_invalidYearOfEra() {
+        assertThrows(DateTimeException.class, () -> BritishCutoverChronology.INSTANCE.prolepticYear(JulianEra.AD, 0));
+        assertThrows(DateTimeException.class, () -> BritishCutoverChronology.INSTANCE.prolepticYear(JulianEra.BC, 1_000_000));
+        assertThrows(DateTimeException.class, () -> BritishCutoverChronology.INSTANCE.date(JulianEra.BC, 0, 1, 1));
+    }
+
+    @Test
     public void test_prolepticYear_badEra() {
         assertThrows(ClassCastException.class, () -> BritishCutoverChronology.INSTANCE.prolepticYear(IsoEra.CE, 4));
     }

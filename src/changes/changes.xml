@@ -55,6 +55,10 @@
         Fix year and month ranges in chronology implementations, adding clear definitions where necessary.
         Some invalid dates that could previously be created will now be rejected, which could be considered a breaking change.
       </action>
+      <action dev="jodastephen" type="fix" issue="457">
+        Fix year-of-era prolepticYear validation in chronology implementations.
+        The code now rejects invalid year-of-era values, which could be considered a breaking change.
+      </action>
       <action dev="jodastephen" type="fix" issue="420">
         Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
       </action>

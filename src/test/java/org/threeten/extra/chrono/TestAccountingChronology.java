@@ -420,6 +420,13 @@ public class TestAccountingChronology {
     }
 
     @Test
+    public void test_prolepticYear_invalidYearOfEra() {
+        assertThrows(DateTimeException.class, () -> INSTANCE.prolepticYear(AccountingEra.CE, 0));
+        assertThrows(DateTimeException.class, () -> INSTANCE.prolepticYear(AccountingEra.BCE, 1_000_000_001));
+        assertThrows(DateTimeException.class, () -> INSTANCE.date(AccountingEra.BCE, 0, 1, 1));
+    }
+
+    @Test
     public void test_prolepticYear_badEra() {
         assertThrows(ClassCastException.class, () -> INSTANCE.prolepticYear(IsoEra.CE, 4));
     }

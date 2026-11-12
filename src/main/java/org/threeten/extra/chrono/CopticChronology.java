@@ -339,6 +339,7 @@ public final class CopticChronology
         if (!(era instanceof CopticEra)) {
             throw new ClassCastException("Era must be CopticEra");
         }
+        YOE_RANGE.checkValidValue(yearOfEra, ChronoField.YEAR_OF_ERA);
         return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
     }
 

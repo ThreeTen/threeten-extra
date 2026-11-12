@@ -501,7 +501,8 @@ public final class Symmetry010Chronology
         if (!(era instanceof IsoEra)) {
             throw new ClassCastException("Invalid era: " + era);
         }
-        return YEAR_RANGE.checkValidIntValue(yearOfEra, ChronoField.YEAR_OF_ERA);
+        int yearOfEraValidated = YOE_RANGE.checkValidIntValue(yearOfEra, ChronoField.YEAR_OF_ERA);
+        return (era == IsoEra.CE ? yearOfEraValidated : 1 - yearOfEraValidated);
     }
 
     /**

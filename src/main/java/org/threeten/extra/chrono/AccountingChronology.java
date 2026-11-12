@@ -531,6 +531,7 @@ public final class AccountingChronology extends AbstractChronology implements Se
         if (!(era instanceof AccountingEra)) {
             throw new ClassCastException("Era must be AccountingEra");
         }
+        range(ChronoField.YEAR_OF_ERA).checkValidValue(yearOfEra, ChronoField.YEAR_OF_ERA);
         return (era == AccountingEra.CE ? yearOfEra : 1 - yearOfEra);
     }
 

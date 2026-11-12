@@ -356,6 +356,14 @@ public class TestCopticChronology {
     }
 
     @Test
+    public void test_prolepticYear_badYearOfEra() {
+        assertThrows(DateTimeException.class, () -> CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 0));
+        assertThrows(DateTimeException.class, () -> CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 1_000_000));
+        assertThrows(DateTimeException.class, () -> CopticChronology.INSTANCE.date(CopticEra.BEFORE_AM, 0, 1, 1));
+        assertThrows(DateTimeException.class, () -> CopticChronology.INSTANCE.dateYearDay(CopticEra.AM, 0, 1));
+    }
+
+    @Test
     public void test_Chronology_eraOf() {
         assertEquals(CopticEra.AM, CopticChronology.INSTANCE.eraOf(1));
         assertEquals(CopticEra.BEFORE_AM, CopticChronology.INSTANCE.eraOf(0));

@@ -431,7 +431,7 @@ public class TestSymmetry454Chronology {
             IsoEra era = IsoEra.BCE;
             assertEquals(era, base.getEra());
             assertEquals(1 - year, base.get(YEAR_OF_ERA));
-            Symmetry454Date eraBased = Symmetry454Chronology.INSTANCE.date(era, year, 1, 1);
+            Symmetry454Date eraBased = Symmetry454Chronology.INSTANCE.date(era, 1 - year, 1, 1);
             assertEquals(base, eraBased);
         }
     }
@@ -457,6 +457,16 @@ public class TestSymmetry454Chronology {
         assertEquals(1, Symmetry454Chronology.INSTANCE.prolepticYear(IsoEra.CE, 1));
         assertEquals(2000, Symmetry454Chronology.INSTANCE.prolepticYear(IsoEra.CE, 2000));
         assertEquals(1582, Symmetry454Chronology.INSTANCE.prolepticYear(IsoEra.CE, 1582));
+    }
+
+    @Test
+    public void test_prolepticYear_yearOfEraRange() {
+        ValueRange range = Symmetry454Chronology.INSTANCE.range(YEAR_OF_ERA);
+        int maxYearOfEra = (int) range.getMaximum();
+        assertEquals(-1_000_000, Symmetry454Chronology.INSTANCE.prolepticYear(IsoEra.BCE, maxYearOfEra));
+        assertThrows(DateTimeException.class, () -> Symmetry454Chronology.INSTANCE.prolepticYear(IsoEra.CE, 0));
+        assertThrows(DateTimeException.class, () -> Symmetry454Chronology.INSTANCE.prolepticYear(IsoEra.BCE, maxYearOfEra + 1));
+        assertThrows(DateTimeException.class, () -> Symmetry454Chronology.INSTANCE.date(IsoEra.BCE, maxYearOfEra + 1, 1, 1));
     }
 
     public static Object[][] data_prolepticYear_badEra() {

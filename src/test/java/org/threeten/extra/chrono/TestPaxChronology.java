@@ -429,6 +429,13 @@ public class TestPaxChronology {
     }
 
     @Test
+    public void test_prolepticYear_invalidYearOfEra() {
+        assertThrows(DateTimeException.class, () -> PaxChronology.INSTANCE.prolepticYear(PaxEra.CE, 0));
+        assertThrows(DateTimeException.class, () -> PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, 1_000_000_001));
+        assertThrows(DateTimeException.class, () -> PaxChronology.INSTANCE.date(PaxEra.BCE, 0, 1, 1));
+    }
+
+    @Test
     public void test_prolepticYear_badEra() {
         assertThrows(ClassCastException.class, () -> PaxChronology.INSTANCE.prolepticYear(IsoEra.CE, 4));
     }

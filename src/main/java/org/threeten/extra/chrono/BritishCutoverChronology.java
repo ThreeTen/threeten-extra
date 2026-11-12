@@ -438,6 +438,7 @@ public final class BritishCutoverChronology
         if (!(era instanceof JulianEra)) {
             throw new ClassCastException("Era must be JulianEra");
         }
+        range(ChronoField.YEAR_OF_ERA).checkValidValue(yearOfEra, ChronoField.YEAR_OF_ERA);
         return (era == JulianEra.AD ? yearOfEra : 1 - yearOfEra);
     }
 

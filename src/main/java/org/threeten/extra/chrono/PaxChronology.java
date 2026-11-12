@@ -408,6 +408,7 @@ public final class PaxChronology extends AbstractChronology implements Serializa
         if (!(era instanceof PaxEra)) {
             throw new ClassCastException("Era must be PaxEra");
         }
+        range(ChronoField.YEAR_OF_ERA).checkValidValue(yearOfEra, ChronoField.YEAR_OF_ERA);
         return (era == PaxEra.CE ? yearOfEra : 1 - yearOfEra);
     }
 

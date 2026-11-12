@@ -339,6 +339,7 @@ public final class EthiopicChronology
         if (!(era instanceof EthiopicEra)) {
             throw new ClassCastException("Era must be EthiopicEra");
         }
+        YOE_RANGE.checkValidValue(yearOfEra, ChronoField.YEAR_OF_ERA);
         return (era == EthiopicEra.INCARNATION ? yearOfEra : 1 - yearOfEra);
     }
 

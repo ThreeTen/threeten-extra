@@ -357,6 +357,14 @@ public class TestEthiopicChronology {
     }
 
     @Test
+    public void test_prolepticYear_badYearOfEra() {
+        assertThrows(DateTimeException.class, () -> EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, 0));
+        assertThrows(DateTimeException.class, () -> EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, 1_000_000));
+        assertThrows(DateTimeException.class, () -> EthiopicChronology.INSTANCE.date(EthiopicEra.BEFORE_INCARNATION, 0, 1, 1));
+        assertThrows(DateTimeException.class, () -> EthiopicChronology.INSTANCE.dateYearDay(EthiopicEra.INCARNATION, 0, 1));
+    }
+
+    @Test
     public void test_Chronology_eraOf() {
         assertEquals(EthiopicEra.INCARNATION, EthiopicChronology.INSTANCE.eraOf(1));
         assertEquals(EthiopicEra.BEFORE_INCARNATION, EthiopicChronology.INSTANCE.eraOf(0));

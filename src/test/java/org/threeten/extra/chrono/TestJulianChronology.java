@@ -386,6 +386,14 @@ public class TestJulianChronology {
     }
 
     @Test
+    public void test_prolepticYear_badYearOfEra() {
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 0));
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 1_000_000));
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.date(JulianEra.BC, 0, 1, 1));
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.dateYearDay(JulianEra.AD, 0, 1));
+    }
+
+    @Test
     public void test_Chronology_eraOf() {
         assertEquals(JulianEra.AD, JulianChronology.INSTANCE.eraOf(1));
         assertEquals(JulianEra.BC, JulianChronology.INSTANCE.eraOf(0));

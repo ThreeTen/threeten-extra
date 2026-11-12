@@ -366,6 +366,11 @@ public class TestDiscordianChronology {
     }
 
     @Test
+    public void test_prolepticYear_invalidYearOfEra() {
+        assertThrows(DateTimeException.class, () -> DiscordianChronology.INSTANCE.prolepticYear(DiscordianEra.YOLD, 0));
+    }
+
+    @Test
     public void test_prolepticYear_badEra() {
         assertThrows(ClassCastException.class, () -> DiscordianChronology.INSTANCE.prolepticYear(IsoEra.CE, 4));
     }
