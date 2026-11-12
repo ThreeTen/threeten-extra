@@ -24,6 +24,7 @@ The following features are included:
 * [`YearHalf`](apidocs/org.threeten.extra/org/threeten/extra/YearHalf.html) - a half-year, 2014-H1
 * [`OffsetDate`](apidocs/org.threeten.extra/org/threeten/extra/OffsetDate.html) - combines `LocalDate` and `ZoneOffset`
 * [`HourMinute`](apidocs/org.threeten.extra/org/threeten/extra/HourMinute.html) - time to minute precision, 10:24
+* [`PartialTemporal`](apidocs/org.threeten.extra/org/threeten/extra/PartialTemporal.html) - a partial/incomplete date-time
 * [`Seconds`](apidocs/org.threeten.extra/org/threeten/extra/Seconds.html),
 [`Minutes`](apidocs/org.threeten.extra/org/threeten/extra/Minutes.html),
 [`Hours`](apidocs/org.threeten.extra/org/threeten/extra/Hours.html),
