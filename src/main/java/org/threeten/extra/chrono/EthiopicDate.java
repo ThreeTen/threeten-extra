@@ -56,7 +56,6 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
-import java.time.temporal.ValueRange;
 
 /**
  * A date in the Ethiopic calendar system.
@@ -74,8 +73,6 @@ import java.time.temporal.ValueRange;
 public final class EthiopicDate
         extends AbstractNileDate
         implements ChronoLocalDate, Serializable {
-    // TODO: Check epoch day
-    // TODO: Check conversion year (and Coptic)
 
     /**
      * Serialization version.
@@ -248,7 +245,7 @@ public final class EthiopicDate
      * @param dayOfMonth  the Ethiopic day-of-month, from 1 to 30
      * @return the date in Ethiopic calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-year is invalid for the month-year
+     *  or if the day-of-month is invalid for the month-year
      */
     static EthiopicDate create(int prolepticYear, int month, int dayOfMonth) {
         EthiopicChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);

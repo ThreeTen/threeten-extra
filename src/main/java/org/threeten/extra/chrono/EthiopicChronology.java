@@ -339,7 +339,14 @@ public final class EthiopicChronology
         if (!(era instanceof EthiopicEra)) {
             throw new ClassCastException("Era must be EthiopicEra");
         }
-        return (era == EthiopicEra.INCARNATION ? yearOfEra : 1 - yearOfEra);
+        if (era == EthiopicEra.INCARNATION) {
+            return yearOfEra;
+        }
+        try {
+            return Math.subtractExact(1, yearOfEra);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid year-of-era: " + yearOfEra, ex);
+        }
     }
 
     @Override

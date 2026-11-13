@@ -82,10 +82,14 @@ abstract class AbstractDate
 
     abstract int getDayOfMonth();
 
+    AbstractDate withDayOfMonth(int newValue) {
+        return resolvePrevious(getProlepticYear(), getMonth(), newValue);
+    }
+
     abstract int getDayOfYear();
 
-    AbstractDate withDayOfYear(int value) {
-        return plusDays(value - getDayOfYear());
+    AbstractDate withDayOfYear(int newValue) {
+        return plusDays(newValue - getDayOfYear());
     }
 
     int lengthOfWeek() {
@@ -212,7 +216,7 @@ abstract class AbstractDate
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR:
                     return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                 case DAY_OF_MONTH:
-                    return resolvePrevious(getProlepticYear(), getMonth(), nvalue);
+                    return withDayOfMonth(nvalue);
                 case DAY_OF_YEAR:
                     return withDayOfYear(nvalue);
                 case EPOCH_DAY:

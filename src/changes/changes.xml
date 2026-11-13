@@ -55,6 +55,14 @@
         Fix year and month ranges in chronology implementations, adding clear definitions where necessary.
         Some invalid dates that could previously be created will now be rejected, which could be considered a breaking change.
       </action>
+      <action dev="jodastephen" type="fix" issue="462">
+        Fix Coptic and Ethiopic chronologies.
+        Allow `with(DAY_OF_MONTH, n)` to work for all months with values 1 to 30, even for the 13th month,
+        overflowing into the next month. Apply the same principles for DAY_OF_YEAR.
+        This is part of new design principles for the chronologies here.
+        Also add validation that year-of-era arithmetic does not overflow.
+        These alterations could be considered breaking changes.
+      </action>
       <action dev="jodastephen" type="fix" issue="420">
         Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
       </action>

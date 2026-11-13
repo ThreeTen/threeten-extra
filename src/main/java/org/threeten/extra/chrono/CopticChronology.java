@@ -339,7 +339,14 @@ public final class CopticChronology
         if (!(era instanceof CopticEra)) {
             throw new ClassCastException("Era must be CopticEra");
         }
-        return (era == CopticEra.AM ? yearOfEra : 1 - yearOfEra);
+        if (era == CopticEra.AM) {
+            return yearOfEra;
+        }
+        try {
+            return Math.subtractExact(1, yearOfEra);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid year-of-era: " + yearOfEra, ex);
+        }
     }
 
     @Override

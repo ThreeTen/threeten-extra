@@ -31,6 +31,45 @@
  */
 /**
  * Additional chronologies (calendar systems) that extend {@code java.time.*}.
+ * <p>
+ * Chronologies and dates follow these principles.
+ * <ul>
+ * <li><b>Creation is strict.</b>
+ *  Every field is validated and an invalid value throws {@code DateTimeException}.
+ *  A day that does not exist in its month or year is never adjusted.
+ *  The exception to this is {@code prolepticYear}, which permits negative year-of-era values.
+ * <li><b>Setting a field and adding an amount follow the same three stages.</b>
+ *  <ol>
+ *  <li>Validate: When setting, the new value is validated against the outer bounds of the field.
+ *   For example, if the day-of-month runs from 1 to 30, but 1-5 in the 13th month, then setting the
+ *   day-of-month to 30 is always valid even in the 13th month, but setting it to 31 is always invalid.
+ *   When adding, the amount to add may be any positive or negative value.
+ *   Validation will check that the result does not exceed the valid range of the date.
+ *  <li>Apply: Days and fixed-length weeks are added as days via epoch-days, converting back to a valid date,
+ *   potentially in the next month or year.
+ *   For example, if the day-of-month runs from 1 to 30, but 1-5 in the 13th month, then setting the
+ *   day-of-month to 30 in the 13th month will result in day 25 in the 1st month of the next year.
+ *   Larger fields, such as months and years, are added separately, with the smaller fields (days) unresolved
+ *   at this point.
+ *   For example, if the day-of-month runs from 1 to 30, but 1-5 in the 13th month, then adding one month to
+ *   day 30 in the 12th month will calculate (in this stage) day 30 in the 13th month (which is invalid).
+ *  <li>Resolve: If the result is not a valid date, the smaller field is clamped to the last valid value of
+ *  the larger one. Typically, this is used to resolve a day-of-month that is invalid for the month or year.
+ *  If the result exceeds the valid range of the chronology, then an exception is thrown.
+ *  </ol>
+ *  This is deliberately different from {@code LocalDate.with(DAY_OF_MONTH)}, which validates against the bounds
+ *  implied by the base date rather than the outer bounds.
+ *  The rationale is that month and year lengths are less well known with these chronologies,
+ *  thus this approach is less likely to result in unexpected exceptions.
+ * <li><b>{@code minus(n)} gives the same result as {@code plus(-n)}.</b>
+ *  Neither is guaranteed to reverse the other when the day is clamped.
+ * <li><b>{@code until()} is the inverse of {@code plus()} for standard forward periods.</b>
+ *  Adding the result of {@code until()} to the start date gives the end date.
+ *  The result may differ when using backward periods.
+ * <li><b>Results must be in the supported range.</b>
+ *  Otherwise {@code DateTimeException} is thrown.
+ *  Numeric overflow may throw {@code ArithmeticException}.
+ * </ul>
  */
 @NullMarked
 package org.threeten.extra.chrono;
