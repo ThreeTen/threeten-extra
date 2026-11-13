@@ -344,7 +344,7 @@ public class TestCopticChronology {
     }
 
     @Test
-    public void test_prolepticYear_specific() {
+    public void test_prolepticYear() {
         assertEquals(4, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 4));
         assertEquals(3, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 3));
         assertEquals(2, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 2));
@@ -353,6 +353,31 @@ public class TestCopticChronology {
         assertEquals(-1, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 2));
         assertEquals(-2, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 3));
         assertEquals(-3, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 4));
+        // negative allowed to support date resolution in AbstractChronology lenient mode
+        assertEquals(0, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 0));
+        assertEquals(-1, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, -1));
+        assertEquals(1, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 0));
+        assertEquals(2, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, -1));
+        // boundaries
+        assertEquals(999_999, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 999_999));
+        assertEquals(-999_998, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 999_999));
+        // out of range
+        assertEquals(1_000_000, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, 1_000_000));
+        assertEquals(Integer.MAX_VALUE, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, Integer.MAX_VALUE));
+        assertEquals(Integer.MIN_VALUE, CopticChronology.INSTANCE.prolepticYear(CopticEra.AM, Integer.MIN_VALUE));
+        assertEquals(-999_999, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, 1_000_000));
+        assertEquals(Integer.MIN_VALUE + 2, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, Integer.MAX_VALUE));
+        assertEquals(Integer.MAX_VALUE, CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, Integer.MIN_VALUE + 2));
+        assertThrows(DateTimeException.class, () -> CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, Integer.MIN_VALUE + 1));
+        assertThrows(DateTimeException.class, () -> CopticChronology.INSTANCE.prolepticYear(CopticEra.BEFORE_AM, Integer.MIN_VALUE));
+    }
+
+    @Test
+    public void test_prolepticYear_dateRange() {
+        assertEquals(CopticDate.of(999_999, 1, 1), CopticChronology.INSTANCE.dateYearDay(CopticEra.AM, 999_999, 1));
+        assertThrows(DateTimeException.class, () -> CopticChronology.INSTANCE.dateYearDay(CopticEra.AM, 1_000_000, 1));
+        assertEquals(CopticDate.of(-999_998, 1, 1), CopticChronology.INSTANCE.date(CopticEra.BEFORE_AM, 999_999, 1, 1));
+        assertThrows(DateTimeException.class, () -> CopticChronology.INSTANCE.date(CopticEra.BEFORE_AM, 1_000_000, 1, 1));
     }
 
     @Test
@@ -505,6 +530,38 @@ public class TestCopticChronology {
             TemporalField field, long value,
             int expectedYear, int expectedMonth, int expectedDom) {
         assertEquals(CopticDate.of(expectedYear, expectedMonth, expectedDom), CopticDate.of(year, month, dom).with(field, value));
+    }
+
+    @Test
+    public void test_with_TemporalField_dayOverflow() {
+        assertEquals(CopticDate.of(1728, 1, 24), CopticDate.of(1727, 13, 1).with(DAY_OF_MONTH, 30));
+        assertEquals(CopticDate.of(1727, 1, 1), CopticDate.of(1726, 13, 1).with(DAY_OF_MONTH, 6));
+        assertEquals(CopticDate.of(1727, 1, 1), CopticDate.of(1726, 6, 8).with(DAY_OF_YEAR, 366));
+        assertEquals(CopticDate.of(1731, 13, 6), CopticDate.of(1731, 6, 8).with(DAY_OF_YEAR, 366));
+        assertThrows(DateTimeException.class, () -> CopticDate.of(1727, 6, 8).with(DAY_OF_MONTH, 0));
+        assertThrows(DateTimeException.class, () -> CopticDate.of(1727, 6, 8).with(DAY_OF_YEAR, 0));
+        assertThrows(DateTimeException.class, () -> CopticDate.of(1727, 6, 8).with(DAY_OF_MONTH, 31));
+        assertThrows(DateTimeException.class, () -> CopticDate.of(1727, 6, 8).with(DAY_OF_YEAR, 367));
+    }
+
+    public static Object[][] data_with_bad() {
+        return new Object[][] {
+                {1727, 6, 8, DAY_OF_WEEK, 0},
+                {1727, 6, 8, DAY_OF_WEEK, 8},
+                {1727, 6, 8, DAY_OF_MONTH, 0},
+                {1727, 6, 8, DAY_OF_MONTH, 31},
+                {1727, 13, 1, DAY_OF_MONTH, 31},
+                {1727, 6, 8, DAY_OF_YEAR, 0},
+                {1727, 6, 8, DAY_OF_YEAR, 367},
+                {1727, 6, 8, MONTH_OF_YEAR, 0},
+                {1727, 6, 8, MONTH_OF_YEAR, 14},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_with_bad")
+    public void test_with_TemporalField_badValue(int year, int month, int dom, TemporalField field, long value) {
+        assertThrows(DateTimeException.class, () -> CopticDate.of(year, month, dom).with(field, value));
     }
 
     @Test

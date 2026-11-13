@@ -56,7 +56,6 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
-import java.time.temporal.ValueRange;
 
 /**
  * A date in the Coptic calendar system.

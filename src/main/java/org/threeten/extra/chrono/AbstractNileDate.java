@@ -52,13 +52,13 @@ abstract class AbstractNileDate
     abstract int getEpochDayDifference();
 
     @Override
-    int getDayOfYear() {
-        return (getMonth() - 1) * 30 + getDayOfMonth();
+    AbstractDate withDayOfMonth(int newValue) {
+        return plusDays(newValue - getDayOfMonth());
     }
 
     @Override
-    AbstractDate withDayOfYear(int value) {
-        return resolvePrevious(getProlepticYear(), ((value - 1) / 30) + 1, ((value - 1) % 30) + 1);
+    int getDayOfYear() {
+        return (getMonth() - 1) * 30 + getDayOfMonth();
     }
 
     @Override

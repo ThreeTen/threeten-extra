@@ -345,7 +345,7 @@ public class TestEthiopicChronology {
     }
 
     @Test
-    public void test_prolepticYear_specific() {
+    public void test_prolepticYear() {
         assertEquals(4, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, 4));
         assertEquals(3, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, 3));
         assertEquals(2, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, 2));
@@ -354,6 +354,31 @@ public class TestEthiopicChronology {
         assertEquals(-1, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, 2));
         assertEquals(-2, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, 3));
         assertEquals(-3, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, 4));
+        // negative allowed to support date resolution in AbstractChronology lenient mode
+        assertEquals(0, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, 0));
+        assertEquals(-1, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, -1));
+        assertEquals(1, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, 0));
+        assertEquals(2, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, -1));
+        // boundaries
+        assertEquals(999_999, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, 999_999));
+        assertEquals(-999_998, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, 999_999));
+        // out of range
+        assertEquals(1_000_000, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, 1_000_000));
+        assertEquals(Integer.MAX_VALUE, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, Integer.MAX_VALUE));
+        assertEquals(Integer.MIN_VALUE, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.INCARNATION, Integer.MIN_VALUE));
+        assertEquals(-999_999, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, 1_000_000));
+        assertEquals(Integer.MIN_VALUE + 2, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, Integer.MAX_VALUE));
+        assertThrows(DateTimeException.class, () -> EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, Integer.MIN_VALUE + 1));
+        assertEquals(Integer.MAX_VALUE, EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, Integer.MIN_VALUE + 2));
+        assertThrows(DateTimeException.class, () -> EthiopicChronology.INSTANCE.prolepticYear(EthiopicEra.BEFORE_INCARNATION, Integer.MIN_VALUE));
+    }
+
+    @Test
+    public void test_prolepticYear_dateRange() {
+        assertEquals(EthiopicDate.of(999_999, 1, 1), EthiopicChronology.INSTANCE.dateYearDay(EthiopicEra.INCARNATION, 999_999, 1));
+        assertThrows(DateTimeException.class, () -> EthiopicChronology.INSTANCE.dateYearDay(EthiopicEra.INCARNATION, 1_000_000, 1));
+        assertEquals(EthiopicDate.of(-999_998, 1, 1), EthiopicChronology.INSTANCE.date(EthiopicEra.BEFORE_INCARNATION, 999_999, 1, 1));
+        assertThrows(DateTimeException.class, () -> EthiopicChronology.INSTANCE.date(EthiopicEra.BEFORE_INCARNATION, 1_000_000, 1, 1));
     }
 
     @Test
@@ -493,10 +518,10 @@ public class TestEthiopicChronology {
             {2007, 6, 8, ERA, 0, -2006, 6, 8},
             {2007, 6, 8, ERA, 1, 2007, 6, 8},
 
-            {2006, 6, 8, DAY_OF_YEAR, 366, 2006, 13, 5},
+            {2006, 6, 8, DAY_OF_YEAR, 366, 2007, 1, 1},
             {2006, 3, 30, MONTH_OF_YEAR, 13, 2006, 13, 5},
             {2007, 3, 30, MONTH_OF_YEAR, 13, 2007, 13, 6},
-            {2007, 13, 6, DAY_OF_MONTH, 30, 2007, 13, 6},
+            {2007, 13, 1, DAY_OF_MONTH, 30, 2008, 1, 24},
             {2007, 13, 6, YEAR, 2006, 2006, 13, 5},
             {-2005, 6, 8, YEAR_OF_ERA, 2004, -2003, 6, 8},
             {2007, 6, 8, WeekFields.ISO.dayOfWeek(), 4, 2007, 6, 5},
@@ -511,17 +536,29 @@ public class TestEthiopicChronology {
         assertEquals(EthiopicDate.of(expectedYear, expectedMonth, expectedDom), EthiopicDate.of(year, month, dom).with(field, value));
     }
 
+    @Test
+    public void test_with_TemporalField_dayOverflow() {
+        assertEquals(EthiopicDate.of(2008, 1, 24), EthiopicDate.of(2007, 13, 1).with(DAY_OF_MONTH, 30));
+        assertEquals(EthiopicDate.of(2007, 1, 1), EthiopicDate.of(2006, 13, 1).with(DAY_OF_MONTH, 6));
+        assertEquals(EthiopicDate.of(2007, 1, 1), EthiopicDate.of(2006, 6, 8).with(DAY_OF_YEAR, 366));
+        assertEquals(EthiopicDate.of(2011, 13, 6), EthiopicDate.of(2011, 6, 8).with(DAY_OF_YEAR, 366));
+        assertThrows(DateTimeException.class, () -> EthiopicDate.of(2007, 6, 8).with(DAY_OF_MONTH, 0));
+        assertThrows(DateTimeException.class, () -> EthiopicDate.of(2007, 6, 8).with(DAY_OF_YEAR, 0));
+        assertThrows(DateTimeException.class, () -> EthiopicDate.of(2007, 6, 8).with(DAY_OF_MONTH, 31));
+        assertThrows(DateTimeException.class, () -> EthiopicDate.of(2007, 6, 8).with(DAY_OF_YEAR, 367));
+    }
+
     public static Object[][] data_with_bad() {
         return new Object[][] {
-            {2007, 6, 8, DAY_OF_WEEK, 0},
-            {2007, 6, 8, DAY_OF_WEEK, 8},
-            {2007, 6, 8, DAY_OF_MONTH, 0},
-            {2007, 6, 8, DAY_OF_MONTH, 31},
-            {2007, 13, 1, DAY_OF_MONTH, 31},
-            {2007, 6, 8, DAY_OF_YEAR, 0},
-            {2007, 6, 8, DAY_OF_YEAR, 367},
-            {2007, 6, 8, MONTH_OF_YEAR, 0},
-            {2007, 6, 8, MONTH_OF_YEAR, 14},
+                {2007, 6, 8, DAY_OF_WEEK, 0},
+                {2007, 6, 8, DAY_OF_WEEK, 8},
+                {2007, 6, 8, DAY_OF_MONTH, 0},
+                {2007, 6, 8, DAY_OF_MONTH, 31},
+                {2007, 13, 1, DAY_OF_MONTH, 31},
+                {2007, 6, 8, DAY_OF_YEAR, 0},
+                {2007, 6, 8, DAY_OF_YEAR, 367},
+                {2007, 6, 8, MONTH_OF_YEAR, 0},
+                {2007, 6, 8, MONTH_OF_YEAR, 14},
         };
     }
 
