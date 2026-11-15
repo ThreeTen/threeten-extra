@@ -271,7 +271,7 @@ public final class JulianDate
      * @param dayOfMonth  the Julian day-of-month, from 1 to 31
      * @return the date in Julian calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-year is invalid for the month-year
+     *  or if the day-of-month is invalid for the month-year
      */
     static JulianDate create(int prolepticYear, int month, int dayOfMonth) {
         JulianChronology.YEAR_RANGE.checkValidValue(prolepticYear, YEAR);
@@ -340,6 +340,11 @@ public final class JulianDate
     @Override
     int getDayOfMonth() {
         return day;
+    }
+
+    @Override
+    AbstractDate withDayOfMonth(int newValue) {
+        return plusDays(newValue - getDayOfMonth());
     }
 
     @Override

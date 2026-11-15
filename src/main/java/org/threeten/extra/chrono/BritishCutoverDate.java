@@ -369,6 +369,15 @@ public final class BritishCutoverDate
     }
 
     @Override
+    AbstractDate withDayOfMonth(int newValue) {
+        if (isCutoverMonth()) {
+            // days 3 to 13 are treated as Julian dates, day 31 overflows into October
+            return newValue <= 30 ? create(CUTOVER_YEAR, 9, newValue) : create(CUTOVER_YEAR, 9, 30).plusDays(newValue - 30);
+        }
+        return plusDays(newValue - getDayOfMonth());
+    }
+
+    @Override
     BritishCutoverDate resolvePrevious(int year, int month, int dayOfMonth) {
         switch (month) {
             case 2:
@@ -382,6 +391,10 @@ public final class BritishCutoverDate
                 break;
             default:
                 break;
+        }
+        if (year == CUTOVER_YEAR && month == 9 && dayOfMonth > 2 && dayOfMonth <= CUTOVER_DAYS + 2) {
+            // days 3 to 13 do not exist, so clamp to the previous valid day
+            dayOfMonth = 2;
         }
         return create(year, month, dayOfMonth);
     }
@@ -493,28 +506,13 @@ public final class BritishCutoverDate
     public ChronoPeriod until(ChronoLocalDate endDateExclusive) {
         BritishCutoverDate end = BritishCutoverDate.from(endDateExclusive);
         long totalMonths = end.getProlepticMonth() - this.getProlepticMonth();  // safe
-        int days = end.getDayOfMonth() - this.getDayOfMonth();
-        if (totalMonths == 0 && isCutoverMonth()) {
-            if (julianDate != null && end.julianDate == null) {
-                days -= CUTOVER_DAYS;
-            } else if (julianDate == null && end.julianDate != null) {
-                days += CUTOVER_DAYS;
-            }
-        } else if (totalMonths > 0) {
-            if (julianDate != null && end.julianDate == null) {
-                AbstractDate calcDate = this.plusMonths(totalMonths);
-                days = (int) (end.toEpochDay() - calcDate.toEpochDay());  // safe
-            }
-            if (days < 0) {
-                totalMonths--;
-                AbstractDate calcDate = this.plusMonths(totalMonths);
-                days = (int) (end.toEpochDay() - calcDate.toEpochDay());  // safe
-            }
-        } else if (totalMonths < 0 && days > 0) {
+        // whole months use the day-of-month, the remainder is real days from the resolved date
+        if (totalMonths > 0 && end.getDayOfMonth() < this.getDayOfMonth()) {
+            totalMonths--;
+        } else if (totalMonths < 0 && end.getDayOfMonth() > this.getDayOfMonth()) {
             totalMonths++;
-            AbstractDate calcDate = this.plusMonths(totalMonths);
-            days = (int) (end.toEpochDay() - calcDate.toEpochDay());  // safe
         }
+        int days = (int) (end.toEpochDay() - this.plusMonths(totalMonths).toEpochDay());  // safe
         int years = Math.toIntExact(totalMonths / lengthOfYearInMonths());  // safe
         int months = (int) (totalMonths % lengthOfYearInMonths());  // safe
         return getChronology().period(years, months, days);
