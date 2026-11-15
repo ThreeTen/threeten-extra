@@ -64,9 +64,12 @@
         These alterations could be considered breaking changes.
       </action>
       <action dev="jodastephen" type="fix" issue="463">
-        Fix Julian chronology to follow the chronology design principles.
+        Fix Julian/BritishCutover chronology to follow the chronology design principles.
         Allow `with(DAY_OF_MONTH, n)` to work for all months with values 1 to 31, overflowing into the next month.
         Also add validation that year-of-era arithmetic does not overflow.
+        Adding months or years to BritishCutover now resolves a day in the cutover gap (3 to 13 September 1752)
+        back to the previous valid day (2 September 1752), rather than forward.
+        Fix `until()` in BritishCutover for periods that cross the cutover.
         These alterations could be considered breaking changes.
       </action>
       <action dev="jodastephen" type="fix" issue="420">

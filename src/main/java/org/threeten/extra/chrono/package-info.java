@@ -37,7 +37,13 @@
  * <li><b>Creation is strict.</b>
  *  Every field is validated and an invalid value throws {@code DateTimeException}.
  *  A day that does not exist in its month or year is never adjusted.
- *  The exception to this is {@code prolepticYear}, which permits negative year-of-era values.
+ *  <p>
+ *  There are two exceptions:
+ *  Firstly, {@code prolepticYear} permits negative year-of-era values, as required for lenient parsing.
+ *  Secondly, where days are missing within a month (rather than at the end of a month), the invalid day
+ *  is adjusted relative to the previous valid day (leniently).
+ *  For example, with a gap where day 5 and day 6 are missing, a request to create day 5 will result in day 7,
+ *  a request to create day 6 will result in day 8, but a request to create day 7 will result in day 7 (as it is valid).
  * <li><b>Setting a field and adding an amount follow the same three stages.</b>
  *  <ol>
  *  <li>Validate: When setting, the new value is validated against the outer bounds of the field.
@@ -45,20 +51,35 @@
  *   day-of-month to 30 is always valid even in the 13th month, but setting it to 31 is always invalid.
  *   When adding, the amount to add may be any positive or negative value.
  *   Validation will check that the result does not exceed the valid range of the date.
- *  <li>Apply: Days and fixed-length weeks are added as days via epoch-days, converting back to a valid date,
- *   potentially in the next month or year.
- *   For example, if the day-of-month runs from 1 to 30, but 1-5 in the 13th month, then setting the
- *   day-of-month to 30 in the 13th month will result in day 25 in the 1st month of the next year.
- *   Larger fields, such as months and years, are added separately, with the smaller fields (days) unresolved
- *   at this point.
- *   For example, if the day-of-month runs from 1 to 30, but 1-5 in the 13th month, then adding one month to
- *   day 30 in the 12th month will calculate (in this stage) day 30 in the 13th month (which is invalid).
- *  <li>Resolve: If the result is not a valid date, the smaller field is clamped to the last valid value of
- *  the larger one. Typically, this is used to resolve a day-of-month that is invalid for the month or year.
- *  If the result exceeds the valid range of the chronology, then an exception is thrown.
+ *  <li>Determine field groups: Given the chronology, fields are grouped into sets that are applied together.
+ *   In most cases, the sets are months and larger, and days and smaller.
+ *   These sets are driven by the variable number of days in a month. If a chronology has a variable
+ *   number of months in a year as well, then there would be three sets: years, months, and days.
+ *  <li>Apply by field group: Each field group is applied in turn from largest to smallest.
+ *   Between each group, the smaller field groups are resolved to create a valid date.
+ *   Where there are two field groups, this results in four sub-stages:
+ *   <ol>
+ *   <li>Add years and months
+ *   <li>Resolve the resulting date to a valid date (previous valid day-of-month)
+ *   <li>Add days
+ *   <li>Resolve the resulting date to a valid date (lenient overflow to next month)
+ *   </ol>
+ *   For example, if the day-of-month runs from 1 to 30, but 1-5 in the 13th month, then adding one month to day 30 in
+ *   the 12th month will initially result in day 30 in the 13th month (which is invalid). At sub-stage 2, the result
+ *   is resolved to day 5 in the 13th month.
+ *   <p>
+ *   If adding a period that contains both months and days, the order of operations is important.
+ *   For example, adding one month and one day to day 30 in the 12th month will initially result in day 30 in the
+ *   13th month (which is invalid). At sub-stage 2, the result is resolved to day 5 in the 13th month.
+ *   At sub-stage 3, one day is added to day 5 in the 13th month, resulting in day 6 in the 13th month.
+ *   At sub-stage 4, the result is resolved to day 1 in the 1st month of the next year.
+ *   If the result exceeds the valid range of the chronology, then an exception is thrown.
+ *   <p>
+ *   Where there are three field groups, the process is similar, but with additional sub-stages for the extra
+ *   field group, with the extra resolve stage using "previous valid" logic.
  *  </ol>
- *  This is deliberately different from {@code LocalDate.with(DAY_OF_MONTH)}, which validates against the bounds
- *  implied by the base date rather than the outer bounds.
+ *  Stage 1 is deliberately different from {@code LocalDate.with(DAY_OF_MONTH)}, which validates against the
+ *  bounds implied by the base date rather than the outer bounds.
  *  The rationale is that month and year lengths are less well known with these chronologies,
  *  thus this approach is less likely to result in unexpected exceptions.
  * <li><b>{@code minus(n)} gives the same result as {@code plus(-n)}.</b>

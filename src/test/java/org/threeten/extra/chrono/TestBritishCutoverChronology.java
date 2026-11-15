@@ -510,6 +510,15 @@ public class TestBritishCutoverChronology {
     }
 
     @Test
+    public void test_prolepticYear_overflow() {
+        assertEquals(Integer.MAX_VALUE, BritishCutoverChronology.INSTANCE.prolepticYear(JulianEra.AD, Integer.MAX_VALUE));
+        assertEquals(Integer.MIN_VALUE + 2, BritishCutoverChronology.INSTANCE.prolepticYear(JulianEra.BC, Integer.MAX_VALUE));
+        assertThrows(DateTimeException.class, () -> BritishCutoverChronology.INSTANCE.prolepticYear(JulianEra.BC, Integer.MIN_VALUE));
+        assertThrows(DateTimeException.class, () -> BritishCutoverChronology.INSTANCE.date(JulianEra.BC, Integer.MIN_VALUE, 1, 1));
+        assertThrows(DateTimeException.class, () -> BritishCutoverChronology.INSTANCE.dateYearDay(JulianEra.BC, Integer.MIN_VALUE, 1));
+    }
+
+    @Test
     public void test_Chronology_eraOf() {
         assertEquals(JulianEra.AD, BritishCutoverChronology.INSTANCE.eraOf(1));
         assertEquals(JulianEra.BC, BritishCutoverChronology.INSTANCE.eraOf(0));
@@ -760,12 +769,12 @@ public class TestBritishCutoverChronology {
             {1752, 9, 14, MONTH_OF_YEAR, 10, 1752, 10, 14},
 
             // into cutover zone
-            {1752, 8, 4, MONTH_OF_YEAR, 9, 1752, 9, 15},  // lenient
-            {1752, 10, 8, MONTH_OF_YEAR, 9, 1752, 9, 19},  // lenient
-            {1751, 9, 4, YEAR, 1752, 1752, 9, 15},  // lenient
-            {1753, 9, 8, YEAR, 1752, 1752, 9, 19},  // lenient
-            {1751, 9, 4, YEAR_OF_ERA, 1752, 1752, 9, 15},  // lenient
-            {1753, 9, 8, YEAR_OF_ERA, 1752, 1752, 9, 19},  // lenient
+            {1752, 8, 4, MONTH_OF_YEAR, 9, 1752, 9, 2},  // clamped to previous valid day
+            {1752, 10, 8, MONTH_OF_YEAR, 9, 1752, 9, 2},  // clamped to previous valid day
+            {1751, 9, 4, YEAR, 1752, 1752, 9, 2},  // clamped to previous valid day
+            {1753, 9, 8, YEAR, 1752, 1752, 9, 2},  // clamped to previous valid day
+            {1751, 9, 4, YEAR_OF_ERA, 1752, 1752, 9, 2},  // clamped to previous valid day
+            {1753, 9, 8, YEAR_OF_ERA, 1752, 1752, 9, 2},  // clamped to previous valid day
 
             {2014, 5, 26, DAY_OF_WEEK, 3, 2014, 5, 28},
             {2014, 5, 26, DAY_OF_WEEK, 7, 2014, 6, 1},
@@ -812,6 +821,74 @@ public class TestBritishCutoverChronology {
     @Test
     public void test_with_TemporalField_unsupported() {
         assertThrows(UnsupportedTemporalTypeException.class, () -> BritishCutoverDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0));
+    }
+
+    public static Object[][] data_with_dayOverflow() {
+        return new Object[][] {
+            {2011, 2, 10, 29, 2011, 3, 1},
+            {2011, 2, 10, 31, 2011, 3, 3},
+            {2012, 2, 10, 30, 2012, 3, 1},
+            {2012, 2, 10, 31, 2012, 3, 2},
+            {2014, 4, 10, 31, 2014, 5, 1},
+            {2014, 12, 10, 31, 2014, 12, 31},
+            {1800, 2, 10, 30, 1800, 3, 2},
+            {1751, 2, 10, 31, 1751, 3, 3},
+            {1700, 2, 10, 30, 1700, 3, 1},
+            {1752, 2, 10, 31, 1752, 3, 2},
+            {1752, 8, 10, 31, 1752, 8, 31},
+            {1752, 9, 2, 30, 1752, 9, 30},
+            {1752, 9, 2, 31, 1752, 10, 1},
+            {1752, 9, 14, 31, 1752, 10, 1},
+            {1752, 9, 20, 31, 1752, 10, 1},
+            {1752, 9, 30, 31, 1752, 10, 1},
+            {1752, 11, 17, 31, 1752, 12, 1},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_with_dayOverflow")
+    public void test_with_TemporalField_dayOverflow(int year, int month, int dom, int newDom,
+            int expectedYear, int expectedMonth, int expectedDom) {
+        assertEquals(
+            BritishCutoverDate.of(expectedYear, expectedMonth, expectedDom),
+            BritishCutoverDate.of(year, month, dom).with(DAY_OF_MONTH, newDom));
+    }
+
+    public static Object[][] data_with_bad() {
+        return new Object[][] {
+            {DAY_OF_WEEK, 0}, {DAY_OF_WEEK, 8},
+            {DAY_OF_MONTH, 0}, {DAY_OF_MONTH, 32},
+            {DAY_OF_YEAR, 0}, {DAY_OF_YEAR, 367},
+            {MONTH_OF_YEAR, 0}, {MONTH_OF_YEAR, 13},
+            {YEAR, -999_999}, {YEAR, 1_000_000},
+            {YEAR_OF_ERA, 0}, {YEAR_OF_ERA, 1_000_000},
+            {ERA, -1}, {ERA, 2},
+            {EPOCH_DAY, BritishCutoverChronology.INSTANCE.range(EPOCH_DAY).getMinimum() - 1},
+            {EPOCH_DAY, BritishCutoverChronology.INSTANCE.range(EPOCH_DAY).getMaximum() + 1},
+            {PROLEPTIC_MONTH, -999_998 * 12L - 1}, {PROLEPTIC_MONTH, 999_999 * 12L + 12},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_with_bad")
+    public void test_with_TemporalField_badValue(TemporalField field, long value) {
+        assertThrows(DateTimeException.class, () -> BritishCutoverDate.of(1752, 9, 2).with(field, value));
+        assertThrows(DateTimeException.class, () -> BritishCutoverDate.of(2014, 5, 26).with(field, value));
+    }
+
+    @Test
+    public void test_with_TemporalField_identity_aroundCutover() {
+        BritishCutoverDate date = BritishCutoverDate.of(1752, 8, 25);
+        for (int i = 0; i < 400; i++) {
+            for (TemporalField field : new TemporalField[] {
+                    DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, ALIGNED_DAY_OF_WEEK_IN_MONTH, ALIGNED_DAY_OF_WEEK_IN_YEAR,
+                    ALIGNED_WEEK_OF_MONTH, ALIGNED_WEEK_OF_YEAR, MONTH_OF_YEAR, PROLEPTIC_MONTH, YEAR, YEAR_OF_ERA, ERA, EPOCH_DAY}) {
+                long value = date.getLong(field);
+                assertTrue(date.range(field).isValidValue(value), date + " " + field);
+                assertEquals(date, date.with(field, value), date + " " + field);
+            }
+            date = date.plus(1, DAYS);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -910,8 +987,8 @@ public class TestBritishCutoverChronology {
             {1752, 9, 14, -1, MONTHS, 1752, 8, 14, true},
             {1752, 9, 14, 0, MONTHS, 1752, 9, 14, true},
             {1752, 9, 14, 1, MONTHS, 1752, 10, 14, true},
-            {1752, 8, 12, 1, MONTHS, 1752, 9, 23, false},
-            {1752, 10, 12, -1, MONTHS, 1752, 9, 23, false},
+            {1752, 8, 12, 1, MONTHS, 1752, 9, 2, false},
+            {1752, 10, 12, -1, MONTHS, 1752, 9, 2, false},
             {2014, 5, 26, 0, MONTHS, 2014, 5, 26, true},
             {2014, 5, 26, 3, MONTHS, 2014, 8, 26, true},
             {2014, 5, 26, -5, MONTHS, 2013, 12, 26, true},
@@ -1036,7 +1113,7 @@ public class TestBritishCutoverChronology {
             BritishCutoverDate.of(1752, 10, 5),
             BritishCutoverDate.of(1752, 9, 2).plus(BritishCutoverChronology.INSTANCE.period(0, 1, 3)));
         assertEquals(
-            BritishCutoverDate.of(1752, 9, 23),
+            BritishCutoverDate.of(1752, 9, 2),
             BritishCutoverDate.of(1752, 8, 12).plus(BritishCutoverChronology.INSTANCE.period(0, 1, 0)));
         assertEquals(
             BritishCutoverDate.of(2014, 7, 29),
@@ -1051,7 +1128,7 @@ public class TestBritishCutoverChronology {
     @Test
     public void test_minus_Period() {
         assertEquals(
-            BritishCutoverDate.of(1752, 9, 23),
+            BritishCutoverDate.of(1752, 9, 2),
             BritishCutoverDate.of(1752, 10, 12).minus(BritishCutoverChronology.INSTANCE.period(0, 1, 0)));
         assertEquals(
             BritishCutoverDate.of(2014, 3, 23),
@@ -1061,6 +1138,109 @@ public class TestBritishCutoverChronology {
     @Test
     public void test_minus_Period_ISO() {
         assertThrows(DateTimeException.class, () -> BritishCutoverDate.of(2014, 5, 26).minus(Period.ofMonths(2)));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_plus_clamped() {
+        assertEquals(BritishCutoverDate.of(2011, 2, 28), BritishCutoverDate.of(2011, 1, 31).plus(1, MONTHS));
+        assertEquals(BritishCutoverDate.of(2012, 2, 29), BritishCutoverDate.of(2012, 1, 31).plus(1, MONTHS));
+        assertEquals(BritishCutoverDate.of(2013, 2, 28), BritishCutoverDate.of(2012, 2, 29).plus(1, YEARS));
+        assertEquals(BritishCutoverDate.of(1752, 9, 30), BritishCutoverDate.of(1752, 8, 31).plus(1, MONTHS));
+        assertEquals(BritishCutoverDate.of(1751, 2, 28), BritishCutoverDate.of(1752, 2, 29).minus(1, YEARS));
+    }
+
+    @Test
+    public void test_minus_sameAsPlusNegative() {
+        BritishCutoverDate[] dates = {
+            BritishCutoverDate.of(1752, 2, 29), BritishCutoverDate.of(1752, 8, 31), BritishCutoverDate.of(1752, 9, 2),
+            BritishCutoverDate.of(1752, 9, 14), BritishCutoverDate.of(1752, 9, 30), BritishCutoverDate.of(1753, 3, 31),
+            BritishCutoverDate.of(2012, 2, 29), BritishCutoverDate.of(-5, 12, 31)};
+        TemporalUnit[] units = {DAYS, WEEKS, MONTHS, YEARS, DECADES, CENTURIES, MILLENNIA};
+        long[] amounts = {0, 1, 2, 7, 13, 30, 400};
+        for (BritishCutoverDate date : dates) {
+            for (TemporalUnit unit : units) {
+                for (long amount : amounts) {
+                    assertEquals(date.plus(-amount, unit), date.minus(amount, unit), date + " " + amount + " " + unit);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void test_plus_outOfRange() {
+        BritishCutoverDate max = BritishCutoverDate.of(999_999, 12, 31);
+        BritishCutoverDate min = BritishCutoverDate.of(-999_998, 1, 1);
+        assertThrows(DateTimeException.class, () -> max.plus(1, DAYS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, WEEKS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, MONTHS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, YEARS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, DECADES));
+        assertThrows(DateTimeException.class, () -> min.minus(1, DAYS));
+        assertThrows(DateTimeException.class, () -> min.minus(1, WEEKS));
+        assertThrows(DateTimeException.class, () -> min.minus(1, MONTHS));
+        assertThrows(DateTimeException.class, () -> min.minus(1, YEARS));
+        assertThrows(DateTimeException.class, () -> min.minus(1, DECADES));
+    }
+
+    @Test
+    public void test_plus_overflow() {
+        BritishCutoverDate date = BritishCutoverDate.of(2014, 5, 26);
+        assertThrows(ArithmeticException.class, () -> date.plus(Long.MAX_VALUE, DECADES));
+        assertThrows(ArithmeticException.class, () -> date.plus(Long.MAX_VALUE, CENTURIES));
+        assertThrows(ArithmeticException.class, () -> date.plus(Long.MAX_VALUE, MILLENNIA));
+        assertThrows(ArithmeticException.class, () -> date.plus(Long.MAX_VALUE, WEEKS));
+        assertThrows(RuntimeException.class, () -> date.plus(Long.MAX_VALUE, DAYS));
+        assertThrows(RuntimeException.class, () -> date.plus(Long.MAX_VALUE, MONTHS));
+        assertThrows(RuntimeException.class, () -> date.plus(Long.MAX_VALUE, YEARS));
+        assertThrows(RuntimeException.class, () -> date.minus(Long.MIN_VALUE, YEARS));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_until_TemporalUnit_cutoverGap() {
+        // adding the months or years lands on a day in the cutover gap, which is clamped to 1752-09-02
+        BritishCutoverDate start = BritishCutoverDate.of(1752, 8, 12);
+        BritishCutoverDate end = BritishCutoverDate.of(1752, 9, 22);
+        assertEquals(BritishCutoverDate.of(1752, 9, 2), start.plus(1, MONTHS));
+        assertEquals(1, start.until(end, MONTHS));
+        assertEquals(0, start.until(BritishCutoverDate.of(1752, 9, 2), MONTHS));
+        assertEquals(0, start.until(BritishCutoverDate.of(1752, 8, 31), MONTHS));
+        BritishCutoverDate start2 = BritishCutoverDate.of(1700, 9, 12);
+        assertEquals(BritishCutoverDate.of(1752, 9, 2), start2.plus(52, YEARS));
+        assertEquals(52, start2.until(end, YEARS));
+        assertEquals(BritishCutoverChronology.INSTANCE.period(52, 0, 9), start2.until(end));
+        assertEquals(end, start2.plus(start2.until(end)));
+    }
+
+    @Test
+    public void test_until_CLD_backwardAcrossCutover() {
+        BritishCutoverDate start = BritishCutoverDate.of(1753, 3, 20);
+        BritishCutoverDate end = BritishCutoverDate.of(1752, 9, 2);
+        ChronoPeriod period = start.until(end);
+        assertEquals(BritishCutoverChronology.INSTANCE.period(0, -6, -7), period);
+        assertEquals(end, start.plus(period));
+    }
+
+    @Test
+    public void test_until_Period_plusIsInverse() {
+        BritishCutoverDate[] dates = {
+            BritishCutoverDate.of(1700, 2, 29), BritishCutoverDate.of(1751, 12, 31), BritishCutoverDate.of(1752, 1, 31),
+            BritishCutoverDate.of(1752, 2, 29), BritishCutoverDate.of(1752, 8, 12), BritishCutoverDate.of(1752, 8, 31),
+            BritishCutoverDate.of(1752, 9, 1), BritishCutoverDate.of(1752, 9, 2), BritishCutoverDate.of(1752, 9, 14),
+            BritishCutoverDate.of(1752, 9, 22), BritishCutoverDate.of(1752, 9, 30), BritishCutoverDate.of(1752, 10, 12),
+            BritishCutoverDate.of(1752, 12, 31), BritishCutoverDate.of(1753, 3, 31), BritishCutoverDate.of(1800, 2, 28),
+            BritishCutoverDate.of(-4, 2, 29)};
+        for (BritishCutoverDate start : dates) {
+            for (BritishCutoverDate end : dates) {
+                if (!end.isBefore(start)) {
+                    assertEquals(end, start.plus(start.until(end)), start + " " + end);
+                    for (TemporalUnit unit : new TemporalUnit[] {MONTHS, YEARS, DAYS}) {
+                        assertFalse(start.plus(start.until(end, unit), unit).isAfter(end), start + " " + end + " " + unit);
+                    }
+                }
+            }
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -1080,27 +1260,27 @@ public class TestBritishCutoverChronology {
             {1752, 7, 2, 1752, 11, 2, 0, 4, 0},
 
             {1752, 7, 3, 1752, 9, 2, 0, 1, 30},  // 30 days after 1752-08-03
-            {1752, 7, 3, 1752, 9, 14, 0, 2, 0},  // 2 months
-            {1752, 7, 3, 1752, 9, 15, 0, 2, 1},  // 1 day after 1752-09-03 (1752-09-14)
-            {1752, 7, 3, 1752, 9, 30, 0, 2, 16},  // 16 days after 1752-09-03 (1752-09-14)
-            {1752, 7, 3, 1752, 10, 1, 0, 2, 17},  // 17 days after 1752-09-03 (1752-09-14)
+            {1752, 7, 3, 1752, 9, 14, 0, 2, 1},  // 1 day after 1752-09-02
+            {1752, 7, 3, 1752, 9, 15, 0, 2, 2},
+            {1752, 7, 3, 1752, 9, 30, 0, 2, 17},
+            {1752, 7, 3, 1752, 10, 1, 0, 2, 18},
             {1752, 7, 3, 1752, 10, 3, 0, 3, 0},
             {1752, 7, 3, 1752, 10, 4, 0, 3, 1},
 
             {1752, 7, 4, 1752, 9, 2, 0, 1, 29},  // 29 days after 1752-08-04
-            {1752, 7, 4, 1752, 9, 14, 0, 1, 30},  // 30 days after 1752-08-04
-            {1752, 7, 4, 1752, 9, 15, 0, 2, 0},  // 2 months
-            {1752, 7, 4, 1752, 9, 30, 0, 2, 15},  // 15 days after 1752-09-04 (1752-09-15)
-            {1752, 7, 4, 1752, 10, 1, 0, 2, 16},  // 16 days after 1752-09-04 (1752-09-15)
+            {1752, 7, 4, 1752, 9, 14, 0, 2, 1},
+            {1752, 7, 4, 1752, 9, 15, 0, 2, 2},
+            {1752, 7, 4, 1752, 9, 30, 0, 2, 17},
+            {1752, 7, 4, 1752, 10, 1, 0, 2, 18},
             {1752, 7, 4, 1752, 10, 4, 0, 3, 0},
             {1752, 7, 4, 1752, 10, 5, 0, 3, 1},
 
             {1752, 7, 13, 1752, 9, 2, 0, 1, 20},  // 20 days after 1752-08-13
-            {1752, 7, 13, 1752, 9, 14, 0, 1, 21},  // 21 days after 752-08-13
-            {1752, 7, 13, 1752, 9, 24, 0, 2, 0},  // 2 months
-            {1752, 7, 13, 1752, 9, 30, 0, 2, 6},  // 6 days after 1752-09-13 (1752-09-24)
-            {1752, 7, 13, 1752, 10, 1, 0, 2, 7},  // 7 days after 1752-09-13 (1752-09-24)
-            {1752, 7, 13, 1752, 10, 12, 0, 2, 18},  // 18 days after 1752-09-13 (1752-09-24)
+            {1752, 7, 13, 1752, 9, 14, 0, 2, 1},
+            {1752, 7, 13, 1752, 9, 24, 0, 2, 11},
+            {1752, 7, 13, 1752, 9, 30, 0, 2, 17},
+            {1752, 7, 13, 1752, 10, 1, 0, 2, 18},
+            {1752, 7, 13, 1752, 10, 12, 0, 2, 29},
             {1752, 7, 13, 1752, 10, 13, 0, 3, 0},
             {1752, 7, 13, 1752, 10, 14, 0, 3, 1},
 
@@ -1188,10 +1368,10 @@ public class TestBritishCutoverChronology {
             {1752, 10, 3, 1752, 9, 16, 0, 0, -17},
             {1752, 10, 3, 1752, 9, 15, 0, 0, -18},
             {1752, 10, 3, 1752, 9, 14, 0, 0, -19},
-            {1752, 10, 3, 1752, 9, 2, 0, -1, -1},
-            {1752, 10, 3, 1752, 9, 1, 0, -1, -2},
-            {1752, 10, 3, 1752, 8, 31, 0, -1, -3},
-            {1752, 10, 3, 1752, 8, 4, 0, -1, -30},
+            {1752, 10, 3, 1752, 9, 2, 0, -1, 0},
+            {1752, 10, 3, 1752, 9, 1, 0, -1, -1},
+            {1752, 10, 3, 1752, 8, 31, 0, -1, -2},
+            {1752, 10, 3, 1752, 8, 4, 0, -1, -29},
             {1752, 10, 3, 1752, 8, 3, 0, -2, 0},
             {1752, 10, 3, 1752, 8, 2, 0, -2, -1},
 
@@ -1200,10 +1380,10 @@ public class TestBritishCutoverChronology {
             {1752, 10, 4, 1752, 9, 16, 0, 0, -18},
             {1752, 10, 4, 1752, 9, 15, 0, 0, -19},
             {1752, 10, 4, 1752, 9, 14, 0, 0, -20},
-            {1752, 10, 4, 1752, 9, 2, 0, -1, -2},
-            {1752, 10, 4, 1752, 9, 1, 0, -1, -3},
-            {1752, 10, 4, 1752, 8, 31, 0, -1, -4},
-            {1752, 10, 4, 1752, 8, 5, 0, -1, -30},
+            {1752, 10, 4, 1752, 9, 2, 0, -1, 0},
+            {1752, 10, 4, 1752, 9, 1, 0, -1, -1},
+            {1752, 10, 4, 1752, 8, 31, 0, -1, -2},
+            {1752, 10, 4, 1752, 8, 5, 0, -1, -28},
             {1752, 10, 4, 1752, 8, 4, 0, -2, 0},
             {1752, 10, 4, 1752, 8, 3, 0, -2, -1},
         };

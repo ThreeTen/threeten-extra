@@ -109,6 +109,25 @@ import org.jspecify.annotations.Nullable;
 public final class BritishCutoverChronology
         extends AbstractChronology
         implements Serializable {
+    // withDayOfMonth calculated via plusDays (different to LocalDate)
+    // 1752-09-02 with dom 3 = 1752-09-14
+    // 1752-09-02 with dom 4 = 1752-09-15
+    // 1752-09-02 with dom 13 = 1752-09-24
+    // 1752-09-02 with dom 14 = 1752-09-14
+    // plusDays calculates real days
+    // 1752-09-02 plus 1 day = 1752-09-14
+    // plus period adds months, potentially resulting in an invalid dom, which is clamped to previous valid before adding days
+    // withMonths would also clamp the dom to previous valid
+    // 1752-08-02 plus 1 month = 1752-09-02
+    // 1752-08-03 plus 1 month = 1752-09-02
+    // 1752-08-04 plus 1 month = 1752-09-02
+    // 1752-08-13 plus 1 month = 1752-09-02
+    // 1752-08-14 plus 1 month = 1752-09-14
+    // 1752-08-02 plus 1 month and 1 day = 1752-09-14
+    // 1752-08-03 plus 1 month and 1 day = 1752-09-14
+    // 1752-08-04 plus 1 month and 1 day = 1752-09-14
+    // 1752-08-13 plus 1 month and 1 day = 1752-09-14
+    // 1752-08-14 plus 1 month and 1 day = 1752-09-15
 
     /**
      * Singleton instance of the BritishCutover chronology.
@@ -438,7 +457,14 @@ public final class BritishCutoverChronology
         if (!(era instanceof JulianEra)) {
             throw new ClassCastException("Era must be JulianEra");
         }
-        return (era == JulianEra.AD ? yearOfEra : 1 - yearOfEra);
+        if (era == JulianEra.AD) {
+            return yearOfEra;
+        }
+        try {
+            return Math.subtractExact(1, yearOfEra);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid year-of-era: " + yearOfEra, ex);
+        }
     }
 
     @Override
