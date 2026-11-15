@@ -378,6 +378,32 @@ public class TestJulianChronology {
         assertEquals(-1, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 2));
         assertEquals(-2, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 3));
         assertEquals(-3, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 4));
+        // negative allowed to support date resolution in AbstractChronology lenient mode
+        assertEquals(0, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 0));
+        assertEquals(-1, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, -1));
+        assertEquals(1, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 0));
+        assertEquals(2, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, -1));
+        // boundaries
+        assertEquals(999_999, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 999_999));
+        assertEquals(-999_998, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 999_999));
+        // out of range
+        assertEquals(1_000_000, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, 1_000_000));
+        assertEquals(Integer.MAX_VALUE, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, Integer.MAX_VALUE));
+        assertEquals(Integer.MIN_VALUE, JulianChronology.INSTANCE.prolepticYear(JulianEra.AD, Integer.MIN_VALUE));
+        assertEquals(-999_999, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, 1_000_000));
+        assertEquals(Integer.MIN_VALUE + 2, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, Integer.MAX_VALUE));
+        assertEquals(Integer.MAX_VALUE, JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, Integer.MIN_VALUE + 2));
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, Integer.MIN_VALUE + 1));
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.prolepticYear(JulianEra.BC, Integer.MIN_VALUE));
+    }
+
+    @Test
+    public void test_prolepticYear_dateRange() {
+        assertEquals(JulianDate.of(999_999, 1, 1), JulianChronology.INSTANCE.dateYearDay(JulianEra.AD, 999_999, 1));
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.dateYearDay(JulianEra.AD, 1_000_000, 1));
+        assertEquals(JulianDate.of(-999_998, 1, 1), JulianChronology.INSTANCE.date(JulianEra.BC, 999_999, 1, 1));
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.date(JulianEra.BC, 1_000_000, 1, 1));
+        assertThrows(DateTimeException.class, () -> JulianChronology.INSTANCE.date(JulianEra.BC, Integer.MIN_VALUE, 1, 1));
     }
 
     @Test
@@ -536,6 +562,52 @@ public class TestJulianChronology {
     }
 
     @Test
+    public void test_with_TemporalField_dayOverflow() {
+        assertEquals(JulianDate.of(2011, 3, 2), JulianDate.of(2011, 2, 26).with(DAY_OF_MONTH, 30));
+        assertEquals(JulianDate.of(2012, 3, 2), JulianDate.of(2012, 2, 26).with(DAY_OF_MONTH, 31));
+        assertEquals(JulianDate.of(2012, 2, 29), JulianDate.of(2012, 2, 26).with(DAY_OF_MONTH, 29));
+        assertEquals(JulianDate.of(2011, 5, 1), JulianDate.of(2011, 4, 26).with(DAY_OF_MONTH, 31));
+        assertEquals(JulianDate.of(2011, 12, 31), JulianDate.of(2011, 12, 26).with(DAY_OF_MONTH, 31));
+        assertEquals(JulianDate.of(2011, 1, 1), JulianDate.of(2011, 1, 26).with(DAY_OF_MONTH, 1));
+        assertEquals(JulianDate.of(2012, 1, 1), JulianDate.of(2011, 6, 8).with(DAY_OF_YEAR, 366));
+        assertEquals(JulianDate.of(2012, 12, 31), JulianDate.of(2012, 6, 8).with(DAY_OF_YEAR, 366));
+        assertThrows(DateTimeException.class, () -> JulianDate.of(2011, 6, 8).with(DAY_OF_MONTH, 0));
+        assertThrows(DateTimeException.class, () -> JulianDate.of(2011, 6, 8).with(DAY_OF_MONTH, 32));
+        assertThrows(DateTimeException.class, () -> JulianDate.of(2011, 6, 8).with(DAY_OF_YEAR, 0));
+        assertThrows(DateTimeException.class, () -> JulianDate.of(2011, 6, 8).with(DAY_OF_YEAR, 367));
+    }
+
+    public static Object[][] data_with_bad() {
+        return new Object[][] {
+            {2012, 6, 8, DAY_OF_WEEK, 0},
+            {2012, 6, 8, DAY_OF_WEEK, 8},
+            {2012, 6, 8, DAY_OF_MONTH, 0},
+            {2012, 6, 8, DAY_OF_MONTH, 32},
+            {2011, 2, 8, DAY_OF_MONTH, 32},
+            {2012, 6, 8, DAY_OF_YEAR, 0},
+            {2012, 6, 8, DAY_OF_YEAR, 367},
+            {2011, 6, 8, DAY_OF_YEAR, 367},
+            {2012, 6, 8, MONTH_OF_YEAR, 0},
+            {2012, 6, 8, MONTH_OF_YEAR, 13},
+            {2012, 6, 8, YEAR, 1_000_000},
+            {2012, 6, 8, YEAR, -999_999},
+            {2012, 6, 8, YEAR_OF_ERA, 0},
+            {2012, 6, 8, YEAR_OF_ERA, 1_000_000},
+            {2012, 6, 8, ERA, 2},
+            {2012, 6, 8, ERA, -1},
+            {2012, 6, 8, EPOCH_DAY, Long.MAX_VALUE},
+            {2012, 6, 8, EPOCH_DAY, Long.MIN_VALUE},
+            {2012, 6, 8, PROLEPTIC_MONTH, 1_000_000 * 12L},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_with_bad")
+    public void test_with_TemporalField_badValue(int year, int month, int dom, TemporalField field, long value) {
+        assertThrows(DateTimeException.class, () -> JulianDate.of(year, month, dom).with(field, value));
+    }
+
+    @Test
     public void test_with_TemporalField_unsupported() {
         assertThrows(UnsupportedTemporalTypeException.class, () -> JulianDate.of(2012, 6, 30).with(MINUTE_OF_DAY, 0));
     }
@@ -638,6 +710,60 @@ public class TestJulianChronology {
     }
 
     @Test
+    public void test_plus_clamped() {
+        assertEquals(JulianDate.of(2011, 2, 28), JulianDate.of(2011, 1, 31).plus(1, MONTHS));
+        assertEquals(JulianDate.of(2012, 2, 29), JulianDate.of(2011, 12, 31).plus(2, MONTHS));
+        assertEquals(JulianDate.of(2011, 4, 30), JulianDate.of(2011, 1, 31).plus(3, MONTHS));
+        assertEquals(JulianDate.of(2011, 2, 28), JulianDate.of(2012, 2, 29).plus(-1, YEARS));
+        assertEquals(JulianDate.of(2011, 2, 28), JulianDate.of(2012, 2, 29).minus(1, YEARS));
+        assertEquals(JulianDate.of(2016, 2, 29), JulianDate.of(2012, 2, 29).plus(4, YEARS));
+        assertEquals(JulianDate.of(2013, 2, 28), JulianDate.of(2012, 2, 29).plus(1, YEARS));
+    }
+
+    @Test
+    public void test_minus_sameAsPlusNegative() {
+        JulianDate base = JulianDate.of(2012, 3, 31);
+        for (TemporalUnit unit : new TemporalUnit[] {DAYS, WEEKS, MONTHS, YEARS, DECADES, CENTURIES, MILLENNIA}) {
+            for (long amount : new long[] {-13, -1, 0, 1, 13}) {
+                assertEquals(base.plus(-amount, unit), base.minus(amount, unit));
+            }
+        }
+    }
+
+    @Test
+    public void test_plus_outOfRange() {
+        JulianDate min = JulianDate.of(-999_998, 1, 1);
+        JulianDate max = JulianDate.of(999_999, 12, 31);
+        assertEquals(max, max.plus(0, DAYS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, DAYS));
+        assertThrows(DateTimeException.class, () -> min.minus(1, DAYS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, WEEKS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, MONTHS));
+        assertThrows(DateTimeException.class, () -> min.minus(1, MONTHS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, YEARS));
+        assertThrows(DateTimeException.class, () -> min.minus(1, YEARS));
+        assertThrows(DateTimeException.class, () -> max.plus(1, DECADES));
+        assertThrows(DateTimeException.class, () -> max.plus(1, CENTURIES));
+        assertThrows(DateTimeException.class, () -> max.plus(1, MILLENNIA));
+        assertThrows(DateTimeException.class, () -> max.plus(1, ERAS));
+        assertThrows(DateTimeException.class, () -> min.minus(1, ERAS));
+    }
+
+    @Test
+    public void test_plus_overflow() {
+        JulianDate base = JulianDate.of(2012, 6, 8);
+        assertThrows(ArithmeticException.class, () -> base.plus(Long.MAX_VALUE, DECADES));
+        assertThrows(ArithmeticException.class, () -> base.plus(Long.MAX_VALUE, CENTURIES));
+        assertThrows(ArithmeticException.class, () -> base.plus(Long.MAX_VALUE, MILLENNIA));
+        assertThrows(ArithmeticException.class, () -> base.plus(Long.MAX_VALUE, WEEKS));
+        assertThrows(RuntimeException.class, () -> base.plus(Long.MAX_VALUE, DAYS));
+        assertThrows(RuntimeException.class, () -> base.plus(Long.MAX_VALUE, YEARS));
+        assertThrows(RuntimeException.class, () -> base.plus(Long.MAX_VALUE, MONTHS));
+        assertThrows(RuntimeException.class, () -> base.minus(Long.MIN_VALUE, DAYS));
+        assertThrows(RuntimeException.class, () -> base.minus(Long.MIN_VALUE, YEARS));
+    }
+
+    @Test
     public void test_plus_TemporalUnit_unsupported() {
         assertThrows(UnsupportedTemporalTypeException.class, () -> JulianDate.of(2012, 6, 30).plus(0, MINUTES));
     }
@@ -682,6 +808,23 @@ public class TestJulianChronology {
         JulianDate start = JulianDate.of(year1, month1, dom1);
         JulianDate end = JulianDate.of(year2, month2, dom2);
         assertEquals(expected, start.until(end, unit));
+    }
+
+    @Test
+    public void test_until_Period_plusIsInverse() {
+        JulianDate[] dates = {
+            JulianDate.of(2011, 1, 31), JulianDate.of(2011, 2, 28), JulianDate.of(2012, 2, 29), JulianDate.of(2012, 3, 31),
+            JulianDate.of(2012, 12, 31), JulianDate.of(2013, 1, 1), JulianDate.of(2100, 2, 29), JulianDate.of(-4, 2, 29),
+            JulianDate.of(0, 6, 15), JulianDate.of(1, 1, 1),
+        };
+        for (JulianDate start : dates) {
+            for (JulianDate end : dates) {
+                if (!end.isBefore(start)) {
+                    assertEquals(end, start.plus(start.until(end)), start + " -> " + end);
+                    assertEquals(start.until(end, MONTHS) / 12, start.until(end, YEARS));
+                }
+            }
+        }
     }
 
     @Test

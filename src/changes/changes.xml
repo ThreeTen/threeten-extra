@@ -63,6 +63,12 @@
         Also add validation that year-of-era arithmetic does not overflow.
         These alterations could be considered breaking changes.
       </action>
+      <action dev="jodastephen" type="fix" issue="463">
+        Fix Julian chronology to follow the chronology design principles.
+        Allow `with(DAY_OF_MONTH, n)` to work for all months with values 1 to 31, overflowing into the next month.
+        Also add validation that year-of-era arithmetic does not overflow.
+        These alterations could be considered breaking changes.
+      </action>
       <action dev="jodastephen" type="fix" issue="420">
         Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
       </action>
@@ -297,7 +303,7 @@
         Fixes #126.
       </action>
       <action dev="ofornes" type="add">
-        Add Norwegian Bokmål and Norwegian Nynorsk translations for word-based formatting.
+        Add Norwegian Bokmï¿½l and Norwegian Nynorsk translations for word-based formatting.
         Fixes #125.
       </action>
       <action dev="spand" type="fix">

@@ -367,7 +367,14 @@ public final class JulianChronology extends AbstractChronology implements Serial
         if (!(era instanceof JulianEra)) {
             throw new ClassCastException("Era must be JulianEra");
         }
-        return (era == JulianEra.AD ? yearOfEra : 1 - yearOfEra);
+        if (era == JulianEra.AD) {
+            return yearOfEra;
+        }
+        try {
+            return Math.subtractExact(1, yearOfEra);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid year-of-era: " + yearOfEra, ex);
+        }
     }
 
     @Override
