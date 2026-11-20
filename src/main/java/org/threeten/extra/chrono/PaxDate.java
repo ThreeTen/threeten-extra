@@ -54,7 +54,6 @@ import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -105,17 +104,9 @@ public final class PaxDate
      */
     private static final int DAYS_PER_SIX_CYCLE = (DAYS_IN_YEAR * 6) + DAYS_IN_WEEK;
     /**
-     * Number of years in a decade.
-     */
-    private static final int YEARS_IN_DECADE = 10;
-    /**
      * Number of years in a century.
      */
     private static final int YEARS_IN_CENTURY = 100;
-    /**
-     * Number of years in a millennium.
-     */
-    private static final int YEARS_IN_MILLENNIUM = 1000;
 
     /**
      * The proleptic year.
@@ -629,32 +620,8 @@ public final class PaxDate
     }
 
     @Override
-    long until(AbstractDate end, TemporalUnit unit) {
-        if (unit instanceof ChronoUnit) {
-            PaxDate paxEnd = PaxDate.from(end);
-            switch ((ChronoUnit) unit) {
-                case YEARS:
-                    return yearsUntil(paxEnd);
-                case DECADES:
-                    return yearsUntil(paxEnd) / YEARS_IN_DECADE;
-                case CENTURIES:
-                    return yearsUntil(paxEnd) / YEARS_IN_CENTURY;
-                case MILLENNIA:
-                    return yearsUntil(paxEnd) / YEARS_IN_MILLENNIUM;
-                default:
-                    break;
-            }
-        }
-        return super.until(end, unit);
-    }
-
-    /**
-     * Get the number of years from this date to the given day.
-     *
-     * @param end The end date.
-     * @return The number of years from this date to the given day.
-     */
-    long yearsUntil(PaxDate end) {
+    long yearsUntil(AbstractDate baseEnd) {
+        PaxDate end = PaxDate.from(baseEnd);
         // if either date is after the inserted leap month, and the other year isn't leap, simulate the effect of the inserted month
         long startYear = getProlepticYear() * 512L + getDayOfYear() + (this.month == MONTHS_IN_YEAR && !this.isLeapYear() && end.isLeapYear() ? DAYS_IN_WEEK : 0);
         long endYear = end.getProlepticYear() * 512L + end.getDayOfYear() + (end.month == MONTHS_IN_YEAR && !end.isLeapYear() && this.isLeapYear() ? DAYS_IN_WEEK : 0);
