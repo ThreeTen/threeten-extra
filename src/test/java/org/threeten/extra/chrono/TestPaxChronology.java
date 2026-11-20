@@ -434,6 +434,14 @@ public class TestPaxChronology {
     }
 
     @Test
+    public void test_prolepticYear_overflow() {
+        assertEquals(Integer.MIN_VALUE, PaxChronology.INSTANCE.prolepticYear(PaxEra.CE, Integer.MIN_VALUE));
+        assertEquals(Integer.MIN_VALUE + 2, PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, Integer.MAX_VALUE));
+        assertThrows(DateTimeException.class, () -> PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, Integer.MIN_VALUE));
+        assertThrows(DateTimeException.class, () -> PaxChronology.INSTANCE.prolepticYear(PaxEra.BCE, Integer.MIN_VALUE + 1));
+    }
+
+    @Test
     public void test_Chronology_eraOf() {
         assertEquals(PaxEra.CE, PaxChronology.INSTANCE.eraOf(1));
         assertEquals(PaxEra.BCE, PaxChronology.INSTANCE.eraOf(0));
@@ -594,6 +602,26 @@ public class TestPaxChronology {
         assertThrows(UnsupportedTemporalTypeException.class, () -> PaxDate.of(2012, 6, 28).with(MINUTE_OF_DAY, 0));
     }
 
+    @Test
+    public void test_with_yearOfEraAndEra_leapMonthAware() {
+        PaxDate date = PaxDate.of(5, 13, 6);
+        assertEquals(PaxDate.of(6, 14, 6), date.with(YEAR_OF_ERA, 6));
+        assertEquals(date.with(YEAR, 6), date.with(YEAR_OF_ERA, 6));
+        PaxDate bce = PaxDate.of(-5, 13, 6);
+        assertEquals(PaxDate.of(6, 14, 6), bce.with(ERA, 1));
+        assertEquals(PaxDate.of(6, 14, 6), bce.plus(1, ERAS));
+    }
+
+    @Test
+    public void test_with_dayOfMonth_overflowsIntoNextMonth() {
+        assertEquals(PaxDate.of(2012, 14, 21), PaxDate.of(2012, 13, 3).with(DAY_OF_MONTH, 28));
+        assertEquals(PaxDate.of(2012, 14, 1), PaxDate.of(2012, 13, 3).with(DAY_OF_MONTH, 8));
+        assertEquals(PaxDate.of(2012, 13, 7), PaxDate.of(2012, 13, 3).with(DAY_OF_MONTH, 7));
+        assertEquals(PaxDate.of(2012, 14, 28), PaxDate.of(2012, 14, 5).with(DAY_OF_MONTH, 28));
+        assertThrows(DateTimeException.class, () -> PaxDate.of(2012, 13, 3).with(DAY_OF_MONTH, 29));
+        assertThrows(DateTimeException.class, () -> PaxDate.of(2012, 13, 3).with(DAY_OF_MONTH, 0));
+    }
+
     //-----------------------------------------------------------------------
     // PaxDate.with(TemporalAdjuster)
     //-----------------------------------------------------------------------
@@ -738,6 +766,27 @@ public class TestPaxChronology {
         assertThrows(UnsupportedTemporalTypeException.class, () -> PaxDate.of(2012, 6, 10).plus(0, MINUTES));
     }
 
+    @Test
+    public void test_plusMonths_stepsThroughEveryMonth() {
+        PaxDate date = PaxDate.of(-1200, 1, 1);
+        for (int i = 0; i < 20_000; i++) {
+            PaxDate next = date.plus(1, MONTHS);
+            assertEquals(date.getProlepticMonth() + 1, next.getProlepticMonth(), date.toString());
+            assertEquals(1, next.getDayOfMonth());
+            date = next;
+        }
+        assertEquals(PaxDate.of(-1200, 1, 1).getProlepticMonth() + 20_000, date.getProlepticMonth());
+        assertEquals(PaxDate.of(407, 1, 1), PaxDate.of(406, 13, 1).plus(2, MONTHS));
+    }
+
+    @Test
+    public void test_plusMonths_hugeOutOfRangeFailsFast() {
+        PaxDate date = PaxDate.of(2012, 6, 1);
+        assertThrows(DateTimeException.class, () -> date.plus(Long.MAX_VALUE / 2, MONTHS));
+        assertThrows(DateTimeException.class, () -> date.minus(Long.MAX_VALUE / 2, MONTHS));
+        assertThrows(DateTimeException.class, () -> date.plus(Long.MAX_VALUE / 1000, MONTHS));
+    }
+
     //-----------------------------------------------------------------------
     // PaxDate.until
     //-----------------------------------------------------------------------
@@ -837,6 +886,15 @@ public class TestPaxChronology {
         PaxDate start = PaxDate.of(2012, 6, 28);
         PaxDate end = PaxDate.of(2012, 7, 1);
         assertThrows(UnsupportedTemporalTypeException.class, () -> start.until(end, MINUTES));
+    }
+
+    @Test
+    public void test_until_leapMonthStart_inverseOfPlus() {
+        PaxDate start = PaxDate.of(6, 13, 7);
+        PaxDate end = PaxDate.of(7, 13, 1);
+        assertEquals(0, start.until(end, YEARS));
+        assertEquals(0, start.until(end).get(YEARS));
+        assertEquals(start.plus(start.until(end)), end);
     }
 
     //-----------------------------------------------------------------------

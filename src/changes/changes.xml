@@ -72,6 +72,12 @@
         Fix `until()` in BritishCutover for periods that cross the cutover.
         These alterations could be considered breaking changes.
       </action>
+      <action dev="jodastephen" type="fix" issue="465">
+        Fix Pax chronology to follow the chronology design principles.
+        Allow `with(DAY_OF_MONTH, n)` to work for all months with values 1 to 28, overflowing into the next month.
+        Fix plus, minus and until to handle the extra month correctly.
+        These alterations could be considered breaking changes.
+      </action>
       <action dev="jodastephen" type="fix" issue="420">
         Throw correct exception from `Interval` and `LocalDateRange` parse of strings starting with '/'.
       </action>

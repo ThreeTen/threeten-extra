@@ -70,18 +70,19 @@ import org.jspecify.annotations.Nullable;
  *  current era. For the previous era, years have zero, then negative values.
  * <li>month-of-year - There are 13 or 14 months in a Pax year, numbered from 1 to 13 (or 14).
  * <li>day-of-month - There are 28 days in each Pax month, numbered from 1 to 28.
- * In a leap year a one-week month ('Pax') is inserted between months 12 and 13, shifting 13 to 14.
+ *  In a leap year a one-week month ('Pax') is inserted between months 12 and 13, shifting 13 to 14.
  * <li>day-of-year - There are 364 days in a standard Pax year and 371 in a leap year.
- * The days are numbered from 1 to 364 or 1 to 371.
- * <li>leap-year - Leap years occur in every year whose last two digits are divisible by {@code 6}, are {@code 99}, or are {@code 00} and the year is <b>not</b> divisible by 400.
+ *  The days are numbered from 1 to 364 or 1 to 371.
+ * <li>leap-year - Leap years occur in every year whose last two digits are divisible by {@code 6}, are {@code 99},
+ *  or are {@code 00} and the year is <b>not</b> divisible by 400.
  * </ul>
  * <p>
  * For more information, please read the <a href="https://en.wikipedia.org/wiki/Pax_Calendar">Pax Calendar</a> Wikipedia article.
  *
  * <h3>Valid range</h3>
  * The supported range is {@code -999,999,999-01-02 (Pax)} to {@code +999,999,999-14-27 (Pax)}.
- * This corresponds to the ISO dates {@code -999999999-01-01 (ISO)} to {@code +999999999-12-31 (ISO)}.
- * Attempting to create or calculate a date outside this range throws {@code DateTimeException}.
+ * This corresponds to the maximum ISO dates, {@code -999999999-01-01 (ISO)} to {@code +999999999-12-31 (ISO)}.
+ * Attempting to create or calculate a date outside this range throws {@code DateTimeException} or {@code ArithmeticException}.
  *
  * <h3>Implementation Requirements</h3>
  * This class is immutable and thread-safe.
@@ -408,7 +409,14 @@ public final class PaxChronology extends AbstractChronology implements Serializa
         if (!(era instanceof PaxEra)) {
             throw new ClassCastException("Era must be PaxEra");
         }
-        return (era == PaxEra.CE ? yearOfEra : 1 - yearOfEra);
+        if (era == PaxEra.CE) {
+            return yearOfEra;
+        }
+        try {
+            return Math.subtractExact(1, yearOfEra);
+        } catch (ArithmeticException ex) {
+            throw new DateTimeException("Invalid year-of-era: " + yearOfEra, ex);
+        }
     }
 
     @Override
