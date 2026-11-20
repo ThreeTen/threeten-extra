@@ -197,7 +197,7 @@ public final class PaxDate
         PaxChronology.MONTH_OF_YEAR_RANGE.checkValidValue(month, MONTH_OF_YEAR);
         PaxChronology.DAY_OF_MONTH_RANGE.checkValidValue(dayOfMonth, DAY_OF_MONTH);
         if (month == MONTHS_IN_YEAR + 1 && !PaxChronology.INSTANCE.isLeapYear(prolepticYear)) {
-            throw new DateTimeException("Invalid month 14 as " + prolepticYear + "is not a leap year");
+            throw new DateTimeException("Invalid month 14 as " + prolepticYear + " is not a leap year");
         }
 
         if (dayOfMonth > DAYS_IN_WEEK && month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(prolepticYear)) {
@@ -286,7 +286,7 @@ public final class PaxDate
         // use of Pax 0001 makes non-leap century at end of (long) cycle.
         long paxEpochDay = epochDay + PAX_0001_TO_ISO_1970;
         int longCycle = (int) Math.floorDiv(paxEpochDay, DAYS_PER_LONG_CYCLE);
-        int cycle = (int) (paxEpochDay - longCycle * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE;
+        int cycle = (int) ((paxEpochDay - ((long) longCycle) * DAYS_PER_LONG_CYCLE) / DAYS_PER_CYCLE);
         int dayOfCycle = (int) Math.floorMod(paxEpochDay - ((long) longCycle) * DAYS_PER_LONG_CYCLE, DAYS_PER_CYCLE);
         if (dayOfCycle >= DAYS_PER_CYCLE - DAYS_IN_YEAR - DAYS_IN_WEEK) {
             // Is in the century year
@@ -334,25 +334,6 @@ public final class PaxDate
         int monthR = Math.min(month, MONTHS_IN_YEAR + (PaxChronology.INSTANCE.isLeapYear(prolepticYear) ? 1 : 0));
         int dayR = Math.min(day, month == MONTHS_IN_YEAR && PaxChronology.INSTANCE.isLeapYear(prolepticYear) ? DAYS_IN_WEEK : DAYS_IN_MONTH);
         return PaxDate.of(prolepticYear, monthR, dayR);
-    }
-
-    /**
-     * Get the count of leap months since proleptic month 0.
-     * <p>
-     * This number is negative if the month is prior to Pax year 0.
-     ** <p>
-     * Remember that if using this for things like turning months into days, you must first subtract this number from the proleptic month count.
-     *
-     * @param prolepticMonth The month.
-     * @return The number of leap months since proleptic month 0.
-     */
-    private static long getLeapMonthsBefore(long prolepticMonth) {
-        long offsetMonth = prolepticMonth - (prolepticMonth <= 0 ? 13 : 13 - 1);
-        // First, see getLeapYearsBefore(...) for explanations.
-        return 18L * Math.floorDiv(offsetMonth, 1318)
-                - Math.floorDiv(offsetMonth, 5272)
-                + (((Math.floorMod(offsetMonth, 1318) - (offsetMonth <= 0 ? 1317 : 0)) / 1304) + (offsetMonth <= 0 ? 1 : 0))
-                + (Math.floorMod(offsetMonth, 1318) + (offsetMonth <= 0 ? 25 : 0)) / 79;
     }
 
     /**
@@ -512,10 +493,24 @@ public final class PaxDate
     }
 
     @Override
+    AbstractDate withDayOfMonth(int newValue) {
+        return plusDays(newValue - getDayOfMonth());
+    }
+
+    @Override
     public PaxDate with(TemporalField field, long newValue) {
         // Evaluate years as a special case, to deal with inserted leap months.
         if (field == ChronoField.YEAR) {
             return plusYears(Math.subtractExact(newValue, getProlepticYear()));
+        }
+        if (field == ChronoField.YEAR_OF_ERA) {
+            getChronology().range(ChronoField.YEAR_OF_ERA).checkValidValue(newValue, ChronoField.YEAR_OF_ERA);
+            long newYear = getProlepticYear() >= 1 ? newValue : 1 - newValue;
+            return plusYears(Math.subtractExact(newYear, getProlepticYear()));
+        }
+        if (field == ChronoField.ERA) {
+            getChronology().range(ChronoField.ERA).checkValidValue(newValue, ChronoField.ERA);
+            return newValue == getLong(ChronoField.ERA) ? this : plusYears(1 - 2L * getProlepticYear());
         }
         return (PaxDate) super.with(field, newValue);
     }
@@ -557,7 +552,7 @@ public final class PaxDate
         if (yearsToAdd == 0) {
             return this;
         }
-        int newYear = YEAR.checkValidIntValue(getProlepticYear() + yearsToAdd);
+        int newYear = YEAR.checkValidIntValue(Math.addExact(getProlepticYear(), yearsToAdd));
         // Retain actual month (not index) in the case where a leap month is to be inserted.
         if (month == MONTHS_IN_YEAR && !isLeapYear() && PaxChronology.INSTANCE.isLeapYear(newYear)) {
             return of(newYear, MONTHS_IN_YEAR + 1, getDayOfMonth());
@@ -596,9 +591,17 @@ public final class PaxDate
             return this;
         }
         long calcMonths = Math.addExact(getProlepticMonth(), monthsToAdd);
-        // "Regularize" the month count, as if years were all 13 months long.
-        long monthsRegularized = calcMonths - getLeapMonthsBefore(calcMonths);
-        int newYear = YEAR.checkValidIntValue(Math.floorDiv(monthsRegularized, MONTHS_IN_YEAR));
+        // reject out-of-range values first, so the year estimate below cannot overflow or be wildly wrong
+        PaxChronology.INSTANCE.range(ChronoField.PROLEPTIC_MONTH).checkValidValue(calcMonths, ChronoField.PROLEPTIC_MONTH);
+        // estimate the year using the average year length (5271 months per 400 years), then correct exactly
+        long year = Math.floorDiv(calcMonths * 400, 5271L);
+        while (year * MONTHS_IN_YEAR + getLeapYearsBefore(year) > calcMonths) {
+            year--;
+        }
+        while ((year + 1) * MONTHS_IN_YEAR + getLeapYearsBefore(year + 1) <= calcMonths) {
+            year++;
+        }
+        int newYear = YEAR.checkValidIntValue(year);
         int newMonth = Math.toIntExact(calcMonths - ((long) newYear * MONTHS_IN_YEAR + getLeapYearsBefore(newYear)) + 1);
         return resolvePreviousValid(newYear, newMonth, getDayOfMonth());
     }
@@ -652,10 +655,15 @@ public final class PaxDate
      * @return The number of years from this date to the given day.
      */
     long yearsUntil(PaxDate end) {
-        // If either date is after the inserted leap month, and the other year isn't leap, simulate the effect of the inserted month.
+        // if either date is after the inserted leap month, and the other year isn't leap, simulate the effect of the inserted month
         long startYear = getProlepticYear() * 512L + getDayOfYear() + (this.month == MONTHS_IN_YEAR && !this.isLeapYear() && end.isLeapYear() ? DAYS_IN_WEEK : 0);
         long endYear = end.getProlepticYear() * 512L + end.getDayOfYear() + (end.month == MONTHS_IN_YEAR && !end.isLeapYear() && this.isLeapYear() ? DAYS_IN_WEEK : 0);
-        return (endYear - startYear) / 512L;
+        long years = (endYear - startYear) / 512L;
+        // for forward periods, ensure the result is the inverse of plusYears(...), which may differ when starting in the leap month
+        while (years > 0 && this.plusYears(years).isAfter(end)) {
+            years--;
+        }
+        return years;
     }
 
     @Override
