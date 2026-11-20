@@ -313,13 +313,13 @@ abstract class AbstractDate
                 case MONTHS:
                     return monthsUntil(end);
                 case YEARS:
-                    return monthsUntil(end) / lengthOfYearInMonths();
+                    return yearsUntil(end);
                 case DECADES:
-                    return monthsUntil(end) / (lengthOfYearInMonths() * 10L);
+                    return yearsUntil(end) / 10L;
                 case CENTURIES:
-                    return monthsUntil(end) / (lengthOfYearInMonths() * 100L);
+                    return yearsUntil(end) / 100L;
                 case MILLENNIA:
-                    return monthsUntil(end) / (lengthOfYearInMonths() * 1000L);
+                    return yearsUntil(end) / 1000L;
                 case ERAS:
                     return end.getLong(ERA) - getLong(ERA);
                 default:
@@ -328,6 +328,10 @@ abstract class AbstractDate
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
         return unit.between(this, end);
+    }
+
+    long yearsUntil(AbstractDate end) {
+        return monthsUntil(end) / lengthOfYearInMonths();
     }
 
     long daysUntil(ChronoLocalDate end) {
