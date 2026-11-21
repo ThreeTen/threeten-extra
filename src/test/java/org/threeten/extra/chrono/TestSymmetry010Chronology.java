@@ -676,13 +676,10 @@ public class TestSymmetry010Chronology {
             {2015, 12, 22, ALIGNED_DAY_OF_WEEK_IN_YEAR, 6, 2015, 12, 22},
             {2015, 12, 22, ALIGNED_DAY_OF_WEEK_IN_YEAR, 7, 2015, 12, 23},
 
-            {2015, 12, 29, ALIGNED_WEEK_OF_MONTH, 0, 2015, 12, 29},
             {2015, 12, 29, ALIGNED_WEEK_OF_MONTH, 3, 2015, 12, 15},
 
-            {2015, 12, 29, ALIGNED_WEEK_OF_YEAR, 0, 2015, 12, 29},
             {2015, 12, 29, ALIGNED_WEEK_OF_YEAR, 3, 2015,  1, 20},
 
-            {2015, 12, 29, DAY_OF_WEEK, 0, 2015, 12, 29},
             {2015, 12, 28, DAY_OF_WEEK, 1, 2015, 12, 24},
             {2015, 12, 28, DAY_OF_WEEK, 2, 2015, 12, 25},
             {2015, 12, 28, DAY_OF_WEEK, 3, 2015, 12, 26},
@@ -706,6 +703,10 @@ public class TestSymmetry010Chronology {
             {2014, 3, 28, MONTH_OF_YEAR, 1, 2014, 1, 28},
             {2015, 3, 28, DAY_OF_YEAR, 371, 2015, 12, 37},
             {2012, 3, 28, DAY_OF_YEAR, 364, 2012, 12, 30},
+
+            {2014, 5, 26, YEAR, 0, 0, 5, 26},
+            {2014, 5, 26, PROLEPTIC_MONTH, 0, 0, 1, 26},
+            {2014, 5, 26, EPOCH_DAY, 0, 1970, 1, 4},
         };
     }
 
@@ -752,6 +753,10 @@ public class TestSymmetry010Chronology {
             {2013,  1,  1, EPOCH_DAY,  364_523_156},
             {2013,  1,  1, YEAR, -1_000_001},
             {2013,  1,  1, YEAR,  1_000_001},
+
+            {2015, 12, 29, ALIGNED_WEEK_OF_MONTH, 0},
+            {2015, 12, 29, ALIGNED_WEEK_OF_YEAR, 0},
+            {2015, 12, 29, DAY_OF_WEEK, 0},
         };
     }
 
@@ -759,6 +764,15 @@ public class TestSymmetry010Chronology {
     @MethodSource("data_with_bad")
     public void test_with_TemporalField_badValue(int year, int month, int dom, TemporalField field, long value) {
         assertThrows(DateTimeException.class, () -> Symmetry010Date.of(year, month, dom).with(field, value));
+    }
+
+    @Test
+    public void test_with_TemporalField_zeroValue() {
+        // a zero is a value, as in java.time, and is not a request to leave the field unchanged
+        Symmetry010Date date = Symmetry010Date.of(2014, 5, 26);
+        assertEquals(Symmetry010Chronology.INSTANCE.dateEpochDay(0), date.with(EPOCH_DAY, 0));
+        assertEquals(Symmetry010Date.of(0, 5, 26), date.with(YEAR, 0));
+        assertEquals(Symmetry010Date.of(0, 1, 26), date.with(PROLEPTIC_MONTH, 0));
     }
 
     @Test
